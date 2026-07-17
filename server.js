@@ -8,11 +8,16 @@ const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
-  ".svg": "image/svg+xml"
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".webp": "image/webp",
+  ".txt": "text/plain; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8"
 };
 
 const server = http.createServer((request, response) => {
-  const pathname = request.url === "/" ? "/index.html" : request.url.split("?")[0];
+  const rawPath = request.url.split("?")[0];
+  const pathname = rawPath === "/" ? "/index.html" : (path.extname(rawPath) ? rawPath : `${rawPath}.html`);
   const safePath = path.normalize(pathname).replace(/^(\.\.[/\\])+/, "");
   const filePath = path.join(publicDir, safePath);
 
@@ -29,11 +34,18 @@ const server = http.createServer((request, response) => {
       return;
     }
 
+    const host = request.headers.host;
+    const proto = request.headers["x-forwarded-proto"] || "http";
+    const baseUrl = `${proto}://${host}`;
+    let body = data;
+    if ([".html", ".txt", ".xml"].includes(path.extname(filePath))) {
+      body = Buffer.from(data.toString("utf8").replaceAll("{{BASE_URL}}", baseUrl));
+    }
     response.writeHead(200, {
       "Content-Type": types[path.extname(filePath)] || "application/octet-stream",
       "Cache-Control": path.extname(filePath) === ".html" ? "no-cache" : "public, max-age=3600"
     });
-    response.end(data);
+    response.end(body);
   });
 });
 
