@@ -22,6 +22,7 @@
 <nav>
 <a href="/services">Услуги</a>
 <a href="/players">Игрокам</a>
+<a href="/cases">Кейсы</a>
 <a href="/agent">Агент</a>
 <a href="/guides">Материалы</a>
 <a class="nav-cta active" href="/contact">Отправить профиль</a>
@@ -46,7 +47,7 @@
 </a>
 </div>
 </div>
-<form id="profile-form" action="https://eurohockeyagency.com/contact-us" method="get">
+<form id="profile-form" action="/contact" method="post">
 <label>Имя и фамилия<input name="name" autocomplete="name" required>
 </label>
 <div class="two">
@@ -69,8 +70,9 @@
 <label>Дополнительная информация<textarea name="message" rows="5" placeholder="Текущая команда, рост/вес, хват, паспорт, контрактный статус, доступность и цель">
 </textarea>
 </label>
+<label class="consent"><input type="checkbox" name="consent" required><span>Я согласен(на) на обработку данных для оценки профиля и связи со мной. Если игроку меньше 18 лет, заявку отправляет родитель или законный представитель. <a href="/privacy">Подробнее</a>.</span></label>
 <button class="btn primary" type="submit">Отправить заявку в WhatsApp</button>
-<p class="form-note">Заявка откроется готовым сообщением в WhatsApp агентства — останется только нажать «Отправить». Ответ в течение 48 часов.</p>
+<p class="form-note" id="form-status" aria-live="polite">Заявка откроется готовым сообщением в WhatsApp агентства — останется только нажать «Отправить».</p>
 </form>
 </section>
 </main>
@@ -87,6 +89,7 @@
 <nav class="footer-links">
 <a href="/services">Услуги</a>
 <a href="/players">Игрокам</a>
+<a href="/cases">Кейсы</a>
 <a href="/agent">Об агенте</a>
 <a href="/guides">Материалы</a>
 </nav>
@@ -101,7 +104,7 @@
 </div>
 <small>
 <span>© 2026 European Hockey Agency.</span>
-<span>Честная оценка. Точная работа с рынком.</span>
+<span><a href="/privacy">Политика конфиденциальности</a></span>
 </small>
 </footer>
 </body>
