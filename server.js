@@ -1,6 +1,7 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
+const zlib = require("node:zlib");
 
 const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, "public");
@@ -41,10 +42,29 @@ const server = http.createServer((request, response) => {
     if ([".html", ".txt", ".xml"].includes(path.extname(filePath))) {
       body = Buffer.from(data.toString("utf8").replaceAll("{{BASE_URL}}", baseUrl));
     }
-    response.writeHead(200, {
-      "Content-Type": types[path.extname(filePath)] || "application/octet-stream",
-      "Cache-Control": path.extname(filePath) === ".html" ? "no-cache" : "public, max-age=3600"
-    });
+    const ext = path.extname(filePath);
+    const headers = {
+      "Content-Type": types[ext] || "application/octet-stream",
+      "Cache-Control": ext === ".html" ? "no-cache" : "public, max-age=604800",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
+    };
+    const compressible = [".html", ".css", ".js", ".svg", ".txt", ".xml"].includes(ext);
+    if (compressible && /gzip/.test(request.headers["accept-encoding"] || "")) {
+      zlib.gzip(body, (gzipError, compressed) => {
+        if (gzipError) {
+          response.writeHead(200, headers);
+          response.end(body);
+          return;
+        }
+        response.writeHead(200, { ...headers, "Content-Encoding": "gzip", "Vary": "Accept-Encoding" });
+        response.end(compressed);
+      });
+      return;
+    }
+    response.writeHead(200, headers);
     response.end(body);
   });
 });
