@@ -158,6 +158,7 @@ footer small{grid-column:1/-1;border-top:1px solid var(--line);padding-top:22px;
 .direct a:before{content:'↗';color:#67b0ff}
 .direct a:hover{border-color:var(--blue);transform:translateY(-2px)}
 .direct span{color:var(--muted)}
+.direct .loc{display:flex;align-items:center;gap:8px;padding:11px 15px;border:1px solid var(--line);border-radius:30px;font-size:12px;background:rgba(13,34,54,.5);color:var(--muted)}
 form{background:linear-gradient(145deg,var(--panel2),var(--panel));padding:52px;border:1px solid rgba(101,176,250,.12);box-shadow:0 30px 80px rgba(0,0,0,.18)}
 label{display:grid;gap:10px;margin-bottom:23px;font-size:11px;text-transform:uppercase;letter-spacing:.11em;font-weight:700}
 input,select,textarea{width:100%;border:1px solid var(--line);background:#06131f;color:white;padding:18px;font:inherit;border-radius:0;outline:0;transition:border-color .25s,box-shadow .25s,background .25s}
