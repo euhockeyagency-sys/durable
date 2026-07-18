@@ -9,6 +9,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="/styles.css">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script defer src="/site.js">
 </script>
 </head>
@@ -51,32 +52,100 @@
 </a>
 </div>
 </div>
-<form id="profile-form" action="/contact" method="post">
-<label>Имя и фамилия<input name="name" autocomplete="name" required>
+<form id="profile-form" action="/api/applications" method="post" enctype="multipart/form-data">
+<div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+<label>Имя и фамилия<input name="playerName" autocomplete="name" maxlength="120" required>
+<span class="field-error" data-error-for="playerName"></span>
 </label>
 <div class="two">
-<label>Год рождения<input name="birth-year" inputmode="numeric" required>
+<label>Год рождения<input name="birthYear" inputmode="numeric" type="number" min="1966" max="2018" required>
+<span class="field-error" data-error-for="birthYear"></span>
 </label>
 <label>Позиция<select name="position" required>
 <option value="">Выберите</option>
-<option>Нападающий</option>
-<option>Защитник</option>
-<option>Вратарь</option>
+<option value="forward">Нападающий</option>
+<option value="defense">Защитник</option>
+<option value="goalie">Вратарь</option>
 </select>
+<span class="field-error" data-error-for="position"></span>
 </label>
 </div>
-<label>Elite Prospects<input type="url" name="eliteprospects" placeholder="https://www.eliteprospects.com/player/..." required>
+<div class="two">
+<label>Гражданство<input name="citizenship" autocomplete="country-name" maxlength="100" required>
+<span class="field-error" data-error-for="citizenship"></span>
 </label>
-<label>Ссылка на видео<input type="url" name="video" placeholder="YouTube, Vimeo или Google Drive">
+<label>Текущий клуб<input name="currentClub" maxlength="160" placeholder="Если нет — укажите «без клуба»" required>
+<span class="field-error" data-error-for="currentClub"></span>
 </label>
-<label>WhatsApp или телефон<input type="tel" name="phone" autocomplete="tel" required>
+</div>
+<div class="two">
+<label>Рост, см<input name="heightCm" type="number" inputmode="decimal" min="120" max="230" step="0.1" required>
+<span class="field-error" data-error-for="heightCm"></span>
 </label>
-<label>Дополнительная информация<textarea name="message" rows="5" placeholder="Текущая команда, рост/вес, хват, паспорт, контрактный статус, доступность и цель">
+<label>Вес, кг<input name="weightKg" type="number" inputmode="decimal" min="35" max="180" step="0.1" required>
+<span class="field-error" data-error-for="weightKg"></span>
+</label>
+</div>
+<div class="two">
+<label>Хват<select name="stickHand" required>
+<option value="">Выберите</option>
+<option value="left">Левый</option>
+<option value="right">Правый</option>
+</select><span class="field-error" data-error-for="stickHand"></span></label>
+<label>Контрактный статус<select name="contractStatus" required>
+<option value="">Выберите</option>
+<option value="free">Свободный агент</option>
+<option value="contracted">Есть контракт</option>
+<option value="trial">На просмотре</option>
+<option value="other">Другое</option>
+</select><span class="field-error" data-error-for="contractStatus"></span></label>
+</div>
+<label>Доступен с<input type="date" name="availableFrom">
+<span class="field-error" data-error-for="availableFrom"></span>
+</label>
+<label>Elite Prospects<input type="url" name="eliteProspectsUrl" placeholder="https://www.eliteprospects.com/player/..." required>
+<span class="field-error" data-error-for="eliteProspectsUrl"></span>
+</label>
+<fieldset>
+<legend>Ссылки на видео — до трёх</legend>
+<input type="url" name="videoUrls" aria-label="Первая ссылка на видео" placeholder="YouTube, Vimeo или Google Drive">
+<input type="url" name="videoUrls" aria-label="Вторая ссылка на видео" placeholder="Дополнительная ссылка">
+<input type="url" name="videoUrls" aria-label="Третья ссылка на видео" placeholder="Дополнительная ссылка">
+<span class="field-error" data-error-for="videoUrls"></span>
+</fieldset>
+<div class="two">
+<label>WhatsApp или телефон<input type="tel" name="phone" autocomplete="tel" maxlength="60" required>
+<span class="field-error" data-error-for="phone"></span>
+</label>
+<label>Email — необязательно<input type="email" name="email" autocomplete="email" maxlength="160">
+<span class="field-error" data-error-for="email"></span>
+</label>
+</div>
+<section class="parent-fields" id="parent-fields" hidden aria-hidden="true">
+<p class="form-section-title">Для игрока младше 18 лет</p>
+<label>Имя родителя или представителя<input name="parentName" autocomplete="name" maxlength="120">
+<span class="field-error" data-error-for="parentName"></span></label>
+<label>Телефон или email родителя<input name="parentContact" maxlength="160">
+<span class="field-error" data-error-for="parentContact"></span></label>
+<label class="consent"><input type="checkbox" name="parentConsent" value="true">Я являюсь родителем или законным представителем и согласен на обработку данных игрока.</label>
+<span class="field-error" data-error-for="parentConsent"></span>
+</section>
+<label>Резюме или фотографии
+<input type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
+<small>До 3 файлов, каждый до 5 МБ, общий размер до 10 МБ. Не отправляйте паспорт, медицинские или другие чувствительные документы.</small>
+<span class="field-error" data-error-for="files"></span>
+</label>
+<label>Дополнительная информация<textarea name="message" rows="5" maxlength="3000" placeholder="Карьерная цель, достижения и важные детали">
 </textarea>
 </label>
-<label class="consent"><input type="checkbox" name="consent" required><span>Я согласен(на) на обработку данных для оценки профиля и связи со мной. Если игроку меньше 18 лет, заявку отправляет родитель или законный представитель. <a href="/privacy">Подробнее</a>.</span></label>
-<button class="btn primary" type="submit">Отправить заявку в WhatsApp</button>
-<p class="form-note" id="form-status" aria-live="polite">Заявка откроется готовым сообщением в WhatsApp агентства — останется только нажать «Отправить».</p>
+<label class="consent"><input type="checkbox" name="dataConsent" value="true" required>Я согласен с <a href="/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a> и обработкой данных для оценки профиля.</label>
+<span class="field-error" data-error-for="dataConsent"></span>
+<div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
+<span class="field-error" data-error-for="turnstile"></span>
+<label class="honeypot" aria-hidden="true">Ваш сайт<input name="website" tabindex="-1" autocomplete="off"></label>
+<input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer">
+<button class="btn primary" type="submit">Отправить заявку</button>
+<p class="form-note">После сохранения вы получите номер заявки. Если форма недоступна, напишите в WhatsApp или на <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a>. Ответ в течение 48 часов.</p>
 </form>
 </section>
 </main>
@@ -105,6 +174,7 @@
 <a href="https://www.instagram.com/ehahockeyagency/" rel="noopener">Instagram ↗</a>
 <a href="https://wa.me/375297957818" rel="noopener">WhatsApp ↗</a>
 <a href="/contact">Отправить профиль</a>
+<a href="/privacy">Конфиденциальность</a>
 </div>
 </div>
 <small>

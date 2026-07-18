@@ -4,9 +4,21 @@
   "private": true,
   "description": "Euro Hockey Agency website",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node --env-file=.env server.js",
+    "test": "node --test",
+    "check": "node --check server.js && node --check src/app.js && node --check src/applications.js && node --check src/services.js"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.100.0",
+    "express": "5.2.1",
+    "multer": "2.2.0",
+    "resend": "6.17.2"
+  },
+  "devDependencies": {
+    "supertest": "7.2.2"
   }
 }
