@@ -6,4 +6,9 @@
   <url><loc>{{BASE_URL}}/agent</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>{{BASE_URL}}/guides</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>{{BASE_URL}}/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>{{BASE_URL}}/guides/kak-najti-hokkejnyj-klub-v-evrope</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>{{BASE_URL}}/guides/hokkejnoe-rezyume</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>{{BASE_URL}}/guides/video-dlya-kluba</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>{{BASE_URL}}/guides/kak-vybrat-ligu</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>{{BASE_URL}}/guides/kak-rabotaet-hokkejnyj-agent</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
 </urlset>
