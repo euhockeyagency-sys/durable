@@ -525,3 +525,5 @@ footer small{display:block}
 *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 .reveal,.hero .kicker,.hero h1 span,.hero .lead,.hero .actions,.hero .note{opacity:1!important;transform:none!important}
 }
+
+.body-copy a,.lead a{color:#73b8ff;font-weight:700}
