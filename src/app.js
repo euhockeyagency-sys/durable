@@ -103,6 +103,38 @@ function securityHeaders(_req, res, next) {
 
 const YANDEX_METRIKA = `<!-- Yandex.Metrika counter --><script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110889446','ym');ym(110889446,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",accurateTrackBounce:true,trackLinks:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/110889446" style="position:absolute;left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->`;
 
+function htmlEscape(value) {
+  return String(value)
+    .replaceAll("&", "&amp;").replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+// Build Open Graph + Twitter Card tags from the page's own <title>/description.
+function buildSocialTags(html, pageUrl, isArticle, imageUrl) {
+  if (html.includes('property="og:title"')) return ""; // page already declares its own OG
+  const titleMatch = html.match(/<title>([\s\S]*?)<\/title>/i);
+  const descMatch = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i);
+  if (!titleMatch) return "";
+  const fullTitle = titleMatch[1].trim();
+  const ogTitle = htmlEscape(fullTitle.split(" | ")[0].trim());
+  const ogDesc = htmlEscape((descMatch ? descMatch[1] : "").trim());
+  const url = htmlEscape(pageUrl);
+  const img = htmlEscape(imageUrl);
+  return `<meta property="og:type" content="${isArticle ? "article" : "website"}">` +
+    `<meta property="og:site_name" content="European Hockey Agency">` +
+    `<meta property="og:locale" content="ru_RU">` +
+    `<meta property="og:title" content="${ogTitle}">` +
+    `<meta property="og:description" content="${ogDesc}">` +
+    `<meta property="og:url" content="${url}">` +
+    `<meta property="og:image" content="${img}">` +
+    `<meta property="og:image:width" content="1200">` +
+    `<meta property="og:image:height" content="630">` +
+    `<meta name="twitter:card" content="summary_large_image">` +
+    `<meta name="twitter:title" content="${ogTitle}">` +
+    `<meta name="twitter:description" content="${ogDesc}">` +
+    `<meta name="twitter:image" content="${img}">`;
+}
+
 function servePublic(req, res, config) {
   let pathname;
   try {
@@ -127,7 +159,9 @@ function servePublic(req, res, config) {
         .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
         .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
       if (extension === ".html" && html.includes("</head>")) {
-        html = html.replace("</head>", `${YANDEX_METRIKA}</head>`);
+        const pageUrl = config.siteUrl + (pathname === "/" ? "/" : pathname);
+        const social = buildSocialTags(html, pageUrl, pathname.startsWith("/guides/"), `${config.siteUrl}/assets/og-cover.jpg`);
+        html = html.replace("</head>", `${social}${YANDEX_METRIKA}</head>`);
       }
       body = Buffer.from(html);
     }
