@@ -13,4 +13,7 @@
   <url><loc>{{BASE_URL}}/guides/video-dlya-kluba</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>{{BASE_URL}}/guides/kak-vybrat-ligu</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>{{BASE_URL}}/guides/kak-rabotaet-hokkejnyj-agent</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>{{BASE_URL}}/guides/hokkej-v-finlyandii</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>{{BASE_URL}}/guides/hokkej-v-shvecii</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>{{BASE_URL}}/guides/hokkej-v-chexii</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
 </urlset>
