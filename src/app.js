@@ -96,10 +96,12 @@ function securityHeaders(_req, res, next) {
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-    "Content-Security-Policy": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    "Content-Security-Policy": "default-src 'self'; img-src 'self' data: https://mc.yandex.ru https://*.mc.yandex.ru; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://mc.yandex.ru; frame-src https://challenges.cloudflare.com https://mc.yandex.ru; connect-src 'self' https://challenges.cloudflare.com https://mc.yandex.ru https://*.mc.yandex.ru https://mc.yandex.md; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
   });
   next();
 }
+
+const YANDEX_METRIKA = `<!-- Yandex.Metrika counter --><script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110889446','ym');ym(110889446,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",accurateTrackBounce:true,trackLinks:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/110889446" style="position:absolute;left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->`;
 
 function servePublic(req, res, config) {
   let pathname;
@@ -119,11 +121,15 @@ function servePublic(req, res, config) {
     const extension = path.extname(filePath);
     let body = data;
     if ([".html", ".txt", ".xml"].includes(extension)) {
-      body = Buffer.from(data.toString("utf8")
+      let html = data.toString("utf8")
         .replaceAll("{{BASE_URL}}", config.siteUrl)
         .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
         .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
-        .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion));
+        .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
+      if (extension === ".html" && html.includes("</head>")) {
+        html = html.replace("</head>", `${YANDEX_METRIKA}</head>`);
+      }
+      body = Buffer.from(html);
     }
     res.set("Content-Type", CONTENT_TYPES[extension] || "application/octet-stream");
     res.set("Cache-Control", extension === ".html" ? "no-cache" : "public, max-age=604800");
