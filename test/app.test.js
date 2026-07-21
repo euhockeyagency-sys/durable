@@ -14,6 +14,9 @@ function config(overrides = {}) {
     trustProxy: false,
     applicationConfigured: true,
     missingApplicationKeys: [],
+    turnstileConfigured: true,
+    telegramConfigured: true,
+    emailConfigured: true,
     ...overrides
   };
 }
@@ -197,4 +200,27 @@ test("returns a safe 503 when application services are not configured", async ()
   const app = createApp({ config: config({ applicationConfigured: false, missingApplicationKeys: ["SUPABASE_URL"] }) });
   const response = await request(app).post("/api/applications").expect(503);
   assert.equal(response.body.code, "service_unavailable");
+});
+
+test("accepts an application without a captcha token when Turnstile is not configured", async () => {
+  const services = serviceMock();
+  const app = createApp({
+    config: config({ turnstileConfigured: false }),
+    services,
+    now: () => new Date("2026-07-18T12:00:00Z")
+  });
+  const response = await validRequest(request(app), { "cf-turnstile-response": "" }).expect(201);
+  assert.equal(response.body.ok, true);
+  assert.equal(services.rows.applications.length, 1);
+});
+
+test("skips notification channels that are not configured", async () => {
+  const services = serviceMock();
+  const app = createApp({
+    config: config({ telegramConfigured: true, emailConfigured: false }),
+    services,
+    now: () => new Date("2026-07-18T12:00:00Z")
+  });
+  await validRequest(request(app)).expect(201);
+  assert.deepEqual(services.rows.application_notifications.map((row) => row.channel), ["telegram"]);
 });

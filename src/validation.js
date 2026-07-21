@@ -29,7 +29,7 @@ function asArray(value) {
   return value === undefined || value === "" ? [] : [value];
 }
 
-function validateApplication(body, files, now = new Date()) {
+function validateApplication(body, files, now = new Date(), requireTurnstile = true) {
   const errors = {};
   const currentYear = now.getUTCFullYear();
   const birthYear = Number(body.birthYear);
@@ -115,7 +115,7 @@ function validateApplication(body, files, now = new Date()) {
     turnstileToken: text(body["cf-turnstile-response"], 2048)
   };
 
-  if (!value.turnstileToken) errors.turnstile = "Подтвердите, что вы не робот.";
+  if (requireTurnstile && !value.turnstileToken) errors.turnstile = "Подтвердите, что вы не робот.";
   return { ok: Object.keys(errors).length === 0, errors, value };
 }
 

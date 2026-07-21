@@ -5,7 +5,7 @@ function createServices(config) {
   const supabase = createClient(config.supabaseUrl, config.supabaseSecretKey, {
     auth: { persistSession: false, autoRefreshToken: false }
   });
-  const resend = new Resend(config.resendApiKey);
+  const resend = config.resendApiKey ? new Resend(config.resendApiKey) : null;
 
   return {
     supabase,
@@ -32,6 +32,7 @@ function createServices(config) {
       return { success: Boolean(result.success), errorCodes: result["error-codes"] || [] };
     },
     async sendEmail(application) {
+      if (!resend) throw new Error("Resend is not configured");
       const result = await resend.emails.send({
         from: config.resendFrom,
         to: [config.notificationEmail],

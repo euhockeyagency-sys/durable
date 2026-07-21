@@ -21,34 +21,37 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
     }
 
     const files = req.files || [];
-    const validation = validateApplication(req.body || {}, files, now());
+    const validation = validateApplication(req.body || {}, files, now(), Boolean(config.turnstileConfigured));
     if (!validation.ok) {
       return res.status(400).json({ ok: false, code: "validation_error", errors: validation.errors });
     }
 
-    const verificationId = randomUUID();
-    let turnstile;
-    try {
-      turnstile = await services.verifyTurnstile({
-        token: validation.value.turnstileToken,
-        ip: req.ip,
-        idempotencyKey: verificationId
-      });
-    } catch (error) {
-      console.error("Turnstile verification unavailable", error.message);
-      return res.status(503).json({
-        ok: false,
-        code: "verification_unavailable",
-        message: "Проверка безопасности временно недоступна. Попробуйте позже или свяжитесь с нами напрямую.",
-        contactEmail: config.contactEmail
-      });
-    }
-    if (!turnstile.success) {
-      return res.status(422).json({
-        ok: false,
-        code: "verification_failed",
-        errors: { turnstile: "Проверка безопасности истекла или уже была использована. Повторите её." }
-      });
+    // Captcha is optional: verified only when Turnstile keys are configured.
+    if (config.turnstileConfigured) {
+      const verificationId = randomUUID();
+      let turnstile;
+      try {
+        turnstile = await services.verifyTurnstile({
+          token: validation.value.turnstileToken,
+          ip: req.ip,
+          idempotencyKey: verificationId
+        });
+      } catch (error) {
+        console.error("Turnstile verification unavailable", error.message);
+        return res.status(503).json({
+          ok: false,
+          code: "verification_unavailable",
+          message: "Проверка безопасности временно недоступна. Попробуйте позже или свяжитесь с нами напрямую.",
+          contactEmail: config.contactEmail
+        });
+      }
+      if (!turnstile.success) {
+        return res.status(422).json({
+          ok: false,
+          code: "verification_failed",
+          errors: { turnstile: "Проверка безопасности истекла или уже была использована. Повторите её." }
+        });
+      }
     }
 
     const createdAt = now();
@@ -98,7 +101,7 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
       });
     }
 
-    await deliverNotifications(services, application);
+    await deliverNotifications(services, application, config);
     return res.status(201).json({ ok: true, applicationId, reference });
   };
 }
@@ -143,11 +146,13 @@ async function rollbackApplication(supabase, applicationId, paths) {
   }
 }
 
-async function deliverNotifications(services, application) {
-  const channels = [
-    ["telegram", () => services.sendTelegram(application)],
-    ["email", () => services.sendEmail(application)]
-  ];
+async function deliverNotifications(services, application, config = {}) {
+  // Only attempt channels that are configured — otherwise every submission
+  // would record a guaranteed failure in application_notifications.
+  const channels = [];
+  if (config.telegramConfigured !== false) channels.push(["telegram", () => services.sendTelegram(application)]);
+  if (config.emailConfigured !== false) channels.push(["email", () => services.sendEmail(application)]);
+  if (!channels.length) return;
   await Promise.all(channels.map(async ([channel, send]) => {
     let providerId = null;
     let status = "sent";
