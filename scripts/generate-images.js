@@ -21,7 +21,9 @@ const ARTICLES = [
   { slug: "hokkej-v-shvecii", category: "Страны · Швеция", title: "Хоккей в Швеции: лиги и как попасть" },
   { slug: "hokkej-v-chexii", category: "Страны · Чехия", title: "Хоккей в Чехии: лиги и как попасть" },
   { slug: "hokkej-v-germanii", category: "Страны · Германия", title: "Хоккей в Германии: лиги и как попасть" },
-  { slug: "hokkej-v-polshe", category: "Страны · Польша", title: "Хоккей в Польше: лиги и как попасть" }
+  { slug: "hokkej-v-polshe", category: "Страны · Польша", title: "Хоккей в Польше: лиги и как попасть" },
+  { slug: "ligi-evropy", category: "Справочник", title: "Хоккейные лиги Европы: уровни и легионеры" },
+  { slug: "kalkulyator-urovnya", category: "Инструмент", title: "Калькулятор уровня: какая лига реальна" }
 ];
 
 // Division pyramids: listed top (strongest) to bottom (entry level).

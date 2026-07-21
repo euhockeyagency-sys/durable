@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькулятор уровня хоккеиста: какая лига реальна | EHA</title>
+<meta name="description" content="Ответьте на 6 вопросов и получите реалистичную вилку европейских дивизионов и список подходящих лиг. Бесплатно, без регистрации.">
+<link rel="canonical" href="{{BASE_URL}}/kalkulyator-urovnya">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Калькулятор уровня","item":"{{BASE_URL}}/kalkulyator-urovnya"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Как понять, в какую европейскую лигу я могу попасть?","acceptedAnswer":{"@type":"Answer","text":"Ориентир складывается из уровня текущей лиги, результативности относительно позиции, возраста и наличия паспорта ЕС. Текущий уровень — главный фактор: клубы сравнивают игроков в первую очередь по нему."}},{"@type":"Question","name":"Калькулятор гарантирует контракт?","acceptedAnswer":{"@type":"Answer","text":"Нет. Это ориентир для планирования, а не обещание. Решение всегда принимает клуб, а окончательную оценку профиля даёт человек, который видит видео и статистику."}},{"@type":"Question","name":"Насколько важен паспорт ЕС?","acceptedAnswer":{"@type":"Answer","text":"Очень важен: без него игрок занимает ограниченное легионерское место и должен заметно превосходить местного конкурента. Паспорт ЕС не повышает уровень игрока, но резко расширяет список доступных клубов."}}]}</script>
+</head>
+<body>
+<header class="header">
+<a class="brand" href="/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<button class="menu" type="button" aria-label="Открыть меню">Меню</button>
+<nav>
+<a href="/services">Услуги</a>
+<a href="/players">Игрокам</a>
+<a href="/cases">Кейсы</a>
+<a href="/agent">Агент</a>
+<a href="/guides">Материалы</a>
+<a class="nav-cta" href="/contact">Отправить профиль</a>
+</nav>
+</header>
+<main>
+<nav class="breadcrumbs wrap">
+<a href="/guides">Материалы</a> / Калькулятор уровня</nav>
+<section class="article-hero wrap">
+<p class="kicker">Инструмент</p>
+<h1>Калькулятор уровня: какая лига реальна</h1>
+<p class="lead">Шесть вопросов — и вы увидите реалистичную вилку европейских дивизионов и конкретные лиги, где профиль вроде вашего действительно рассматривают. Бесплатно, без регистрации.</p>
+</section>
+
+<section class="wrap">
+<form class="calc-form" id="calc">
+<label>Год рождения
+<input type="number" id="c-year" min="1970" max="2014" placeholder="2004" required>
+</label>
+<label>Позиция
+<select id="c-pos" required>
+<option value="forward">Нападающий</option>
+<option value="defense">Защитник</option>
+<option value="goalie">Вратарь</option>
+</select>
+</label>
+<label>Паспорт ЕС
+<select id="c-eu" required>
+<option value="no">Нет</option>
+<option value="yes">Есть</option>
+</select>
+</label>
+<label>Уровень текущей лиги
+<select id="c-level" required>
+<option value="top">Высший дивизион сильной страны (КХЛ, SHL, Liiga, Extraliga…)</option>
+<option value="t2" selected>Второй дивизион сильной страны или высший средней (ВХЛ, Mestis, Chance liga, DEL2, PHL…)</option>
+<option value="t3">Третий уровень или высший дивизион малой страны (HockeyEttan, Oberliga, 2. liga…)</option>
+<option value="junior">Юниорская или молодёжная лига (МХЛ, J20, U20)</option>
+<option value="amateur">Любительский или студенческий уровень</option>
+</select>
+</label>
+<label>Очков за последний сезон
+<input type="number" id="c-points" min="0" max="300" placeholder="25">
+<small>Вратарям можно не заполнять</small>
+</label>
+<label>Игр за последний сезон
+<input type="number" id="c-games" min="1" max="120" placeholder="45">
+</label>
+<label>Взрослых сезонов отыграно
+<input type="number" id="c-seasons" min="0" max="25" placeholder="2" required>
+</label>
+<button class="btn primary" type="submit">Рассчитать уровень</button>
+</form>
+
+<div class="calc-result" id="calc-result" hidden>
+<p class="kicker">Ваш ориентир</p>
+<h2 id="calc-band"></h2>
+<p class="calc-summary" id="calc-summary"></p>
+
+<h3 class="calc-subtitle">Лиги, где такой профиль рассматривают</h3>
+<div class="calc-leagues" id="calc-leagues"></div>
+
+<h3 class="calc-subtitle">Что усилить в профиле</h3>
+<ul class="ticks" id="calc-tips"></ul>
+
+<p class="tool-note"><strong>Важно:</strong> это ориентир для планирования, а не обещание контракта. Решение всегда принимает клуб, а точную оценку даёт человек, который видит ваше видео и статистику. Мы делаем такую оценку бесплатно.</p>
+<a class="btn primary" href="/contact">Отправить профиль на бесплатную оценку</a>
+</div>
+</section>
+
+<section class="split wrap">
+<div>
+<p class="kicker">Как это считается</p>
+<h2>Без «магии»<br>и завышенных обещаний</h2>
+</div>
+<p class="body-copy">Главный фактор — уровень лиги, в которой вы играете сейчас: именно по нему клубы сравнивают игроков в первую очередь. Дальше идут результативность относительно позиции, возраст (до 20 лет смотрят на потенциал, после 25 — на готовый уровень) и паспорт: гражданство ЕС не делает игрока сильнее, но снимает легионерские ограничения и расширяет список клубов. Подробная логика — в статье <a href="/guides/kak-vybrat-ligu">как выбрать хоккейную лигу в Европе</a>, а полный справочник дивизионов — в <a href="/ligi-evropy">базе лиг Европы</a>.</p>
+</section>
+
+<section class="cta">
+<div>
+<p class="kicker">Следующий шаг</p>
+<h2>Проверим ваш профиль лично</h2>
+</div>
+<a class="btn light" href="/contact">Отправить профиль</a>
+</section>
+</main>
+<footer id="footer">
+<div class="footer-brand">
+<a class="brand" href="/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<p>Персональное представительство хоккеистов на европейских рынках. База — Гданьск, Польша.</p>
+</div>
+<div>
+<h4>Навигация</h4>
+<nav class="footer-links">
+<a href="/services">Услуги</a>
+<a href="/players">Игрокам</a>
+<a href="/cases">Кейсы</a>
+<a href="/agent">Об агенте</a>
+<a href="/guides">Материалы</a>
+</nav>
+</div>
+<div>
+<h4>Связаться</h4>
+<div class="footer-links">
+<a href="mailto:euhockeyagency@gmail.com">euhockeyagency@gmail.com</a>
+<a href="https://www.instagram.com/ehahockeyagency/" rel="noopener">Instagram ↗</a>
+<a href="https://wa.me/375297957818" rel="noopener">WhatsApp ↗</a>
+<a href="/contact">Отправить профиль</a>
+<a href="/privacy">Конфиденциальность</a>
+</div>
+</div>
+<small>
+<span>© 2026 European Hockey Agency.</span>
+<span><a href="/privacy">Политика конфиденциальности</a></span>
+</small>
+</footer>
+<script src="/assets/leagues.js"></script>
+<script>
+(function () {
+  var form = document.getElementById("calc");
+  if (!form) return;
+  var data = (window.EHA_LEAGUES || { leagues: [] }).leagues;
+  var val = function (id) { return document.getElementById(id).value; };
+  var num = function (id) { return parseFloat(document.getElementById(id).value) || 0; };
+
+  // Base score: the league you play in now is the dominant signal.
+  var BASE = { top: 100, t2: 78, t3: 58, junior: 55, amateur: 35 };
+  // Points-per-game thresholds by position.
+  var PPG = { forward: [0.8, 0.5, 0.3], defense: [0.5, 0.3, 0.15], goalie: null };
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var year = num("c-year"), pos = val("c-pos"), eu = val("c-eu") === "yes";
+    var level = val("c-level"), points = num("c-points"), games = num("c-games");
+    var seasons = num("c-seasons");
+    var age = new Date().getFullYear() - year;
+    var score = BASE[level] || 58;
+    var tips = [];
+
+    // Production relative to position (goalies are judged on level and experience).
+    var ppg = games > 0 ? points / games : 0;
+    if (PPG[pos] && games >= 10) {
+      var t = PPG[pos];
+      if (ppg >= t[0]) score += 12;
+      else if (ppg >= t[1]) score += 6;
+      else if (ppg >= t[2]) score += 0;
+      else { score -= 8; tips.push("Результативность ниже ориентира для вашей позиции — сделайте акцент в видео на игре без шайбы, обороне и роли в команде."); }
+    } else if (PPG[pos]) {
+      tips.push("Укажите статистику за полный сезон — без неё клубу трудно оценить профиль.");
+    }
+
+    // Age: potential before 20, finished product after 25.
+    if (age <= 19) { score += 6; tips.push("В вашем возрасте клубы смотрят на потенциал — рассмотрите юниорские и молодёжные программы с игровым временем."); }
+    else if (age <= 23) score += 3;
+    else if (age <= 27) score += 0;
+    else if (age <= 31) score -= 5;
+    else { score -= 10; tips.push("После 30 клубы берут игрока под конкретную роль — подчеркните опыт, стабильность и лидерские качества."); }
+
+    if (seasons >= 3) score += 3;
+    else if (seasons === 0) { score -= 4; tips.push("Без взрослых сезонов путь обычно идёт через юниорские лиги или низшие дивизионы."); }
+
+    // Passport does not raise the level — it widens the list of clubs.
+    if (!eu) tips.push("Без паспорта ЕС вы занимаете легионерское место: клуб возьмёт вас, только если вы заметно сильнее местного игрока. Проверьте, нет ли у вас оснований для европейского гражданства.");
+
+    // Score -> realistic tier band.
+    var band, label;
+    if (score >= 100) { band = [1, 2]; label = "Высшие дивизионы Европы"; }
+    else if (score >= 82) { band = [1, 2]; label = "Высшие дивизионы средних стран и вторые дивизионы сильных"; }
+    else if (score >= 64) { band = [2, 3]; label = "Вторые дивизионы и высшие дивизионы малых стран"; }
+    else if (score >= 48) { band = [2, 3]; label = "Третий уровень и высшие дивизионы малых стран"; }
+    else { band = [3, 3]; label = "Третий уровень и низшие дивизионы"; }
+
+    // Candidate leagues: within the band, realistic for the passport situation.
+    var candidates = data.filter(function (l) {
+      if (l.tier < band[0] || l.tier > band[1]) return false;
+      if (!eu && l.open === "low") return false;
+      return true;
+    });
+    // Within a tier, "open: low" means a strong league that is hard to enter.
+    // Strong profiles should see the strongest leagues first; everyone else —
+    // the most accessible ones first.
+    var accessFirst = { high: 0, mid: 1, low: 2 };
+    var strengthFirst = { low: 0, mid: 1, high: 2 };
+    var order = score >= 100 ? strengthFirst : accessFirst;
+    candidates.sort(function (a, b) { return (a.tier - b.tier) || (order[a.open] - order[b.open]); });
+    candidates = candidates.slice(0, 8);
+
+    document.getElementById("calc-band").textContent = label;
+    document.getElementById("calc-summary").textContent =
+      "По совокупности факторов реалистичный ориентир — дивизионы уровня " +
+      (band[0] === band[1] ? band[0] : band[0] + "–" + band[1]) +
+      ". Ниже — лиги, где профиль вроде вашего действительно рассматривают" +
+      (eu ? "." : "; список учитывает, что вы занимаете легионерское место.");
+
+    document.getElementById("calc-leagues").innerHTML = candidates.map(function (l) {
+      return '<div class="calc-league"><b>' + l.flag + " " + l.name + '</b>' +
+        '<span class="tier tier-' + l.tier + '">' + l.tier + "</span>" +
+        '<small>' + l.country + " · " + l.note + "</small></div>";
+    }).join("") || "<p class=\"tool-note\">Под такие параметры подходящих лиг в справочнике не нашлось — отправьте профиль, разберём вручную.</p>";
+
+    if (!tips.length) tips.push("Профиль выглядит собранным — усильте презентацию: свежее видео и актуальный Elite Prospects.");
+    tips.push("Подготовьте хоккейное резюме и видео заранее: когда у клуба открывается место, решение принимается быстро.");
+    document.getElementById("calc-tips").innerHTML = tips.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+
+    var result = document.getElementById("calc-result");
+    result.hidden = false;
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (window.ym) ym(110889446, "reachGoal", "calculator_done");
+  });
+})();
+</script>
+</body>
+</html>
