@@ -61,6 +61,10 @@ function createApp({ config, services, now, randomUUID } = {}) {
     });
   });
 
+  // Generated from the files on disk, so new pages appear automatically.
+  app.get("/sitemap.xml", (req, res) => sendBody(req, res, Buffer.from(buildSitemap(config)), ".xml"));
+  app.get("/feed.xml", (req, res) => sendBody(req, res, Buffer.from(buildFeed(config)), ".xml"));
+
   app.get("*path", (req, res) => servePublic(req, res, config));
   app.head("*path", (req, res) => servePublic(req, res, config));
   app.use((error, _req, res, _next) => {
@@ -149,36 +153,116 @@ function servePublic(req, res, config) {
   if (!filePath.startsWith(publicRoot)) return res.status(403).type("text").send("Forbidden");
 
   fs.readFile(filePath, (error, data) => {
-    if (error) return res.status(404).type("text").send("Not found");
+    if (error) return serveNotFound(req, res, config);
     const extension = path.extname(filePath);
-    let body = data;
-    if ([".html", ".txt", ".xml"].includes(extension)) {
-      let html = data.toString("utf8")
-        .replaceAll("{{BASE_URL}}", config.siteUrl)
-        .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
-        .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
-        .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
-      if (extension === ".html" && html.includes("</head>")) {
-        const pageUrl = config.siteUrl + (pathname === "/" ? "/" : pathname);
-        const social = buildSocialTags(html, pageUrl, pathname.startsWith("/guides/"), `${config.siteUrl}/assets/og-cover.jpg`);
-        html = html.replace("</head>", `${social}${YANDEX_METRIKA}</head>`);
-      }
-      body = Buffer.from(html);
-    }
-    res.set("Content-Type", CONTENT_TYPES[extension] || "application/octet-stream");
-    res.set("Cache-Control", extension === ".html" ? "no-cache" : "public, max-age=604800");
-    const compressible = [".html", ".css", ".js", ".svg", ".txt", ".xml"].includes(extension);
-    if (compressible && /gzip/.test(req.headers["accept-encoding"] || "")) {
-      zlib.gzip(body, (gzipError, compressed) => {
-        if (gzipError) return res.send(body);
-        res.set("Content-Encoding", "gzip");
-        res.set("Vary", "Accept-Encoding");
-        res.send(compressed);
-      });
-      return;
-    }
-    res.send(body);
+    const body = renderBody(data, extension, config, pathname);
+    sendBody(req, res, body, extension, 200);
   });
 }
 
-module.exports = { createApp, createRateLimiter, servePublic };
+// Applies template tokens and, for HTML, injects social tags + analytics.
+function renderBody(data, extension, config, pathname) {
+  if (![".html", ".txt", ".xml"].includes(extension)) return data;
+  let html = data.toString("utf8")
+    .replaceAll("{{BASE_URL}}", config.siteUrl)
+    .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
+    .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
+    .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
+  if (extension === ".html" && html.includes("</head>")) {
+    const pageUrl = config.siteUrl + (pathname === "/" ? "/" : pathname);
+    const social = buildSocialTags(html, pageUrl, pathname.startsWith("/guides/"), `${config.siteUrl}/assets/og-cover.jpg`);
+    const feed = `<link rel="alternate" type="application/rss+xml" title="EHA — материалы для хоккеистов" href="${config.siteUrl}/feed.xml">`;
+    html = html.replace("</head>", `${social}${feed}${YANDEX_METRIKA}</head>`);
+  }
+  return Buffer.from(html);
+}
+
+function sendBody(req, res, body, extension, status = 200) {
+  res.status(status);
+  res.set("Content-Type", CONTENT_TYPES[extension] || "application/octet-stream");
+  res.set("Cache-Control", extension === ".html" ? "no-cache" : "public, max-age=604800");
+  const compressible = [".html", ".css", ".js", ".svg", ".txt", ".xml"].includes(extension);
+  if (compressible && /gzip/.test(req.headers["accept-encoding"] || "")) {
+    zlib.gzip(body, (gzipError, compressed) => {
+      if (gzipError) return res.send(body);
+      res.set("Content-Encoding", "gzip");
+      res.set("Vary", "Accept-Encoding");
+      res.send(compressed);
+    });
+    return;
+  }
+  res.send(body);
+}
+
+// Branded 404 page; falls back to plain text if the file is missing.
+function serveNotFound(req, res, config) {
+  fs.readFile(path.join(config.publicDir, "404.html"), (error, data) => {
+    if (error) return res.status(404).type("text").send("Not found");
+    sendBody(req, res, renderBody(data, ".html", config, "/404"), ".html", 404);
+  });
+}
+
+const SITEMAP_EXCLUDED = /^(404|application-success|google[0-9a-f]+|yandex_[0-9a-f]+)\.html$/i;
+
+// Collect every public .html page (excluding utility pages) with its mtime.
+function collectPages(publicDir) {
+  const pages = [];
+  const walk = (dir, prefix) => {
+    let entries = [];
+    try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name !== "assets") walk(full, `${prefix}${entry.name}/`);
+      } else if (entry.name.endsWith(".html") && !SITEMAP_EXCLUDED.test(entry.name)) {
+        const slug = entry.name === "index.html" && prefix === "" ? "/" : `/${prefix}${entry.name.replace(/\.html$/, "")}`;
+        let mtime = new Date();
+        try { mtime = fs.statSync(full).mtime; } catch { /* keep default */ }
+        pages.push({ slug, mtime, file: full });
+      }
+    }
+  };
+  walk(publicDir, "");
+  return pages;
+}
+
+function xmlEscape(value) {
+  return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
+}
+
+function buildSitemap(config) {
+  const rows = collectPages(config.publicDir)
+    .sort((a, b) => a.slug.localeCompare(b.slug))
+    .map(({ slug, mtime }) => {
+      const isArticle = slug.startsWith("/guides/");
+      const priority = slug === "/" ? "1.0" : slug === "/privacy" ? "0.3" : isArticle ? "0.8" : "0.9";
+      const changefreq = slug === "/" || slug === "/guides" ? "weekly" : slug === "/privacy" ? "yearly" : "monthly";
+      return `  <url><loc>${xmlEscape(config.siteUrl + slug)}</loc><lastmod>${mtime.toISOString().slice(0, 10)}</lastmod>` +
+        `<changefreq>${changefreq}</changefreq><priority>${priority}</priority></url>`;
+    });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${rows.join("\n")}\n</urlset>\n`;
+}
+
+function buildFeed(config) {
+  const items = collectPages(config.publicDir)
+    .filter(({ slug }) => slug.startsWith("/guides/"))
+    .sort((a, b) => b.mtime - a.mtime)
+    .map(({ slug, mtime, file }) => {
+      let html = "";
+      try { html = fs.readFileSync(file, "utf8"); } catch { /* skip content */ }
+      const title = (html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || slug).split(" | ")[0].trim();
+      const description = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1] || "";
+      const url = config.siteUrl + slug;
+      return `    <item>\n      <title>${xmlEscape(title)}</title>\n      <link>${xmlEscape(url)}</link>\n` +
+        `      <guid isPermaLink="true">${xmlEscape(url)}</guid>\n      <pubDate>${mtime.toUTCString()}</pubDate>\n` +
+        `      <description>${xmlEscape(description)}</description>\n    </item>`;
+    });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0">\n  <channel>\n` +
+    `    <title>European Hockey Agency — материалы для хоккеистов</title>\n` +
+    `    <link>${xmlEscape(config.siteUrl)}/guides</link>\n` +
+    `    <description>Как найти клуб в Европе: лиги, резюме, видео, выбор уровня.</description>\n` +
+    `    <language>ru</language>\n${items.join("\n")}\n  </channel>\n</rss>\n`;
+}
+
+module.exports = { createApp, createRateLimiter, servePublic, buildSitemap, buildFeed };
