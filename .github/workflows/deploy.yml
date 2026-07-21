@@ -1,0 +1,46 @@
+name: Deploy to server
+
+# Push to main -> run tests -> deploy to the UpCloud server.
+# The deploy key on the server is restricted to running deploy.sh only.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Test and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Deploy over SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -t ed25519 5.22.215.5 >> ~/.ssh/known_hosts 2>/dev/null
+          # The key is locked to `cd /opt/eha && bash deploy.sh` on the server side.
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes root@5.22.215.5
+
+      - name: Verify the site responds
+        run: |
+          sleep 5
+          curl -fsS -o /dev/null https://eurohockeyagency.ru/
+          echo "site is up"
