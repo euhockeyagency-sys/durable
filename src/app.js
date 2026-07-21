@@ -107,6 +107,20 @@ function securityHeaders(_req, res, next) {
 
 const YANDEX_METRIKA = `<!-- Yandex.Metrika counter --><script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110889446','ym');ym(110889446,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",accurateTrackBounce:true,trackLinks:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/110889446" style="position:absolute;left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->`;
 
+// Cache-busting: CSS/JS are cached for a week, so their URLs must change when the
+// file changes — otherwise returning visitors keep the stale version for days.
+let assetVersions = null;
+function assetVersion(config, file) {
+  if (!assetVersions) {
+    assetVersions = {};
+    for (const name of ["styles.css", "site.js", "assets/leagues.js"]) {
+      try { assetVersions[name] = Math.round(fs.statSync(path.join(config.publicDir, name)).mtimeMs).toString(36); }
+      catch { assetVersions[name] = "0"; }
+    }
+  }
+  return assetVersions[file] || "0";
+}
+
 // Per-article share image when public/assets/covers/<slug>.jpg exists.
 let coverCache = null;
 function coverFor(config, pathname) {
@@ -181,6 +195,12 @@ function renderBody(data, extension, config, pathname) {
     .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
     .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
     .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
+  if (extension === ".html") {
+    html = html
+      .replaceAll('href="/styles.css"', `href="/styles.css?v=${assetVersion(config, "styles.css")}"`)
+      .replaceAll('src="/site.js"', `src="/site.js?v=${assetVersion(config, "site.js")}"`)
+      .replaceAll('src="/assets/leagues.js"', `src="/assets/leagues.js?v=${assetVersion(config, "assets/leagues.js")}"`);
+  }
   if (extension === ".html" && html.includes("</head>")) {
     const pageUrl = config.siteUrl + (pathname === "/" ? "/" : pathname);
     const social = buildSocialTags(html, pageUrl, pathname.startsWith("/guides/"), coverFor(config, pathname));
