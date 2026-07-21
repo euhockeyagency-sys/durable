@@ -529,3 +529,7 @@ footer small{display:block}
 .body-copy a,.lead a{color:#73b8ff;font-weight:700}
 
 @media(max-width:850px){.hero{background-image:linear-gradient(180deg,rgba(2,9,17,0) 55%,rgba(2,9,17,.6) 80%,#020911 97%),linear-gradient(90deg,rgba(2,9,17,.98) 0%,rgba(2,9,17,.85) 42%,rgba(2,9,17,.12) 78%),url("/assets/hockey-hero-900.webp")}}
+
+.article-figure{margin:34px 0}
+.article-figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:10px}
+.article-figure figcaption{color:var(--muted);font-size:14px;line-height:1.6;margin-top:10px}
