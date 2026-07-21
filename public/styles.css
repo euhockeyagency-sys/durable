@@ -586,3 +586,7 @@ footer small{display:block}
 .calc-result{padding:22px}
 .calc-leagues{grid-template-columns:1fr}
 }
+
+.tools-block{padding:0 0 20px}
+.tools-block .article-grid{padding-bottom:0}
+.tools-block .section-intro{margin-bottom:28px}
