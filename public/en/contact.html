@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Submit a Hockey Player Profile for Assessment | EHA</title>
+<meta name="description" content="Send your hockey profile — Elite Prospects, stats and video — for a free assessment. An honest answer about realistic European leagues within 48 hours.">
+<link rel="canonical" href="{{BASE_URL}}/contact">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/styles.css">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script defer src="/site.js">
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Contact","item":"{{BASE_URL}}/contact"}]}</script></head>
+<body>
+<header class="header">
+<a class="brand" href="{{EN}}/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<button class="menu" type="button" aria-label="Open menu">Menu</button>
+<nav>
+<a href="{{EN}}/services">Services</a>
+<a href="{{EN}}/for-players">For players</a>
+<a href="{{EN}}/cases">Cases</a>
+<a href="{{EN}}/agent">Agent</a>
+<a href="{{EN}}/guides">Resources</a>
+<a class="lang-switch" href="{{ALT_URL}}" hreflang="ru" lang="ru" aria-label="Русская версия">RU</a>
+<a class="nav-cta active" href="{{EN}}/contact">Submit profile</a>
+</nav>
+</header>
+<main>
+<section class="contact-grid wrap">
+<div>
+<p class="kicker">First assessment</p>
+<h1>Submit<br>
+<em>a player profile</em>
+</h1>
+<p class="lead">The more complete your details, the more accurately we can assess the countries, leagues and next step that fit.</p>
+<div class="direct">
+<a href="mailto:euhockeyagency@gmail.com">
+<b>Email</b>
+<span>euhockeyagency@gmail.com</span>
+</a>
+<a href="https://wa.me/375297957818">
+<b>WhatsApp</b>
+<span>+375 29 795-78-18</span>
+</a>
+<a href="https://www.instagram.com/ehahockeyagency/">
+<b>Instagram</b>
+<span>@ehahockeyagency</span>
+</a>
+<span class="loc">📍 Gdańsk, Poland</span>
+</div>
+</div>
+<form id="profile-form" action="/api/applications" method="post" enctype="multipart/form-data">
+<div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+<label>Full name<input name="playerName" autocomplete="name" maxlength="120" required>
+<span class="field-error" data-error-for="playerName"></span>
+</label>
+<div class="two">
+<label>Year of birth<input name="birthYear" inputmode="numeric" type="number" min="1966" max="2018" required>
+<span class="field-error" data-error-for="birthYear"></span>
+</label>
+<label>Position<select name="position" required>
+<option value="">Select</option>
+<option value="forward">Forward</option>
+<option value="defense">Defence</option>
+<option value="goalie">Goaltender</option>
+</select>
+<span class="field-error" data-error-for="position"></span>
+</label>
+</div>
+<div class="two">
+<label>Citizenship<input name="citizenship" autocomplete="country-name" maxlength="100" required>
+<span class="field-error" data-error-for="citizenship"></span>
+</label>
+<label>Current club<input name="currentClub" maxlength="160" placeholder="If none, write “no club”" required>
+<span class="field-error" data-error-for="currentClub"></span>
+</label>
+</div>
+<div class="two">
+<label>Height, cm<input name="heightCm" type="number" inputmode="decimal" min="120" max="230" step="0.1" required>
+<span class="field-error" data-error-for="heightCm"></span>
+</label>
+<label>Weight, kg<input name="weightKg" type="number" inputmode="decimal" min="35" max="180" step="0.1" required>
+<span class="field-error" data-error-for="weightKg"></span>
+</label>
+</div>
+<div class="two">
+<label>Shot<select name="stickHand" required>
+<option value="">Select</option>
+<option value="left">Left</option>
+<option value="right">Right</option>
+</select><span class="field-error" data-error-for="stickHand"></span></label>
+<label>Available from<input type="date" name="availableFrom">
+<span class="field-error" data-error-for="availableFrom"></span>
+</label>
+</div>
+<label>Elite Prospects<input type="url" name="eliteProspectsUrl" placeholder="https://www.eliteprospects.com/player/..." required>
+<span class="field-error" data-error-for="eliteProspectsUrl"></span>
+</label>
+<fieldset>
+<legend>Video — as links, up to three</legend>
+<small>Upload your video to YouTube, Vimeo or Google Drive and paste the link — the form does not accept video files.</small>
+<input type="url" name="videoUrls" aria-label="First video link" placeholder="YouTube, Vimeo or Google Drive">
+<input type="url" name="videoUrls" aria-label="Second video link" placeholder="Additional link">
+<input type="url" name="videoUrls" aria-label="Third video link" placeholder="Additional link">
+<span class="field-error" data-error-for="videoUrls"></span>
+</fieldset>
+<div class="two">
+<label>WhatsApp or phone<input type="tel" name="phone" autocomplete="tel" maxlength="60" required>
+<span class="field-error" data-error-for="phone"></span>
+</label>
+<label>Email<input type="email" name="email" autocomplete="email" maxlength="160" required>
+<span class="field-error" data-error-for="email"></span>
+</label>
+</div>
+<section class="parent-fields" id="parent-fields" hidden aria-hidden="true">
+<p class="form-section-title">For a player under 18</p>
+<label>Parent or guardian name<input name="parentName" autocomplete="name" maxlength="120">
+<span class="field-error" data-error-for="parentName"></span></label>
+<label>Parent's phone or email<input name="parentContact" maxlength="160">
+<span class="field-error" data-error-for="parentContact"></span></label>
+<label class="consent"><input type="checkbox" name="parentConsent" value="true">I am the parent or legal guardian and consent to the processing of the player's data.</label>
+<span class="field-error" data-error-for="parentConsent"></span>
+</section>
+<label>Resume or photos — PDF, JPG, PNG
+<input type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
+<small>Up to 3 files, each up to 5 MB, total up to 10 MB. Do not send passport, medical or other sensitive documents.</small>
+<span class="field-error" data-error-for="files"></span>
+</label>
+<label>Additional information<textarea name="message" rows="5" maxlength="3000" placeholder="Career goal, achievements and important details">
+</textarea>
+</label>
+<label class="consent"><input type="checkbox" name="dataConsent" value="true" required>I agree to the <a href="{{EN}}/privacy" target="_blank" rel="noopener">privacy policy</a> and the processing of my data for a profile assessment.</label>
+<span class="field-error" data-error-for="dataConsent"></span>
+<div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
+<span class="field-error" data-error-for="turnstile"></span>
+<label class="honeypot" aria-hidden="true">Your website<input name="website" tabindex="-1" autocomplete="off"></label>
+<input type="hidden" name="locale" value="en"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer">
+<button class="btn primary" type="submit">Send application</button>
+<p class="form-note">By submitting you confirm the details are accurate. The first assessment is free and carries no obligation.</p>
+</form>
+</section>
+</main>
+<footer id="footer">
+<div class="footer-brand">
+<a class="brand" href="{{EN}}/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<p>Personal representation of hockey players across European markets. Based in Gdańsk, Poland.</p>
+</div>
+<div>
+<h4>Navigation</h4>
+<nav class="footer-links">
+<a href="{{EN}}/services">Services</a>
+<a href="{{EN}}/for-players">For players</a>
+<a href="{{EN}}/cases">Cases</a>
+<a href="{{EN}}/agent">About the agent</a>
+<a href="{{EN}}/guides">Resources</a>
+</nav>
+</div>
+<div>
+<h4>Contact</h4>
+<div class="footer-links">
+<a href="mailto:euhockeyagency@gmail.com">euhockeyagency@gmail.com</a>
+<a href="https://www.instagram.com/ehahockeyagency/" rel="noopener">Instagram ↗</a>
+<a href="https://wa.me/375297957818" rel="noopener">WhatsApp ↗</a>
+<a href="{{EN}}/contact">Submit profile</a>
+<a href="{{EN}}/privacy">Privacy</a>
+</div>
+</div>
+<small>
+<span>© 2026 European Hockey Agency.</span>
+<span><a href="{{EN}}/privacy">Privacy Policy</a></span>
+</small>
+</footer>
+</body>
+</html>

@@ -238,6 +238,9 @@ img{max-width:100%;display:block}
 .header nav a.active{color:#77b8ff}
 .nav-cta{border:1px solid var(--line);padding:12px 18px!important;transition:border-color .25s,background .25s}
 .nav-cta:hover{border-color:var(--blue);background:rgba(22,135,255,.1)}
+.lang-switch{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:7px 12px!important;font-size:12px;letter-spacing:.04em;color:#9fc4e8;transition:border-color .25s,color .25s}
+.lang-switch:hover{border-color:var(--blue);color:#fff}
+.lang-switch:after{display:none!important}
 .menu{display:none;background:none;color:white;border:1px solid var(--line);padding:10px 14px;font:700 11px Manrope;text-transform:uppercase;letter-spacing:.1em}
 
 .hero{height:max(760px,100svh);min-height:760px;margin-top:-88px;padding-top:88px;display:flex;align-items:center;position:relative;isolation:isolate;overflow:hidden;background:#020911}
@@ -408,7 +411,7 @@ form .btn{width:100%}
 .legal-note{padding:22px;border-left:3px solid var(--blue);background:rgba(22,135,255,.08)}
 fieldset{border:0;padding:0;margin:0 0 23px;display:grid;gap:10px}
 legend{font-size:11px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;margin-bottom:10px}
-label small{color:var(--muted);font-size:12px;line-height:1.6;text-transform:none;letter-spacing:0;font-weight:400}
+label small,fieldset>small{color:var(--muted);font-size:12px;line-height:1.6;text-transform:none;letter-spacing:0;font-weight:400}
 .consent{display:grid;grid-template-columns:22px 1fr;align-items:start;text-transform:none;letter-spacing:0;font-size:13px;line-height:1.55;font-weight:500}
 .consent input{width:18px;height:18px;padding:0;margin-top:1px;accent-color:var(--blue)}
 .consent a,.legal a{color:#73b8ff;text-decoration:underline;text-underline-offset:3px}

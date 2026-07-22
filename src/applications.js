@@ -1,6 +1,7 @@
 const crypto = require("node:crypto");
 const path = require("node:path");
 const { validateApplication } = require("./validation");
+const { messages, normalizeLocale } = require("./messages");
 
 function createReference(now, randomUUID = crypto.randomUUID) {
   const year = now.getUTCFullYear();
@@ -11,17 +12,19 @@ function createReference(now, randomUUID = crypto.randomUUID) {
 
 function createApplicationHandler({ config, services, now = () => new Date(), randomUUID = crypto.randomUUID }) {
   return async function submitApplication(req, res) {
+    const locale = normalizeLocale((req.body || {}).locale);
+    const m = messages(locale);
     if (!config.applicationConfigured) {
       return res.status(503).json({
         ok: false,
         code: "service_unavailable",
-        message: "Форма временно недоступна. Свяжитесь с нами напрямую.",
+        message: m.serviceUnavailable,
         contactEmail: config.contactEmail
       });
     }
 
     const files = req.files || [];
-    const validation = validateApplication(req.body || {}, files, now(), Boolean(config.turnstileConfigured));
+    const validation = validateApplication(req.body || {}, files, now(), Boolean(config.turnstileConfigured), locale);
     if (!validation.ok) {
       return res.status(400).json({ ok: false, code: "validation_error", errors: validation.errors });
     }
@@ -41,7 +44,7 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
         return res.status(503).json({
           ok: false,
           code: "verification_unavailable",
-          message: "Проверка безопасности временно недоступна. Попробуйте позже или свяжитесь с нами напрямую.",
+          message: m.verificationUnavailable,
           contactEmail: config.contactEmail
         });
       }
@@ -49,7 +52,7 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
         return res.status(422).json({
           ok: false,
           code: "verification_failed",
-          errors: { turnstile: "Проверка безопасности истекла или уже была использована. Повторите её." }
+          errors: { turnstile: m.verificationFailed }
         });
       }
     }
@@ -96,7 +99,7 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
       return res.status(503).json({
         ok: false,
         code: "persistence_failed",
-        message: "Не удалось сохранить заявку. Данные не были приняты — попробуйте ещё раз.",
+        message: m.persistenceFailed,
         contactEmail: config.contactEmail
       });
     }
@@ -120,7 +123,6 @@ function toDatabaseRow({ id, reference, value, createdAt, retentionUntil, privac
     height_cm: value.heightCm,
     weight_kg: value.weightKg,
     stick_hand: value.stickHand,
-    contract_status: value.contractStatus,
     available_from: value.availableFrom,
     phone: value.phone,
     email: value.email,
@@ -152,7 +154,15 @@ async function deliverNotifications(services, application, config = {}) {
   const channels = [];
   if (config.telegramConfigured !== false) channels.push(["telegram", () => services.sendTelegram(application)]);
   if (config.emailConfigured !== false) channels.push(["email", () => services.sendEmail(application)]);
-  if (!channels.length) return;
+  if (!channels.length) {
+    // The application is safe in the database, but nobody is being told about
+    // it. Loud on purpose: this is the failure mode that silently loses leads.
+    console.error(
+      `No notification channel is configured — application ${application.reference_code} was stored but not delivered. ` +
+      "Set RESEND_API_KEY (email) or TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (Telegram)."
+    );
+    return;
+  }
   await Promise.all(channels.map(async ([channel, send]) => {
     let providerId = null;
     let status = "sent";
@@ -162,7 +172,10 @@ async function deliverNotifications(services, application, config = {}) {
     } catch (error) {
       status = "failed";
       errorMessage = String(error.message || error).slice(0, 1000);
-      console.error(`${channel} notification failed`, errorMessage);
+      console.error(
+        `${channel} notification failed for ${application.reference_code} (application is stored, deliver it manually)`,
+        errorMessage
+      );
     }
     const { error } = await services.supabase.from("application_notifications").insert({
       application_id: application.id,

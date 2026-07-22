@@ -1,8 +1,8 @@
 const path = require("node:path");
+const { messages, normalizeLocale } = require("./messages");
 
 const POSITION_VALUES = new Set(["forward", "defense", "goalie"]);
 const STICK_VALUES = new Set(["left", "right"]);
-const CONTRACT_VALUES = new Set(["free", "contracted", "trial", "other"]);
 const ALLOWED_FILES = {
   "application/pdf": { extensions: new Set([".pdf"]), signature: (b) => b.subarray(0, 5).toString() === "%PDF-" },
   "image/jpeg": { extensions: new Set([".jpg", ".jpeg"]), signature: (b) => b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff },
@@ -29,7 +29,8 @@ function asArray(value) {
   return value === undefined || value === "" ? [] : [value];
 }
 
-function validateApplication(body, files, now = new Date(), requireTurnstile = true) {
+function validateApplication(body, files, now = new Date(), requireTurnstile = true, locale = "ru") {
+  const m = messages(locale);
   const errors = {};
   const currentYear = now.getUTCFullYear();
   const birthYear = Number(body.birthYear);
@@ -42,43 +43,43 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   const email = text(body.email, 160).toLowerCase();
   const position = text(body.position, 20);
   const stickHand = text(body.stickHand, 20);
-  const contractStatus = text(body.contractStatus, 30);
   const eliteProspectsUrl = httpUrl(text(body.eliteProspectsUrl, 500), { hostname: "eliteprospects.com" });
   const videoInputs = asArray(body.videoUrls).map((value) => text(value, 500)).filter(Boolean);
   const videoUrls = videoInputs.map((value) => httpUrl(value));
   const isMinor = Number.isInteger(birthYear) && birthYear >= currentYear - 18;
 
-  if (!playerName) errors.playerName = "Укажите имя и фамилию.";
-  if (!Number.isInteger(birthYear) || birthYear < currentYear - 60 || birthYear > currentYear - 8) errors.birthYear = "Проверьте год рождения.";
-  if (!POSITION_VALUES.has(position)) errors.position = "Выберите позицию.";
-  if (!citizenship) errors.citizenship = "Укажите гражданство.";
-  if (!currentClub) errors.currentClub = "Укажите текущий клуб или «без клуба».";
-  if (!Number.isFinite(heightCm) || heightCm < 120 || heightCm > 230) errors.heightCm = "Рост должен быть от 120 до 230 см.";
-  if (!Number.isFinite(weightKg) || weightKg < 35 || weightKg > 180) errors.weightKg = "Вес должен быть от 35 до 180 кг.";
-  if (!STICK_VALUES.has(stickHand)) errors.stickHand = "Выберите хват.";
-  if (!CONTRACT_VALUES.has(contractStatus)) errors.contractStatus = "Выберите контрактный статус.";
-  if (!phone) errors.phone = "Укажите WhatsApp или телефон.";
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Проверьте email.";
-  if (!eliteProspectsUrl) errors.eliteProspectsUrl = "Укажите корректную ссылку Elite Prospects.";
-  if (videoInputs.length > 3) errors.videoUrls = "Можно добавить не более трёх ссылок.";
-  if (videoUrls.some((url) => !url)) errors.videoUrls = "Проверьте ссылки на видео.";
-  if (body.availableFrom && !/^\d{4}-\d{2}-\d{2}$/.test(body.availableFrom)) errors.availableFrom = "Проверьте дату доступности.";
-  if (!checked(body.dataConsent)) errors.dataConsent = "Необходимо согласие на обработку данных.";
-  if (text(body.website, 200)) errors.website = "Не удалось отправить заявку.";
+  if (!playerName) errors.playerName = m.playerName;
+  if (!Number.isInteger(birthYear) || birthYear < currentYear - 60 || birthYear > currentYear - 8) errors.birthYear = m.birthYear;
+  if (!POSITION_VALUES.has(position)) errors.position = m.position;
+  if (!citizenship) errors.citizenship = m.citizenship;
+  if (!currentClub) errors.currentClub = m.currentClub;
+  if (!Number.isFinite(heightCm) || heightCm < 120 || heightCm > 230) errors.heightCm = m.heightCm;
+  if (!Number.isFinite(weightKg) || weightKg < 35 || weightKg > 180) errors.weightKg = m.weightKg;
+  if (!STICK_VALUES.has(stickHand)) errors.stickHand = m.stickHand;
+  if (!phone) errors.phone = m.phone;
+  // Required since applications are answered by email: without an address there
+  // is no way to reply to the player.
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = m.email;
+  if (!eliteProspectsUrl) errors.eliteProspectsUrl = m.eliteProspectsUrl;
+  if (videoInputs.length > 3) errors.videoUrls = m.videoUrlsMax;
+  if (videoUrls.some((url) => !url)) errors.videoUrls = m.videoUrlsInvalid;
+  if (body.availableFrom && !/^\d{4}-\d{2}-\d{2}$/.test(body.availableFrom)) errors.availableFrom = m.availableFrom;
+  if (!checked(body.dataConsent)) errors.dataConsent = m.dataConsent;
+  if (text(body.website, 200)) errors.website = m.website;
 
   const parentName = text(body.parentName, 120);
   const parentContact = text(body.parentContact, 160);
-  if (isMinor && !parentName) errors.parentName = "Укажите имя родителя или представителя.";
-  if (isMinor && !parentContact) errors.parentContact = "Укажите контакт родителя или представителя.";
-  if (isMinor && !checked(body.parentConsent)) errors.parentConsent = "Необходимо согласие родителя или представителя.";
+  if (isMinor && !parentName) errors.parentName = m.parentName;
+  if (isMinor && !parentContact) errors.parentContact = m.parentContact;
+  if (isMinor && !checked(body.parentConsent)) errors.parentConsent = m.parentConsent;
 
-  if (files.length > 3) errors.files = "Можно загрузить не более трёх файлов.";
-  if (files.reduce((sum, file) => sum + file.size, 0) > 10 * 1024 * 1024) errors.files = "Общий размер файлов не должен превышать 10 МБ.";
+  if (files.length > 3) errors.files = m.filesMax;
+  if (files.reduce((sum, file) => sum + file.size, 0) > 10 * 1024 * 1024) errors.files = m.filesSize;
   for (const file of files) {
     const rule = ALLOWED_FILES[file.mimetype];
     const extension = path.extname(file.originalname).toLowerCase();
     if (!rule || !rule.extensions.has(extension) || !rule.signature(file.buffer)) {
-      errors.files = "Разрешены только настоящие PDF, JPG и PNG файлы.";
+      errors.files = m.filesType;
       break;
     }
   }
@@ -93,7 +94,6 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
     heightCm,
     weightKg,
     stickHand,
-    contractStatus,
     availableFrom: body.availableFrom || null,
     phone,
     email: email || null,
@@ -105,6 +105,7 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
     dataConsent: checked(body.dataConsent),
     parentConsent: isMinor ? checked(body.parentConsent) : false,
     source: {
+      locale: normalizeLocale(locale),
       utm_source: text(body.utmSource, 120) || null,
       utm_medium: text(body.utmMedium, 120) || null,
       utm_campaign: text(body.utmCampaign, 160) || null,
@@ -115,7 +116,7 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
     turnstileToken: text(body["cf-turnstile-response"], 2048)
   };
 
-  if (requireTurnstile && !value.turnstileToken) errors.turnstile = "Подтвердите, что вы не робот.";
+  if (requireTurnstile && !value.turnstileToken) errors.turnstile = m.turnstile;
   return { ok: Object.keys(errors).length === 0, errors, value };
 }
 

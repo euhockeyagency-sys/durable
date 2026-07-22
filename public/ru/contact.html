@@ -26,6 +26,7 @@
 <a href="/cases">Кейсы</a>
 <a href="/agent">Агент</a>
 <a href="/guides">Материалы</a>
+<a class="lang-switch" href="{{ALT_URL}}" hreflang="en" lang="en" aria-label="English version">EN</a>
 <a class="nav-cta active" href="/contact">Отправить профиль</a>
 </nav>
 </header>
@@ -93,22 +94,16 @@
 <option value="left">Левый</option>
 <option value="right">Правый</option>
 </select><span class="field-error" data-error-for="stickHand"></span></label>
-<label>Контрактный статус<select name="contractStatus" required>
-<option value="">Выберите</option>
-<option value="free">Свободный агент</option>
-<option value="contracted">Есть контракт</option>
-<option value="trial">На просмотре</option>
-<option value="other">Другое</option>
-</select><span class="field-error" data-error-for="contractStatus"></span></label>
-</div>
 <label>Доступен с<input type="date" name="availableFrom">
 <span class="field-error" data-error-for="availableFrom"></span>
 </label>
+</div>
 <label>Elite Prospects<input type="url" name="eliteProspectsUrl" placeholder="https://www.eliteprospects.com/player/..." required>
 <span class="field-error" data-error-for="eliteProspectsUrl"></span>
 </label>
 <fieldset>
-<legend>Ссылки на видео — до трёх</legend>
+<legend>Видео — ссылками, до трёх</legend>
+<small>Загрузите видео на YouTube, Vimeo или Google Drive и вставьте ссылку — видеофайлы форма не принимает.</small>
 <input type="url" name="videoUrls" aria-label="Первая ссылка на видео" placeholder="YouTube, Vimeo или Google Drive">
 <input type="url" name="videoUrls" aria-label="Вторая ссылка на видео" placeholder="Дополнительная ссылка">
 <input type="url" name="videoUrls" aria-label="Третья ссылка на видео" placeholder="Дополнительная ссылка">
@@ -118,7 +113,7 @@
 <label>WhatsApp или телефон<input type="tel" name="phone" autocomplete="tel" maxlength="60" required>
 <span class="field-error" data-error-for="phone"></span>
 </label>
-<label>Email — необязательно<input type="email" name="email" autocomplete="email" maxlength="160">
+<label>Email<input type="email" name="email" autocomplete="email" maxlength="160" required>
 <span class="field-error" data-error-for="email"></span>
 </label>
 </div>
@@ -131,7 +126,7 @@
 <label class="consent"><input type="checkbox" name="parentConsent" value="true">Я являюсь родителем или законным представителем и согласен на обработку данных игрока.</label>
 <span class="field-error" data-error-for="parentConsent"></span>
 </section>
-<label>Резюме или фотографии
+<label>Резюме или фотографии — PDF, JPG, PNG
 <input type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
 <small>До 3 файлов, каждый до 5 МБ, общий размер до 10 МБ. Не отправляйте паспорт, медицинские или другие чувствительные документы.</small>
 <span class="field-error" data-error-for="files"></span>
@@ -144,7 +139,7 @@
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
 <label class="honeypot" aria-hidden="true">Ваш сайт<input name="website" tabindex="-1" autocomplete="off"></label>
-<input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer">
+<input type="hidden" name="locale" value="ru"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer">
 <button class="btn primary" type="submit">Отправить заявку</button>
 <p class="form-note">После сохранения вы получите номер заявки. Если форма недоступна, напишите в WhatsApp или на <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a>. Ответ в течение 48 часов.</p>
 </form>

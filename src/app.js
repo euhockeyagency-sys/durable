@@ -5,6 +5,7 @@ const express = require("express");
 const multer = require("multer");
 const { createApplicationHandler } = require("./applications");
 const { createServices } = require("./services");
+const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales");
 
 const CONTENT_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -39,7 +40,19 @@ function createApp({ config, services, now, randomUUID } = {}) {
   const appServices = services || (config.applicationConfigured ? createServices(config) : null);
 
   app.get("/api/health", (_req, res) => {
-    res.json({ ok: true, applicationsConfigured: config.applicationConfigured });
+    // Notification state is reported too: storage alone being configured is not
+    // enough — an application nobody is told about is a lost lead. The address
+    // is masked so the endpoint stays safe to call publicly.
+    res.json({
+      ok: true,
+      applicationsConfigured: config.applicationConfigured,
+      captchaConfigured: Boolean(config.turnstileConfigured),
+      notifications: {
+        email: Boolean(config.emailConfigured),
+        telegram: Boolean(config.telegramConfigured),
+        emailTo: maskEmail(config.notificationEmail)
+      }
+    });
   });
   app.post("/api/applications", limiter, upload.array("files", 3), createApplicationHandler({
     config,
@@ -61,9 +74,18 @@ function createApp({ config, services, now, randomUUID } = {}) {
     });
   });
 
-  // Generated from the files on disk, so new pages appear automatically.
-  app.get("/sitemap.xml", (req, res) => sendBody(req, res, Buffer.from(buildSitemap(config)), ".xml"));
-  app.get("/feed.xml", (req, res) => sendBody(req, res, Buffer.from(buildFeed(config)), ".xml"));
+  // Generated from the files on disk, so new pages appear automatically. Each
+  // language gets its own sitemap/feed; the locale is resolved from host + path
+  // exactly like a page request (so /en/sitemap.xml works pre-migration).
+  const localeFeed = (build) => (req, res) => {
+    const resolved = resolveLocale(req.headers.host, req.path, config);
+    if (resolved.redirect) return res.redirect(resolved.redirect.status, resolved.redirect.location);
+    sendBody(req, res, Buffer.from(build(config, resolved.locale)), ".xml");
+  };
+  app.get("/sitemap.xml", localeFeed(buildSitemap));
+  app.get("/en/sitemap.xml", localeFeed(buildSitemap));
+  app.get("/feed.xml", localeFeed(buildFeed));
+  app.get("/en/feed.xml", localeFeed(buildFeed));
 
   app.get("*path", (req, res) => servePublic(req, res, config));
   app.head("*path", (req, res) => servePublic(req, res, config));
@@ -72,6 +94,14 @@ function createApp({ config, services, now, randomUUID } = {}) {
     res.status(500).json({ ok: false, code: "internal_error" });
   });
   return app;
+}
+
+// "euhockeyagency@gmail.com" -> "eu***@gmail.com": enough to confirm the right
+// mailbox is configured, not enough to harvest the address.
+function maskEmail(value) {
+  const [user, domain] = String(value || "").split("@");
+  if (!user || !domain) return null;
+  return `${user.slice(0, 2)}***@${domain}`;
 }
 
 function createRateLimiter({ limit, windowMs, now }) {
@@ -113,7 +143,7 @@ let assetVersions = null;
 function assetVersion(config, file) {
   if (!assetVersions) {
     assetVersions = {};
-    for (const name of ["styles.css", "site.js", "assets/leagues.js"]) {
+    for (const name of ["styles.css", "site.js", "assets/leagues.ru.js", "assets/leagues.en.js"]) {
       try { assetVersions[name] = Math.round(fs.statSync(path.join(config.publicDir, name)).mtimeMs).toString(36); }
       catch { assetVersions[name] = "0"; }
     }
@@ -121,17 +151,18 @@ function assetVersion(config, file) {
   return assetVersions[file] || "0";
 }
 
-// Per-article share image when public/assets/covers/<slug>.jpg exists.
+// Per-article share image when public/assets/covers/<slug>.jpg exists. Covers
+// are shared across languages, so only the base URL differs per locale.
 let coverCache = null;
-function coverFor(config, pathname) {
+function coverFor(config, logicalPath, baseUrl) {
   if (!coverCache) {
     try { coverCache = new Set(fs.readdirSync(path.join(config.publicDir, "assets", "covers"))); }
     catch { coverCache = new Set(); }
   }
-  const slug = pathname.split("/").filter(Boolean).pop();
+  const slug = logicalPath.split("/").filter(Boolean).pop();
   return slug && coverCache.has(`${slug}.jpg`)
-    ? `${config.siteUrl}/assets/covers/${slug}.jpg`
-    : `${config.siteUrl}/assets/og-cover.jpg`;
+    ? `${baseUrl}/assets/covers/${slug}.jpg`
+    : `${baseUrl}/assets/og-cover.jpg`;
 }
 
 function htmlEscape(value) {
@@ -141,7 +172,7 @@ function htmlEscape(value) {
 }
 
 // Build Open Graph + Twitter Card tags from the page's own <title>/description.
-function buildSocialTags(html, pageUrl, isArticle, imageUrl) {
+function buildSocialTags(html, pageUrl, isArticle, imageUrl, locale) {
   if (html.includes('property="og:title"')) return ""; // page already declares its own OG
   const titleMatch = html.match(/<title>([\s\S]*?)<\/title>/i);
   const descMatch = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i);
@@ -153,7 +184,7 @@ function buildSocialTags(html, pageUrl, isArticle, imageUrl) {
   const img = htmlEscape(imageUrl);
   return `<meta property="og:type" content="${isArticle ? "article" : "website"}">` +
     `<meta property="og:site_name" content="European Hockey Agency">` +
-    `<meta property="og:locale" content="ru_RU">` +
+    `<meta property="og:locale" content="${locale === "en" ? "en_US" : "ru_RU"}">` +
     `<meta property="og:title" content="${ogTitle}">` +
     `<meta property="og:description" content="${ogDesc}">` +
     `<meta property="og:url" content="${url}">` +
@@ -174,24 +205,48 @@ function servePublic(req, res, config) {
     return res.status(400).type("text").send("Bad request");
   }
   if (pathname.includes("\0")) return res.status(400).type("text").send("Bad request");
-  const requested = pathname === "/" ? "/index.html" : (path.extname(pathname) ? pathname : `${pathname}.html`);
-  const filePath = path.resolve(config.publicDir, `.${requested}`);
-  const publicRoot = path.resolve(config.publicDir) + path.sep;
-  if (!filePath.startsWith(publicRoot)) return res.status(403).type("text").send("Forbidden");
 
-  fs.readFile(filePath, (error, data) => {
-    if (error) return serveNotFound(req, res, config);
-    const extension = path.extname(filePath);
-    const body = renderBody(data, extension, config, pathname);
-    sendBody(req, res, body, extension, 200);
-  });
+  const resolved = resolveLocale(req.headers.host, pathname, config);
+  if (resolved.redirect) return res.redirect(resolved.redirect.status, resolved.redirect.location);
+  const { locale, root, logicalPath } = resolved;
+
+  const requested = logicalPath === "/" ? "/index.html"
+    : (path.extname(logicalPath) ? logicalPath : `${logicalPath}.html`);
+  const publicRoot = path.resolve(config.publicDir) + path.sep;
+  // Try the language directory first, then the shared root (assets, styles.js,
+  // search-engine verification files live at the shared root).
+  const candidates = [
+    path.resolve(config.publicDir, root, `.${requested}`),
+    path.resolve(config.publicDir, `.${requested}`)
+  ];
+  const context = { locale, logicalPath };
+
+  const tryNext = (index) => {
+    if (index >= candidates.length) return serveNotFound(req, res, config, locale, root);
+    const filePath = candidates[index];
+    if (!filePath.startsWith(publicRoot)) return res.status(403).type("text").send("Forbidden");
+    fs.readFile(filePath, (error, data) => {
+      if (error) return tryNext(index + 1);
+      const extension = path.extname(filePath);
+      sendBody(req, res, renderBody(data, extension, config, context), extension, 200);
+    });
+  };
+  tryNext(0);
 }
 
 // Applies template tokens and, for HTML, injects social tags + analytics.
-function renderBody(data, extension, config, pathname) {
+// `context` carries the resolved locale and the language-neutral logical path.
+function renderBody(data, extension, config, context) {
   if (![".html", ".txt", ".xml"].includes(extension)) return data;
+  const { locale, logicalPath } = context;
+  const baseUrl = baseUrlFor(locale, config);
+  // Prefix for root-relative internal links. English pages live under /en/ until
+  // the domains are split, after which they move to the root of their own domain.
+  const enPrefix = locale === "en" && !config.hostsConfigured ? "/en" : "";
   let html = data.toString("utf8")
-    .replaceAll("{{BASE_URL}}", config.siteUrl)
+    .replaceAll("{{BASE_URL}}", baseUrl)
+    .replaceAll("{{EN}}", enPrefix)
+    .replaceAll("{{ALT_URL}}", altUrlFor(locale, logicalPath, config))
     .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
     .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
     .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
@@ -199,15 +254,32 @@ function renderBody(data, extension, config, pathname) {
     html = html
       .replaceAll('href="/styles.css"', `href="/styles.css?v=${assetVersion(config, "styles.css")}"`)
       .replaceAll('src="/site.js"', `src="/site.js?v=${assetVersion(config, "site.js")}"`)
-      .replaceAll('src="/assets/leagues.js"', `src="/assets/leagues.js?v=${assetVersion(config, "assets/leagues.js")}"`);
+      .replaceAll('src="/assets/leagues.ru.js"', `src="/assets/leagues.ru.js?v=${assetVersion(config, "assets/leagues.ru.js")}"`)
+      .replaceAll('src="/assets/leagues.en.js"', `src="/assets/leagues.en.js?v=${assetVersion(config, "assets/leagues.en.js")}"`);
   }
   if (extension === ".html" && html.includes("</head>")) {
-    const pageUrl = config.siteUrl + (pathname === "/" ? "/" : pathname);
-    const social = buildSocialTags(html, pageUrl, pathname.startsWith("/guides/"), coverFor(config, pathname));
-    const feed = `<link rel="alternate" type="application/rss+xml" title="EHA — материалы для хоккеистов" href="${config.siteUrl}/feed.xml">`;
-    html = html.replace("</head>", `${social}${feed}${YANDEX_METRIKA}</head>`);
+    const pageUrl = joinUrl(baseUrl, logicalPath);
+    const isArticle = logicalPath.startsWith("/guides/");
+    const social = buildSocialTags(html, pageUrl, isArticle, coverFor(config, logicalPath, baseUrl), locale);
+    const feedTitle = locale === "en" ? "EHA — resources for players" : "EHA — материалы для хоккеистов";
+    const feed = `<link rel="alternate" type="application/rss+xml" title="${feedTitle}" href="${baseUrl}/feed.xml">`;
+    html = html.replace("</head>", `${social}${buildHreflang(logicalPath, locale, config)}${feed}${YANDEX_METRIKA}</head>`);
   }
   return Buffer.from(html);
+}
+
+function joinUrl(base, logicalPath) {
+  return logicalPath === "/" ? `${base}/` : base + logicalPath;
+}
+
+// hreflang alternates for bilingual pages; empty for pages with no declared
+// translation (assets, untranslated guides).
+function buildHreflang(logicalPath, locale, config) {
+  const alts = hreflangFor(logicalPath, locale, config);
+  if (!alts) return "";
+  return `<link rel="alternate" hreflang="ru" href="${htmlEscape(alts.ru)}">` +
+    `<link rel="alternate" hreflang="en" href="${htmlEscape(alts.en)}">` +
+    `<link rel="alternate" hreflang="x-default" href="${htmlEscape(alts.en)}">`;
 }
 
 function sendBody(req, res, body, extension, status = 200) {
@@ -227,19 +299,22 @@ function sendBody(req, res, body, extension, status = 200) {
   res.send(body);
 }
 
-// Branded 404 page; falls back to plain text if the file is missing.
-function serveNotFound(req, res, config) {
-  fs.readFile(path.join(config.publicDir, "404.html"), (error, data) => {
+// Branded 404 page in the requested language; falls back to plain text.
+function serveNotFound(req, res, config, locale = "ru", root = "ru") {
+  fs.readFile(path.join(config.publicDir, root, "404.html"), (error, data) => {
     if (error) return res.status(404).type("text").send("Not found");
-    sendBody(req, res, renderBody(data, ".html", config, "/404"), ".html", 404);
+    sendBody(req, res, renderBody(data, ".html", config, { locale, logicalPath: "/404" }), ".html", 404);
   });
 }
 
 const SITEMAP_EXCLUDED = /^(404|application-success|google[0-9a-f]+|yandex_[0-9a-f]+)\.html$/i;
 
-// Collect every public .html page (excluding utility pages) with its mtime.
-function collectPages(publicDir) {
+// Collect every .html page in one language's directory (public/<locale>/),
+// excluding utility pages, with its mtime. Slugs are language-neutral logical
+// paths (the locale directory is not part of the URL).
+function collectPages(publicDir, locale = "ru") {
   const pages = [];
+  const root = path.join(publicDir, locale);
   const walk = (dir, prefix) => {
     let entries = [];
     try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
@@ -255,7 +330,7 @@ function collectPages(publicDir) {
       }
     }
   };
-  walk(publicDir, "");
+  walk(root, "");
   return pages;
 }
 
@@ -264,21 +339,35 @@ function xmlEscape(value) {
     .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
 }
 
-function buildSitemap(config) {
-  const rows = collectPages(config.publicDir)
+function buildSitemap(config, locale = "ru") {
+  const base = baseUrlFor(locale, config);
+  const rows = collectPages(config.publicDir, locale)
     .sort((a, b) => a.slug.localeCompare(b.slug))
     .map(({ slug, mtime }) => {
       const isArticle = slug.startsWith("/guides/");
       const priority = slug === "/" ? "1.0" : slug === "/privacy" ? "0.3" : isArticle ? "0.8" : "0.9";
       const changefreq = slug === "/" || slug === "/guides" ? "weekly" : slug === "/privacy" ? "yearly" : "monthly";
-      return `  <url><loc>${xmlEscape(config.siteUrl + slug)}</loc><lastmod>${mtime.toISOString().slice(0, 10)}</lastmod>` +
+      return `  <url><loc>${xmlEscape(joinUrl(base, slug))}</loc><lastmod>${mtime.toISOString().slice(0, 10)}</lastmod>` +
         `<changefreq>${changefreq}</changefreq><priority>${priority}</priority></url>`;
     });
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${rows.join("\n")}\n</urlset>\n`;
 }
 
-function buildFeed(config) {
-  const items = collectPages(config.publicDir)
+const FEED_META = {
+  ru: {
+    title: "European Hockey Agency — материалы для хоккеистов",
+    description: "Как найти клуб в Европе: лиги, резюме, видео, выбор уровня."
+  },
+  en: {
+    title: "European Hockey Agency — resources for players",
+    description: "How to find a club in Europe: leagues, resume, video, picking a level."
+  }
+};
+
+function buildFeed(config, locale = "ru") {
+  const base = baseUrlFor(locale, config);
+  const meta = FEED_META[locale] || FEED_META.ru;
+  const items = collectPages(config.publicDir, locale)
     .filter(({ slug }) => slug.startsWith("/guides/"))
     .sort((a, b) => b.mtime - a.mtime)
     .map(({ slug, mtime, file }) => {
@@ -286,16 +375,16 @@ function buildFeed(config) {
       try { html = fs.readFileSync(file, "utf8"); } catch { /* skip content */ }
       const title = (html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || slug).split(" | ")[0].trim();
       const description = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1] || "";
-      const url = config.siteUrl + slug;
+      const url = joinUrl(base, slug);
       return `    <item>\n      <title>${xmlEscape(title)}</title>\n      <link>${xmlEscape(url)}</link>\n` +
         `      <guid isPermaLink="true">${xmlEscape(url)}</guid>\n      <pubDate>${mtime.toUTCString()}</pubDate>\n` +
         `      <description>${xmlEscape(description)}</description>\n    </item>`;
     });
   return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0">\n  <channel>\n` +
-    `    <title>European Hockey Agency — материалы для хоккеистов</title>\n` +
-    `    <link>${xmlEscape(config.siteUrl)}/guides</link>\n` +
-    `    <description>Как найти клуб в Европе: лиги, резюме, видео, выбор уровня.</description>\n` +
-    `    <language>ru</language>\n${items.join("\n")}\n  </channel>\n</rss>\n`;
+    `    <title>${xmlEscape(meta.title)}</title>\n` +
+    `    <link>${xmlEscape(base)}/guides</link>\n` +
+    `    <description>${xmlEscape(meta.description)}</description>\n` +
+    `    <language>${locale}</language>\n${items.join("\n")}\n  </channel>\n</rss>\n`;
 }
 
 module.exports = { createApp, createRateLimiter, servePublic, buildSitemap, buildFeed };

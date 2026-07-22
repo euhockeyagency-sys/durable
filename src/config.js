@@ -7,13 +7,37 @@ const REQUIRED_APPLICATION_KEYS = [
   "SUPABASE_SECRET_KEY"
 ];
 
+// Resend's shared test sender. It may only deliver to the address the Resend
+// account was registered with, which is exactly our notification recipient, so
+// it works with zero DNS setup. Replace it with RESEND_FROM on a verified
+// domain once eurohockeyagency.ru has the DKIM/SPF records.
+const DEFAULT_RESEND_FROM = "EHA Website <onboarding@resend.dev>";
+
 function loadConfig(env = process.env) {
   const missingApplicationKeys = REQUIRED_APPLICATION_KEYS.filter((key) => !env[key]);
+  const siteUrl = (env.SITE_URL || "http://localhost:3000").replace(/\/$/, "");
+  // Two-domain mode activates only when both language hosts are set. Until then
+  // the site runs on one domain with English under /en/. Keeping both hosts
+  // optional lets the same build ship before and after the domain split.
+  const ruHost = (env.RU_HOST || "").trim().toLowerCase();
+  const enHost = (env.EN_HOST || "").trim().toLowerCase();
+  const hostsConfigured = Boolean(ruHost && enHost);
+  // The agent's own address is the single source of truth for where mail goes:
+  // NOTIFICATION_EMAIL only has to be set when notifications should land
+  // somewhere other than the public contact address.
+  const contactEmail = env.CONTACT_EMAIL || env.NOTIFICATION_EMAIL || "privacy@eurohockeyagency.com";
+  const notificationEmail = env.NOTIFICATION_EMAIL || env.CONTACT_EMAIL || "";
+  const resendFrom = env.RESEND_FROM || DEFAULT_RESEND_FROM;
   return {
     port: Number(env.PORT || 3000),
     publicDir: path.join(__dirname, "..", "public"),
-    siteUrl: (env.SITE_URL || "http://localhost:3000").replace(/\/$/, ""),
-    contactEmail: env.CONTACT_EMAIL || env.NOTIFICATION_EMAIL || "privacy@eurohockeyagency.com",
+    siteUrl,
+    ruHost,
+    enHost,
+    hostsConfigured,
+    ruUrl: ruHost ? `https://${ruHost}` : siteUrl,
+    enUrl: enHost ? `https://${enHost}` : siteUrl,
+    contactEmail,
     privacyPolicyVersion: env.PRIVACY_POLICY_VERSION || "2026-07-18",
     supabaseUrl: env.SUPABASE_URL || "",
     supabaseSecretKey: env.SUPABASE_SECRET_KEY || "",
@@ -23,8 +47,8 @@ function loadConfig(env = process.env) {
     telegramBotToken: env.TELEGRAM_BOT_TOKEN || "",
     telegramChatId: env.TELEGRAM_CHAT_ID || "",
     resendApiKey: env.RESEND_API_KEY || "",
-    resendFrom: env.RESEND_FROM || "",
-    notificationEmail: env.NOTIFICATION_EMAIL || "",
+    resendFrom,
+    notificationEmail,
     trustProxy: env.TRUST_PROXY === "true" || /^\d+$/.test(env.TRUST_PROXY || "")
       ? (env.TRUST_PROXY === "true" ? 1 : Number(env.TRUST_PROXY))
       : false,
@@ -32,8 +56,8 @@ function loadConfig(env = process.env) {
     missingApplicationKeys,
     turnstileConfigured: Boolean(env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY),
     telegramConfigured: Boolean(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID),
-    emailConfigured: Boolean(env.RESEND_API_KEY && env.RESEND_FROM && env.NOTIFICATION_EMAIL)
+    emailConfigured: Boolean(env.RESEND_API_KEY && resendFrom && notificationEmail)
   };
 }
 
-module.exports = { loadConfig, REQUIRED_APPLICATION_KEYS };
+module.exports = { loadConfig, REQUIRED_APPLICATION_KEYS, DEFAULT_RESEND_FROM };

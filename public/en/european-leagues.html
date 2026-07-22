@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>European Hockey Leagues: Levels and Imports | EHA</title>
+<meta name="description" content="The divisions of 15 countries in one table: level, how open each league is to imports, and when clubs sign players. A free reference for players.">
+<link rel="canonical" href="{{BASE_URL}}/european-leagues">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"European leagues","item":"{{BASE_URL}}/european-leagues"}]}</script>
+</head>
+<body>
+<header class="header">
+<a class="brand" href="{{EN}}/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<button class="menu" type="button" aria-label="Open menu">Menu</button>
+<nav>
+<a href="{{EN}}/services">Services</a>
+<a href="{{EN}}/for-players">For players</a>
+<a href="{{EN}}/cases">Cases</a>
+<a href="{{EN}}/agent">Agent</a>
+<a href="{{EN}}/guides">Resources</a>
+<a class="lang-switch" href="{{ALT_URL}}" hreflang="ru" lang="ru" aria-label="Русская версия">RU</a>
+<a class="nav-cta" href="{{EN}}/contact">Submit profile</a>
+</nav>
+</header>
+<main>
+<nav class="breadcrumbs wrap">
+<a href="{{EN}}/guides">Resources</a> / European leagues</nav>
+<section class="article-hero wrap">
+<p class="kicker">Reference</p>
+<h1>European hockey leagues: levels and imports</h1>
+<p class="lead">The divisions of 15 countries in one table: level, how open each league is to imports, and when clubs sign players.</p>
+</section>
+
+<section class="wrap">
+<div class="tool-filters">
+<label>Country
+<select id="f-country"><option value="">All countries</option></select>
+</label>
+<label>Level
+<select id="f-tier">
+<option value="">Any</option>
+<option value="1">1 — top division</option>
+<option value="2">2 — second division</option>
+<option value="3">3 — third level</option>
+</select>
+</label>
+<label>For imports
+<select id="f-open">
+<option value="">Any</option>
+<option value="high">Open</option>
+<option value="mid">Limited</option>
+<option value="low">Hard</option>
+</select>
+</label>
+<label>Search
+<input id="f-search" type="search" placeholder="League name or country" autocomplete="off">
+</label>
+</div>
+<p class="tool-count" id="tool-count" role="status"></p>
+
+<div class="league-wrap">
+<table class="league-table">
+<thead>
+<tr><th>Country</th><th>League</th><th>Level</th><th>Profile</th><th>For imports</th></tr>
+</thead>
+<tbody id="league-body">
+<!-- LEAGUES:START -->
+<tr data-country="Finland" data-tier="1" data-open="low"><td data-label="Country">🇫🇮 Finland</td><td data-label="League"><b>Liiga</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division, elite level</td><td data-label="For imports"><span class="open open-low">Hard</span> Few spots; only clear upgrades are signed</td></tr>
+<tr data-country="Finland" data-tier="2" data-open="mid"><td data-label="Country">🇫🇮 Finland</td><td data-label="League"><b>Mestis</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division, professional</td><td data-label="For imports"><span class="open open-mid">Limited</span> A lower bar than Liiga</td></tr>
+<tr data-country="Finland" data-tier="3" data-open="mid"><td data-label="Country">🇫🇮 Finland</td><td data-label="League"><b>Suomi-sarja</b></td><td data-label="Level"><span class="tier tier-3">3</span></td><td data-label="Profile">Third level, semi-pro</td><td data-label="For imports"><span class="open open-mid">Limited</span> Good for entry and adapting</td></tr>
+<tr data-country="Sweden" data-tier="1" data-open="low"><td data-label="Country">🇸🇪 Sweden</td><td data-label="League"><b>SHL</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">One of the strongest leagues in the world</td><td data-label="For imports"><span class="open open-low">Hard</span> Only a handful of imports make it</td></tr>
+<tr data-country="Sweden" data-tier="2" data-open="low"><td data-label="Country">🇸🇪 Sweden</td><td data-label="League"><b>HockeyAllsvenskan</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division, strong and fully professional</td><td data-label="For imports"><span class="open open-low">Hard</span> Competition is high</td></tr>
+<tr data-country="Sweden" data-tier="3" data-open="mid"><td data-label="Country">🇸🇪 Sweden</td><td data-label="League"><b>HockeyEttan</b></td><td data-label="Level"><span class="tier tier-3">3</span></td><td data-label="Profile">Third level, regional groups</td><td data-label="For imports"><span class="open open-mid">Limited</span> A realistic entry point; an EU passport matters a lot</td></tr>
+<tr data-country="Czechia" data-tier="1" data-open="mid"><td data-label="Country">🇨🇿 Czechia</td><td data-label="League"><b>Tipsport Extraliga</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division, one of Europe's strongest</td><td data-label="For imports"><span class="open open-mid">Limited</span> Import spots are limited</td></tr>
+<tr data-country="Czechia" data-tier="2" data-open="mid"><td data-label="Country">🇨🇿 Czechia</td><td data-label="League"><b>Chance liga</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division, professional</td><td data-label="For imports"><span class="open open-mid">Limited</span> A common entry point for imports</td></tr>
+<tr data-country="Czechia" data-tier="3" data-open="mid"><td data-label="Country">🇨🇿 Czechia</td><td data-label="League"><b>2. liga</b></td><td data-label="Level"><span class="tier tier-3">3</span></td><td data-label="Profile">Third level, regional groups</td><td data-label="For imports"><span class="open open-mid">Limited</span> Entry and adapting to the market</td></tr>
+<tr data-country="Slovakia" data-tier="1" data-open="mid"><td data-label="Country">🇸🇰 Slovakia</td><td data-label="League"><b>Tipos extraliga</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division</td><td data-label="For imports"><span class="open open-mid">Limited</span> Imports allowed, with a seasonal limit</td></tr>
+<tr data-country="Slovakia" data-tier="2" data-open="high"><td data-label="Country">🇸🇰 Slovakia</td><td data-label="League"><b>1. liga</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division</td><td data-label="For imports"><span class="open open-high">Open</span> Fairly open to imports</td></tr>
+<tr data-country="Germany" data-tier="1" data-open="mid"><td data-label="Country">🇩🇪 Germany</td><td data-label="League"><b>DEL</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division, strong budgets</td><td data-label="For imports"><span class="open open-mid">Limited</span> A notable number of foreigners; high competition</td></tr>
+<tr data-country="Germany" data-tier="2" data-open="mid"><td data-label="Country">🇩🇪 Germany</td><td data-label="League"><b>DEL2</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division, professional</td><td data-label="For imports"><span class="open open-mid">Limited</span> A realistic entry point</td></tr>
+<tr data-country="Germany" data-tier="3" data-open="high"><td data-label="Country">🇩🇪 Germany</td><td data-label="League"><b>Oberliga</b></td><td data-label="Level"><span class="tier tier-3">3</span></td><td data-label="Profile">Third level, North and South groups</td><td data-label="For imports"><span class="open open-high">Open</span> Many teams — openings appear most often here</td></tr>
+<tr data-country="Austria" data-tier="1" data-open="mid"><td data-label="Country">🇦🇹 Austria</td><td data-label="League"><b>ICE Hockey League</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">International top division</td><td data-label="For imports"><span class="open open-mid">Limited</span> Many imports, but the level is high</td></tr>
+<tr data-country="Austria" data-tier="2" data-open="high"><td data-label="Country">🇦🇹 Austria</td><td data-label="League"><b>Alps Hockey League</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">International league (Austria, Italy, Slovenia)</td><td data-label="For imports"><span class="open open-high">Open</span> Open to foreigners</td></tr>
+<tr data-country="Poland" data-tier="1" data-open="high"><td data-label="Country">🇵🇱 Poland</td><td data-label="League"><b>PHL</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division, a growing market</td><td data-label="For imports"><span class="open open-high">Open</span> Clubs traditionally sign imports actively</td></tr>
+<tr data-country="Poland" data-tier="2" data-open="high"><td data-label="Country">🇵🇱 Poland</td><td data-label="League"><b>1 liga</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division</td><td data-label="For imports"><span class="open open-high">Open</span> Entry and adapting</td></tr>
+<tr data-country="Norway" data-tier="1" data-open="mid"><td data-label="Country">🇳🇴 Norway</td><td data-label="League"><b>Eliteserien</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division</td><td data-label="For imports"><span class="open open-mid">Limited</span> An import limit applies</td></tr>
+<tr data-country="Norway" data-tier="2" data-open="high"><td data-label="Country">🇳🇴 Norway</td><td data-label="League"><b>1. divisjon</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division</td><td data-label="For imports"><span class="open open-high">Open</span> A more accessible entry</td></tr>
+<tr data-country="Denmark" data-tier="1" data-open="mid"><td data-label="Country">🇩🇰 Denmark</td><td data-label="League"><b>Metal Ligaen</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division</td><td data-label="For imports"><span class="open open-mid">Limited</span> Imports allowed, spots limited</td></tr>
+<tr data-country="Denmark" data-tier="2" data-open="high"><td data-label="Country">🇩🇰 Denmark</td><td data-label="League"><b>1. division</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division</td><td data-label="For imports"><span class="open open-high">Open</span> Easier to enter</td></tr>
+<tr data-country="Switzerland" data-tier="1" data-open="low"><td data-label="Country">🇨🇭 Switzerland</td><td data-label="League"><b>National League</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">One of the strongest and richest leagues</td><td data-label="For imports"><span class="open open-low">Hard</span> An extremely high bar</td></tr>
+<tr data-country="Switzerland" data-tier="2" data-open="low"><td data-label="Country">🇨🇭 Switzerland</td><td data-label="League"><b>Swiss League</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division, strong level</td><td data-label="For imports"><span class="open open-low">Hard</span> Tough selection</td></tr>
+<tr data-country="Switzerland" data-tier="3" data-open="mid"><td data-label="Country">🇨🇭 Switzerland</td><td data-label="League"><b>MyHockey League</b></td><td data-label="Level"><span class="tier tier-3">3</span></td><td data-label="Profile">Third level, semi-pro</td><td data-label="For imports"><span class="open open-mid">Limited</span> Entry is possible</td></tr>
+<tr data-country="France" data-tier="1" data-open="mid"><td data-label="Country">🇫🇷 France</td><td data-label="League"><b>Ligue Magnus</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division</td><td data-label="For imports"><span class="open open-mid">Limited</span> An import limit applies</td></tr>
+<tr data-country="France" data-tier="2" data-open="high"><td data-label="Country">🇫🇷 France</td><td data-label="League"><b>Division 1</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second division</td><td data-label="For imports"><span class="open open-high">Open</span> An accessible entry</td></tr>
+<tr data-country="France" data-tier="3" data-open="high"><td data-label="Country">🇫🇷 France</td><td data-label="League"><b>Division 2</b></td><td data-label="Level"><span class="tier tier-3">3</span></td><td data-label="Profile">Third level</td><td data-label="For imports"><span class="open open-high">Open</span> Open, lower level</td></tr>
+<tr data-country="Hungary" data-tier="1" data-open="high"><td data-label="Country">🇭🇺 Hungary</td><td data-label="League"><b>Erste Liga</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">International league (Hungary, Romania)</td><td data-label="For imports"><span class="open open-high">Open</span> Open to imports</td></tr>
+<tr data-country="United Kingdom" data-tier="1" data-open="mid"><td data-label="Country">🇬🇧 United Kingdom</td><td data-label="League"><b>EIHL</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division, many foreigners</td><td data-label="For imports"><span class="open open-mid">Limited</span> Work visas required</td></tr>
+<tr data-country="United Kingdom" data-tier="2" data-open="high"><td data-label="Country">🇬🇧 United Kingdom</td><td data-label="League"><b>NIHL National</b></td><td data-label="Level"><span class="tier tier-2">2</span></td><td data-label="Profile">Second level</td><td data-label="For imports"><span class="open open-high">Open</span> More accessible, but lower level</td></tr>
+<tr data-country="Italy" data-tier="1" data-open="high"><td data-label="Country">🇮🇹 Italy</td><td data-label="League"><b>IHL Serie A</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division</td><td data-label="For imports"><span class="open open-high">Open</span> Open to imports</td></tr>
+<tr data-country="Latvia" data-tier="1" data-open="high"><td data-label="Country">🇱🇻 Latvia</td><td data-label="League"><b>Optibet hokeja līga</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division</td><td data-label="For imports"><span class="open open-high">Open</span> Fairly open, a familiar style of hockey</td></tr>
+<tr data-country="Netherlands" data-tier="1" data-open="high"><td data-label="Country">🇳🇱 Netherlands</td><td data-label="League"><b>BeNe League</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Joint league of the Netherlands and Belgium</td><td data-label="For imports"><span class="open open-high">Open</span> Open, mid-level</td></tr>
+<tr data-country="Spain" data-tier="1" data-open="high"><td data-label="Country">🇪🇸 Spain</td><td data-label="League"><b>Liga Nacional</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division, a small market</td><td data-label="For imports"><span class="open open-high">Open</span> Open, modest level</td></tr>
+<tr data-country="Romania" data-tier="1" data-open="high"><td data-label="Country">🇷🇴 Romania</td><td data-label="League"><b>Liga Naţională</b></td><td data-label="Level"><span class="tier tier-1">1</span></td><td data-label="Profile">Top division</td><td data-label="For imports"><span class="open open-high">Open</span> Open to imports</td></tr>
+<!-- LEAGUES:END -->
+</tbody>
+</table>
+</div>
+<p class="tool-note" id="tool-empty" hidden>Nothing found — try removing some filters.</p>
+<p class="tool-note" id="tool-disclaimer"></p>
+</section>
+
+<section class="split wrap">
+<div>
+<p class="kicker">How to read the table</p>
+<h2>Level matters more<br>than the country name</h2>
+</div>
+<p class="body-copy">The second division of a strong hockey country is often higher in level than the top division of a small one. So the choice isn't a "dream country" but the level your profile matches. Not sure where to aim — try the <a href="{{EN}}/level-calculator">level calculator</a>: it suggests a realistic band of divisions in a minute.</p>
+</section>
+
+<section class="cta">
+<div>
+<p class="kicker">First assessment — free</p>
+<h2>Which league is realistic for you?</h2>
+</div>
+<a class="btn light" href="{{EN}}/contact">Submit profile</a>
+</section>
+</main>
+<footer id="footer">
+<div class="footer-brand">
+<a class="brand" href="{{EN}}/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<p>Personal representation of hockey players across European markets. Based in Gdańsk, Poland.</p>
+</div>
+<div>
+<h4>Navigation</h4>
+<nav class="footer-links">
+<a href="{{EN}}/services">Services</a>
+<a href="{{EN}}/for-players">For players</a>
+<a href="{{EN}}/cases">Cases</a>
+<a href="{{EN}}/agent">About the agent</a>
+<a href="{{EN}}/guides">Resources</a>
+</nav>
+</div>
+<div>
+<h4>Contact</h4>
+<div class="footer-links">
+<a href="mailto:euhockeyagency@gmail.com">euhockeyagency@gmail.com</a>
+<a href="https://www.instagram.com/ehahockeyagency/" rel="noopener">Instagram ↗</a>
+<a href="https://wa.me/375297957818" rel="noopener">WhatsApp ↗</a>
+<a href="{{EN}}/contact">Submit profile</a>
+<a href="{{EN}}/privacy">Privacy</a>
+</div>
+</div>
+<small>
+<span>© 2026 European Hockey Agency.</span>
+<span><a href="{{EN}}/privacy">Privacy Policy</a></span>
+</small>
+</footer>
+<script src="/assets/leagues.en.js"></script>
+<script>
+(function () {
+  var data = window.EHA_LEAGUES || { leagues: [], updated: "" };
+  var rows = Array.prototype.slice.call(document.querySelectorAll("#league-body tr"));
+  var countrySel = document.getElementById("f-country");
+  var tierSel = document.getElementById("f-tier");
+  var openSel = document.getElementById("f-open");
+  var search = document.getElementById("f-search");
+  var count = document.getElementById("tool-count");
+  var empty = document.getElementById("tool-empty");
+
+  document.getElementById("tool-disclaimer").textContent =
+    "Data is a guideline (updated: " + data.updated + "). Import limits and rules change season to season — verify for the current year. " + (data.windowNote || "");
+
+  var countries = [];
+  rows.forEach(function (row) {
+    var c = row.getAttribute("data-country");
+    if (countries.indexOf(c) === -1) countries.push(c);
+  });
+  countries.sort().forEach(function (c) {
+    var opt = document.createElement("option");
+    opt.value = c; opt.textContent = c;
+    countrySel.appendChild(opt);
+  });
+
+  function apply() {
+    var c = countrySel.value, t = tierSel.value, o = openSel.value;
+    var q = search.value.trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function (row) {
+      var ok = (!c || row.getAttribute("data-country") === c) &&
+        (!t || row.getAttribute("data-tier") === t) &&
+        (!o || row.getAttribute("data-open") === o) &&
+        (!q || row.textContent.toLowerCase().indexOf(q) !== -1);
+      row.hidden = !ok;
+      if (ok) shown++;
+    });
+    count.textContent = "Leagues found: " + shown + " of " + rows.length;
+    empty.hidden = shown !== 0;
+  }
+
+  [countrySel, tierSel, openSel].forEach(function (el) { el.addEventListener("change", apply); });
+  search.addEventListener("input", apply);
+  apply();
+})();
+</script>
+</body>
+</html>

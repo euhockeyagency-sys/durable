@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hockey Level Calculator: Which League Is Realistic | EHA</title>
+<meta name="description" content="Answer 6 questions and get a realistic band of European divisions and a list of leagues that fit. Free, no sign-up.">
+<link rel="canonical" href="{{BASE_URL}}/level-calculator">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Level calculator","item":"{{BASE_URL}}/level-calculator"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I know which European league I can reach?","acceptedAnswer":{"@type":"Answer","text":"The estimate comes from the level of your current league, your production relative to position, your age and whether you hold an EU passport. Your current level is the main factor: clubs compare players by it first."}},{"@type":"Question","name":"Does the calculator guarantee a contract?","acceptedAnswer":{"@type":"Answer","text":"No. It's a planning estimate, not a promise. The club always decides, and a person who sees your video and stats gives the final read on your profile."}},{"@type":"Question","name":"How much does an EU passport matter?","acceptedAnswer":{"@type":"Answer","text":"A lot: without one you take a limited import spot and must clearly outperform a local competitor. An EU passport does not raise your level, but it sharply widens the list of available clubs."}}]}</script>
+</head>
+<body>
+<header class="header">
+<a class="brand" href="{{EN}}/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<button class="menu" type="button" aria-label="Open menu">Menu</button>
+<nav>
+<a href="{{EN}}/services">Services</a>
+<a href="{{EN}}/for-players">For players</a>
+<a href="{{EN}}/cases">Cases</a>
+<a href="{{EN}}/agent">Agent</a>
+<a href="{{EN}}/guides">Resources</a>
+<a class="lang-switch" href="{{ALT_URL}}" hreflang="ru" lang="ru" aria-label="Русская версия">RU</a>
+<a class="nav-cta" href="{{EN}}/contact">Submit profile</a>
+</nav>
+</header>
+<main>
+<nav class="breadcrumbs wrap">
+<a href="{{EN}}/guides">Resources</a> / Level calculator</nav>
+<section class="article-hero wrap">
+<p class="kicker">Tool</p>
+<h1>Level calculator: which league is realistic</h1>
+<p class="lead">Six questions and you'll see a realistic band of European divisions and the specific leagues that genuinely consider a profile like yours. Free, no sign-up.</p>
+</section>
+
+<section class="wrap">
+<form class="calc-form" id="calc">
+<label>Year of birth
+<input type="number" id="c-year" min="1970" max="2014" placeholder="2004" required>
+</label>
+<label>Position
+<select id="c-pos" required>
+<option value="forward">Forward</option>
+<option value="defense">Defence</option>
+<option value="goalie">Goaltender</option>
+</select>
+</label>
+<label>EU passport
+<select id="c-eu" required>
+<option value="no">No</option>
+<option value="yes">Yes</option>
+</select>
+</label>
+<label>Level of your current league
+<select id="c-level" required>
+<option value="top">Top division of a strong country (SHL, Liiga, Extraliga, NL, AHL…)</option>
+<option value="t2" selected>Second division of a strong country or top of a mid one (Allsvenskan, Mestis, DEL2, ECHL, NCAA D1…)</option>
+<option value="t3">Third level or top division of a small country (HockeyEttan, Oberliga, 2. liga, U Sports, ACHA…)</option>
+<option value="junior">Junior league (USHL, CHL, NAHL, J20, U20)</option>
+<option value="amateur">Amateur or college club level</option>
+</select>
+</label>
+<label>Points last season
+<input type="number" id="c-points" min="0" max="300" placeholder="25">
+<small>Goaltenders can leave this blank</small>
+</label>
+<label>Games last season
+<input type="number" id="c-games" min="1" max="120" placeholder="45">
+</label>
+<label>Pro seasons played
+<input type="number" id="c-seasons" min="0" max="25" placeholder="2" required>
+</label>
+<button class="btn primary" type="submit">Calculate level</button>
+</form>
+
+<div class="calc-result" id="calc-result" hidden>
+<p class="kicker">Your estimate</p>
+<h2 id="calc-band"></h2>
+<p class="calc-summary" id="calc-summary"></p>
+
+<h3 class="calc-subtitle">Leagues that consider a profile like this</h3>
+<div class="calc-leagues" id="calc-leagues"></div>
+
+<h3 class="calc-subtitle">What to strengthen in your profile</h3>
+<ul class="ticks" id="calc-tips"></ul>
+
+<p class="tool-note"><strong>Important:</strong> this is a planning estimate, not a promise of a contract. The club always decides, and an accurate read comes from a person who sees your video and stats. We do that read for free.</p>
+<a class="btn primary" href="{{EN}}/contact">Send your profile for a free assessment</a>
+</div>
+</section>
+
+<section class="split wrap">
+<div>
+<p class="kicker">How it's calculated</p>
+<h2>No "magic"<br>and no inflated promises</h2>
+</div>
+<p class="body-copy">The main factor is the level of the league you play in now: that's what clubs compare players by first. Then come production relative to position, age (under 20 they look at potential, after 25 at a finished level) and passport: EU citizenship doesn't make a player better, but it removes import limits and widens the list of clubs. The full reference of divisions is in the <a href="{{EN}}/european-leagues">European leagues database</a>.</p>
+</section>
+
+<section class="cta">
+<div>
+<p class="kicker">Next step</p>
+<h2>We'll check your profile in person</h2>
+</div>
+<a class="btn light" href="{{EN}}/contact">Submit profile</a>
+</section>
+</main>
+<footer id="footer">
+<div class="footer-brand">
+<a class="brand" href="{{EN}}/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<p>Personal representation of hockey players across European markets. Based in Gdańsk, Poland.</p>
+</div>
+<div>
+<h4>Navigation</h4>
+<nav class="footer-links">
+<a href="{{EN}}/services">Services</a>
+<a href="{{EN}}/for-players">For players</a>
+<a href="{{EN}}/cases">Cases</a>
+<a href="{{EN}}/agent">About the agent</a>
+<a href="{{EN}}/guides">Resources</a>
+</nav>
+</div>
+<div>
+<h4>Contact</h4>
+<div class="footer-links">
+<a href="mailto:euhockeyagency@gmail.com">euhockeyagency@gmail.com</a>
+<a href="https://www.instagram.com/ehahockeyagency/" rel="noopener">Instagram ↗</a>
+<a href="https://wa.me/375297957818" rel="noopener">WhatsApp ↗</a>
+<a href="{{EN}}/contact">Submit profile</a>
+<a href="{{EN}}/privacy">Privacy</a>
+</div>
+</div>
+<small>
+<span>© 2026 European Hockey Agency.</span>
+<span><a href="{{EN}}/privacy">Privacy Policy</a></span>
+</small>
+</footer>
+<script src="/assets/leagues.en.js"></script>
+<script>
+(function () {
+  var form = document.getElementById("calc");
+  if (!form) return;
+  var data = (window.EHA_LEAGUES || { leagues: [] }).leagues;
+  var val = function (id) { return document.getElementById(id).value; };
+  var num = function (id) { return parseFloat(document.getElementById(id).value) || 0; };
+
+  // Base score: the league you play in now is the dominant signal.
+  var BASE = { top: 100, t2: 78, t3: 58, junior: 55, amateur: 35 };
+  // Points-per-game thresholds by position.
+  var PPG = { forward: [0.8, 0.5, 0.3], defense: [0.5, 0.3, 0.15], goalie: null };
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var year = num("c-year"), pos = val("c-pos"), eu = val("c-eu") === "yes";
+    var level = val("c-level"), points = num("c-points"), games = num("c-games");
+    var seasons = num("c-seasons");
+    var age = new Date().getFullYear() - year;
+    var score = BASE[level] || 58;
+    var tips = [];
+
+    // Production relative to position (goalies are judged on level and experience).
+    var ppg = games > 0 ? points / games : 0;
+    if (PPG[pos] && games >= 10) {
+      var t = PPG[pos];
+      if (ppg >= t[0]) score += 12;
+      else if (ppg >= t[1]) score += 6;
+      else if (ppg >= t[2]) score += 0;
+      else { score -= 8; tips.push("Your production is below the benchmark for your position — in your video, emphasise play without the puck, defending and your role on the team."); }
+    } else if (PPG[pos]) {
+      tips.push("Add stats from a full season — without them a club can't assess your profile.");
+    }
+
+    // Age: potential before 20, finished product after 25.
+    if (age <= 19) { score += 6; tips.push("At your age clubs look at potential — consider junior and U20 programs with real ice time."); }
+    else if (age <= 23) score += 3;
+    else if (age <= 27) score += 0;
+    else if (age <= 31) score -= 5;
+    else { score -= 10; tips.push("After 30, clubs sign a player for a specific role — highlight your experience, consistency and leadership."); }
+
+    if (seasons >= 3) score += 3;
+    else if (seasons === 0) { score -= 4; tips.push("Without pro seasons, the path usually runs through junior leagues or lower divisions."); }
+
+    // Passport does not raise the level — it widens the list of clubs.
+    if (!eu) tips.push("Without an EU passport you take an import spot: a club will sign you only if you're clearly better than a local, and you'll need a work visa. Check whether you may qualify for European citizenship.");
+
+    // Score -> realistic tier band.
+    var band, label;
+    if (score >= 100) { band = [1, 2]; label = "Top divisions in Europe"; }
+    else if (score >= 82) { band = [1, 2]; label = "Top divisions of mid countries and second divisions of strong ones"; }
+    else if (score >= 64) { band = [2, 3]; label = "Second divisions and top divisions of small countries"; }
+    else if (score >= 48) { band = [2, 3]; label = "Third level and top divisions of small countries"; }
+    else { band = [3, 3]; label = "Third level and lower divisions"; }
+
+    // Candidate leagues: within the band, realistic for the passport situation.
+    var candidates = data.filter(function (l) {
+      if (l.tier < band[0] || l.tier > band[1]) return false;
+      if (!eu && l.open === "low") return false;
+      return true;
+    });
+    // Within a tier, "open: low" means a strong league that is hard to enter.
+    // Strong profiles should see the strongest leagues first; everyone else —
+    // the most accessible ones first.
+    var accessFirst = { high: 0, mid: 1, low: 2 };
+    var strengthFirst = { low: 0, mid: 1, high: 2 };
+    var order = score >= 100 ? strengthFirst : accessFirst;
+    candidates.sort(function (a, b) { return (a.tier - b.tier) || (order[a.open] - order[b.open]); });
+    candidates = candidates.slice(0, 8);
+
+    document.getElementById("calc-band").textContent = label;
+    document.getElementById("calc-summary").textContent =
+      "Overall, your realistic estimate is divisions around level " +
+      (band[0] === band[1] ? band[0] : band[0] + "–" + band[1]) +
+      ". Below are leagues that genuinely consider a profile like yours" +
+      (eu ? "." : "; the list accounts for the fact that you take an import spot.");
+
+    document.getElementById("calc-leagues").innerHTML = candidates.map(function (l) {
+      return '<div class="calc-league"><b>' + l.flag + " " + l.name + '</b>' +
+        '<span class="tier tier-' + l.tier + '">' + l.tier + "</span>" +
+        '<small>' + l.country + " · " + l.note + "</small></div>";
+    }).join("") || "<p class=\"tool-note\">No leagues in the reference match these parameters — send your profile and we'll review it manually.</p>";
+
+    if (!tips.length) tips.push("Your profile looks solid — strengthen the presentation: fresh video and an up-to-date Elite Prospects.");
+    tips.push("Prepare your hockey resume and video in advance: when a club has an opening, the decision is made fast.");
+    document.getElementById("calc-tips").innerHTML = tips.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+
+    var result = document.getElementById("calc-result");
+    result.hidden = false;
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (window.ym) ym(110889446, "reachGoal", "calculator_done");
+  });
+})();
+</script>
+</body>
+</html>

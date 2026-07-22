@@ -63,8 +63,9 @@ function createServices(config) {
 
 function notificationText(a) {
   const position = { forward: "Нападающий", defense: "Защитник", goalie: "Вратарь" }[a.position] || a.position;
+  const locale = a.source?.locale === "en" ? "английская (com)" : "русская (ru)";
   return [
-    `Новая заявка ${a.reference_code}`,
+    `Новая заявка ${a.reference_code} · версия сайта: ${locale}`,
     `Игрок: ${a.player_name}, ${a.birth_year}`,
     `Позиция: ${position}; ${a.height_cm} см / ${a.weight_kg} кг`,
     `Гражданство: ${a.citizenship}`,

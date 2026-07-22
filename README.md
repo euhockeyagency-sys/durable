@@ -15,6 +15,17 @@ npm run dev
 
 В production запускайте `npm start` и задавайте переменные средствами хостинга. Без обязательных секретов сайт запускается, но `POST /api/applications` возвращает `503`, а `/api/health` показывает `applicationsConfigured: false`. Секрет Supabase, Turnstile, Telegram и Resend никогда не должен попадать в `public/` или браузерный JavaScript.
 
+## Две языковые версии (RU / EN)
+
+Страницы лежат в `public/ru/` (русский) и `public/en/` (английский); `public/assets/`, `styles.css`, `site.js` — общие. Соответствие URL между языками задаётся одной таблицей `PAGES` в [`src/locales.js`](src/locales.js) — она питает переключатель языка, теги `hreflang`, карту 301-редиректов и тест на парность переводов. При добавлении двуязычной страницы добавляйте строку туда и создавайте файл в обоих каталогах.
+
+Режим размещения определяется переменными `RU_HOST` и `EN_HOST`:
+
+- **Не заданы (по умолчанию):** один домен, русский в корне, английский под `/en/`. Так можно выкатить и проверить EN-версию до переезда домена.
+- **Заданы оба:** два домена — `RU_HOST` отдаёт русский, `EN_HOST` английский. Запрос «чужого» языкового URL получает 301 на правильный домен, префикс `/en/` тоже редиректится к чистому адресу.
+
+Справочник лиг генерируется из единого двуязычного источника `public/assets/leagues.src.js` командой `node scripts/build-leagues.js` — она пишет `leagues.ru.js`/`leagues.en.js` и вставляет статические строки в таблицы обеих версий. Язык заявки формы передаётся скрытым полем `locale` и попадает в `source.locale`, а также в уведомление агенту.
+
 ## Supabase
 
 1. Создайте hosted-проект в регионе ЕС и установите/обновите Supabase CLI.
@@ -57,7 +68,16 @@ supabase migration list
 
 - **Cloudflare Turnstile:** создайте отдельные widgets для production и staging, ограничьте production hostname, перенесите site key и secret в окружение. Сервер проверяет hostname (если задан), action `profile_application` и одноразовый токен.
 - **Telegram:** создайте бота, добавьте его в целевой чат и задайте `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_ID`.
-- **Resend:** подтвердите домен отправителя, создайте API key и заполните `RESEND_FROM` и `NOTIFICATION_EMAIL`.
+- **Resend:** достаточно задать `RESEND_API_KEY` — получателем становится `CONTACT_EMAIL`, а отправителем общий тестовый адрес Resend `onboarding@resend.dev`, который доставляет письма только на адрес владельца аккаунта Resend. Это рабочий вариант без единой DNS-записи. Когда домен подтверждён в Resend (DKIM/SPF), задайте `RESEND_FROM` со своим адресом — доставляемость и репутация будут лучше. `NOTIFICATION_EMAIL` нужен, только если заявки должны уходить не на `CONTACT_EMAIL`.
+
+`GET /api/health` показывает, какие каналы включены, и не раскрывает секретов:
+
+```json
+{"ok":true,"applicationsConfigured":true,"captchaConfigured":false,
+ "notifications":{"email":true,"telegram":false,"emailTo":"eu***@gmail.com"}}
+```
+
+Если `notifications.email` и `notifications.telegram` равны `false`, заявки сохраняются в базе, но никто о них не узнаёт — сервер пишет об этом предупреждение при старте и в лог по каждой заявке.
 
 ## Проверки и публикация
 

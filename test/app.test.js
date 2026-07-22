@@ -1,7 +1,10 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const request = require("supertest");
 const { createApp } = require("../src/app");
+const { PAGES } = require("../src/locales");
 
 function config(overrides = {}) {
   return {
@@ -69,7 +72,6 @@ function validRequest(agent, overrides = {}) {
     heightCm: "185",
     weightKg: "85",
     stickHand: "left",
-    contractStatus: "free",
     phone: "+375291234567",
     email: "ivan@example.com",
     eliteProspectsUrl: "https://www.eliteprospects.com/player/123/test",
@@ -91,6 +93,39 @@ test("stores a valid adult application and notification audits", async () => {
   assert.equal(services.rows.applications.length, 1);
   assert.equal(services.rows.application_notifications.length, 2);
   assert.deepEqual(services.rows.application_notifications.map((row) => row.status).sort(), ["sent", "sent"]);
+});
+
+test("returns English validation errors when locale=en, Russian by default", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  const en = await validRequest(request(app), { locale: "en", playerName: "" }).expect(400);
+  assert.equal(en.body.errors.playerName, "Enter your first and last name.");
+  const ru = await validRequest(request(app), { playerName: "" }).expect(400);
+  assert.equal(ru.body.errors.playerName, "Укажите имя и фамилию.");
+});
+
+test("records the applicant locale in the stored source", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app), { locale: "en" }).expect(201);
+  assert.equal(services.rows.applications[0].source.locale, "en");
+});
+
+test("rejects an application without an email to reply to", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  const response = await validRequest(request(app), { email: "" }).expect(400);
+  assert.equal(response.body.code, "validation_error");
+  assert.ok(response.body.errors.email);
+  assert.equal(services.rows.applications.length, 0);
+});
+
+test("rejects a malformed email", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  const response = await validRequest(request(app), { email: "ivan@example" }).expect(400);
+  assert.ok(response.body.errors.email);
+  assert.equal(services.rows.applications.length, 0);
 });
 
 test("requires parent details and consent for a minor", async () => {
@@ -189,6 +224,70 @@ test("limits the sixth attempt from one address", async () => {
   await request(app).post("/api/applications").expect(429);
 });
 
+function splitConfig(overrides = {}) {
+  return config({
+    hostsConfigured: true,
+    ruHost: "eurohockeyagency.ru",
+    enHost: "eurohockeyagency.com",
+    ruUrl: "https://eurohockeyagency.ru",
+    enUrl: "https://eurohockeyagency.com",
+    ...overrides
+  });
+}
+
+test("every bilingual page exists as a file in both language directories", () => {
+  const publicDir = path.join(__dirname, "..", "public");
+  const toFile = (slug) => (slug === "/" ? "/index" : slug) + ".html";
+  for (const page of PAGES) {
+    assert.ok(fs.existsSync(path.join(publicDir, "ru", `.${toFile(page.ru)}`)), `missing RU file for ${page.ru}`);
+    assert.ok(fs.existsSync(path.join(publicDir, "en", `.${toFile(page.en)}`)), `missing EN file for ${page.en}`);
+  }
+});
+
+test("serves the English home under /en/ with English canonical and hreflang", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app).get("/en/").expect(200);
+  assert.match(response.text, /<html lang="en"/);
+  assert.match(response.text, /rel="canonical" href="https:\/\/eha\.test\/en\/"/);
+  assert.match(response.text, /hreflang="ru" href="https:\/\/eha\.test\/"/);
+  assert.match(response.text, /hreflang="en" href="https:\/\/eha\.test\/en\/"/);
+  assert.match(response.text, /og:locale" content="en_US"/);
+});
+
+test("serves an English page with a translated slug under /en/", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  await request(app).get("/en/for-players").expect(200);
+  await request(app).get("/en/level-calculator").expect(200);
+  const leagues = await request(app).get("/en/european-leagues").expect(200);
+  assert.match(leagues.text, /Finland/);
+});
+
+test("the RU sitemap contains only Russian slugs, the EN sitemap only English", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const ru = await request(app).get("/sitemap.xml").expect(200);
+  assert.match(ru.text, /https:\/\/eha\.test\/kalkulyator-urovnya/);
+  assert.doesNotMatch(ru.text, /for-players/);
+  const en = await request(app).get("/en/sitemap.xml").expect(200);
+  assert.match(en.text, /https:\/\/eha\.test\/en\/for-players/);
+  assert.doesNotMatch(en.text, /kalkulyator-urovnya/);
+});
+
+test("two-domain mode 301s a cross-language slug to the right domain", async () => {
+  const app = createApp({ config: splitConfig(), services: serviceMock() });
+  const r1 = await request(app).get("/players").set("Host", "eurohockeyagency.com").expect(301);
+  assert.equal(r1.headers.location, "https://eurohockeyagency.ru/players");
+  const r2 = await request(app).get("/level-calculator").set("Host", "eurohockeyagency.ru").expect(301);
+  assert.equal(r2.headers.location, "https://eurohockeyagency.com/level-calculator");
+});
+
+test("two-domain mode serves each domain its own language for a shared slug", async () => {
+  const app = createApp({ config: splitConfig(), services: serviceMock() });
+  const en = await request(app).get("/services").set("Host", "eurohockeyagency.com").expect(200);
+  assert.match(en.text, /<html lang="en"/);
+  const ru = await request(app).get("/services").set("Host", "eurohockeyagency.ru").expect(200);
+  assert.match(ru.text, /<html lang="ru"/);
+});
+
 test("does not derive canonical URLs from an untrusted Host header", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app).get("/").set("Host", "attacker.example").expect(200);
@@ -223,4 +322,39 @@ test("skips notification channels that are not configured", async () => {
   });
   await validRequest(request(app)).expect(201);
   assert.deepEqual(services.rows.application_notifications.map((row) => row.channel), ["telegram"]);
+});
+
+test("stores the application even when no channel can notify anyone", async () => {
+  const services = serviceMock();
+  const app = createApp({
+    config: config({ telegramConfigured: false, emailConfigured: false }),
+    services,
+    now: () => new Date("2026-07-18T12:00:00Z")
+  });
+  await validRequest(request(app)).expect(201);
+  assert.equal(services.rows.applications.length, 1);
+  assert.equal(services.rows.application_notifications.length, 0);
+});
+
+test("health reports notification delivery with a masked recipient", async () => {
+  const app = createApp({
+    config: config({ notificationEmail: "euhockeyagency@gmail.com" }),
+    services: serviceMock()
+  });
+  const response = await request(app).get("/api/health").expect(200);
+  assert.deepEqual(response.body, {
+    ok: true,
+    applicationsConfigured: true,
+    captchaConfigured: true,
+    notifications: { email: true, telegram: true, emailTo: "eu***@gmail.com" }
+  });
+});
+
+test("health reports an unnotified form as such", async () => {
+  const app = createApp({
+    config: config({ telegramConfigured: false, emailConfigured: false, notificationEmail: "" }),
+    services: serviceMock()
+  });
+  const response = await request(app).get("/api/health").expect(200);
+  assert.deepEqual(response.body.notifications, { email: false, telegram: false, emailTo: null });
 });
