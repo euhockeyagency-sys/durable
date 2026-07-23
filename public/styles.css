@@ -593,3 +593,43 @@ footer small{display:block}
 .tools-block{padding:0 0 20px}
 .tools-block .article-grid{padding-bottom:0}
 .tools-block .section-intro{margin-bottom:28px}
+
+/* --- country guide template + club request --- */
+.country-guide>section{position:relative;padding:58px 0;border-top:1px solid var(--line)}
+.country-guide>section:first-child{border-top:0}
+.section-number{display:inline-block;margin-bottom:12px;color:#69b4ff;font:700 13px Oswald;letter-spacing:.15em}
+.country-guide h2{margin:0 0 22px}
+.country-guide ol{padding-left:22px;margin:0 0 24px}
+.country-guide ol li{color:#c3d0dc;font-size:17px;line-height:1.75;margin-bottom:14px}
+.country-note{padding:22px 24px;margin:28px 0;border:1px solid rgba(103,176,255,.25);border-left:4px solid var(--blue);background:rgba(22,135,255,.07);color:#c3d0dc;line-height:1.7}
+.market-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+.market-cards article{padding:24px;border:1px solid var(--line);background:rgba(255,255,255,.025)}
+.market-cards b{display:block;font:600 28px Oswald;margin-bottom:14px}
+.market-cards p{font-size:15px;margin:16px 0 0}
+.sources-block{background:linear-gradient(145deg,rgba(13,34,54,.55),rgba(3,11,20,.2));padding-inline:34px!important}
+.sources-block ul{list-style:none;padding:0}
+.sources-block li{padding:12px 0;margin:0;border-bottom:1px solid var(--line)}
+.updated-date{margin-top:24px!important;color:#8fcaff!important}
+.country-faq{padding:20px 0 0}
+.country-faq details{padding:20px 0}
+.country-faq summary{font-size:22px}
+.country-action{padding:42px!important;border:1px solid rgba(103,176,255,.25)!important;background:rgba(22,135,255,.08)}
+.country-action .btn{margin-top:14px}
+.club-country-cta{display:flex;justify-content:space-between;align-items:center;gap:36px;padding:42px!important;border:1px solid var(--line)!important;background:var(--panel)}
+.club-country-cta h2{font-size:clamp(30px,4vw,46px)}
+.club-country-cta .btn{flex:0 0 auto}
+.club-steps{display:grid;gap:12px;margin:38px 0}
+.club-steps article{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.club-steps b{color:#69b4ff;font:700 24px Oswald}
+.club-steps span{color:#c3d0dc;line-height:1.6}
+.form-help{display:block;color:var(--muted);font-size:12px;line-height:1.5;margin:-10px 0 24px}
+.form-note{color:var(--muted);font-size:12px;line-height:1.6;margin:18px 0 0}
+.form-note a{color:#73b8ff;text-decoration:underline}
+@media(max-width:850px){
+.country-guide>section{padding:42px 0}
+.market-cards{grid-template-columns:1fr}
+.sources-block,.country-action,.club-country-cta{padding:28px 20px!important}
+.club-country-cta{display:block}
+.club-country-cta .btn{margin-top:22px;width:100%}
+.country-guide ol li{font-size:16px}
+}

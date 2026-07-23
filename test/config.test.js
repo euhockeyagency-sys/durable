@@ -16,6 +16,18 @@ test("an API key alone is enough to enable email notifications", () => {
   assert.equal(config.emailConfigured, true);
   assert.equal(config.notificationEmail, "agent@example.com");
   assert.equal(config.resendFrom, DEFAULT_RESEND_FROM);
+  assert.equal(config.clubRequestConfigured, false);
+});
+
+test("club request notifications require both email and Telegram", () => {
+  const config = loadConfig({
+    ...storage,
+    CONTACT_EMAIL: "agent@example.com",
+    RESEND_API_KEY: "re_test",
+    TELEGRAM_BOT_TOKEN: "bot-token",
+    TELEGRAM_CHAT_ID: "123"
+  });
+  assert.equal(config.clubRequestConfigured, true);
 });
 
 test("NOTIFICATION_EMAIL overrides the public contact address", () => {

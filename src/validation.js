@@ -120,4 +120,52 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   return { ok: Object.keys(errors).length === 0, errors, value };
 }
 
-module.exports = { validateApplication, ALLOWED_FILES };
+function validateClubRequest(body, requireTurnstile = true, locale = "ru") {
+  const m = messages(locale);
+  const errors = {};
+  const clubName = text(body.clubName, 160);
+  const contactName = text(body.contactName, 120);
+  const email = text(body.email, 160).toLowerCase();
+  const phone = text(body.phone, 60);
+  const country = text(body.country, 100);
+  const positionNeeded = text(body.positionNeeded, 120);
+  const level = text(body.level, 160);
+  const message = text(body.message, 3000);
+  const website = text(body.website, 200);
+  const turnstileToken = text(body.turnstileToken || body["cf-turnstile-response"], 2048);
+
+  if (!clubName) errors.clubName = m.clubName;
+  if (!contactName) errors.contactName = m.contactName;
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = m.clubEmail;
+  if (!email && !phone) {
+    errors.email = m.clubContact;
+    errors.phone = m.clubContact;
+  }
+  if (!country) errors.country = m.country;
+  if (!positionNeeded) errors.positionNeeded = m.positionNeeded;
+  if (!level) errors.level = m.level;
+  if (!message) errors.message = m.clubMessage;
+  if (!checked(body.dataConsent)) errors.dataConsent = m.dataConsent;
+  if (website) errors.website = m.website;
+  if (requireTurnstile && !turnstileToken) errors.turnstile = m.turnstile;
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors,
+    value: {
+      clubName,
+      contactName,
+      email: email || null,
+      phone: phone || null,
+      country,
+      positionNeeded,
+      level,
+      message,
+      dataConsent: checked(body.dataConsent),
+      locale: normalizeLocale(locale),
+      turnstileToken
+    }
+  };
+}
+
+module.exports = { validateApplication, validateClubRequest, ALLOWED_FILES };

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Find a Hockey Player for Your Club | EHA</title>
+<meta name="description" content="Send a player request with the position, team level, country and requirements. EHA will review relevant hockey player profiles.">
+<link rel="canonical" href="{{BASE_URL}}/for-clubs">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/styles.css">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script defer src="/site.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"For clubs","item":"{{BASE_URL}}/for-clubs"}]}</script>
+</head>
+<body>
+<header class="header">
+<a class="brand" href="{{EN}}/"><span>EHA</span><b>EUROPEAN<br>HOCKEY AGENCY</b></a>
+<button class="menu" type="button" aria-label="Open menu">Menu</button>
+<nav>
+<a href="{{EN}}/services">Services</a>
+<a href="{{EN}}/for-players">For players</a>
+<a href="{{EN}}/cases">Cases</a>
+<a href="{{EN}}/agent">Agent</a>
+<a href="{{EN}}/guides">Resources</a>
+<a class="lang-switch" href="{{ALT_URL}}" hreflang="ru" lang="ru" aria-label="Русская версия">RU</a>
+<a class="nav-cta" href="{{EN}}/contact">Submit profile</a>
+</nav>
+</header>
+<main>
+<section class="contact-grid wrap club-contact">
+<div>
+<p class="kicker">For hockey clubs</p>
+<h1>Find a player<br><em>for your roster</em></h1>
+<p class="lead">Tell us the position, team level and key requirements. We will review relevant profiles and contact you if we can offer suitable candidates.</p>
+<div class="club-steps">
+<article><b>01</b><span>We clarify the sporting and contract requirements.</span></article>
+<article><b>02</b><span>We match the request against verified player profiles.</span></article>
+<article><b>03</b><span>We share only relevant options for discussion.</span></article>
+</div>
+<p class="legal-note">Submitting a request does not guarantee that a suitable player is available or that a contract will be signed.</p>
+</div>
+<form id="club-request-form" action="/api/club-request" method="post">
+<div class="form-status" id="club-form-status" role="status" aria-live="polite"></div>
+<label>Club name<input name="clubName" maxlength="160" autocomplete="organization" required>
+<span class="field-error" data-error-for="clubName"></span></label>
+<label>Contact person<input name="contactName" maxlength="120" autocomplete="name" required>
+<span class="field-error" data-error-for="contactName"></span></label>
+<div class="two">
+<label>Email<input name="email" type="email" maxlength="160" autocomplete="email">
+<span class="field-error" data-error-for="email"></span></label>
+<label>Phone / WhatsApp<input name="phone" type="tel" maxlength="60" autocomplete="tel">
+<span class="field-error" data-error-for="phone"></span></label>
+</div>
+<small class="form-help">Provide at least one contact method: email or phone.</small>
+<div class="two">
+<label>Country or market<input name="country" maxlength="100" autocomplete="country-name" required>
+<span class="field-error" data-error-for="country"></span></label>
+<label>Position needed<input name="positionNeeded" maxlength="120" placeholder="For example: centre" required>
+<span class="field-error" data-error-for="positionNeeded"></span></label>
+</div>
+<label>League or team level<input name="level" maxlength="160" placeholder="League, division, senior or junior" required>
+<span class="field-error" data-error-for="level"></span></label>
+<label>Player requirements<textarea name="message" rows="6" maxlength="3000" placeholder="Age, shooting side, production, role, timing, budget and other key conditions" required></textarea>
+<span class="field-error" data-error-for="message"></span></label>
+<label class="consent"><input type="checkbox" name="dataConsent" value="true" required>I agree to the <a href="{{EN}}/privacy" target="_blank" rel="noopener">Privacy Policy</a> and the processing of my contact details to answer this request.</label>
+<span class="field-error" data-error-for="dataConsent"></span>
+<div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="club_request" data-theme="dark"></div>
+<span class="field-error" data-error-for="turnstile"></span>
+<label class="honeypot" aria-hidden="true">Your website<input name="website" tabindex="-1" autocomplete="off"></label>
+<input type="hidden" name="locale" value="en">
+<button class="btn primary" type="submit">Send request</button>
+<p class="form-note">If the form is unavailable, email <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a>.</p>
+</form>
+</section>
+</main>
+<footer id="footer">
+<div class="footer-brand"><a class="brand" href="{{EN}}/"><span>EHA</span><b>EUROPEAN<br>HOCKEY AGENCY</b></a><p>Personal representation of hockey players across European markets. Based in Gdańsk, Poland.</p></div>
+<div><h4>Navigation</h4><nav class="footer-links"><a href="{{EN}}/services">Services</a><a href="{{EN}}/for-players">For players</a><a href="{{EN}}/cases">Cases</a><a href="{{EN}}/guides">Resources</a></nav></div>
+<div><h4>Contact</h4><div class="footer-links"><a href="mailto:euhockeyagency@gmail.com">euhockeyagency@gmail.com</a><a href="https://www.instagram.com/ehahockeyagency/" rel="noopener">Instagram ↗</a><a href="{{EN}}/privacy">Privacy</a></div></div>
+<small><span>© 2026 European Hockey Agency.</span><span><a href="{{EN}}/privacy">Privacy Policy</a></span></small>
+</footer>
+</body>
+</html>

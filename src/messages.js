@@ -31,7 +31,16 @@ const MESSAGES = {
     serviceUnavailable: "Форма временно недоступна. Свяжитесь с нами напрямую.",
     verificationUnavailable: "Проверка безопасности временно недоступна. Попробуйте позже или свяжитесь с нами напрямую.",
     verificationFailed: "Проверка безопасности истекла или уже была использована. Повторите её.",
-    persistenceFailed: "Не удалось сохранить заявку. Данные не были приняты — попробуйте ещё раз."
+    persistenceFailed: "Не удалось сохранить заявку. Данные не были приняты — попробуйте ещё раз.",
+    clubName: "Укажите название клуба.",
+    contactName: "Укажите контактное лицо.",
+    clubEmail: "Укажите корректный email.",
+    clubContact: "Укажите хотя бы один контакт: email или телефон.",
+    country: "Укажите страну или рынок.",
+    positionNeeded: "Укажите нужную позицию.",
+    level: "Укажите лигу или уровень команды.",
+    clubMessage: "Опишите, какого игрока вы ищете.",
+    notificationFailed: "Не удалось доставить запрос. Попробуйте ещё раз или свяжитесь с нами напрямую."
   },
   en: {
     playerName: "Enter your first and last name.",
@@ -60,7 +69,16 @@ const MESSAGES = {
     serviceUnavailable: "The form is temporarily unavailable. Please contact us directly.",
     verificationUnavailable: "Security verification is temporarily unavailable. Please try again later or contact us directly.",
     verificationFailed: "Security verification expired or was already used. Please try again.",
-    persistenceFailed: "Could not save the application. Your data was not accepted — please try again."
+    persistenceFailed: "Could not save the application. Your data was not accepted — please try again.",
+    clubName: "Enter the club name.",
+    contactName: "Enter the contact person's name.",
+    clubEmail: "Enter a valid email address.",
+    clubContact: "Enter at least one contact method: email or phone.",
+    country: "Enter the country or market.",
+    positionNeeded: "Enter the position needed.",
+    level: "Enter the league or team level.",
+    clubMessage: "Describe the player you need.",
+    notificationFailed: "We could not deliver the request. Please try again or contact us directly."
   }
 };
 

@@ -28,6 +28,8 @@ function loadConfig(env = process.env) {
   const contactEmail = env.CONTACT_EMAIL || env.NOTIFICATION_EMAIL || "privacy@eurohockeyagency.com";
   const notificationEmail = env.NOTIFICATION_EMAIL || env.CONTACT_EMAIL || "";
   const resendFrom = env.RESEND_FROM || DEFAULT_RESEND_FROM;
+  const telegramConfigured = Boolean(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID);
+  const emailConfigured = Boolean(env.RESEND_API_KEY && resendFrom && notificationEmail);
   return {
     port: Number(env.PORT || 3000),
     publicDir: path.join(__dirname, "..", "public"),
@@ -55,8 +57,11 @@ function loadConfig(env = process.env) {
     applicationConfigured: missingApplicationKeys.length === 0,
     missingApplicationKeys,
     turnstileConfigured: Boolean(env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY),
-    telegramConfigured: Boolean(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID),
-    emailConfigured: Boolean(env.RESEND_API_KEY && resendFrom && notificationEmail)
+    telegramConfigured,
+    emailConfigured,
+    // Club requests are notification-only (no database fallback), so both
+    // channels must be available before the public form is enabled.
+    clubRequestConfigured: telegramConfigured && emailConfigured
   };
 }
 
