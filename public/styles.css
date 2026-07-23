@@ -679,3 +679,22 @@ footer small{display:block}
 .country-level-pyramid b{font-size:1rem}
 .country-level-pyramid span{color:var(--muted);font-size:.86rem;text-align:right}
 @media(max-width:640px){.country-level-pyramid>div,.country-level-pyramid>div:nth-child(1),.country-level-pyramid>div:nth-child(2){width:100%}.country-level-pyramid>div{align-items:flex-start;flex-direction:column}.country-level-pyramid span{text-align:left}}
+
+
+/* Hockey countries directory */
+.country-filter-section{margin-bottom:2rem}
+.country-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:.75rem;align-items:end;padding:1.25rem;border:1px solid var(--line);background:var(--surface)}
+.country-filters label{display:grid;gap:.45rem;font-size:.76rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.country-filters select{width:100%;min-height:46px;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:.65rem .75rem;border-radius:0}
+.country-directory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);margin-bottom:clamp(4rem,8vw,8rem)}
+.country-card{background:var(--surface);padding:clamp(1.4rem,3vw,2.3rem);display:flex;flex-direction:column;min-height:330px}
+.country-card[hidden]{display:none}
+.country-card-top{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.country-flag{font-size:2rem}
+.country-openness{border:1px solid var(--line);border-radius:999px;padding:.32rem .6rem;color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}
+.country-card h2{font-size:clamp(1.7rem,3vw,2.6rem);margin:.9rem 0 .35rem}
+.country-leagues{color:var(--accent);font-weight:800}
+.country-card-actions{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:auto;padding-top:1.25rem}
+.country-assessment{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+@media(max-width:980px){.country-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.country-filters .btn{justify-self:start}}
+@media(max-width:720px){.country-directory-grid,.country-filters{grid-template-columns:1fr}.country-card-actions{align-items:flex-start;flex-direction:column}}
