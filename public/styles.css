@@ -633,3 +633,38 @@ footer small{display:block}
 .club-country-cta .btn{margin-top:22px;width:100%}
 .country-guide ol li{font-size:16px}
 }
+
+
+/* Evidence-led cases, professional profile and player/club journeys */
+.evidence-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-bottom:2rem}
+.evidence-legend>div{background:var(--surface);padding:1.1rem 1.25rem;display:grid;gap:.35rem}
+.evidence-legend b{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em}
+.evidence-legend span{color:var(--muted);font-size:.9rem;line-height:1.45}
+.case-evidence{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 .65rem}
+.evidence-badge{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:.38rem .65rem;font-size:.72rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.evidence-badge.ep{border-color:#c78bff;color:#dfbdff;background:rgba(137,55,205,.12)}
+.evidence-badge.club{border-color:#63c995;color:#9ce2bd;background:rgba(32,142,86,.12)}
+.evidence-badge.pending{border-color:#e0b45f;color:#f1ce8c;background:rgba(178,117,21,.12)}
+.club-case-cta,.dual-cta,.club-value,.selection-and-price{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);margin-top:clamp(3rem,7vw,7rem);margin-bottom:clamp(3rem,7vw,7rem)}
+.club-case-cta>*,.dual-cta>div,.club-value>div,.selection-and-price>div{background:var(--surface);padding:clamp(1.5rem,4vw,3rem)}
+.club-case-cta{align-items:center;background:transparent;border:1px solid var(--line)}
+.club-case-cta>*{background:transparent}
+.club-case-cta .btn{align-self:center;justify-self:end}
+.profile-facts,.service-process,.selection-criteria{margin-top:clamp(3rem,7vw,7rem);margin-bottom:clamp(3rem,7vw,7rem)}
+.fact-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);margin-top:2rem}
+.fact-grid article{background:var(--surface);padding:1.5rem;display:grid;gap:.6rem}
+.fact-grid span{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+.fact-grid strong{line-height:1.4}
+.profile-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.process-six{grid-template-columns:repeat(3,minmax(0,1fr))}
+.selection-panel,.price-panel{min-height:100%}
+.selection-and-price h2,.club-value h2,.dual-cta h2{font-size:clamp(1.5rem,3vw,2.4rem)}
+.criteria-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);margin-top:2rem}
+.criteria-columns>div{background:var(--surface);padding:clamp(1.4rem,3vw,2.5rem)}
+.criteria-columns h3{margin-top:0}
+.dual-cta{margin-top:2rem}
+.club-value{margin-top:0}
+@media(max-width:850px){
+ .evidence-legend,.fact-grid,.process-six,.selection-and-price,.criteria-columns,.club-value,.dual-cta,.club-case-cta{grid-template-columns:1fr}
+ .club-case-cta .btn{justify-self:start}
+}
