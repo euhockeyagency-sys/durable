@@ -22,12 +22,16 @@ const CONTENT_TYPES = {
   ".xml": "application/xml; charset=utf-8"
 };
 
+const PRIMARY_ORIGIN = "https://eurohockeyagency.ru";
+const PRIMARY_HOST = "eurohockeyagency.ru";
+
 function createApp({ config, services, now, randomUUID } = {}) {
   if (!config) throw new Error("createApp requires config");
   const app = express();
   if (config.trustProxy !== false) app.set("trust proxy", config.trustProxy);
   app.disable("x-powered-by");
   app.use(securityHeaders);
+  app.use(redirectDuplicateHosts);
 
   const upload = multer({
     storage: multer.memoryStorage(),
@@ -106,6 +110,16 @@ function createApp({ config, services, now, randomUUID } = {}) {
     res.status(500).json({ ok: false, code: "internal_error" });
   });
   return app;
+}
+
+// Keep one indexable origin even when the same Railway service is reachable
+// through its platform hostname or the www alias. The original path and query
+// string are preserved so search engines can consolidate every URL directly.
+function redirectDuplicateHosts(req, res, next) {
+  const host = String(req.headers.host || "").split(":")[0].trim().toLowerCase();
+  const isDuplicate = host === `www.${PRIMARY_HOST}` || host.endsWith(".up.railway.app");
+  if (!isDuplicate) return next();
+  return res.redirect(301, `${PRIMARY_ORIGIN}${req.originalUrl || "/"}`);
 }
 
 // "euhockeyagency@gmail.com" -> "eu***@gmail.com": enough to confirm the right
@@ -349,6 +363,11 @@ function renderBody(data, extension, config, context) {
     .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
     .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
     .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
+  if (extension === ".html" && !config.turnstileConfigured) {
+    html = html
+      .replace(/<script src="https:\/\/challenges\.cloudflare\.com\/turnstile\/v0\/api\.js" async defer><\/script>\s*/g, "")
+      .replace(/<div class="cf-turnstile"[^>]*><\/div>/g, "");
+  }
   if (extension === ".html") {
     html = html
       .replaceAll('href="/styles.css"', `href="/styles.css?v=${assetVersion(config, "styles.css")}"`)

@@ -102,6 +102,65 @@ function validClubRequest(agent, overrides = {}) {
   });
 }
 
+test("redirects www to the single primary origin while preserving path and query", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app)
+    .get("/guides/hokkej-v-polshe?source=www")
+    .set("Host", "www.eurohockeyagency.ru")
+    .expect(301);
+  assert.equal(
+    response.headers.location,
+    "https://eurohockeyagency.ru/guides/hokkej-v-polshe?source=www"
+  );
+});
+
+test("redirects Railway platform hosts to the single primary origin", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app)
+    .get("/en/guides/hockey-in-poland")
+    .set("Host", "euro-hockey-agency-production.up.railway.app")
+    .expect(301);
+  assert.equal(
+    response.headers.location,
+    "https://eurohockeyagency.ru/en/guides/hockey-in-poland"
+  );
+});
+
+test("does not redirect the primary origin", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  await request(app)
+    .get("/")
+    .set("Host", "eurohockeyagency.ru")
+    .expect(200);
+});
+
+test("robots.txt advertises both language sitemaps on the primary origin", async () => {
+  const app = createApp({ config: config({ siteUrl: "https://eurohockeyagency.ru" }), services: serviceMock() });
+  const response = await request(app)
+    .get("/robots.txt")
+    .set("Host", "eurohockeyagency.ru")
+    .expect(200);
+  assert.match(response.text, /Sitemap: https:\/\/eurohockeyagency\.ru\/sitemap\.xml/);
+  assert.match(response.text, /Sitemap: https:\/\/eurohockeyagency\.ru\/en\/sitemap\.xml/);
+});
+
+test("does not load an invalid Turnstile widget when captcha is not configured", async () => {
+  const app = createApp({
+    config: config({ turnstileConfigured: false, turnstileSiteKey: "" }),
+    services: serviceMock()
+  });
+  const response = await request(app).get("/for-clubs").expect(200);
+  assert.doesNotMatch(response.text, /challenges\.cloudflare\.com\/turnstile/);
+  assert.doesNotMatch(response.text, /class="cf-turnstile"/);
+});
+
+test("loads Turnstile when captcha is configured", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app).get("/for-clubs").expect(200);
+  assert.match(response.text, /challenges\.cloudflare\.com\/turnstile/);
+  assert.match(response.text, /class="cf-turnstile" data-sitekey="test-site-key"/);
+});
+
 test("delivers a valid club request without writing to Supabase", async () => {
   const services = serviceMock();
   const app = createApp({ config: config({ clubRequestConfigured: true }), services, now: () => new Date("2026-07-23T12:00:00Z") });
