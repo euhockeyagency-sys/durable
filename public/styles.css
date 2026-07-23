@@ -668,3 +668,14 @@ footer small{display:block}
  .evidence-legend,.fact-grid,.process-six,.selection-and-price,.criteria-columns,.club-value,.dual-cta,.club-case-cta{grid-template-columns:1fr}
  .club-case-cta .btn{justify-self:start}
 }
+
+
+/* Country guide level pyramid */
+.country-level-pyramid{display:grid;gap:.55rem;margin:1.75rem 0 2rem;max-width:760px}
+.country-level-pyramid>div{display:flex;align-items:center;justify-content:space-between;gap:1rem;border:1px solid var(--line);background:linear-gradient(110deg,rgba(22,135,255,.16),rgba(22,135,255,.03));padding:1rem 1.2rem}
+.country-level-pyramid>div:nth-child(1){width:58%;margin-inline:auto}
+.country-level-pyramid>div:nth-child(2){width:78%;margin-inline:auto}
+.country-level-pyramid>div:nth-child(3){width:100%}
+.country-level-pyramid b{font-size:1rem}
+.country-level-pyramid span{color:var(--muted);font-size:.86rem;text-align:right}
+@media(max-width:640px){.country-level-pyramid>div,.country-level-pyramid>div:nth-child(1),.country-level-pyramid>div:nth-child(2){width:100%}.country-level-pyramid>div{align-items:flex-start;flex-direction:column}.country-level-pyramid span{text-align:left}}
