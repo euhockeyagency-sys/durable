@@ -2,14 +2,16 @@ const { createClient } = require("@supabase/supabase-js");
 const { Resend } = require("resend");
 
 function createServices(config) {
-  const supabase = createClient(config.supabaseUrl, config.supabaseSecretKey, {
-    auth: { persistSession: false, autoRefreshToken: false }
-  });
+  const supabase = config.applicationConfigured
+    ? createClient(config.supabaseUrl, config.supabaseSecretKey, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    })
+    : null;
   const resend = config.resendApiKey ? new Resend(config.resendApiKey) : null;
 
   return {
     supabase,
-    async verifyTurnstile({ token, ip, idempotencyKey }) {
+    async verifyTurnstile({ token, ip, idempotencyKey, action = "profile_application" }) {
       const body = new URLSearchParams({
         secret: config.turnstileSecretKey,
         response: token,
@@ -26,7 +28,7 @@ function createServices(config) {
       if (result.success && config.turnstileExpectedHostname && result.hostname !== config.turnstileExpectedHostname) {
         return { success: false, errorCodes: ["hostname-mismatch"] };
       }
-      if (result.success && result.action !== "profile_application") {
+      if (result.success && result.action !== action) {
         return { success: false, errorCodes: ["action-mismatch"] };
       }
       return { success: Boolean(result.success), errorCodes: result["error-codes"] || [] };
@@ -57,6 +59,33 @@ function createServices(config) {
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.description || `Telegram returned ${response.status}`);
       return String(result.result?.message_id || "") || null;
+    },
+    async sendClubRequestEmail(clubRequest) {
+      if (!resend) throw new Error("Resend is not configured");
+      const result = await resend.emails.send({
+        from: config.resendFrom,
+        to: [config.notificationEmail],
+        replyTo: clubRequest.email || undefined,
+        subject: `Запрос клуба ${clubRequest.reference}: ${clubRequest.clubName}`,
+        text: clubRequestText(clubRequest)
+      }, { idempotencyKey: `club-request-${clubRequest.reference}-email` });
+      if (result.error) throw new Error(result.error.message || "Resend delivery failed");
+      return result.data?.id || null;
+    },
+    async sendClubRequestTelegram(clubRequest) {
+      const response = await fetch(`https://api.telegram.org/bot${config.telegramBotToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: config.telegramChatId,
+          text: clubRequestText(clubRequest),
+          disable_web_page_preview: true
+        }),
+        signal: AbortSignal.timeout(10_000)
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.description || `Telegram returned ${response.status}`);
+      return String(result.result?.message_id || "") || null;
     }
   };
 }
@@ -78,4 +107,18 @@ function notificationText(a) {
   ].filter(Boolean).join("\n");
 }
 
-module.exports = { createServices, notificationText };
+function clubRequestText(request) {
+  const locale = request.locale === "en" ? "English" : "Русский";
+  return [
+    `Новый запрос клуба ${request.reference} · ${locale}`,
+    `Клуб: ${request.clubName}`,
+    `Контактное лицо: ${request.contactName}`,
+    `Контакты: ${[request.email, request.phone].filter(Boolean).join("; ")}`,
+    `Страна/рынок: ${request.country}`,
+    `Нужная позиция: ${request.positionNeeded}`,
+    `Лига/уровень: ${request.level}`,
+    `Запрос: ${request.message}`
+  ].join("\n");
+}
+
+module.exports = { createServices, notificationText, clubRequestText };

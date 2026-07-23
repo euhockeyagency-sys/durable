@@ -16,10 +16,12 @@ const PAGES = [
   { ru: "/cases",               en: "/cases" },
   { ru: "/agent",               en: "/agent" },
   { ru: "/contact",             en: "/contact" },
+  { ru: "/for-clubs",           en: "/for-clubs" },
   { ru: "/guides",              en: "/guides" },
   { ru: "/privacy",             en: "/privacy" },
   { ru: "/kalkulyator-urovnya", en: "/level-calculator" },
-  { ru: "/ligi-evropy",         en: "/european-leagues" }
+  { ru: "/ligi-evropy",         en: "/european-leagues" },
+  { ru: "/guides/hokkej-v-polshe", en: "/guides/hockey-in-poland" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));

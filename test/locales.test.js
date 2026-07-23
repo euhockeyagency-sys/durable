@@ -72,4 +72,9 @@ test("hreflang alternates come from the page table", () => {
     en: "https://eha.test/en/for-players"
   });
   assert.equal(hreflangFor("/guides/hokkej-v-shvecii", "ru", single), null);
+  assert.deepEqual(hreflangFor("/guides/hokkej-v-polshe", "ru", single), {
+    ru: "https://eha.test/guides/hokkej-v-polshe",
+    en: "https://eha.test/en/guides/hockey-in-poland"
+  });
+  assert.equal(altUrlFor("en", "/guides/hockey-in-poland", single), "https://eha.test/guides/hokkej-v-polshe");
 });

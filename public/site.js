@@ -1,7 +1,7 @@
 const LANG=document.documentElement.lang==='en'?'en':'ru';
 const T={
-  ru:{waAria:'Написать в WhatsApp',submitting:'Отправляем…',saving:'Сохраняем заявку и файлы…',checkForm:'Проверьте форму и попробуйте ещё раз.',noConn:'Нет связи с сервером. Данные не отправлены. Попробуйте снова или используйте прямой контакт.',submit:'Отправить заявку',notFound:'номер не найден',waGreeting:v=>`Здравствуйте! Моя заявка с сайта: ${v}`},
-  en:{waAria:'Message us on WhatsApp',submitting:'Sending…',saving:'Saving your application and files…',checkForm:'Check the form and try again.',noConn:'No connection to the server. Nothing was sent. Try again or use direct contact.',submit:'Send application',notFound:'reference not found',waGreeting:v=>`Hi! My application reference: ${v}`}
+  ru:{waAria:'Написать в WhatsApp',submitting:'Отправляем…',saving:'Сохраняем заявку и файлы…',clubSending:'Отправляем запрос клуба…',clubSuccess:v=>`Запрос отправлен. Номер: ${v}`,checkForm:'Проверьте форму и попробуйте ещё раз.',noConn:'Нет связи с сервером. Данные не отправлены. Попробуйте снова или используйте прямой контакт.',submit:'Отправить заявку',clubSubmit:'Отправить запрос',countryPrefix:'Интересующая страна',notFound:'номер не найден',waGreeting:v=>`Здравствуйте! Моя заявка с сайта: ${v}`},
+  en:{waAria:'Message us on WhatsApp',submitting:'Sending…',saving:'Saving your application and files…',clubSending:'Sending the club request…',clubSuccess:v=>`Request sent. Reference: ${v}`,checkForm:'Check the form and try again.',noConn:'No connection to the server. Nothing was sent. Try again or use direct contact.',submit:'Send application',clubSubmit:'Send request',countryPrefix:'Target country',notFound:'reference not found',waGreeting:v=>`Hi! My application reference: ${v}`}
 }[LANG];
 const q=(s,c=document)=>c.querySelector(s),qa=(s,c=document)=>[...c.querySelectorAll(s)],header=q('.header'),menu=q('.menu'),nav=q('.header nav'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const setHeader=()=>header?.classList.toggle('scrolled',scrollY>18);setHeader();addEventListener('scroll',setHeader,{passive:true});
@@ -17,6 +17,8 @@ if(form){
   birth.addEventListener('input',updateParent);updateParent();
   const params=new URLSearchParams(location.search),utm={utm_source:'utmSource',utm_medium:'utmMedium',utm_campaign:'utmCampaign',utm_content:'utmContent',utm_term:'utmTerm'};
   Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=params.get(key)||''});q('[name="referrer"]',form).value=document.referrer||'';
+  const country=(params.get('country')||'').trim().slice(0,100),message=q('[name="message"]',form);
+  if(country&&message&&!message.value.trim())message.value=`${T.countryPrefix}: ${country}`;
   const clearErrors=()=>{qa('.field-error',form).forEach(el=>el.textContent='');qa('[aria-invalid="true"]',form).forEach(el=>el.removeAttribute('aria-invalid'));status.textContent='';status.className='form-status'};
   const showErrors=(errors={})=>{Object.entries(errors).forEach(([name,message])=>{const output=q(`[data-error-for="${name}"]`,form),input=q(`[name="${name}"]`,form);if(output)output.textContent=message;if(input)input.setAttribute('aria-invalid','true')});const first=q('[aria-invalid="true"]',form);first?.focus()};
   form.addEventListener('submit',async event=>{
@@ -28,6 +30,26 @@ if(form){
       sessionStorage.removeItem('eha-application-draft');location.assign(`${enPrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
     }catch(error){status.textContent=T.noConn;status.classList.add('error');if(window.turnstile)turnstile.reset()}
     finally{button.disabled=false;button.textContent=T.submit}
+  });
+}
+
+const clubForm=q('#club-request-form');
+if(clubForm){
+  const status=q('#club-form-status'),button=q('button[type="submit"]',clubForm),countryInput=q('[name="country"]',clubForm);
+  const requestedCountry=(new URLSearchParams(location.search).get('country')||'').trim().slice(0,100);
+  if(requestedCountry&&countryInput&&!countryInput.value)countryInput.value=requestedCountry;
+  const clearErrors=()=>{qa('.field-error',clubForm).forEach(el=>el.textContent='');qa('[aria-invalid="true"]',clubForm).forEach(el=>el.removeAttribute('aria-invalid'));status.textContent='';status.className='form-status'};
+  const showErrors=(errors={})=>{Object.entries(errors).forEach(([name,message])=>{const output=q(`[data-error-for="${name}"]`,clubForm),input=q(`[name="${name}"]`,clubForm);if(output)output.textContent=message;if(input)input.setAttribute('aria-invalid','true')});q('[aria-invalid="true"]',clubForm)?.focus()};
+  clubForm.addEventListener('submit',async event=>{
+    event.preventDefault();clearErrors();button.disabled=true;button.textContent=T.submitting;status.textContent=T.clubSending;
+    const formData=new FormData(clubForm),payload=Object.fromEntries(formData.entries());
+    payload.dataConsent=formData.has('dataConsent');payload.locale=LANG;payload.turnstileToken=formData.get('cf-turnstile-response')||'';
+    try{
+      const response=await fetch(clubForm.action,{method:'POST',headers:{Accept:'application/json','Content-Type':'application/json'},body:JSON.stringify(payload)}),data=await response.json().catch(()=>({}));
+      if(!response.ok){showErrors(data.errors);status.textContent=data.message||T.checkForm;status.classList.add('error');if(window.turnstile)turnstile.reset();return}
+      status.textContent=T.clubSuccess(data.reference);clubForm.reset();if(countryInput)countryInput.value=requestedCountry;if(window.turnstile)turnstile.reset();
+    }catch(error){status.textContent=T.noConn;status.classList.add('error');if(window.turnstile)turnstile.reset()}
+    finally{button.disabled=false;button.textContent=T.clubSubmit}
   });
 }
 

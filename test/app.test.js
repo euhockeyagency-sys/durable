@@ -58,7 +58,9 @@ function serviceMock(options = {}) {
       return { success: !options.turnstileInvalid };
     },
     async sendEmail() { if (options.emailFailure) throw new Error("email down"); return "email-id"; },
-    async sendTelegram() { if (options.telegramFailure) throw new Error("telegram down"); return "telegram-id"; }
+    async sendTelegram() { if (options.telegramFailure) throw new Error("telegram down"); return "telegram-id"; },
+    async sendClubRequestEmail() { if (options.clubEmailFailure) throw new Error("email down"); return "club-email-id"; },
+    async sendClubRequestTelegram() { if (options.clubTelegramFailure) throw new Error("telegram down"); return "club-telegram-id"; }
   };
 }
 
@@ -83,6 +85,71 @@ function validRequest(agent, overrides = {}) {
   for (const [name, value] of Object.entries(fields)) call = call.field(name, value);
   return call;
 }
+
+function validClubRequest(agent, overrides = {}) {
+  return agent.post("/api/club-request").send({
+    clubName: "HC Test",
+    contactName: "Anna Smith",
+    email: "anna@example.com",
+    country: "Poland",
+    positionNeeded: "Centre",
+    level: "Senior Division 1",
+    message: "Two-way centre available from August.",
+    dataConsent: true,
+    turnstileToken: "valid-token",
+    locale: "en",
+    ...overrides
+  });
+}
+
+test("delivers a valid club request without writing to Supabase", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config({ clubRequestConfigured: true }), services, now: () => new Date("2026-07-23T12:00:00Z") });
+  const response = await validClubRequest(request(app)).expect(201);
+  assert.equal(response.body.ok, true);
+  assert.match(response.body.reference, /^EHA-CLUB-202607-[A-F0-9]{6}$/);
+  assert.equal(services.rows.applications.length, 0);
+  assert.equal(services.rows.application_notifications.length, 0);
+});
+
+test("club request accepts phone when email is empty", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config({ clubRequestConfigured: true }), services });
+  await validClubRequest(request(app), { email: "", phone: "+48123456789" }).expect(201);
+});
+
+test("club request requires at least one contact method", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config({ clubRequestConfigured: true }), services });
+  const response = await validClubRequest(request(app), { email: "", phone: "" }).expect(400);
+  assert.ok(response.body.errors.email);
+  assert.ok(response.body.errors.phone);
+});
+
+test("club request honeypot prevents notification delivery", async () => {
+  let calls = 0;
+  const services = serviceMock();
+  services.sendClubRequestEmail = async () => { calls += 1; };
+  services.sendClubRequestTelegram = async () => { calls += 1; };
+  const app = createApp({ config: config({ clubRequestConfigured: true }), services });
+  await validClubRequest(request(app), { website: "https://spam.example" }).expect(400);
+  assert.equal(calls, 0);
+});
+
+test("club request reports a notification channel failure", async () => {
+  const services = serviceMock({ clubEmailFailure: true });
+  const app = createApp({ config: config({ clubRequestConfigured: true }), services });
+  const response = await validClubRequest(request(app)).expect(502);
+  assert.equal(response.body.code, "notification_failed");
+});
+
+test("club request rate limiter rejects the sixth attempt", async () => {
+  const app = createApp({ config: config({ clubRequestConfigured: true }), services: serviceMock() });
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    await request(app).post("/api/club-request").send({}).expect(400);
+  }
+  await request(app).post("/api/club-request").send({}).expect(429);
+});
 
 test("stores a valid adult application and notification audits", async () => {
   const services = serviceMock();
@@ -242,6 +309,39 @@ test("every bilingual page exists as a file in both language directories", () =>
     assert.ok(fs.existsSync(path.join(publicDir, "ru", `.${toFile(page.ru)}`)), `missing RU file for ${page.ru}`);
     assert.ok(fs.existsSync(path.join(publicDir, "en", `.${toFile(page.en)}`)), `missing EN file for ${page.en}`);
   }
+});
+
+test("Poland country guides contain all twelve sections", () => {
+  const publicDir = path.join(__dirname, "..", "public");
+  for (const file of [
+    path.join(publicDir, "ru", "guides", "hokkej-v-polshe.html"),
+    path.join(publicDir, "en", "guides", "hockey-in-poland.html")
+  ]) {
+    const html = fs.readFileSync(file, "utf8");
+    const sections = [...html.matchAll(/data-country-section="(\d+)"/g)].map((match) => Number(match[1]));
+    assert.deepEqual(sections, Array.from({ length: 12 }, (_, index) => index + 1));
+    assert.match(html, /"@type":"Article"/);
+    assert.match(html, /"@type":"BreadcrumbList"/);
+    assert.match(html, /"@type":"FAQPage"/);
+  }
+});
+
+test("Poland guide language switcher points to the translated guide", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const ru = await request(app).get("/guides/hokkej-v-polshe").expect(200);
+  assert.match(ru.text, /class="lang-switch" href="https:\/\/eha\.test\/en\/guides\/hockey-in-poland"/);
+  const en = await request(app).get("/en/guides/hockey-in-poland").expect(200);
+  assert.match(en.text, /class="lang-switch" href="https:\/\/eha\.test\/guides\/hokkej-v-polshe"/);
+});
+
+test("club pages and Poland guides appear in their language sitemaps", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const ru = await request(app).get("/sitemap.xml").expect(200);
+  assert.match(ru.text, /https:\/\/eha\.test\/for-clubs/);
+  assert.match(ru.text, /https:\/\/eha\.test\/guides\/hokkej-v-polshe/);
+  const en = await request(app).get("/en/sitemap.xml").expect(200);
+  assert.match(en.text, /https:\/\/eha\.test\/en\/for-clubs/);
+  assert.match(en.text, /https:\/\/eha\.test\/en\/guides\/hockey-in-poland/);
 });
 
 test("serves the English home under /en/ with English canonical and hreflang", async () => {

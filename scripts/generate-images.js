@@ -22,6 +22,7 @@ const ARTICLES = [
   { slug: "hokkej-v-chexii", category: "Страны · Чехия", title: "Хоккей в Чехии: лиги и как попасть" },
   { slug: "hokkej-v-germanii", category: "Страны · Германия", title: "Хоккей в Германии: лиги и как попасть" },
   { slug: "hokkej-v-polshe", category: "Страны · Польша", title: "Хоккей в Польше: лиги и как попасть" },
+  { slug: "hockey-in-poland", category: "Countries · Poland", title: "Hockey in Poland: leagues, imports and work rules", domain: "eurohockeyagency.com" },
   { slug: "ligi-evropy", category: "Справочник", title: "Хоккейные лиги Европы: уровни и легионеры" },
   { slug: "kalkulyator-urovnya", category: "Инструмент", title: "Калькулятор уровня: какая лига реальна" }
 ];
@@ -51,6 +52,10 @@ const PYRAMIDS = [
   { slug: "hokkej-v-polshe", country: "Польша", levels: [
     { name: "PHL", note: "Высший дивизион, открыт для легионеров", entry: true },
     { name: "1 liga", note: "Второй дивизион, вход и адаптация" }
+  ] },
+  { slug: "hockey-in-poland", country: "Poland", lang: "en", levels: [
+    { name: "PHL", note: "Top division; import opportunities", entry: true },
+    { name: "1 liga", note: "Second level; entry and adaptation" }
   ] }
 ];
 
@@ -78,7 +83,7 @@ function logo(x, y, scale = 1) {
   </g>`;
 }
 
-function coverSvg({ category, title }) {
+function coverSvg({ category, title, domain = "eurohockeyagency.ru" }) {
   const lines = wrap(title, 26).slice(0, 3);
   const size = lines.length >= 3 ? 58 : 68;
   const startY = 310; // fixed first baseline keeps clear of the category label
@@ -100,11 +105,11 @@ function coverSvg({ category, title }) {
   ${logo(80, 70)}
   <text x="80" y="222" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="4" fill="${BLUE_SOFT}">${esc(category.toUpperCase())}</text>
   ${rows}
-  <text x="80" y="560" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="${BLUE}">eurohockeyagency.ru</text>
+  <text x="80" y="560" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="${BLUE}">${esc(domain)}</text>
 </svg>`;
 }
 
-function pyramidSvg({ country, levels }) {
+function pyramidSvg({ country, levels, lang = "ru" }) {
   const W = 1000, H = 240 + levels.length * 130;
   const maxW = 760, minW = 420;
   const step = levels.length > 1 ? (maxW - minW) / (levels.length - 1) : 0;
@@ -115,7 +120,7 @@ function pyramidSvg({ country, levels }) {
     const stroke = lvl.entry ? BLUE : "rgba(255,255,255,.18)";
     const fill = lvl.entry ? "rgba(22,135,255,.16)" : "rgba(255,255,255,.05)";
     const badge = lvl.entry
-      ? `<text x="${W / 2}" y="${y + 96}" font-family="Arial, sans-serif" font-size="17" font-weight="800" fill="${BLUE}" text-anchor="middle">РЕАЛЬНАЯ ТОЧКА ВХОДА</text>`
+      ? `<text x="${W / 2}" y="${y + 96}" font-family="Arial, sans-serif" font-size="17" font-weight="800" fill="${BLUE}" text-anchor="middle">${lang === "en" ? "REALISTIC ENTRY POINT" : "РЕАЛЬНАЯ ТОЧКА ВХОДА"}</text>`
       : "";
     return `<rect x="${x}" y="${y}" width="${w}" height="${lvl.entry ? 108 : 92}" rx="10" fill="${fill}" stroke="${stroke}" stroke-width="${lvl.entry ? 3 : 1.5}"/>
       <text x="${W / 2}" y="${y + 40}" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle">${esc(lvl.name)}</text>
@@ -124,10 +129,10 @@ function pyramidSvg({ country, levels }) {
   return `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
   <rect width="${W}" height="${H}" fill="${INK}"/>
   <rect x="0" y="0" width="${W}" height="6" fill="${BLUE}"/>
-  <text x="${W / 2}" y="72" font-family="Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="4" fill="${BLUE_SOFT}" text-anchor="middle">ПИРАМИДА ЛИГ</text>
+  <text x="${W / 2}" y="72" font-family="Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="4" fill="${BLUE_SOFT}" text-anchor="middle">${lang === "en" ? "LEAGUE PYRAMID" : "ПИРАМИДА ЛИГ"}</text>
   <text x="${W / 2}" y="126" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="900" fill="#ffffff" text-anchor="middle">${esc(country)}</text>
   ${blocks}
-  <text x="${W / 2}" y="${H - 28}" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="${BLUE}" text-anchor="middle">eurohockeyagency.ru</text>
+  <text x="${W / 2}" y="${H - 28}" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="${BLUE}" text-anchor="middle">${lang === "en" ? "eurohockeyagency.com" : "eurohockeyagency.ru"}</text>
 </svg>`;
 }
 

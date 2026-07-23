@@ -5,6 +5,8 @@ const express = require("express");
 const multer = require("multer");
 const { createApplicationHandler } = require("./applications");
 const { createServices } = require("./services");
+const { validateClubRequest } = require("./validation");
+const { messages, normalizeLocale } = require("./messages");
 const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales");
 
 const CONTENT_TYPES = {
@@ -37,7 +39,8 @@ function createApp({ config, services, now, randomUUID } = {}) {
     }
   });
   const limiter = createRateLimiter({ limit: 5, windowMs: 15 * 60 * 1000, now: () => (now ? now().getTime() : Date.now()) });
-  const appServices = services || (config.applicationConfigured ? createServices(config) : null);
+  const clubLimiter = createRateLimiter({ limit: 5, windowMs: 15 * 60 * 1000, now: () => (now ? now().getTime() : Date.now()) });
+  const appServices = services || ((config.applicationConfigured || config.clubRequestConfigured) ? createServices(config) : null);
 
   app.get("/api/health", (_req, res) => {
     // Notification state is reported too: storage alone being configured is not
@@ -61,6 +64,15 @@ function createApp({ config, services, now, randomUUID } = {}) {
     randomUUID
   }));
   app.all("/api/applications", (_req, res) => {
+    res.set("Allow", "POST").status(405).json({ ok: false, code: "method_not_allowed" });
+  });
+  app.post("/api/club-request", clubLimiter, express.json({ limit: "20kb" }), createClubRequestHandler({
+    config,
+    services: appServices,
+    now,
+    randomUUID
+  }));
+  app.all("/api/club-request", (_req, res) => {
     res.set("Allow", "POST").status(405).json({ ok: false, code: "method_not_allowed" });
   });
 
@@ -122,6 +134,93 @@ function createRateLimiter({ limit, windowMs, now }) {
     }
     next();
   };
+}
+
+function createClubRequestHandler({ config, services, now = () => new Date(), randomUUID = cryptoRandomUUID } = {}) {
+  return async function submitClubRequest(req, res) {
+    const locale = normalizeLocale((req.body || {}).locale);
+    const m = messages(locale);
+    const configured = config.clubRequestConfigured !== undefined
+      ? config.clubRequestConfigured
+      : Boolean(config.emailConfigured || config.telegramConfigured);
+    if (!configured || !services) {
+      return res.status(503).json({
+        ok: false,
+        code: "service_unavailable",
+        message: m.serviceUnavailable,
+        contactEmail: config.contactEmail
+      });
+    }
+
+    const validation = validateClubRequest(req.body || {}, Boolean(config.turnstileConfigured), locale);
+    if (!validation.ok) {
+      return res.status(400).json({ ok: false, code: "validation_error", errors: validation.errors });
+    }
+
+    if (config.turnstileConfigured) {
+      try {
+        const result = await services.verifyTurnstile({
+          token: validation.value.turnstileToken,
+          ip: req.ip,
+          idempotencyKey: randomUUID(),
+          action: "club_request"
+        });
+        if (!result.success) {
+          return res.status(422).json({
+            ok: false,
+            code: "verification_failed",
+            errors: { turnstile: m.verificationFailed }
+          });
+        }
+      } catch (error) {
+        console.error("Club request Turnstile verification unavailable", error.message);
+        return res.status(503).json({
+          ok: false,
+          code: "verification_unavailable",
+          message: m.verificationUnavailable,
+          contactEmail: config.contactEmail
+        });
+      }
+    }
+
+    const createdAt = now();
+    const reference = createClubRequestReference(createdAt, randomUUID);
+    const clubRequest = { ...validation.value, reference, createdAt: createdAt.toISOString() };
+    const deliveries = [];
+    if (config.telegramConfigured !== false) {
+      deliveries.push(["telegram", () => services.sendClubRequestTelegram(clubRequest)]);
+    }
+    if (config.emailConfigured !== false) {
+      deliveries.push(["email", () => services.sendClubRequestEmail(clubRequest)]);
+    }
+    const results = await Promise.allSettled(deliveries.map(([, send]) => send()));
+    const failed = results
+      .map((result, index) => result.status === "rejected"
+        ? `${deliveries[index][0]}: ${String(result.reason?.message || result.reason).slice(0, 300)}`
+        : null)
+      .filter(Boolean);
+    if (failed.length) {
+      console.error(`Club request ${reference} notification failure`, failed.join("; "));
+      return res.status(502).json({
+        ok: false,
+        code: "notification_failed",
+        message: m.notificationFailed,
+        contactEmail: config.contactEmail
+      });
+    }
+    return res.status(201).json({ ok: true, reference });
+  };
+}
+
+function cryptoRandomUUID() {
+  return require("node:crypto").randomUUID();
+}
+
+function createClubRequestReference(now, randomUUID = cryptoRandomUUID) {
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const suffix = randomUUID().replaceAll("-", "").slice(0, 6).toUpperCase();
+  return `EHA-CLUB-${year}${month}-${suffix}`;
 }
 
 function securityHeaders(_req, res, next) {
@@ -387,4 +486,12 @@ function buildFeed(config, locale = "ru") {
     `    <language>${locale}</language>\n${items.join("\n")}\n  </channel>\n</rss>\n`;
 }
 
-module.exports = { createApp, createRateLimiter, servePublic, buildSitemap, buildFeed };
+module.exports = {
+  createApp,
+  createRateLimiter,
+  createClubRequestHandler,
+  createClubRequestReference,
+  servePublic,
+  buildSitemap,
+  buildFeed
+};

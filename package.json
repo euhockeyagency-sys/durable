@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "node --env-file=.env server.js",
     "test": "node --test",
-    "check": "node --check server.js && node --check src/app.js && node --check src/applications.js && node --check src/services.js"
+    "check": "node --check server.js && node --check src/app.js && node --check src/applications.js && node --check src/services.js && node --check src/validation.js && node --check src/locales.js && node --check public/site.js"
   },
   "engines": {
     "node": ">=20"
