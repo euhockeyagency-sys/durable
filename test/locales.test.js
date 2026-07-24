@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("../src/locales");
+const { PAGES, resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("../src/locales");
 
 const single = { hostsConfigured: false, siteUrl: "https://eha.test" };
 const split = {
@@ -31,7 +31,7 @@ test("single-domain: language switcher points at the counterpart page", () => {
   assert.equal(altUrlFor("en", "/for-players", single), "https://eha.test/players");
   assert.equal(altUrlFor("ru", "/", single), "https://eha.test/en/");
   // A page without a declared translation falls back to the other language home.
-  assert.equal(altUrlFor("ru", "/guides/hokkej-v-shvecii", single), "https://eha.test/en/");
+  assert.equal(altUrlFor("ru", "/guides/hokkejnoe-rezyume", single), "https://eha.test/en/");
 });
 
 test("two-domain: host decides the language for shared slugs", () => {
@@ -71,10 +71,20 @@ test("hreflang alternates come from the page table", () => {
     ru: "https://eha.test/players",
     en: "https://eha.test/en/for-players"
   });
-  assert.equal(hreflangFor("/guides/hokkej-v-shvecii", "ru", single), null);
+  assert.deepEqual(hreflangFor("/guides/hokkej-v-shvecii", "ru", single), {
+    ru: "https://eha.test/guides/hokkej-v-shvecii",
+    en: "https://eha.test/en/guides/hockey-in-sweden"
+  });
   assert.deepEqual(hreflangFor("/guides/hokkej-v-polshe", "ru", single), {
     ru: "https://eha.test/guides/hokkej-v-polshe",
     en: "https://eha.test/en/guides/hockey-in-poland"
   });
   assert.equal(altUrlFor("en", "/guides/hockey-in-poland", single), "https://eha.test/guides/hokkej-v-polshe");
+});
+
+
+test("page table covers every published bilingual pair without duplicate paths", () => {
+  assert.equal(PAGES.length, 41);
+  assert.equal(new Set(PAGES.map((page) => page.ru)).size, PAGES.length);
+  assert.equal(new Set(PAGES.map((page) => page.en)).size, PAGES.length);
 });
