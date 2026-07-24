@@ -31,7 +31,7 @@ test("single-domain: language switcher points at the counterpart page", () => {
   assert.equal(altUrlFor("en", "/for-players", single), "https://eha.test/players");
   assert.equal(altUrlFor("ru", "/", single), "https://eha.test/en/");
   // A page without a declared translation falls back to the other language home.
-  assert.equal(altUrlFor("ru", "/guides/hokkejnoe-rezyume", single), "https://eha.test/en/");
+  assert.equal(altUrlFor("ru", "/guides/not-translated", single), "https://eha.test/en/");
 });
 
 test("two-domain: host decides the language for shared slugs", () => {
@@ -80,11 +80,16 @@ test("hreflang alternates come from the page table", () => {
     en: "https://eha.test/en/guides/hockey-in-poland"
   });
   assert.equal(altUrlFor("en", "/guides/hockey-in-poland", single), "https://eha.test/guides/hokkej-v-polshe");
+  assert.deepEqual(hreflangFor("/guides/hokkejnoe-rezyume", "ru", single), {
+    ru: "https://eha.test/guides/hokkejnoe-rezyume",
+    en: "https://eha.test/en/guides/hockey-resume-for-european-clubs"
+  });
+  assert.equal(altUrlFor("en", "/guides/hockey-video-for-clubs", single), "https://eha.test/guides/video-dlya-kluba");
 });
 
 
 test("page table covers every published bilingual pair without duplicate paths", () => {
-  assert.equal(PAGES.length, 41);
+  assert.equal(PAGES.length, 45);
   assert.equal(new Set(PAGES.map((page) => page.ru)).size, PAGES.length);
   assert.equal(new Set(PAGES.map((page) => page.en)).size, PAGES.length);
 });
