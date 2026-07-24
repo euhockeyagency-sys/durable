@@ -50,7 +50,11 @@ const PAGES = [
   { ru: "/guides/kak-proverit-predlozhenie-hokkejnogo-kluba", en: "/guides/how-to-verify-a-hockey-club-offer" },
   { ru: "/guides/mezhdunarodnyj-transfer-iihf", en: "/guides/iihf-international-transfer" },
   { ru: "/guides/poezdka-na-prosmotr-v-hokkejnyj-klub", en: "/guides/travelling-for-a-hockey-tryout" },
-  { ru: "/guides/rabochaya-viza-dlya-hokkeista", en: "/guides/work-visa-for-hockey-player" }
+  { ru: "/guides/rabochaya-viza-dlya-hokkeista", en: "/guides/work-visa-for-hockey-player" },
+  { ru: "/guides/hokkejnoe-rezyume", en: "/guides/hockey-resume-for-european-clubs" },
+  { ru: "/guides/kak-rabotaet-hokkejnyj-agent", en: "/guides/how-a-hockey-agent-works" },
+  { ru: "/guides/kak-vybrat-ligu", en: "/guides/how-to-choose-a-hockey-league" },
+  { ru: "/guides/video-dlya-kluba", en: "/guides/hockey-video-for-clubs" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
