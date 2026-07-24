@@ -71,7 +71,10 @@ test("hreflang alternates come from the page table", () => {
     ru: "https://eha.test/players",
     en: "https://eha.test/en/for-players"
   });
-  assert.deepEqual(hreflangFor("/guides/hokkej-v-shvecii", "ru", single), {\n    ru: "https://eha.test/guides/hokkej-v-shvecii",\n    en: "https://eha.test/en/guides/hockey-in-sweden"\n  });
+  assert.deepEqual(hreflangFor("/guides/hokkej-v-shvecii", "ru", single), {
+    ru: "https://eha.test/guides/hokkej-v-shvecii",
+    en: "https://eha.test/en/guides/hockey-in-sweden"
+  });
   assert.deepEqual(hreflangFor("/guides/hokkej-v-polshe", "ru", single), {
     ru: "https://eha.test/guides/hokkej-v-polshe",
     en: "https://eha.test/en/guides/hockey-in-poland"
