@@ -525,6 +525,10 @@ footer small{display:block}
 .reading-progress{top:0}
 }
 
+.mobile-lang-switch{display:none;align-items:center;justify-content:center;min-width:44px;height:42px;border:1px solid var(--line);border-radius:999px;padding:0 11px;font-size:12px;font-weight:800;letter-spacing:.06em;color:#b9d8f5;background:rgba(3,11,20,.55)}
+.mobile-lang-switch:hover{border-color:var(--blue);color:#fff}
+@media(max-width:850px){.header{justify-content:flex-start;gap:10px}.header .brand{margin-right:auto}.mobile-lang-switch{display:inline-flex}.menu{min-height:42px}}
+
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}
 *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 .reveal,.hero .kicker,.hero h1 span,.hero .lead,.hero .actions,.hero .note{opacity:1!important;transform:none!important}
