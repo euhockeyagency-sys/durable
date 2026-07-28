@@ -396,6 +396,33 @@ test("every bilingual page exists as a file in both language directories", () =>
   }
 });
 
+test("two-domain routes expose the exact source file and content hash", async () => {
+  const app = createApp({ config: splitConfig(), services: serviceMock() });
+  const publicDir = path.join(__dirname, "..", "public");
+  const routes = [
+    ["eurohockeyagency.com", "/", "en/index.html", "en"],
+    ["eurohockeyagency.com", "/agent", "en/agent.html", "en"],
+    ["eurohockeyagency.com", "/services", "en/services.html", "en"],
+    ["eurohockeyagency.com", "/guides", "en/guides.html", "en"],
+    ["eurohockeyagency.ru", "/", "ru/index.html", "ru"],
+    ["eurohockeyagency.ru", "/agent", "ru/agent.html", "ru"],
+    ["eurohockeyagency.ru", "/services", "ru/services.html", "ru"],
+    ["eurohockeyagency.ru", "/guides", "ru/guides.html", "ru"]
+  ];
+
+  for (const [host, route, source, lang] of routes) {
+    const response = await request(app).get(route).set("Host", host).expect(200);
+    const expectedHash = require("node:crypto")
+      .createHash("sha256")
+      .update(fs.readFileSync(path.join(publicDir, source)))
+      .digest("hex");
+    assert.equal(response.headers["x-eha-source"], source);
+    assert.equal(response.headers["x-eha-source-sha256"], expectedHash);
+    assert.equal(response.headers["cache-control"], "no-cache, no-store, must-revalidate");
+    assert.match(response.text, new RegExp(`<html lang="${lang}"`));
+  }
+});
+
 test("Poland country guides contain all twelve sections", () => {
   const publicDir = path.join(__dirname, "..", "public");
   for (const file of [

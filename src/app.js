@@ -1,6 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const zlib = require("node:zlib");
+const { createHash } = require("node:crypto");
 const express = require("express");
 const multer = require("multer");
 const { createApplicationHandler } = require("./applications");
@@ -348,6 +349,11 @@ function servePublic(req, res, config) {
     fs.readFile(filePath, (error, data) => {
       if (error) return tryNext(index + 1);
       const extension = path.extname(filePath);
+      if (extension === ".html") {
+        const source = path.relative(config.publicDir, filePath).split(path.sep).join("/");
+        res.set("X-EHA-Source", source);
+        res.set("X-EHA-Source-SHA256", createHash("sha256").update(data).digest("hex"));
+      }
       sendBody(req, res, renderBody(data, extension, config, context), extension, 200);
     });
   };
@@ -410,7 +416,9 @@ function buildHreflang(logicalPath, locale, config) {
 function sendBody(req, res, body, extension, status = 200) {
   res.status(status);
   res.set("Content-Type", CONTENT_TYPES[extension] || "application/octet-stream");
-  res.set("Cache-Control", extension === ".html" ? "no-cache" : "public, max-age=604800");
+  res.set("Cache-Control", extension === ".html"
+    ? "no-cache, no-store, must-revalidate"
+    : "public, max-age=604800");
   const compressible = [".html", ".css", ".js", ".svg", ".txt", ".xml"].includes(extension);
   if (compressible && /gzip/.test(req.headers["accept-encoding"] || "")) {
     zlib.gzip(body, (gzipError, compressed) => {

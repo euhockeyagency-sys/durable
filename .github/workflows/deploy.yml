@@ -47,6 +47,13 @@ jobs:
           HEALTH=$(curl -fsS https://eurohockeyagency.com/api/health)
           node -e 'const health=JSON.parse(process.argv[1]); if (health.ok !== true) process.exit(1)' "$HEALTH"
 
+          EXPECTED_SOURCE_SHA=$(sha256sum public/en/index.html | awk '{print $1}')
+          LIVE_HEADERS=$(curl -fsSI https://eurohockeyagency.com/)
+          LIVE_SOURCE=$(printf '%s\n' "$LIVE_HEADERS" | awk -F': ' 'tolower($1)=="x-eha-source"{print $2}' | tr -d '\r')
+          LIVE_SOURCE_SHA=$(printf '%s\n' "$LIVE_HEADERS" | awk -F': ' 'tolower($1)=="x-eha-source-sha256"{print $2}' | tr -d '\r')
+          test "$LIVE_SOURCE" = "en/index.html"
+          test "$LIVE_SOURCE_SHA" = "$EXPECTED_SOURCE_SHA"
+
           REDIRECT=$(curl -sS --max-redirs 0 -o /dev/null \
             -w '%{http_code}|%{redirect_url}' \
             'https://www.eurohockeyagency.com/guides?source=deploy')
