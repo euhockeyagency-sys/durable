@@ -57,9 +57,11 @@ test("two-domain: a stray /en/ prefix 301s to the clean English URL", () => {
     { status: 301, location: "https://eurohockeyagency.com/services" });
 });
 
-test("two-domain: an untrusted host defaults to RU without reflecting it", () => {
-  assert.deepEqual(resolveLocale("attacker.example", "/kalkulyator-urovnya", split),
-    { locale: "ru", root: "ru", logicalPath: "/kalkulyator-urovnya" });
+test("two-domain: a non-public host defaults to EN without reflecting it", () => {
+  assert.deepEqual(resolveLocale("127.0.0.1:3000", "/", split),
+    { locale: "en", root: "en", logicalPath: "/" });
+  assert.deepEqual(resolveLocale("attacker.example", "/kalkulyator-urovnya", split).redirect,
+    { status: 301, location: "https://eurohockeyagency.ru/kalkulyator-urovnya" });
 });
 
 test("hreflang alternates come from the page table", () => {

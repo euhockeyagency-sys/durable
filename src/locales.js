@@ -134,14 +134,14 @@ function resolveLocale(host, pathname, config) {
 
   // Two-domain mode (post-migration): the host decides the language.
   const name = hostname(host);
-  const onEn = name === config.enHost;
+  const onRu = name === config.ruHost;
 
   // Keep Russian content reachable below /ru/ on the English domain while the
   // dedicated .ru hostname remains unavailable.
-  if (ruPrefixed && onEn) {
+  if (ruPrefixed && !onRu) {
     return { locale: "ru", root: "ru", logicalPath: stripRu(), urlPrefix: "/ru" };
   }
-  if (ruPrefixed && name === config.ruHost) {
+  if (ruPrefixed && onRu) {
     return { redirect: { status: 301, location: joinBase(config.ruUrl, stripRu()) } };
   }
 
@@ -151,11 +151,13 @@ function resolveLocale(host, pathname, config) {
   }
 
   const cls = classifyPath(pathname);
-  if (onEn) {
+  // Only the exact RU hostname selects the unprefixed Russian tree. Requests
+  // without a public Host (for example a localhost health check) default to EN.
+  if (!onRu) {
     if (cls === "ru") return { redirect: { status: 301, location: config.ruUrl + pathname } };
     return { locale: "en", root: "en", logicalPath: pathname };
   }
-  // On the RU domain, or an untrusted host (defaults to RU without reflecting it).
+  // The dedicated RU domain serves the unprefixed Russian tree.
   if (cls === "en") return { redirect: { status: 301, location: config.enUrl + pathname } };
   return { locale: "ru", root: "ru", logicalPath: pathname };
 }
