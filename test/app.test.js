@@ -423,6 +423,43 @@ test("two-domain routes expose the exact source file and content hash", async ()
   }
 });
 
+test("the .com /ru prefix serves Russian files with prefixed navigation", async () => {
+  const app = createApp({ config: splitConfig(), services: serviceMock() });
+  for (const [route, source] of [
+    ["/ru/", "ru/index.html"],
+    ["/ru/agent", "ru/agent.html"],
+    ["/ru/services", "ru/services.html"],
+    ["/ru/guides", "ru/guides.html"]
+  ]) {
+    const response = await request(app)
+      .get(route)
+      .set("Host", "eurohockeyagency.com")
+      .expect(200);
+    assert.equal(response.headers["x-eha-source"], source);
+    assert.match(response.text, /<html lang="ru"/);
+    assert.match(response.text, /href="\/ru\/services"/);
+    assert.doesNotMatch(response.text, /href="\/ru\/styles\.css/);
+  }
+  const home = await request(app).get("/ru/").set("Host", "eurohockeyagency.com");
+  assert.match(home.text, /rel="canonical" href="https:\/\/eurohockeyagency\.com\/ru\/"/);
+});
+
+test("legacy public URLs redirect permanently to the current structure", async () => {
+  const app = createApp({ config: splitConfig(), services: serviceMock() });
+  for (const [legacy, current] of [
+    ["/about", "/agent"],
+    ["/about-the-agent", "/agent"],
+    ["/clients", "/cases"],
+    ["/contact-us", "/contact"]
+  ]) {
+    const response = await request(app)
+      .get(`${legacy}?source=search`)
+      .set("Host", "eurohockeyagency.com")
+      .expect(301);
+    assert.equal(response.headers.location, `${current}?source=search`);
+  }
+});
+
 test("Poland country guides contain all twelve sections", () => {
   const publicDir = path.join(__dirname, "..", "public");
   for (const file of [

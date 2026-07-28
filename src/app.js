@@ -25,6 +25,12 @@ const CONTENT_TYPES = {
 
 const PRIMARY_ORIGIN = "https://eurohockeyagency.ru";
 const PRIMARY_HOST = "eurohockeyagency.ru";
+const LEGACY_PATHS = new Map([
+  ["/about", "/agent"],
+  ["/about-the-agent", "/agent"],
+  ["/clients", "/cases"],
+  ["/contact-us", "/contact"]
+]);
 
 function createApp({ config, services, now, randomUUID } = {}) {
   if (!config) throw new Error("createApp requires config");
@@ -33,6 +39,10 @@ function createApp({ config, services, now, randomUUID } = {}) {
   app.disable("x-powered-by");
   app.use(securityHeaders);
   app.use(redirectDuplicateHosts(config));
+  app.get([...LEGACY_PATHS.keys()], (req, res) => {
+    const query = req.originalUrl.includes("?") ? req.originalUrl.slice(req.originalUrl.indexOf("?")) : "";
+    return res.redirect(301, `${LEGACY_PATHS.get(req.path)}${query}`);
+  });
 
   const upload = multer({
     storage: multer.memoryStorage(),
@@ -329,7 +339,7 @@ function servePublic(req, res, config) {
 
   const resolved = resolveLocale(req.headers.host, pathname, config);
   if (resolved.redirect) return res.redirect(resolved.redirect.status, resolved.redirect.location);
-  const { locale, root, logicalPath } = resolved;
+  const { locale, root, logicalPath, urlPrefix = "" } = resolved;
 
   const requested = logicalPath === "/" ? "/index.html"
     : (path.extname(logicalPath) ? logicalPath : `${logicalPath}.html`);
@@ -340,7 +350,7 @@ function servePublic(req, res, config) {
     path.resolve(config.publicDir, root, `.${requested}`),
     path.resolve(config.publicDir, `.${requested}`)
   ];
-  const context = { locale, logicalPath };
+  const context = { locale, logicalPath, urlPrefix };
 
   const tryNext = (index) => {
     if (index >= candidates.length) return serveNotFound(req, res, config, locale, root);
@@ -364,8 +374,8 @@ function servePublic(req, res, config) {
 // `context` carries the resolved locale and the language-neutral logical path.
 function renderBody(data, extension, config, context) {
   if (![".html", ".txt", ".xml"].includes(extension)) return data;
-  const { locale, logicalPath } = context;
-  const baseUrl = baseUrlFor(locale, config);
+  const { locale, logicalPath, urlPrefix = "" } = context;
+  const baseUrl = urlPrefix ? `${config.enUrl}${urlPrefix}` : baseUrlFor(locale, config);
   // Prefix for root-relative internal links. English pages live under /en/ until
   // the domains are split, after which they move to the root of their own domain.
   const enPrefix = locale === "en" && !config.hostsConfigured ? "/en" : "";
@@ -376,6 +386,9 @@ function renderBody(data, extension, config, context) {
     .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
     .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
     .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
+  if (extension === ".html" && urlPrefix) {
+    html = prefixInternalLinks(html, urlPrefix);
+  }
   if (extension === ".html" && !config.turnstileConfigured) {
     html = html
       .replace(/<script src="https:\/\/challenges\.cloudflare\.com\/turnstile\/v0\/api\.js" async defer><\/script>\s*/g, "")
@@ -394,9 +407,16 @@ function renderBody(data, extension, config, context) {
     const social = buildSocialTags(html, pageUrl, isArticle, coverFor(config, logicalPath, baseUrl), locale);
     const feedTitle = locale === "en" ? "EHA — resources for players" : "EHA — материалы для хоккеистов";
     const feed = `<link rel="alternate" type="application/rss+xml" title="${feedTitle}" href="${baseUrl}/feed.xml">`;
-    html = html.replace("</head>", `${social}${buildHreflang(logicalPath, locale, config)}${feed}${YANDEX_METRIKA}</head>`);
+    html = html.replace("</head>", `${social}${buildHreflang(logicalPath, locale, config, urlPrefix ? baseUrl : null)}${feed}${YANDEX_METRIKA}</head>`);
   }
   return Buffer.from(html);
+}
+
+function prefixInternalLinks(html, prefix) {
+  return html.replace(/href="\/([^"]*)"/g, (match, target) => {
+    if (/^(?:assets\/|styles\.css(?:\?|$)|site\.js(?:\?|$)|favicon\.svg$)/.test(target)) return match;
+    return `href="${prefix}/${target}"`;
+  });
 }
 
 function joinUrl(base, logicalPath) {
@@ -405,9 +425,12 @@ function joinUrl(base, logicalPath) {
 
 // hreflang alternates for bilingual pages; empty for pages with no declared
 // translation (assets, untranslated guides).
-function buildHreflang(logicalPath, locale, config) {
-  const alts = hreflangFor(logicalPath, locale, config);
+function buildHreflang(logicalPath, locale, config, localeBaseUrl = null) {
+  let alts = hreflangFor(logicalPath, locale, config);
   if (!alts) return "";
+  if (locale === "ru" && localeBaseUrl) {
+    alts = { ...alts, ru: joinUrl(localeBaseUrl, logicalPath) };
+  }
   return `<link rel="alternate" hreflang="ru" href="${htmlEscape(alts.ru)}">` +
     `<link rel="alternate" hreflang="en" href="${htmlEscape(alts.en)}">` +
     `<link rel="alternate" hreflang="x-default" href="${htmlEscape(alts.en)}">`;

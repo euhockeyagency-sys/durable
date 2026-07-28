@@ -26,8 +26,8 @@ if(form){
     try{
       const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}}),data=await response.json().catch(()=>({}));
       if(!response.ok){showErrors(data.errors);status.textContent=data.message||T.checkForm;status.classList.add('error');if(window.turnstile)turnstile.reset();return}
-      const enPrefix=location.pathname.startsWith('/en/')||location.pathname==='/en'?'/en':'';
-      sessionStorage.removeItem('eha-application-draft');location.assign(`${enPrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
+      const localePrefix=location.pathname.startsWith('/ru/')||location.pathname==='/ru'?'/ru':location.pathname.startsWith('/en/')||location.pathname==='/en'?'/en':'';
+      sessionStorage.removeItem('eha-application-draft');location.assign(`${localePrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
     }catch(error){status.textContent=T.noConn;status.classList.add('error');if(window.turnstile)turnstile.reset()}
     finally{button.disabled=false;button.textContent=T.submit}
   });

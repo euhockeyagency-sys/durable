@@ -115,10 +115,15 @@ function hreflangFor(logicalPath, locale, config) {
 // redirect (cross-language slug on the wrong domain, or a stray /en/ prefix).
 function resolveLocale(host, pathname, config) {
   const enPrefixed = pathname === "/en" || pathname.startsWith("/en/");
+  const ruPrefixed = pathname === "/ru" || pathname.startsWith("/ru/");
   const stripEn = () => {
     if (pathname === "/en") return "/";
     const rest = pathname.slice(3);
     return rest === "" ? "/" : rest;
+  };
+  const stripRu = () => {
+    if (pathname === "/ru" || pathname === "/ru/") return "/";
+    return pathname.slice(3);
   };
 
   if (!config.hostsConfigured) {
@@ -130,6 +135,15 @@ function resolveLocale(host, pathname, config) {
   // Two-domain mode (post-migration): the host decides the language.
   const name = hostname(host);
   const onEn = name === config.enHost;
+
+  // Keep Russian content reachable below /ru/ on the English domain while the
+  // dedicated .ru hostname remains unavailable.
+  if (ruPrefixed && onEn) {
+    return { locale: "ru", root: "ru", logicalPath: stripRu(), urlPrefix: "/ru" };
+  }
+  if (ruPrefixed && name === config.ruHost) {
+    return { redirect: { status: 301, location: joinBase(config.ruUrl, stripRu()) } };
+  }
 
   // No /en/ prefix should survive on a language-specific domain.
   if (enPrefixed) {

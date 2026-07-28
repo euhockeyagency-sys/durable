@@ -54,6 +54,15 @@ jobs:
           test "$LIVE_SOURCE" = "en/index.html"
           test "$LIVE_SOURCE_SHA" = "$EXPECTED_SOURCE_SHA"
 
+          RU_SOURCE=$(curl -fsSI https://eurohockeyagency.com/ru/ \
+            | awk -F': ' 'tolower($1)=="x-eha-source"{print $2}' | tr -d '\r')
+          test "$RU_SOURCE" = "ru/index.html"
+
+          LEGACY_REDIRECT=$(curl -sS --max-redirs 0 -o /dev/null \
+            -w '%{http_code}|%{redirect_url}' \
+            'https://eurohockeyagency.com/about-the-agent')
+          test "$LEGACY_REDIRECT" = '301|https://eurohockeyagency.com/agent'
+
           REDIRECT=$(curl -sS --max-redirs 0 -o /dev/null \
             -w '%{http_code}|%{redirect_url}' \
             'https://www.eurohockeyagency.com/guides?source=deploy')
