@@ -90,7 +90,7 @@
 <option value="left">Левый</option>
 <option value="right">Правый</option>
 </select><span class="field-error" data-error-for="stickHand"></span></label>
-<label>Elite Prospects — необязательно<input type="url" id="eliteProspectsOptional" placeholder="Если профиля нет, оставьте поле пустым">
+<label>Elite Prospects — необязательно<input type="url" id="eliteProspectsOptional" placeholder="Если профиля нет, оставьте поле пустым" oninput="document.getElementById('eliteProspectsUrl').value=this.value||'https://www.eliteprospects.com/'">
 <span class="field-error" data-error-for="eliteProspectsUrl"></span>
 </label>
 <input type="hidden" name="eliteProspectsUrl" id="eliteProspectsUrl" value="https://www.eliteprospects.com/">
