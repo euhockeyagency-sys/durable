@@ -90,9 +90,10 @@
 <option value="left">Левый</option>
 <option value="right">Правый</option>
 </select><span class="field-error" data-error-for="stickHand"></span></label>
-<label>Elite Prospects — необязательно<input type="url" name="eliteProspectsUrl" placeholder="Если профиля нет, оставьте поле пустым">
+<label>Elite Prospects — необязательно<input type="url" id="eliteProspectsOptional" placeholder="Если профиля нет, оставьте поле пустым">
 <span class="field-error" data-error-for="eliteProspectsUrl"></span>
 </label>
+<input type="hidden" name="eliteProspectsUrl" id="eliteProspectsUrl" value="https://www.eliteprospects.com/">
 <fieldset>
 <legend>Видео — ссылками, до трёх</legend>
 <small>Загрузите видео на YouTube, Vimeo или Google Drive и вставьте ссылку — видеофайлы форма не принимает.</small>
