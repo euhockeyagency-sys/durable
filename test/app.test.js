@@ -102,16 +102,33 @@ function validClubRequest(agent, overrides = {}) {
   });
 }
 
-test("redirects www to the single primary origin while preserving path and query", async () => {
-  const app = createApp({ config: config(), services: serviceMock() });
-  const response = await request(app)
-    .get("/guides/hokkej-v-polshe?source=www")
-    .set("Host", "www.eurohockeyagency.ru")
-    .expect(301);
-  assert.equal(
-    response.headers.location,
-    "https://eurohockeyagency.ru/guides/hokkej-v-polshe?source=www"
-  );
+test("redirects both www aliases to their configured origins while preserving path and query", async () => {
+  const app = createApp({
+    config: config({
+      ruHost: "eurohockeyagency.ru",
+      enHost: "eurohockeyagency.com",
+      ruUrl: "https://eurohockeyagency.ru",
+      enUrl: "https://eurohockeyagency.com",
+      hostsConfigured: true
+    }),
+    services: serviceMock()
+  });
+
+  for (const [host, path, expected] of [
+    [
+      "www.eurohockeyagency.ru",
+      "/guides/hokkej-v-polshe?source=www",
+      "https://eurohockeyagency.ru/guides/hokkej-v-polshe?source=www"
+    ],
+    [
+      "www.eurohockeyagency.com",
+      "/guides/hockey-in-poland?source=www",
+      "https://eurohockeyagency.com/guides/hockey-in-poland?source=www"
+    ]
+  ]) {
+    const response = await request(app).get(path).set("Host", host).expect(301);
+    assert.equal(response.headers.location, expected);
+  }
 });
 
 test("redirects Railway platform hosts to the single primary origin", async () => {
@@ -126,12 +143,21 @@ test("redirects Railway platform hosts to the single primary origin", async () =
   );
 });
 
-test("does not redirect the primary origin", async () => {
-  const app = createApp({ config: config(), services: serviceMock() });
-  await request(app)
-    .get("/")
-    .set("Host", "eurohockeyagency.ru")
-    .expect(200);
+test("does not redirect either configured primary origin", async () => {
+  const app = createApp({
+    config: config({
+      ruHost: "eurohockeyagency.ru",
+      enHost: "eurohockeyagency.com",
+      ruUrl: "https://eurohockeyagency.ru",
+      enUrl: "https://eurohockeyagency.com",
+      hostsConfigured: true
+    }),
+    services: serviceMock()
+  });
+
+  for (const host of ["eurohockeyagency.ru", "eurohockeyagency.com"]) {
+    await request(app).get("/").set("Host", host).expect(200);
+  }
 });
 
 test("robots.txt advertises both language sitemaps on the primary origin", async () => {

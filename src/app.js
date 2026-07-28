@@ -31,7 +31,7 @@ function createApp({ config, services, now, randomUUID } = {}) {
   if (config.trustProxy !== false) app.set("trust proxy", config.trustProxy);
   app.disable("x-powered-by");
   app.use(securityHeaders);
-  app.use(redirectDuplicateHosts);
+  app.use(redirectDuplicateHosts(config));
 
   const upload = multer({
     storage: multer.memoryStorage(),
@@ -112,14 +112,21 @@ function createApp({ config, services, now, randomUUID } = {}) {
   return app;
 }
 
-// Keep one indexable origin even when the same Railway service is reachable
-// through its platform hostname or the www alias. The original path and query
-// string are preserved so search engines can consolidate every URL directly.
-function redirectDuplicateHosts(req, res, next) {
-  const host = String(req.headers.host || "").split(":")[0].trim().toLowerCase();
-  const isDuplicate = host === `www.${PRIMARY_HOST}` || host.endsWith(".up.railway.app");
-  if (!isDuplicate) return next();
-  return res.redirect(301, `${PRIMARY_ORIGIN}${req.originalUrl || "/"}`);
+// Keep one indexable origin for each configured language domain. The original
+// path and query string are preserved so search engines consolidate every URL.
+function redirectDuplicateHosts(config) {
+  const canonicalOrigins = new Map();
+  if (config.ruHost) canonicalOrigins.set(`www.${config.ruHost}`, config.ruUrl);
+  if (config.enHost) canonicalOrigins.set(`www.${config.enHost}`, config.enUrl);
+  canonicalOrigins.set(`www.${PRIMARY_HOST}`, PRIMARY_ORIGIN);
+
+  return function redirectDuplicateHost(req, res, next) {
+    const host = String(req.headers.host || "").split(":")[0].trim().toLowerCase();
+    const canonicalOrigin = canonicalOrigins.get(host)
+      || (host.endsWith(".up.railway.app") ? PRIMARY_ORIGIN : null);
+    if (!canonicalOrigin) return next();
+    return res.redirect(301, `${canonicalOrigin}${req.originalUrl || "/"}`);
+  };
 }
 
 // "euhockeyagency@gmail.com" -> "eu***@gmail.com": enough to confirm the right

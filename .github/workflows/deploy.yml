@@ -39,8 +39,17 @@ jobs:
           # The key is locked to `cd /opt/eha && bash deploy.sh` on the server side.
           ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes root@5.22.215.5
 
-      - name: Verify the site responds
+      - name: Verify the canonical site and www redirect
         run: |
           sleep 5
-          curl -fsS -o /dev/null https://eurohockeyagency.ru/
-          echo "site is up"
+          curl -fsS -o /dev/null https://eurohockeyagency.com/
+
+          HEALTH=$(curl -fsS https://eurohockeyagency.com/api/health)
+          node -e 'const health=JSON.parse(process.argv[1]); if (health.ok !== true) process.exit(1)' "$HEALTH"
+
+          REDIRECT=$(curl -sS --max-redirs 0 -o /dev/null \
+            -w '%{http_code}|%{redirect_url}' \
+            'https://www.eurohockeyagency.com/guides?source=deploy')
+          test "$REDIRECT" = '301|https://eurohockeyagency.com/guides?source=deploy'
+
+          echo "canonical site and www redirect are healthy"
