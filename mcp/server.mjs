@@ -168,11 +168,12 @@ async function runtimeStatus() {
     cwd = cwdResult.ok ? cwdResult.stdout : null;
     command = commandResult.ok ? commandResult.stdout : null;
   }
-  const [listener, commit, branch, status] = await Promise.all([
+  const [listener, commit, branch, status, untracked] = await Promise.all([
     run("ss", ["-ltnp", "sport", "=", ":3000"]),
     run("git", ["rev-parse", "HEAD"]),
     run("git", ["branch", "--show-current"]),
-    run("git", ["status", "--short"])
+    run("git", ["status", "--short", "--untracked-files=no"]),
+    run("git", ["ls-files", "--others", "--exclude-standard"])
   ]);
   return {
     service: service.ok ? service.stdout.split("\n") : { error: service.stderr },
@@ -184,7 +185,8 @@ async function runtimeStatus() {
       commit: commit.ok ? commit.stdout : null,
       branch: branch.ok ? branch.stdout : null,
       clean: status.ok ? status.stdout === "" : null,
-      changes: status.ok && status.stdout ? status.stdout.split("\n") : []
+      changes: status.ok && status.stdout ? status.stdout.split("\n") : [],
+      untracked: untracked.ok && untracked.stdout ? untracked.stdout.split("\n") : []
     },
     repository: REPO,
     publicDirectory: PUBLIC
