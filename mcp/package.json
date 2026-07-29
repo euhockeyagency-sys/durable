@@ -1,0 +1,19 @@
+{
+  "name": "eha-mcp",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "MCP server for editing and verifying the EHA website",
+  "scripts": {
+    "check": "node --check server.mjs",
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.19.1",
+    "express": "^5.1.0",
+    "zod": "^3.25.76"
+  }
+}
