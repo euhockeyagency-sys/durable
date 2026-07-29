@@ -15,13 +15,17 @@ const DEFAULT_RESEND_FROM = "EHA Website <onboarding@resend.dev>";
 
 function loadConfig(env = process.env) {
   const missingApplicationKeys = REQUIRED_APPLICATION_KEYS.filter((key) => !env[key]);
-  const siteUrl = (env.SITE_URL || "http://localhost:3000").replace(/\/$/, "");
-  // Two-domain mode activates only when both language hosts are set. Until then
-  // the site runs on one domain with English under /en/. Keeping both hosts
-  // optional lets the same build ship before and after the domain split.
-  const ruHost = (env.RU_HOST || "").trim().toLowerCase();
-  const enHost = (env.EN_HOST || "").trim().toLowerCase();
-  const hostsConfigured = Boolean(ruHost && enHost);
+  // Consolidated single-domain model: the whole site lives on ONE primary
+  // domain — English at the root, Russian under /ru/. The former Russian
+  // domain (LEGACY_RU_HOST) is kept only as a 301 source so its already
+  // indexed URLs move to the primary domain without losing search equity.
+  // The default is the live domain, so a deploy is correct even before the
+  // server .env is updated; PRIMARY_URL makes it explicit.
+  const primaryUrl = (env.PRIMARY_URL || "https://eurohockeyagency.com").replace(/\/$/, "");
+  const ruPrefix = "/" + (env.RU_PREFIX || "ru").replace(/^\/+|\/+$/g, "");
+  const legacyRuHost = (env.LEGACY_RU_HOST || "eurohockeyagency.ru").trim().toLowerCase();
+  let primaryHost = "";
+  try { primaryHost = new URL(primaryUrl).host.toLowerCase(); } catch { /* leave empty */ }
   // The agent's own address is the single source of truth for where mail goes:
   // NOTIFICATION_EMAIL only has to be set when notifications should land
   // somewhere other than the public contact address.
@@ -33,12 +37,14 @@ function loadConfig(env = process.env) {
   return {
     port: Number(env.PORT || 3000),
     publicDir: path.join(__dirname, "..", "public"),
-    siteUrl,
-    ruHost,
-    enHost,
-    hostsConfigured,
-    ruUrl: ruHost ? `https://${ruHost}` : siteUrl,
-    enUrl: enHost ? `https://${enHost}` : siteUrl,
+    siteUrl: primaryUrl,
+    primaryUrl,
+    primaryHost,
+    ruPrefix,
+    legacyRuHost,
+    // English is the root of the primary domain; Russian lives under /ru/.
+    enUrl: primaryUrl,
+    ruUrl: primaryUrl + ruPrefix,
     contactEmail,
     privacyPolicyVersion: env.PRIVACY_POLICY_VERSION || "2026-07-18",
     supabaseUrl: env.SUPABASE_URL || "",

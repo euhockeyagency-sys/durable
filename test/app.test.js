@@ -7,10 +7,19 @@ const { createApp } = require("../src/app");
 const { PAGES } = require("../src/locales");
 
 function config(overrides = {}) {
+  const primaryUrl = "https://eha.test";
   return {
     port: 3000,
     publicDir: require("node:path").join(__dirname, "..", "public"),
-    siteUrl: "https://eha.test",
+    // Consolidated single-domain model: English at the primary root, Russian
+    // under /ru/, and a legacy Russian host kept only as a 301 source.
+    siteUrl: primaryUrl,
+    primaryUrl,
+    primaryHost: "eha.test",
+    enUrl: primaryUrl,
+    ruUrl: `${primaryUrl}/ru`,
+    ruPrefix: "/ru",
+    legacyRuHost: "eha-legacy.test",
     contactEmail: "privacy@eha.test",
     privacyPolicyVersion: "test-v1",
     turnstileSiteKey: "test-site-key",
@@ -102,72 +111,45 @@ function validClubRequest(agent, overrides = {}) {
   });
 }
 
-test("redirects both www aliases to their configured origins while preserving path and query", async () => {
-  const app = createApp({
-    config: config({
-      ruHost: "eurohockeyagency.ru",
-      enHost: "eurohockeyagency.com",
-      ruUrl: "https://eurohockeyagency.ru",
-      enUrl: "https://eurohockeyagency.com",
-      hostsConfigured: true
-    }),
-    services: serviceMock()
-  });
+test("redirects www and the legacy Russian host onto the primary domain", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
 
   for (const [host, path, expected] of [
-    [
-      "www.eurohockeyagency.ru",
-      "/guides/hokkej-v-polshe?source=www",
-      "https://eurohockeyagency.ru/guides/hokkej-v-polshe?source=www"
-    ],
-    [
-      "www.eurohockeyagency.com",
-      "/guides/hockey-in-poland?source=www",
-      "https://eurohockeyagency.com/guides/hockey-in-poland?source=www"
-    ]
+    // www of the primary domain -> primary root, path and query preserved.
+    ["www.eha.test", "/guides/hockey-in-poland?source=www", "https://eha.test/guides/hockey-in-poland?source=www"],
+    // Legacy Russian domain -> the /ru/ tree on the primary domain.
+    ["eha-legacy.test", "/guides/hokkej-v-polshe?source=www", "https://eha.test/ru/guides/hokkej-v-polshe?source=www"],
+    ["eha-legacy.test", "/", "https://eha.test/ru/"],
+    ["www.eha-legacy.test", "/services", "https://eha.test/ru/services"]
   ]) {
     const response = await request(app).get(path).set("Host", host).expect(301);
     assert.equal(response.headers.location, expected);
   }
 });
 
-test("redirects Railway platform hosts to the single primary origin", async () => {
+test("redirects Railway platform hosts to the primary origin", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app)
-    .get("/en/guides/hockey-in-poland")
+    .get("/guides/hockey-in-poland")
     .set("Host", "euro-hockey-agency-production.up.railway.app")
     .expect(301);
-  assert.equal(
-    response.headers.location,
-    "https://eurohockeyagency.ru/en/guides/hockey-in-poland"
-  );
+  assert.equal(response.headers.location, "https://eha.test/guides/hockey-in-poland");
 });
 
-test("does not redirect either configured primary origin", async () => {
-  const app = createApp({
-    config: config({
-      ruHost: "eurohockeyagency.ru",
-      enHost: "eurohockeyagency.com",
-      ruUrl: "https://eurohockeyagency.ru",
-      enUrl: "https://eurohockeyagency.com",
-      hostsConfigured: true
-    }),
-    services: serviceMock()
-  });
-
-  for (const host of ["eurohockeyagency.ru", "eurohockeyagency.com"]) {
-    await request(app).get("/").set("Host", host).expect(200);
-  }
+test("serves the primary domain without redirecting", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  await request(app).get("/").set("Host", "eha.test").expect(200);
+  await request(app).get("/ru/").set("Host", "eha.test").expect(200);
 });
 
-test("robots.txt advertises both language sitemaps on the primary origin", async () => {
-  const app = createApp({ config: config({ siteUrl: "https://eurohockeyagency.ru" }), services: serviceMock() });
+test("robots.txt advertises both sitemaps on the primary origin", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app)
     .get("/robots.txt")
-    .set("Host", "eurohockeyagency.ru")
+    .set("Host", "eha.test")
     .expect(200);
-  assert.match(response.text, /Sitemap: https:\/\/eurohockeyagency\.ru\/sitemap\.xml/);
-  assert.match(response.text, /Sitemap: https:\/\/eurohockeyagency\.ru\/en\/sitemap\.xml/);
+  assert.match(response.text, /Sitemap: https:\/\/eha\.test\/sitemap\.xml/);
+  assert.match(response.text, /Sitemap: https:\/\/eha\.test\/ru\/sitemap\.xml/);
 });
 
 test("does not load an invalid Turnstile widget when captcha is not configured", async () => {
@@ -376,15 +358,10 @@ test("limits the sixth attempt from one address", async () => {
   await request(app).post("/api/applications").expect(429);
 });
 
+// The consolidated model has a single domain, so there is no separate "split"
+// config anymore; kept as a thin alias so existing callers still read naturally.
 function splitConfig(overrides = {}) {
-  return config({
-    hostsConfigured: true,
-    ruHost: "eurohockeyagency.ru",
-    enHost: "eurohockeyagency.com",
-    ruUrl: "https://eurohockeyagency.ru",
-    enUrl: "https://eurohockeyagency.com",
-    ...overrides
-  });
+  return config(overrides);
 }
 
 test("every bilingual page exists as a file in both language directories", () => {
@@ -396,22 +373,22 @@ test("every bilingual page exists as a file in both language directories", () =>
   }
 });
 
-test("two-domain routes expose the exact source file and content hash", async () => {
-  const app = createApp({ config: splitConfig(), services: serviceMock() });
+test("routes expose the exact source file and content hash", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
   const publicDir = path.join(__dirname, "..", "public");
   const routes = [
-    ["eurohockeyagency.com", "/", "en/index.html", "en"],
-    ["eurohockeyagency.com", "/agent", "en/agent.html", "en"],
-    ["eurohockeyagency.com", "/services", "en/services.html", "en"],
-    ["eurohockeyagency.com", "/guides", "en/guides.html", "en"],
-    ["eurohockeyagency.ru", "/", "ru/index.html", "ru"],
-    ["eurohockeyagency.ru", "/agent", "ru/agent.html", "ru"],
-    ["eurohockeyagency.ru", "/services", "ru/services.html", "ru"],
-    ["eurohockeyagency.ru", "/guides", "ru/guides.html", "ru"]
+    ["/", "en/index.html", "en"],
+    ["/agent", "en/agent.html", "en"],
+    ["/services", "en/services.html", "en"],
+    ["/guides", "en/guides.html", "en"],
+    ["/ru/", "ru/index.html", "ru"],
+    ["/ru/agent", "ru/agent.html", "ru"],
+    ["/ru/services", "ru/services.html", "ru"],
+    ["/ru/guides", "ru/guides.html", "ru"]
   ];
 
-  for (const [host, route, source, lang] of routes) {
-    const response = await request(app).get(route).set("Host", host).expect(200);
+  for (const [route, source, lang] of routes) {
+    const response = await request(app).get(route).set("Host", "eha.test").expect(200);
     const expectedHash = require("node:crypto")
       .createHash("sha256")
       .update(fs.readFileSync(path.join(publicDir, source)))
@@ -423,8 +400,8 @@ test("two-domain routes expose the exact source file and content hash", async ()
   }
 });
 
-test("the .com /ru prefix serves Russian files with prefixed navigation", async () => {
-  const app = createApp({ config: splitConfig(), services: serviceMock() });
+test("the /ru/ prefix serves Russian files with prefixed navigation", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
   for (const [route, source] of [
     ["/ru/", "ru/index.html"],
     ["/ru/agent", "ru/agent.html"],
@@ -433,15 +410,15 @@ test("the .com /ru prefix serves Russian files with prefixed navigation", async 
   ]) {
     const response = await request(app)
       .get(route)
-      .set("Host", "eurohockeyagency.com")
+      .set("Host", "eha.test")
       .expect(200);
     assert.equal(response.headers["x-eha-source"], source);
     assert.match(response.text, /<html lang="ru"/);
     assert.match(response.text, /href="\/ru\/services"/);
     assert.doesNotMatch(response.text, /href="\/ru\/styles\.css/);
   }
-  const home = await request(app).get("/ru/").set("Host", "eurohockeyagency.com");
-  assert.match(home.text, /rel="canonical" href="https:\/\/eurohockeyagency\.com\/ru\/"/);
+  const home = await request(app).get("/ru/").set("Host", "eha.test");
+  assert.match(home.text, /rel="canonical" href="https:\/\/eha\.test\/ru\/"/);
 });
 
 test("legacy public URLs redirect permanently to the current structure", async () => {
@@ -477,63 +454,66 @@ test("Poland country guides contain all twelve sections", () => {
 
 test("Poland guide language switcher points to the translated guide", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
-  const ru = await request(app).get("/guides/hokkej-v-polshe").expect(200);
-  assert.match(ru.text, /class="lang-switch" href="https:\/\/eha\.test\/en\/guides\/hockey-in-poland"/);
-  const en = await request(app).get("/en/guides/hockey-in-poland").expect(200);
-  assert.match(en.text, /class="lang-switch" href="https:\/\/eha\.test\/guides\/hokkej-v-polshe"/);
+  const ru = await request(app).get("/ru/guides/hokkej-v-polshe").set("Host", "eha.test").expect(200);
+  assert.match(ru.text, /class="lang-switch" href="https:\/\/eha\.test\/guides\/hockey-in-poland"/);
+  const en = await request(app).get("/guides/hockey-in-poland").set("Host", "eha.test").expect(200);
+  assert.match(en.text, /class="lang-switch" href="https:\/\/eha\.test\/ru\/guides\/hokkej-v-polshe"/);
 });
 
 test("club pages and Poland guides appear in their language sitemaps", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
-  const ru = await request(app).get("/sitemap.xml").expect(200);
-  assert.match(ru.text, /https:\/\/eha\.test\/for-clubs/);
-  assert.match(ru.text, /https:\/\/eha\.test\/guides\/hokkej-v-polshe/);
-  const en = await request(app).get("/en/sitemap.xml").expect(200);
-  assert.match(en.text, /https:\/\/eha\.test\/en\/for-clubs/);
-  assert.match(en.text, /https:\/\/eha\.test\/en\/guides\/hockey-in-poland/);
+  const en = await request(app).get("/sitemap.xml").set("Host", "eha.test").expect(200);
+  assert.match(en.text, /https:\/\/eha\.test\/for-clubs/);
+  assert.match(en.text, /https:\/\/eha\.test\/guides\/hockey-in-poland/);
+  const ru = await request(app).get("/ru/sitemap.xml").set("Host", "eha.test").expect(200);
+  assert.match(ru.text, /https:\/\/eha\.test\/ru\/for-clubs/);
+  assert.match(ru.text, /https:\/\/eha\.test\/ru\/guides\/hokkej-v-polshe/);
 });
 
-test("serves the English home under /en/ with English canonical and hreflang", async () => {
+test("serves the English home at the root with English canonical and hreflang", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
-  const response = await request(app).get("/en/").expect(200);
+  const response = await request(app).get("/").set("Host", "eha.test").expect(200);
   assert.match(response.text, /<html lang="en"/);
-  assert.match(response.text, /rel="canonical" href="https:\/\/eha\.test\/en\/"/);
-  assert.match(response.text, /hreflang="ru" href="https:\/\/eha\.test\/"/);
-  assert.match(response.text, /hreflang="en" href="https:\/\/eha\.test\/en\/"/);
+  assert.match(response.text, /rel="canonical" href="https:\/\/eha\.test\/"/);
+  assert.match(response.text, /hreflang="ru" href="https:\/\/eha\.test\/ru\/"/);
+  assert.match(response.text, /hreflang="en" href="https:\/\/eha\.test\/"/);
   assert.match(response.text, /og:locale" content="en_US"/);
+  // A stray /en/ prefix collapses to the clean root URL.
+  const strayEn = await request(app).get("/en/").set("Host", "eha.test").expect(301);
+  assert.equal(strayEn.headers.location, "https://eha.test/");
 });
 
-test("serves an English page with a translated slug under /en/", async () => {
+test("serves English pages with translated slugs at the root", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
-  await request(app).get("/en/for-players").expect(200);
-  await request(app).get("/en/level-calculator").expect(200);
-  const leagues = await request(app).get("/en/european-leagues").expect(200);
+  await request(app).get("/for-players").set("Host", "eha.test").expect(200);
+  await request(app).get("/level-calculator").set("Host", "eha.test").expect(200);
+  const leagues = await request(app).get("/european-leagues").set("Host", "eha.test").expect(200);
   assert.match(leagues.text, /Finland/);
 });
 
 test("the RU sitemap contains only Russian slugs, the EN sitemap only English", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
-  const ru = await request(app).get("/sitemap.xml").expect(200);
-  assert.match(ru.text, /https:\/\/eha\.test\/kalkulyator-urovnya/);
+  const ru = await request(app).get("/ru/sitemap.xml").set("Host", "eha.test").expect(200);
+  assert.match(ru.text, /https:\/\/eha\.test\/ru\/kalkulyator-urovnya/);
   assert.doesNotMatch(ru.text, /for-players/);
-  const en = await request(app).get("/en/sitemap.xml").expect(200);
-  assert.match(en.text, /https:\/\/eha\.test\/en\/for-players/);
+  const en = await request(app).get("/sitemap.xml").set("Host", "eha.test").expect(200);
+  assert.match(en.text, /https:\/\/eha\.test\/for-players/);
   assert.doesNotMatch(en.text, /kalkulyator-urovnya/);
 });
 
-test("two-domain mode 301s a cross-language slug to the right domain", async () => {
-  const app = createApp({ config: splitConfig(), services: serviceMock() });
-  const r1 = await request(app).get("/players").set("Host", "eurohockeyagency.com").expect(301);
-  assert.equal(r1.headers.location, "https://eurohockeyagency.ru/players");
-  const r2 = await request(app).get("/level-calculator").set("Host", "eurohockeyagency.ru").expect(301);
-  assert.equal(r2.headers.location, "https://eurohockeyagency.com/level-calculator");
+test("a Russian-only slug at the root 301s into the /ru/ tree", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const r1 = await request(app).get("/players").set("Host", "eha.test").expect(301);
+  assert.equal(r1.headers.location, "https://eha.test/ru/players");
+  const r2 = await request(app).get("/kalkulyator-urovnya").set("Host", "eha.test").expect(301);
+  assert.equal(r2.headers.location, "https://eha.test/ru/kalkulyator-urovnya");
 });
 
-test("two-domain mode serves each domain its own language for a shared slug", async () => {
-  const app = createApp({ config: splitConfig(), services: serviceMock() });
-  const en = await request(app).get("/services").set("Host", "eurohockeyagency.com").expect(200);
+test("a shared slug serves English at the root and Russian under /ru/", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const en = await request(app).get("/services").set("Host", "eha.test").expect(200);
   assert.match(en.text, /<html lang="en"/);
-  const ru = await request(app).get("/services").set("Host", "eurohockeyagency.ru").expect(200);
+  const ru = await request(app).get("/ru/services").set("Host", "eha.test").expect(200);
   assert.match(ru.text, /<html lang="ru"/);
 });
 

@@ -78,11 +78,10 @@ function hostname(host) {
 
 // Absolute base URL for a language. Always taken from configuration, never from
 // the request Host header, so an untrusted host can never be reflected back into
-// canonical/hreflang tags.
+// canonical/hreflang tags. Consolidated model: English at the primary root
+// (enUrl), Russian under /ru/ on the same domain (ruUrl = enUrl + "/ru").
 function baseUrlFor(locale, config) {
-  if (config.hostsConfigured) return locale === "en" ? config.enUrl : config.ruUrl;
-  // Single-domain mode: EN lives under /en/, RU at the root.
-  return locale === "en" ? `${config.siteUrl}/en` : config.siteUrl;
+  return locale === "en" ? config.enUrl : config.ruUrl;
 }
 
 function joinBase(base, logicalPath) {
@@ -110,56 +109,36 @@ function hreflangFor(logicalPath, locale, config) {
   };
 }
 
-// Resolve a request to a language, a file root under publicDir, and the logical
-// path used to locate the file. In two-domain mode it may instead return a 301
-// redirect (cross-language slug on the wrong domain, or a stray /en/ prefix).
+// Resolve a request (already on the primary domain — legacy hosts are 301'd to
+// it earlier, in redirectDuplicateHosts) to a language, a file root under
+// publicDir, and the language-neutral logical path used to locate the file.
+// Consolidated model: English at the root, Russian under /ru/. May instead
+// return a 301 (stray /en/ prefix, or a Russian-only slug reached without /ru/).
 function resolveLocale(host, pathname, config) {
+  const ruPrefix = config.ruPrefix || "/ru";
   const enPrefixed = pathname === "/en" || pathname.startsWith("/en/");
-  const ruPrefixed = pathname === "/ru" || pathname.startsWith("/ru/");
-  const stripEn = () => {
-    if (pathname === "/en") return "/";
-    const rest = pathname.slice(3);
-    return rest === "" ? "/" : rest;
-  };
-  const stripRu = () => {
-    if (pathname === "/ru" || pathname === "/ru/") return "/";
-    return pathname.slice(3);
-  };
+  const ruPrefixed = pathname === ruPrefix || pathname.startsWith(`${ruPrefix}/`);
 
-  if (!config.hostsConfigured) {
-    // Single-domain mode (pre-migration): the Host header is ignored entirely.
-    if (enPrefixed) return { locale: "en", root: "en", logicalPath: stripEn() };
-    return { locale: "ru", root: "ru", logicalPath: pathname };
-  }
-
-  // Two-domain mode (post-migration): the host decides the language.
-  const name = hostname(host);
-  const onRu = name === config.ruHost;
-
-  // Keep Russian content reachable below /ru/ on the English domain while the
-  // dedicated .ru hostname remains unavailable.
-  if (ruPrefixed && !onRu) {
-    return { locale: "ru", root: "ru", logicalPath: stripRu(), urlPrefix: "/ru" };
-  }
-  if (ruPrefixed && onRu) {
-    return { redirect: { status: 301, location: joinBase(config.ruUrl, stripRu()) } };
-  }
-
-  // No /en/ prefix should survive on a language-specific domain.
+  // A stray /en/ prefix must not create a duplicate of the root English tree.
   if (enPrefixed) {
-    return { redirect: { status: 301, location: joinBase(config.enUrl, stripEn()) } };
+    const rest = pathname === "/en" ? "/" : (pathname.slice(3) || "/");
+    return { redirect: { status: 301, location: joinBase(config.enUrl, rest) } };
   }
 
-  const cls = classifyPath(pathname);
-  // Only the exact RU hostname selects the unprefixed Russian tree. Requests
-  // without a public Host (for example a localhost health check) default to EN.
-  if (!onRu) {
-    if (cls === "ru") return { redirect: { status: 301, location: config.ruUrl + pathname } };
-    return { locale: "en", root: "en", logicalPath: pathname };
+  // Russian lives under /ru/. Serve it from public/ru with internal links and
+  // absolute URLs prefixed, so canonical/hreflang/sitemap all read .com/ru/...
+  if (ruPrefixed) {
+    const rest = pathname === ruPrefix ? "/" : (pathname.slice(ruPrefix.length) || "/");
+    return { locale: "ru", root: "ru", logicalPath: rest, urlPrefix: ruPrefix };
   }
-  // The dedicated RU domain serves the unprefixed Russian tree.
-  if (cls === "en") return { redirect: { status: 301, location: config.enUrl + pathname } };
-  return { locale: "ru", root: "ru", logicalPath: pathname };
+
+  // Root of the primary domain is English. A Russian-only slug that arrives
+  // without the /ru/ prefix (an old inbound link) is 301'd into the /ru/ tree.
+  const cls = classifyPath(pathname);
+  if (cls === "ru") {
+    return { redirect: { status: 301, location: config.enUrl + ruPrefix + pathname } };
+  }
+  return { locale: "en", root: "en", logicalPath: pathname };
 }
 
 module.exports = {

@@ -53,3 +53,21 @@ test("email stays off when there is no address to send to", () => {
   assert.equal(config.emailConfigured, false);
   assert.equal(config.notificationEmail, "");
 });
+
+test("consolidated model: English at the primary root, Russian under /ru/", () => {
+  const config = loadConfig({ ...storage });
+  // Safe default is the live domain, so a deploy is correct before .env changes.
+  assert.equal(config.primaryUrl, "https://eurohockeyagency.com");
+  assert.equal(config.primaryHost, "eurohockeyagency.com");
+  assert.equal(config.enUrl, "https://eurohockeyagency.com");
+  assert.equal(config.ruUrl, "https://eurohockeyagency.com/ru");
+  assert.equal(config.ruPrefix, "/ru");
+  assert.equal(config.legacyRuHost, "eurohockeyagency.ru");
+});
+
+test("PRIMARY_URL overrides the primary domain and derives the /ru base", () => {
+  const config = loadConfig({ ...storage, PRIMARY_URL: "https://example.test/" });
+  assert.equal(config.enUrl, "https://example.test");
+  assert.equal(config.ruUrl, "https://example.test/ru");
+  assert.equal(config.primaryHost, "example.test");
+});

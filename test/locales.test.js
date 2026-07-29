@@ -2,93 +2,81 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { PAGES, resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("../src/locales");
 
-const single = { hostsConfigured: false, siteUrl: "https://eha.test" };
-const split = {
-  hostsConfigured: true,
-  siteUrl: "https://eurohockeyagency.com",
-  ruHost: "eurohockeyagency.ru",
-  enHost: "eurohockeyagency.com",
-  ruUrl: "https://eurohockeyagency.ru",
-  enUrl: "https://eurohockeyagency.com"
+// Consolidated single-domain model: English at the primary root, Russian under
+// /ru/ on the same domain. Legacy-host 301s are handled in app.js middleware,
+// so resolveLocale here only ever sees the primary domain.
+const cfg = {
+  siteUrl: "https://eha.test",
+  primaryUrl: "https://eha.test",
+  primaryHost: "eha.test",
+  enUrl: "https://eha.test",
+  ruUrl: "https://eha.test/ru",
+  ruPrefix: "/ru",
+  legacyRuHost: "eha-legacy.test"
 };
 
-test("single-domain: RU at root, EN under /en/", () => {
-  assert.deepEqual(resolveLocale("x", "/", single), { locale: "ru", root: "ru", logicalPath: "/" });
-  assert.deepEqual(resolveLocale("x", "/services", single), { locale: "ru", root: "ru", logicalPath: "/services" });
-  assert.deepEqual(resolveLocale("x", "/en", single), { locale: "en", root: "en", logicalPath: "/" });
-  assert.deepEqual(resolveLocale("x", "/en/", single), { locale: "en", root: "en", logicalPath: "/" });
-  assert.deepEqual(resolveLocale("x", "/en/for-players", single), { locale: "en", root: "en", logicalPath: "/for-players" });
+test("base URLs: English at the root, Russian under /ru/", () => {
+  assert.equal(baseUrlFor("en", cfg), "https://eha.test");
+  assert.equal(baseUrlFor("ru", cfg), "https://eha.test/ru");
 });
 
-test("single-domain: the Host header is ignored (no reflection)", () => {
-  assert.deepEqual(resolveLocale("attacker.example", "/", single), { locale: "ru", root: "ru", logicalPath: "/" });
-  assert.equal(baseUrlFor("ru", single), "https://eha.test");
-  assert.equal(baseUrlFor("en", single), "https://eha.test/en");
+test("English is served at the root", () => {
+  assert.deepEqual(resolveLocale("eha.test", "/", cfg), { locale: "en", root: "en", logicalPath: "/" });
+  assert.deepEqual(resolveLocale("eha.test", "/services", cfg), { locale: "en", root: "en", logicalPath: "/services" });
+  assert.deepEqual(resolveLocale("eha.test", "/for-players", cfg), { locale: "en", root: "en", logicalPath: "/for-players" });
 });
 
-test("single-domain: language switcher points at the counterpart page", () => {
-  assert.equal(altUrlFor("ru", "/players", single), "https://eha.test/en/for-players");
-  assert.equal(altUrlFor("en", "/for-players", single), "https://eha.test/players");
-  assert.equal(altUrlFor("ru", "/", single), "https://eha.test/en/");
+test("Russian is served under /ru/ with the /ru prefix carried for link rewriting", () => {
+  assert.deepEqual(resolveLocale("eha.test", "/ru", cfg), { locale: "ru", root: "ru", logicalPath: "/", urlPrefix: "/ru" });
+  assert.deepEqual(resolveLocale("eha.test", "/ru/", cfg), { locale: "ru", root: "ru", logicalPath: "/", urlPrefix: "/ru" });
+  assert.deepEqual(resolveLocale("eha.test", "/ru/services", cfg), { locale: "ru", root: "ru", logicalPath: "/services", urlPrefix: "/ru" });
+  assert.deepEqual(resolveLocale("eha.test", "/ru/kalkulyator-urovnya", cfg), { locale: "ru", root: "ru", logicalPath: "/kalkulyator-urovnya", urlPrefix: "/ru" });
+});
+
+test("a Russian-only slug reached without /ru/ 301s into the /ru/ tree", () => {
+  assert.deepEqual(resolveLocale("eha.test", "/players", cfg).redirect,
+    { status: 301, location: "https://eha.test/ru/players" });
+  assert.deepEqual(resolveLocale("eha.test", "/kalkulyator-urovnya", cfg).redirect,
+    { status: 301, location: "https://eha.test/ru/kalkulyator-urovnya" });
+});
+
+test("a stray /en/ prefix 301s to the clean root URL", () => {
+  assert.deepEqual(resolveLocale("eha.test", "/en", cfg).redirect,
+    { status: 301, location: "https://eha.test/" });
+  assert.deepEqual(resolveLocale("eha.test", "/en/", cfg).redirect,
+    { status: 301, location: "https://eha.test/" });
+  assert.deepEqual(resolveLocale("eha.test", "/en/for-players", cfg).redirect,
+    { status: 301, location: "https://eha.test/for-players" });
+});
+
+test("language switcher points at the counterpart page on the same domain", () => {
+  assert.equal(altUrlFor("ru", "/players", cfg), "https://eha.test/for-players");
+  assert.equal(altUrlFor("en", "/for-players", cfg), "https://eha.test/ru/players");
+  assert.equal(altUrlFor("ru", "/", cfg), "https://eha.test/");
+  assert.equal(altUrlFor("en", "/", cfg), "https://eha.test/ru/");
   // A page without a declared translation falls back to the other language home.
-  assert.equal(altUrlFor("ru", "/guides/not-translated", single), "https://eha.test/en/");
+  assert.equal(altUrlFor("ru", "/guides/not-translated", cfg), "https://eha.test/");
 });
 
-test("two-domain: host decides the language for shared slugs", () => {
-  assert.deepEqual(resolveLocale("eurohockeyagency.com", "/services", split), { locale: "en", root: "en", logicalPath: "/services" });
-  assert.deepEqual(resolveLocale("eurohockeyagency.ru", "/services", split), { locale: "ru", root: "ru", logicalPath: "/services" });
-  assert.deepEqual(resolveLocale("eurohockeyagency.com", "/for-players", split), { locale: "en", root: "en", logicalPath: "/for-players" });
-  assert.deepEqual(resolveLocale("eurohockeyagency.ru", "/kalkulyator-urovnya", split), { locale: "ru", root: "ru", logicalPath: "/kalkulyator-urovnya" });
-});
-
-test("two-domain: a slug on the wrong domain 301s to the right one", () => {
-  assert.deepEqual(resolveLocale("eurohockeyagency.com", "/players", split).redirect,
-    { status: 301, location: "https://eurohockeyagency.ru/players" });
-  assert.deepEqual(resolveLocale("eurohockeyagency.com", "/kalkulyator-urovnya", split).redirect,
-    { status: 301, location: "https://eurohockeyagency.ru/kalkulyator-urovnya" });
-  assert.deepEqual(resolveLocale("eurohockeyagency.ru", "/level-calculator", split).redirect,
-    { status: 301, location: "https://eurohockeyagency.com/level-calculator" });
-});
-
-test("two-domain: a stray /en/ prefix 301s to the clean English URL", () => {
-  assert.deepEqual(resolveLocale("eurohockeyagency.com", "/en/for-players", split).redirect,
-    { status: 301, location: "https://eurohockeyagency.com/for-players" });
-  assert.deepEqual(resolveLocale("eurohockeyagency.ru", "/en/services", split).redirect,
-    { status: 301, location: "https://eurohockeyagency.com/services" });
-});
-
-test("two-domain: a non-public host defaults to EN without reflecting it", () => {
-  assert.deepEqual(resolveLocale("127.0.0.1:3000", "/", split),
-    { locale: "en", root: "en", logicalPath: "/" });
-  assert.deepEqual(resolveLocale("attacker.example", "/kalkulyator-urovnya", split).redirect,
-    { status: 301, location: "https://eurohockeyagency.ru/kalkulyator-urovnya" });
-});
-
-test("hreflang alternates come from the page table", () => {
-  assert.deepEqual(hreflangFor("/players", "ru", single), {
-    ru: "https://eha.test/players",
-    en: "https://eha.test/en/for-players"
+test("hreflang alternates come from the page table, all on the primary domain", () => {
+  assert.deepEqual(hreflangFor("/players", "ru", cfg), {
+    ru: "https://eha.test/ru/players",
+    en: "https://eha.test/for-players"
   });
-  assert.deepEqual(hreflangFor("/for-players", "en", single), {
-    ru: "https://eha.test/players",
-    en: "https://eha.test/en/for-players"
+  assert.deepEqual(hreflangFor("/for-players", "en", cfg), {
+    ru: "https://eha.test/ru/players",
+    en: "https://eha.test/for-players"
   });
-  assert.deepEqual(hreflangFor("/guides/hokkej-v-shvecii", "ru", single), {
-    ru: "https://eha.test/guides/hokkej-v-shvecii",
-    en: "https://eha.test/en/guides/hockey-in-sweden"
+  assert.deepEqual(hreflangFor("/guides/hokkej-v-shvecii", "ru", cfg), {
+    ru: "https://eha.test/ru/guides/hokkej-v-shvecii",
+    en: "https://eha.test/guides/hockey-in-sweden"
   });
-  assert.deepEqual(hreflangFor("/guides/hokkej-v-polshe", "ru", single), {
-    ru: "https://eha.test/guides/hokkej-v-polshe",
-    en: "https://eha.test/en/guides/hockey-in-poland"
+  assert.deepEqual(hreflangFor("/guides/hockey-in-poland", "en", cfg), {
+    ru: "https://eha.test/ru/guides/hokkej-v-polshe",
+    en: "https://eha.test/guides/hockey-in-poland"
   });
-  assert.equal(altUrlFor("en", "/guides/hockey-in-poland", single), "https://eha.test/guides/hokkej-v-polshe");
-  assert.deepEqual(hreflangFor("/guides/hokkejnoe-rezyume", "ru", single), {
-    ru: "https://eha.test/guides/hokkejnoe-rezyume",
-    en: "https://eha.test/en/guides/hockey-resume-for-european-clubs"
-  });
-  assert.equal(altUrlFor("en", "/guides/hockey-video-for-clubs", single), "https://eha.test/guides/video-dlya-kluba");
+  assert.equal(altUrlFor("en", "/guides/hockey-video-for-clubs", cfg), "https://eha.test/ru/guides/video-dlya-kluba");
 });
-
 
 test("page table covers every published bilingual pair without duplicate paths", () => {
   assert.equal(PAGES.length, 45);

@@ -23,8 +23,8 @@ const CONTENT_TYPES = {
   ".xml": "application/xml; charset=utf-8"
 };
 
-const PRIMARY_ORIGIN = "https://eurohockeyagency.ru";
-const PRIMARY_HOST = "eurohockeyagency.ru";
+const PRIMARY_ORIGIN = "https://eurohockeyagency.com";
+const PRIMARY_HOST = "eurohockeyagency.com";
 const LEGACY_PATHS = new Map([
   ["/about", "/agent"],
   ["/about-the-agent", "/agent"],
@@ -110,8 +110,10 @@ function createApp({ config, services, now, randomUUID } = {}) {
     sendBody(req, res, Buffer.from(build(config, resolved.locale)), ".xml");
   };
   app.get("/sitemap.xml", localeFeed(buildSitemap));
+  app.get("/ru/sitemap.xml", localeFeed(buildSitemap));
   app.get("/en/sitemap.xml", localeFeed(buildSitemap));
   app.get("/feed.xml", localeFeed(buildFeed));
+  app.get("/ru/feed.xml", localeFeed(buildFeed));
   app.get("/en/feed.xml", localeFeed(buildFeed));
 
   app.get("*path", (req, res) => servePublic(req, res, config));
@@ -123,20 +125,32 @@ function createApp({ config, services, now, randomUUID } = {}) {
   return app;
 }
 
-// Keep one indexable origin for each configured language domain. The original
-// path and query string are preserved so search engines consolidate every URL.
+// Consolidate every legacy host onto the single primary domain, preserving the
+// path and query so search engines transfer signals page-by-page:
+//   - the former Russian domain (and its www) -> https://.com/ru/<same path>
+//   - www of the primary domain, and any stray Railway host -> primary origin
+// The primary host itself passes straight through to normal routing.
 function redirectDuplicateHosts(config) {
-  const canonicalOrigins = new Map();
-  if (config.ruHost) canonicalOrigins.set(`www.${config.ruHost}`, config.ruUrl);
-  if (config.enHost) canonicalOrigins.set(`www.${config.enHost}`, config.enUrl);
-  canonicalOrigins.set(`www.${PRIMARY_HOST}`, PRIMARY_ORIGIN);
+  const primaryHost = config.primaryHost || PRIMARY_HOST;
+  const legacyRuHost = config.legacyRuHost;
 
   return function redirectDuplicateHost(req, res, next) {
     const host = String(req.headers.host || "").split(":")[0].trim().toLowerCase();
-    const canonicalOrigin = canonicalOrigins.get(host)
-      || (host.endsWith(".up.railway.app") ? PRIMARY_ORIGIN : null);
-    if (!canonicalOrigin) return next();
-    return res.redirect(301, `${canonicalOrigin}${req.originalUrl || "/"}`);
+    if (!host || host === primaryHost) return next();
+    const originalUrl = req.originalUrl || "/";
+
+    // Legacy Russian domain -> the /ru/ tree on the primary domain. Every old
+    // .ru URL kept the Russian content at the root, so it maps under /ru/.
+    if (legacyRuHost && (host === legacyRuHost || host === `www.${legacyRuHost}`)) {
+      return res.redirect(301, `${config.ruUrl}${originalUrl === "/" ? "/" : originalUrl}`);
+    }
+
+    // www of the primary domain, or any leftover Railway host -> primary origin.
+    if (host === `www.${primaryHost}` || host.endsWith(".up.railway.app")) {
+      return res.redirect(301, `${config.enUrl}${originalUrl}`);
+    }
+
+    return next(); // unknown host: serve as the primary domain, never reflected
   };
 }
 
@@ -375,10 +389,13 @@ function servePublic(req, res, config) {
 function renderBody(data, extension, config, context) {
   if (![".html", ".txt", ".xml"].includes(extension)) return data;
   const { locale, logicalPath, urlPrefix = "" } = context;
-  const baseUrl = urlPrefix ? `${config.enUrl}${urlPrefix}` : baseUrlFor(locale, config);
-  // Prefix for root-relative internal links. English pages live under /en/ until
-  // the domains are split, after which they move to the root of their own domain.
-  const enPrefix = locale === "en" && !config.hostsConfigured ? "/en" : "";
+  // baseUrlFor already returns .com for EN and .com/ru for RU, so canonical,
+  // og:url, hreflang, sitemap and feed all read the same consolidated URLs.
+  const baseUrl = baseUrlFor(locale, config);
+  // English is at the domain root, so the {{EN}} link-prefix token is now empty
+  // (kept only so any older template that still uses it resolves cleanly).
+  // Russian internal links get the /ru/ prefix applied by prefixInternalLinks.
+  const enPrefix = "";
   let html = data.toString("utf8")
     .replaceAll("{{BASE_URL}}", baseUrl)
     .replaceAll("{{EN}}", enPrefix)
@@ -407,7 +424,7 @@ function renderBody(data, extension, config, context) {
     const social = buildSocialTags(html, pageUrl, isArticle, coverFor(config, logicalPath, baseUrl), locale);
     const feedTitle = locale === "en" ? "EHA — resources for players" : "EHA — материалы для хоккеистов";
     const feed = `<link rel="alternate" type="application/rss+xml" title="${feedTitle}" href="${baseUrl}/feed.xml">`;
-    html = html.replace("</head>", `${social}${buildHreflang(logicalPath, locale, config, urlPrefix ? baseUrl : null)}${feed}${YANDEX_METRIKA}</head>`);
+    html = html.replace("</head>", `${social}${buildHreflang(logicalPath, locale, config)}${feed}${YANDEX_METRIKA}</head>`);
   }
   return Buffer.from(html);
 }
@@ -425,12 +442,9 @@ function joinUrl(base, logicalPath) {
 
 // hreflang alternates for bilingual pages; empty for pages with no declared
 // translation (assets, untranslated guides).
-function buildHreflang(logicalPath, locale, config, localeBaseUrl = null) {
-  let alts = hreflangFor(logicalPath, locale, config);
+function buildHreflang(logicalPath, locale, config) {
+  const alts = hreflangFor(logicalPath, locale, config);
   if (!alts) return "";
-  if (locale === "ru" && localeBaseUrl) {
-    alts = { ...alts, ru: joinUrl(localeBaseUrl, logicalPath) };
-  }
   return `<link rel="alternate" hreflang="ru" href="${htmlEscape(alts.ru)}">` +
     `<link rel="alternate" hreflang="en" href="${htmlEscape(alts.en)}">` +
     `<link rel="alternate" hreflang="x-default" href="${htmlEscape(alts.en)}">`;

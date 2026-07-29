@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Sitemap: {{BASE_URL}}/sitemap.xml
-Sitemap: {{BASE_URL}}/en/sitemap.xml
+Sitemap: {{BASE_URL}}/ru/sitemap.xml
