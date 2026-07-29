@@ -10,7 +10,7 @@ const REQUIRED_APPLICATION_KEYS = [
 // Resend's shared test sender. It may only deliver to the address the Resend
 // account was registered with, which is exactly our notification recipient, so
 // it works with zero DNS setup. Replace it with RESEND_FROM on a verified
-// domain once eurohockeyagency.ru has the DKIM/SPF records.
+// domain once eurohockeyagency.com has the DKIM/SPF records.
 const DEFAULT_RESEND_FROM = "EHA Website <onboarding@resend.dev>";
 
 function loadConfig(env = process.env) {
