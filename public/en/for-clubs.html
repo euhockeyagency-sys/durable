@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="/styles.css">
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script defer src="/site.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"For clubs","item":"{{BASE_URL}}/for-clubs"}]}</script></head>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"For clubs","item":"{{BASE_URL}}/for-clubs"}]},{"@type":"Service","name":"Hockey player recruitment support for clubs","description":"European Hockey Agency reviews a club's sporting request and, when a reasonable match is available, shares relevant hockey player profiles for direct discussion.","serviceType":"Hockey player recruitment support","areaServed":{"@type":"Place","name":"Europe"},"provider":{"@type":"Organization","name":"European Hockey Agency","url":"{{BASE_URL}}/"},"audience":{"@type":"Audience","audienceType":"Hockey clubs, sporting directors, coaches and team managers"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What information should a club include in a player request?","acceptedAnswer":{"@type":"Answer","text":"Include the league and team level, age group, position, role, shooting side, passport or import restrictions, timing, trial format and the relevant compensation or budget framework."}},{"@type":"Question","name":"Does submitting a request guarantee a suitable player?","acceptedAnswer":{"@type":"Answer","text":"No. EHA reviews the request and responds when a reasonably suitable and available profile can be identified. Availability and any final agreement depend on the player, club and applicable rules."}},{"@type":"Question","name":"What information can accompany a player profile?","acceptedAnswer":{"@type":"Answer","text":"Where available and appropriate, the profile can include an Elite Prospects link, current statistics, video, position, shooting side, citizenship, contract status and availability."}},{"@type":"Question","name":"Can EHA help with passport, transfer and visa questions?","acceptedAnswer":{"@type":"Answer","text":"EHA can help identify questions that require verification and coordinate the sporting process. The club, federation and competent authorities remain responsible for official eligibility, registration, immigration and employment decisions."}},{"@type":"Question","name":"What happens after the club sends a request?","acceptedAnswer":{"@type":"Answer","text":"EHA reviews the sporting criteria, clarifies missing details, checks relevant profiles and contacts the club if a reasonable match is available for discussion."}}]}]}</script></head>
 <body>
 <header class="header">
 <a class="brand" href="{{EN}}/"><span>EHA</span><b>EUROPEAN<br>HOCKEY AGENCY</b></a>
@@ -35,7 +35,7 @@
 <a href="{{EN}}/agent">Agent</a>
 <a href="{{EN}}/guides">Resources</a>
 <a class="lang-switch" href="{{ALT_URL}}" hreflang="ru" lang="ru" aria-label="Русская версия">RU</a>
-<a class="nav-cta" href="{{EN}}/contact">Submit profile</a>
+<a class="nav-cta" href="#club-request-form">Request a player</a>
 </nav>
 </header>
 <main>
@@ -43,13 +43,13 @@
 <div>
 <p class="kicker">For hockey clubs</p>
 <h1>Find a player<br><em>for your roster</em></h1>
-<p class="lead">Tell us the position, team level and key requirements. We will review relevant profiles and contact you if we can offer suitable candidates.</p>
+<p class="lead">Send the sporting brief your staff actually uses: position, role, level, timing and eligibility constraints. EHA reviews relevant profiles and contacts your club when there is a reasonable match to discuss.</p>
 <div class="club-steps">
-<article><b>01</b><span>We clarify the sporting and contract requirements.</span></article>
-<article><b>02</b><span>We match the request against verified player profiles.</span></article>
-<article><b>03</b><span>We share only relevant options for discussion.</span></article>
+<article><b>01</b><span>We clarify the roster need, playing role, timing and contract framework.</span></article>
+<article><b>02</b><span>We review relevant profiles against sporting fit, availability and known eligibility factors.</span></article>
+<article><b>03</b><span>We share focused options and coordinate direct follow-up with the club.</span></article>
 </div>
-<p class="legal-note">Submitting a request does not guarantee that a suitable player is available or that a contract will be signed.</p>
+<p class="legal-note">Submitting a request does not guarantee an available player, registration approval or a signed contract.</p>
 </div>
 <form id="club-request-form" action="/api/club-request" method="post">
 <div class="form-status" id="club-form-status" role="status" aria-live="polite"></div>
@@ -85,8 +85,50 @@
 </form>
 </section>
 <section class="club-value wrap">
-<div><p class="kicker">What the club receives</p><h2>Relevant profiles, not a mass list</h2><ul class="ticks"><li>Profiles matched to the position and team level</li><li>Elite Prospects, current stats and available video</li><li>Citizenship, contract status and availability</li><li>A direct route for follow-up questions</li></ul></div>
-<div><p class="kicker">A useful request includes</p><h2>Details that improve the match</h2><ul class="ticks"><li>League, age group and required role</li><li>Preferred position, shot and player type</li><li>Import or passport restrictions</li><li>Timing, trial format and relevant budget framework</li></ul><p class="legal-note">EHA shares a profile only when there is a reasonable fit. A request does not guarantee an available candidate or a signed contract.</p></div>
+<div><p class="kicker">What the club receives</p><h2>Relevant profiles, not a mass list</h2><ul class="ticks"><li>Profiles matched to the position, role and team level</li><li>Elite Prospects, current statistics and available video where applicable</li><li>Citizenship, contract status and known availability</li><li>A direct route for sporting and practical follow-up questions</li></ul></div>
+<div><p class="kicker">A useful request includes</p><h2>Details that improve the match</h2><ul class="ticks"><li>League, age group and the role inside your system</li><li>Position, shooting side, player type and priority skills</li><li>Import, passport or registration constraints that must be checked</li><li>Timing, trial format and the relevant compensation or budget framework</li></ul><p class="legal-note">More precise criteria help reduce unsuitable introductions. EHA does not promise that every request will produce a candidate.</p></div>
+</section>
+<section class="service-process wrap">
+<p class="kicker">Recruitment workflow</p>
+<h2>From roster need to direct discussion</h2>
+<div class="process process-six">
+<article><span>01</span><h3>Club brief</h3><p>Your staff sends the sporting need and practical constraints.</p></article>
+<article><span>02</span><h3>Clarification</h3><p>We identify missing details that could change the shortlist.</p></article>
+<article><span>03</span><h3>Profile review</h3><p>Relevant players are assessed against the requested role and level.</p></article>
+<article><span>04</span><h3>Availability check</h3><p>Known contract status, timing and eligibility questions are reviewed.</p></article>
+<article><span>05</span><h3>Focused options</h3><p>The club receives profiles only when there is a reasonable fit.</p></article>
+<article><span>06</span><h3>Direct follow-up</h3><p>Questions, video review and next steps continue with the decision-makers.</p></article>
+</div>
+</section>
+<section class="selection-and-price wrap">
+<div class="selection-panel">
+<p class="kicker">Sporting fit</p>
+<h2>What we evaluate</h2>
+<ul class="ticks"><li>Level of previous competition and current role</li><li>Position-specific needs, production and available video</li><li>Age, development route and expected use by the coaching staff</li><li>Timing, contract status and willingness to consider the market</li></ul>
+</div>
+<div class="price-panel">
+<p class="kicker">Eligibility is separate</p>
+<h2>What still requires official verification</h2>
+<ul class="ticks"><li>Federation registration and international transfer requirements</li><li>Import or passport rules for the relevant league and season</li><li>Entry, residence and work authorization where applicable</li><li>Final contract, medical and club approval</li></ul>
+<p class="legal-note">A sporting match is not an official eligibility decision. The relevant federation and public authorities determine registration, immigration and work authorization.</p>
+</div>
+</section>
+<section class="dual-cta wrap">
+<div><p class="kicker">Explore the market</p><h2>Use EHA’s European hockey knowledge base</h2><p class="lead">Review country pathways and league-level information before defining the request.</p><div class="profile-actions"><a class="btn secondary" href="{{EN}}/hockey-countries">Hockey countries</a><a class="btn secondary" href="{{EN}}/european-leagues">European leagues</a></div></div>
+<div><p class="kicker">Evidence and standards</p><h2>How EHA presents information</h2><p class="lead">See published cases and the editorial methodology used for factual hockey-market content.</p><div class="profile-actions"><a class="btn secondary" href="{{EN}}/cases">View cases</a><a class="btn secondary" href="{{EN}}/editorial-methodology">Editorial methodology</a></div></div>
+</section>
+<section class="country-faq article-body wrap">
+<p class="kicker">FAQ for clubs</p>
+<h2>Questions before sending a player request</h2>
+<details><summary>What information should a club include in a player request?</summary><p>Include the league and team level, age group, position, role, shooting side, passport or import restrictions, timing, trial format and the relevant compensation or budget framework.</p></details>
+<details><summary>Does submitting a request guarantee a suitable player?</summary><p>No. EHA reviews the request and responds when a reasonably suitable and available profile can be identified. Availability and any final agreement depend on the player, club and applicable rules.</p></details>
+<details><summary>What information can accompany a player profile?</summary><p>Where available and appropriate, the profile can include an Elite Prospects link, current statistics, video, position, shooting side, citizenship, contract status and availability.</p></details>
+<details><summary>Can EHA help with passport, transfer and visa questions?</summary><p>EHA can help identify questions that require verification and coordinate the sporting process. The club, federation and competent authorities remain responsible for official eligibility, registration, immigration and employment decisions.</p></details>
+<details><summary>What happens after the club sends a request?</summary><p>EHA reviews the sporting criteria, clarifies missing details, checks relevant profiles and contacts the club if a reasonable match is available for discussion.</p></details>
+</section>
+<section class="club-country-cta wrap">
+<div><p class="kicker">Open roster need</p><h2>Send the club brief</h2><p class="lead">Use the form above or email {{CONTACT_EMAIL}}. Include the decision-maker’s contact details and the essential sporting criteria.</p></div>
+<a class="btn primary" href="#club-request-form">Request a player</a>
 </section>
 </main>
 <footer id="footer">
