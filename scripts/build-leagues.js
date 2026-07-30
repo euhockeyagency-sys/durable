@@ -22,6 +22,7 @@ const LOCALES = {
     page: path.join(ROOT, "public", "ru", "ligi-evropy.html")
   },
   en: {
+    baseToken: "{{EN}}",
     openLabel: { high: "Open", mid: "Limited", low: "Hard" },
     labels: { country: "Country", league: "League", level: "Level", profile: "Profile", imports: "For imports" },
     page: path.join(ROOT, "public", "en", "european-leagues.html")
