@@ -74,7 +74,7 @@ function renderRows(locale) {
       : `<b>${esc(l.name)}</b>`;
     return `<tr data-country="${esc(country)}" data-tier="${l.tier}" data-open="${esc(l.open)}">` +
       `<td data-label="${esc(labels.country)}">${esc(l.flag)} ${esc(country)}</td>` +
-      `<td data-label="${esc(labels.league)}"><b>${esc(l.name)}</b></td>` +
+      `<td data-label="${esc(labels.league)}">${leagueName}</td>` +
       `<td data-label="${esc(labels.level)}"><span class="tier tier-${l.tier}">${l.tier}</span></td>` +
       `<td data-label="${esc(labels.profile)}">${esc(l.note[locale])}</td>` +
       `<td data-label="${esc(labels.imports)}"><span class="open open-${esc(l.open)}">${esc(open)}</span> ${esc(l.imports[locale])}</td>` +
