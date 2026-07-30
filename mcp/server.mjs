@@ -47,6 +47,69 @@ function rel(filePath) {
   return path.relative(PUBLIC, filePath);
 }
 
+// ---------------------------------------------------------------------------
+// Repo-wide editing. `safe()` above stays as the content-only gate for the
+// original page tools; `safeRepo()` widens access to the source files the
+// content workflow genuinely needs (src/locales.js must be edited to register
+// a new bilingual page, or the parity test fails and blocks every deploy).
+// Secrets and infrastructure stay unreachable: the deny list wins over the
+// allow list, and everything is still confined to the repository.
+const EDITABLE = [
+  { dir: "public", extensions: /\.(html|css|js|txt|xml|json|webmanifest)$/i },
+  { dir: "src", extensions: /\.js$/i },
+  { dir: "scripts", extensions: /\.js$/i },
+  { dir: "test", extensions: /\.js$/i }
+];
+// Never readable or writable through the connector, whatever the path looks
+// like: credentials, git internals, dependencies and the deploy machinery.
+const DENIED = /(^|\/)(\.env|\.env\.|\.secret|\.git\/|node_modules\/|deploy\.sh|backup\.sh|monitor\.sh)/i;
+
+function relRepo(filePath) {
+  return path.relative(REPO, filePath);
+}
+
+function safeRepo(relPath) {
+  const clean = String(relPath || "").replace(/^\/+/, "");
+  const resolved = path.resolve(REPO, clean);
+  if (!resolved.startsWith(REPO + path.sep)) {
+    throw new Error("path is outside the project folder");
+  }
+  const relative = relRepo(resolved).split(path.sep).join("/");
+  if (DENIED.test("/" + relative)) {
+    throw new Error(`"${relative}" holds credentials or deploy machinery and cannot be opened through the connector`);
+  }
+  const rule = EDITABLE.find((entry) => relative === entry.dir || relative.startsWith(entry.dir + "/"));
+  if (!rule) {
+    throw new Error(`only these folders are editable: ${EDITABLE.map((entry) => entry.dir + "/").join(", ")} (got "${relative}")`);
+  }
+  if (!rule.extensions.test(resolved)) {
+    throw new Error(`"${relative}" has an extension that is not editable in ${rule.dir}/`);
+  }
+  return resolved;
+}
+
+async function listRepoFiles() {
+  const output = [];
+  for (const entry of EDITABLE) {
+    const base = path.join(REPO, entry.dir);
+    async function walk(dir) {
+      let entries = [];
+      try { entries = await fs.readdir(dir, { withFileTypes: true }); } catch { return; }
+      for (const item of entries) {
+        const full = path.join(dir, item.name);
+        if (item.isDirectory()) {
+          if (!["node_modules", ".git"].includes(item.name)) await walk(full);
+        } else if (entry.extensions.test(item.name)) {
+          const relative = relRepo(full).split(path.sep).join("/");
+          if (!DENIED.test("/" + relative)) output.push(relative);
+        }
+      }
+    }
+    await walk(base);
+  }
+  return output.sort();
+}
+
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
 }
@@ -85,9 +148,11 @@ async function run(command, args, options = {}) {
   }
 }
 
-async function gitSave(message) {
+// `paths` are staged explicitly (never `git add -A`) so untracked server-side
+// infrastructure scripts sitting in the repo folder are never committed.
+async function gitSave(message, paths = ["public"]) {
   try {
-    await pexec("git", ["add", "-A", "public"], { cwd: REPO });
+    await pexec("git", ["add", "--", ...paths], { cwd: REPO });
     const { stdout: status } = await pexec("git", ["status", "--porcelain"], { cwd: REPO });
     if (!status.trim()) return "no changes";
     await pexec("git", ["commit", "-m", message], { cwd: REPO });
@@ -323,9 +388,137 @@ function makeServer() {
     inputSchema: { path: z.string(), content: z.string() }
   }, async ({ path: requestedPath, content }) => {
     const filePath = safe(requestedPath);
+    // Create missing parent folders so a page in a brand-new section (e.g.
+    // public/en/leagues/) can be written instead of failing with ENOENT.
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, content);
     const git = await gitSave(`MCP write: ${rel(filePath)}`);
     return text(`Wrote ${content.length} bytes to ${rel(filePath)}. ${git}`);
+  });
+
+  // --- Project files (beyond public/): src, scripts, test -------------------
+
+  server.registerTool("list_project_files", {
+    title: "List project files",
+    description: "List every editable project file, including src/, scripts/ and test/ — not just website pages.",
+    inputSchema: {},
+    annotations: READ_ONLY
+  }, async () => text((await listRepoFiles()).join("\n")));
+
+  server.registerTool("read_project_file", {
+    title: "Read a project file",
+    description: "Read any editable project file by repo-relative path, e.g. 'src/locales.js' or 'public/en/index.html'.",
+    inputSchema: { path: z.string() },
+    annotations: READ_ONLY
+  }, async ({ path: requestedPath }) => {
+    const filePath = safeRepo(requestedPath);
+    return text(await fs.readFile(filePath, "utf8"));
+  });
+
+  server.registerTool("write_project_file", {
+    title: "Overwrite a project file",
+    description: "Replace the entire content of an editable project file (src/, scripts/, test/, public/). Saves, commits and pushes. Run run_tests afterwards — a failing test blocks deployment.",
+    inputSchema: { path: z.string(), content: z.string() }
+  }, async ({ path: requestedPath, content }) => {
+    const filePath = safeRepo(requestedPath);
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, content);
+    const target = relRepo(filePath);
+    const git = await gitSave(`MCP write: ${target}`, [target]);
+    return text(`Wrote ${content.length} bytes to ${target}. ${git}`);
+  });
+
+  server.registerTool("replace_in_project_file", {
+    title: "Replace text in a project file",
+    description: "Replace an exact text fragment in any editable project file. 'find' must be unique unless replace_all is set. Saves, commits and pushes.",
+    inputSchema: {
+      path: z.string(),
+      find: z.string(),
+      replace: z.string(),
+      replace_all: z.boolean().optional()
+    }
+  }, async ({ path: requestedPath, find, replace, replace_all }) => {
+    const filePath = safeRepo(requestedPath);
+    const before = await fs.readFile(filePath, "utf8");
+    const count = before.split(find).length - 1;
+    if (count === 0) throw new Error("`find` text not found in the file");
+    if (count > 1 && !replace_all) {
+      throw new Error(`\`find\` occurs ${count} times; make it unique or set replace_all=true`);
+    }
+    const after = replace_all ? before.split(find).join(replace) : before.replace(find, replace);
+    await fs.writeFile(filePath, after);
+    const target = relRepo(filePath);
+    const git = await gitSave(`MCP edit: ${target}`, [target]);
+    return text(`Replaced ${replace_all ? count : 1} occurrence(s) in ${target}. ${git}`);
+  });
+
+  // Registering a bilingual pair by hand is the single easiest way to break the
+  // build, so it gets a purpose-built tool instead of free-text JS editing.
+  server.registerTool("register_page", {
+    title: "Register a bilingual page pair",
+    description: "Add a { ru, en } pair to the PAGES table in src/locales.js so a new page gets hreflang, the language switcher and the sitemap. Both HTML files must already exist. Paths are public URLs without the /ru prefix, e.g. ru='/leagues/finland-mestis', en='/leagues/finland-mestis'.",
+    inputSchema: { ru: z.string(), en: z.string() }
+  }, async ({ ru, en }) => {
+    for (const [label, value] of [["ru", ru], ["en", en]]) {
+      if (!value.startsWith("/")) throw new Error(`${label} path must start with "/" (got "${value}")`);
+      if (value.startsWith("/ru/") || value.startsWith("/en/")) {
+        throw new Error(`${label} path must not include a language prefix (got "${value}")`);
+      }
+    }
+    // The parity test asserts both files exist, so refuse early with a clear
+    // message rather than letting the deploy go red.
+    const missing = [];
+    for (const [locale, value] of [["ru", ru], ["en", en]]) {
+      const file = path.join(PUBLIC, locale, (value === "/" ? "/index" : value) + ".html");
+      try { await fs.access(file); } catch { missing.push(relRepo(file)); }
+    }
+    if (missing.length) {
+      throw new Error(`create the page file(s) first, then register the pair: missing ${missing.join(", ")}`);
+    }
+
+    const localesPath = path.join(REPO, "src", "locales.js");
+    const source = await fs.readFile(localesPath, "utf8");
+    const start = source.indexOf("const PAGES = [");
+    const end = source.indexOf("\n];", start);
+    if (start === -1 || end === -1) throw new Error("could not locate the PAGES table in src/locales.js");
+    const block = source.slice(start, end);
+    if (block.includes(`"${ru}"`) || block.includes(`"${en}"`)) {
+      return text(`Already registered: ru="${ru}", en="${en}". Nothing to do.`);
+    }
+    const entry = `,\n  { ru: ${JSON.stringify(ru)}, en: ${JSON.stringify(en)} }`;
+    const updated = source.slice(0, end) + entry + source.slice(end);
+    await fs.writeFile(localesPath, updated);
+    const git = await gitSave(`MCP register page: ${en}`, ["src/locales.js"]);
+    return text(`Registered ru="${ru}", en="${en}" in src/locales.js. ${git}\nRun run_tests to confirm the build stays green.`);
+  });
+
+  server.registerTool("run_tests", {
+    title: "Run the test suite",
+    description: "Run `npm test`. Always run this after editing src/, scripts/ or test/, or after register_page: a failing test blocks the automatic deployment.",
+    inputSchema: {},
+    annotations: READ_ONLY
+  }, async () => {
+    const result = await run("npm", ["test"], { timeout: 180_000 });
+    const output = [result.stdout, result.stderr].filter(Boolean).join("\n");
+    const summary = output.split("\n")
+      .filter((line) => /^(# (tests|pass|fail|suites)|not ok )/.test(line.trim()))
+      .join("\n");
+    // The server installs production dependencies only (deploy.sh runs
+    // `npm ci --omit=dev`), so the HTTP-level suite cannot load here. Say so
+    // plainly instead of reporting a scary false failure: the routing checks
+    // that need it are run by CI on every push.
+    const missingDevDeps = /Cannot find module 'supertest'/.test(output);
+    if (missingDevDeps) {
+      const otherFailures = output.split("\n").filter((line) => /^not ok /.test(line.trim()) && !/app\.test\.js/.test(line));
+      const verdict = otherFailures.length ? "FAILURES FOUND (besides the skipped suite)" : "OK — no failures in the suites that can run here";
+      return text(
+        `${verdict}\n${summary}\n\n`
+        + "Note: test/app.test.js could not run on the server because dev dependencies are not installed there "
+        + "(production install). The locales/config suites above DID run — they cover the PAGES table, routing rules "
+        + "and hreflang. The full HTTP suite runs automatically in GitHub Actions on push, and a red run blocks deployment."
+      );
+    }
+    return text(`${result.ok ? "TESTS PASSED" : "TESTS FAILED"}\n${summary || output.slice(-2000)}`);
   });
 
   return server;
