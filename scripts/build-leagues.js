@@ -48,6 +48,7 @@ function localizeData(locale) {
       country: l.country[locale],
       flag: l.flag,
       name: l.name,
+      url: l.url ? l.url[locale] : null,
       tier: l.tier,
       open: l.open,
       note: l.note[locale],
