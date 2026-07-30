@@ -14,7 +14,7 @@ window.EHA_LEAGUES_SRC = {
   },
   leagues: [
     { country: { ru: "Финляндия", en: "Finland" }, flag: "🇫🇮", name: "Liiga", tier: 1, open: "low", note: { ru: "Высший дивизион, элитный уровень", en: "Top division, elite level" }, imports: { ru: "Мест мало, берут только явное усиление", en: "Few spots; only clear upgrades are signed" } },
-    { country: { ru: "Финляндия", en: "Finland" }, flag: "🇫🇮", name: "Mestis", tier: 2, open: "mid", note: { ru: "Второй дивизион, профессиональный", en: "Second division, professional" }, imports: { ru: "Требования мягче, чем в Liiga", en: "A lower bar than Liiga" } },
+    { country: { ru: "Финляндия", en: "Finland" }, flag: "🇫🇮", name: "Mestis", url: { ru: "/ligi/finlyandiya-mestis", en: "/leagues/finland-mestis" }, tier: 2, open: "mid", note: { ru: "Второй дивизион, профессиональный", en: "Second division, professional" }, imports: { ru: "Требования мягче, чем в Liiga", en: "A lower bar than Liiga" } },
     { country: { ru: "Финляндия", en: "Finland" }, flag: "🇫🇮", name: "Suomi-sarja", tier: 3, open: "mid", note: { ru: "Третий уровень, полупрофессиональный", en: "Third level, semi-pro" }, imports: { ru: "Подходит для входа и адаптации", en: "Good for entry and adapting" } },
 
     { country: { ru: "Швеция", en: "Sweden" }, flag: "🇸🇪", name: "SHL", tier: 1, open: "low", note: { ru: "Один из сильнейших чемпионатов мира", en: "One of the strongest leagues in the world" }, imports: { ru: "Попадают единицы", en: "Only a handful of imports make it" } },
