@@ -79,7 +79,19 @@ test("hreflang alternates come from the page table, all on the primary domain", 
 });
 
 test("page table covers every published bilingual pair without duplicate paths", () => {
-  assert.equal(PAGES.length, 45);
-  assert.equal(new Set(PAGES.map((page) => page.ru)).size, PAGES.length);
-  assert.equal(new Set(PAGES.map((page) => page.en)).size, PAGES.length);
+  // No hardcoded page count: the table grows every time a page is published,
+  // and a snapshot number would turn every legitimate addition into a red
+  // build. What must hold is the invariant — each path appears exactly once in
+  // its language column, so the switcher, hreflang and the redirect map can
+  // never disagree. (The companion test in app.test.js checks that every
+  // registered pair actually exists as a file in both language directories.)
+  assert.ok(PAGES.length >= 45, `expected at least 45 bilingual pages, got ${PAGES.length}`);
+  assert.equal(new Set(PAGES.map((page) => page.ru)).size, PAGES.length, "duplicate RU path in PAGES");
+  assert.equal(new Set(PAGES.map((page) => page.en)).size, PAGES.length, "duplicate EN path in PAGES");
+  for (const page of PAGES) {
+    assert.ok(page.ru.startsWith("/"), `RU path must start with "/": ${page.ru}`);
+    assert.ok(page.en.startsWith("/"), `EN path must start with "/": ${page.en}`);
+    assert.ok(!page.ru.startsWith("/ru/"), `RU path must not carry a language prefix: ${page.ru}`);
+    assert.ok(!page.en.startsWith("/en/"), `EN path must not carry a language prefix: ${page.en}`);
+  }
 });
