@@ -1,6 +1,6 @@
 "use strict";
 
-// Single source of truth for the bilingual routing. Every page that exists in
+// Single source of truth for the bilingual routing (MCP write test). Every page that exists in
 // both languages is listed here once; this table drives four things that must
 // never disagree: the language switcher, hreflang tags, the 301 redirect map
 // for the eventual domain split, and the test that guards translation parity.
