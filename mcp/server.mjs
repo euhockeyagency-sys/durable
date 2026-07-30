@@ -88,6 +88,32 @@ function safeRepo(relPath) {
   return resolved;
 }
 
+// The page tools historically took paths relative to public/ and only accepted
+// .html/.css. Models keep calling them for project files ("src/locales.js"),
+// so resolve either meaning instead of rejecting: try the legacy public/ path
+// and the repo-relative one, and prefer whichever actually exists. This keeps
+// old calls working while making the page tools accept project files too.
+async function resolveEditable(relPath) {
+  const clean = String(relPath || "").replace(/^\/+/, "");
+  const candidates = [];
+  const inPublic = path.resolve(PUBLIC, clean);
+  if ((inPublic === PUBLIC || inPublic.startsWith(PUBLIC + path.sep)) && /\.(html|css)$/i.test(inPublic)) {
+    candidates.push(inPublic);
+  }
+  let repoPath = null;
+  try { repoPath = safeRepo(clean); } catch { /* not an allowed project path */ }
+  if (repoPath) candidates.push(repoPath);
+  // Nothing matched either rule: re-run safeRepo so the caller gets its
+  // descriptive error instead of the old "only .html and .css" message.
+  if (!candidates.length) return safeRepo(clean);
+  for (const candidate of candidates) {
+    try { await fs.access(candidate); return candidate; } catch { /* try the next reading */ }
+  }
+  // The file does not exist yet (a new page): a path that names a project
+  // folder is repo-relative, anything else keeps the legacy public/ meaning.
+  return repoPath && /^(public|src|scripts|test)\//.test(clean) ? repoPath : candidates[0];
+}
+
 async function listRepoFiles() {
   const output = [];
   for (const entry of EDITABLE) {
@@ -318,11 +344,11 @@ function makeServer() {
   }, async () => text((await listFiles()).join("\n")));
 
   server.registerTool("read_page", {
-    title: "Read page",
-    description: "Read the full content of a page. path is relative to public/, for example en/index.html.",
+    title: "Read a page or project file",
+    description: "Read the full content of a file. Website pages are relative to public/ ('en/index.html'); project files use their repo path ('src/locales.js', 'public/assets/leagues.src.js', 'scripts/generate-images.js').",
     inputSchema: { path: z.string() },
     annotations: READ_ONLY
-  }, async ({ path: requestedPath }) => text(await fs.readFile(safe(requestedPath), "utf8")));
+  }, async ({ path: requestedPath }) => text(await fs.readFile(await resolveEditable(requestedPath), "utf8")));
 
   server.registerTool("search_pages", {
     title: "Search pages",
@@ -360,8 +386,8 @@ function makeServer() {
   }, async ({ path: requestPath }) => text(await verifySite(requestPath || "/")));
 
   server.registerTool("replace_in_page", {
-    title: "Replace text in a page",
-    description: "Replace an exact text fragment. By default it must be unique. Saves, commits, and pushes automatically.",
+    title: "Replace text in a page or project file",
+    description: "Replace an exact text fragment in a website page or a project file ('src/locales.js', 'public/assets/leagues.src.js', 'scripts/generate-images.js'). By default it must be unique. Saves, commits, and pushes automatically.",
     inputSchema: {
       path: z.string(),
       find: z.string(),
@@ -369,7 +395,7 @@ function makeServer() {
       replace_all: z.boolean().optional()
     }
   }, async ({ path: requestedPath, find, replace, replace_all }) => {
-    const filePath = safe(requestedPath);
+    const filePath = await resolveEditable(requestedPath);
     const before = await fs.readFile(filePath, "utf8");
     const count = before.split(find).length - 1;
     if (count === 0) throw new Error("`find` text not found in the page");
@@ -378,22 +404,24 @@ function makeServer() {
     }
     const after = replace_all ? before.split(find).join(replace) : before.replace(find, replace);
     await fs.writeFile(filePath, after);
-    const git = await gitSave(`MCP edit: ${rel(filePath)}`);
-    return text(`Replaced ${replace_all ? count : 1} occurrence(s) in ${rel(filePath)}. ${git}`);
+    const target = relRepo(filePath);
+    const git = await gitSave(`MCP edit: ${target}`, [target]);
+    return text(`Replaced ${replace_all ? count : 1} occurrence(s) in ${target}. ${git}`);
   });
 
   server.registerTool("write_page", {
-    title: "Overwrite a page",
-    description: "Replace the entire content of a page. Saves, commits, and pushes automatically.",
+    title: "Overwrite a page or project file",
+    description: "Replace the entire content of a file. Accepts website pages ('en/index.html') and project files ('src/locales.js', 'public/assets/leagues.src.js', 'scripts/generate-images.js'). Saves, commits, and pushes automatically.",
     inputSchema: { path: z.string(), content: z.string() }
   }, async ({ path: requestedPath, content }) => {
-    const filePath = safe(requestedPath);
+    const filePath = await resolveEditable(requestedPath);
     // Create missing parent folders so a page in a brand-new section (e.g.
     // public/en/leagues/) can be written instead of failing with ENOENT.
     await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, content);
-    const git = await gitSave(`MCP write: ${rel(filePath)}`);
-    return text(`Wrote ${content.length} bytes to ${rel(filePath)}. ${git}`);
+    const target = relRepo(filePath);
+    const git = await gitSave(`MCP write: ${target}`, [target]);
+    return text(`Wrote ${content.length} bytes to ${target}. ${git}`);
   });
 
   // --- Project files (beyond public/): src, scripts, test -------------------
