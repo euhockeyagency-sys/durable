@@ -54,7 +54,11 @@ const PAGES = [
   { ru: "/guides/hokkejnoe-rezyume", en: "/guides/hockey-resume-for-european-clubs" },
   { ru: "/guides/kak-rabotaet-hokkejnyj-agent", en: "/guides/how-a-hockey-agent-works" },
   { ru: "/guides/kak-vybrat-ligu", en: "/guides/how-to-choose-a-hockey-league" },
-  { ru: "/guides/video-dlya-kluba", en: "/guides/hockey-video-for-clubs" }
+  { ru: "/guides/video-dlya-kluba", en: "/guides/hockey-video-for-clubs" },
+  { ru: "/ligi/finlyandiya-mestis", en: "/leagues/finland-mestis" },
+  { ru: "/ligi/finlyandiya-suomi-sarja", en: "/leagues/finland-suomi-sarja" },
+  { ru: "/ligi/shvetsiya-hockeyallsvenskan", en: "/leagues/sweden-hockeyallsvenskan" },
+  { ru: "/ligi/shvetsiya-hockeyettan", en: "/leagues/sweden-hockeyettan" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
