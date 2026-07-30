@@ -69,6 +69,9 @@ function renderRows(locale) {
   return source.leagues.map((l) => {
     const country = l.country[locale];
     const open = openLabel[l.open] || l.open;
+    const leagueName = l.url && l.url[locale]
+      ? `<a href="${LOCALES[locale].baseToken}${esc(l.url[locale])}"><b>${esc(l.name)}</b></a>`
+      : `<b>${esc(l.name)}</b>`;
     return `<tr data-country="${esc(country)}" data-tier="${l.tier}" data-open="${esc(l.open)}">` +
       `<td data-label="${esc(labels.country)}">${esc(l.flag)} ${esc(country)}</td>` +
       `<td data-label="${esc(labels.league)}"><b>${esc(l.name)}</b></td>` +
