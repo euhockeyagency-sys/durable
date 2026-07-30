@@ -16,6 +16,7 @@ const END = "<!-- LEAGUES:END -->";
 // target page that holds the static rows.
 const LOCALES = {
   ru: {
+    baseToken: "{{RU}}",
     openLabel: { high: "Открыта", mid: "Ограниченно", low: "Сложно" },
     labels: { country: "Страна", league: "Лига", level: "Уровень", profile: "Характеристика", imports: "Для легионеров" },
     page: path.join(ROOT, "public", "ru", "ligi-evropy.html")
