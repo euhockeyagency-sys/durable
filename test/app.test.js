@@ -429,7 +429,7 @@ test("routes expose the exact source file and content hash", async () => {
       .digest("hex");
     assert.equal(response.headers["x-eha-source"], source);
     assert.equal(response.headers["x-eha-source-sha256"], expectedHash);
-    assert.equal(response.headers["cache-control"], "no-cache, no-store, must-revalidate");
+    assert.equal(response.headers["cache-control"], "public, max-age=0, must-revalidate");
     assert.match(response.text, new RegExp(`<html lang="${lang}"`));
   }
 });
