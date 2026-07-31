@@ -434,9 +434,11 @@ function renderBody(data, extension, config, context) {
     const pageUrl = joinUrl(baseUrl, logicalPath);
     const isArticle = logicalPath.startsWith("/guides/");
     const social = buildSocialTags(html, pageUrl, isArticle, coverFor(config, logicalPath, baseUrl), locale);
+    const fontSubset = locale === "ru" ? "oswald-500-cyrillic" : "oswald-500-latin";
+    const fontPreload = `<link rel="preload" as="font" href="/assets/fonts/${fontSubset}.woff2" type="font/woff2" crossorigin>`;
     const feedTitle = locale === "en" ? "EHA — resources for players" : "EHA — материалы для хоккеистов";
     const feed = `<link rel="alternate" type="application/rss+xml" title="${feedTitle}" href="${baseUrl}/feed.xml">`;
-    html = html.replace("</head>", `${social}${buildHreflang(logicalPath, locale, config)}${feed}${YANDEX_METRIKA}</head>`);
+    html = html.replace("</head>", `${fontPreload}${social}${buildHreflang(logicalPath, locale, config)}${feed}${YANDEX_METRIKA}</head>`);
   }
   return Buffer.from(html);
 }
@@ -514,11 +516,14 @@ function serveNotFound(req, res, config, locale = "ru", root = "ru") {
 const SITEMAP_EXCLUDED = /^(404|application-success|google[0-9a-f]+|yandex_[0-9a-f]+)\.html$/i;
 
 // Collect every .html page in one language's directory (public/<locale>/),
-// excluding utility pages, with its mtime. Slugs are language-neutral logical
-// paths (the locale directory is not part of the URL).
+// excluding utility pages, with its git-based modification date when the
+// deployment generated public/assets/lastmod.json. Slugs are language-neutral
+// logical paths (the locale directory is not part of the URL).
 function collectPages(publicDir, locale = "ru") {
   const pages = [];
   const root = path.join(publicDir, locale);
+  let lastmod = {};
+  try { lastmod = JSON.parse(fs.readFileSync(path.join(publicDir, "assets", "lastmod.json"), "utf8")); } catch { /* local checkout before deploy */ }
   const walk = (dir, prefix) => {
     let entries = [];
     try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
@@ -530,6 +535,9 @@ function collectPages(publicDir, locale = "ru") {
         const slug = entry.name === "index.html" && prefix === "" ? "/" : `/${prefix}${entry.name.replace(/\.html$/, "")}`;
         let mtime = new Date();
         try { mtime = fs.statSync(full).mtime; } catch { /* keep default */ }
+        const relative = path.relative(path.join(publicDir, ".."), full).split(path.sep).join("/");
+        const gitDate = lastmod[relative];
+        if (gitDate) mtime = new Date(`${gitDate}T00:00:00Z`);
         pages.push({ slug, mtime, file: full });
       }
     }
