@@ -159,6 +159,14 @@ test("rendered pages preload the locale-specific Oswald subset", async () => {
   assert.match(ru.text, /preload" as="font" href="\/assets\/fonts\/oswald-500-cyrillic\.woff2/);
 });
 
+test("rendered HTML inlines critical CSS and defers the full stylesheet", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app).get("/").set("Host", "eha.test").expect(200);
+  assert.match(response.text, /<style data-critical-css>/);
+  assert.match(response.text, /rel="preload" href="\/styles\.css\?v=[a-z0-9]+" as="style"/);
+  assert.match(response.text, /media="print" onload="this\.media='all'"/);
+});
+
 test("compresses HTML with Brotli when the client supports it", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app).get("/").set("Host", "eha.test").set("Accept-Encoding", "br").expect(200);

@@ -424,8 +424,9 @@ function renderBody(data, extension, config, context) {
       .replace(/<div class="cf-turnstile"[^>]*><\/div>/g, "");
   }
   if (extension === ".html") {
+    const stylesheetHref = `/styles.css?v=${assetVersion(config, "styles.css")}`;
     html = html
-      .replaceAll('href="/styles.css"', `href="/styles.css?v=${assetVersion(config, "styles.css")}"`)
+      .replaceAll('href="/styles.css"', `href="${stylesheetHref}"`)
       .replaceAll('src="/site.js"', `src="/site.js?v=${assetVersion(config, "site.js")}"`)
       .replaceAll('src="/assets/leagues.ru.js"', `src="/assets/leagues.ru.js?v=${assetVersion(config, "assets/leagues.ru.js")}"`)
       .replaceAll('src="/assets/leagues.en.js"', `src="/assets/leagues.en.js?v=${assetVersion(config, "assets/leagues.en.js")}"`);
@@ -436,11 +437,21 @@ function renderBody(data, extension, config, context) {
     const social = buildSocialTags(html, pageUrl, isArticle, coverFor(config, logicalPath, baseUrl), locale);
     const fontSubset = locale === "ru" ? "oswald-500-cyrillic" : "oswald-500-latin";
     const fontPreload = `<link rel="preload" as="font" href="/assets/fonts/${fontSubset}.woff2" type="font/woff2" crossorigin>`;
+    const criticalCss = readCriticalCss(config);
+    const stylesheetHref = `/styles.css?v=${assetVersion(config, "styles.css")}`;
+    const deferredStylesheet = `<link rel="preload" href="${stylesheetHref}" as="style"><link rel="stylesheet" href="${stylesheetHref}" media="print" onload="this.media='all'">` +
+      `<noscript><link rel="stylesheet" href="${stylesheetHref}"></noscript>`;
     const feedTitle = locale === "en" ? "EHA — resources for players" : "EHA — материалы для хоккеистов";
     const feed = `<link rel="alternate" type="application/rss+xml" title="${feedTitle}" href="${baseUrl}/feed.xml">`;
-    html = html.replace("</head>", `${fontPreload}${social}${buildHreflang(logicalPath, locale, config)}${feed}${YANDEX_METRIKA}</head>`);
+    html = html.replace(`<link rel="stylesheet" href="${stylesheetHref}">`, deferredStylesheet)
+      .replace("</head>", `${fontPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${YANDEX_METRIKA}</head>`);
   }
   return Buffer.from(html);
+}
+
+function readCriticalCss(config) {
+  try { return fs.readFileSync(path.join(config.publicDir, "assets", "critical.css"), "utf8"); }
+  catch { return ""; }
 }
 
 function prefixInternalLinks(html, prefix) {
