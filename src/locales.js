@@ -62,7 +62,11 @@ const PAGES = [
   { ru: "/ligi/germaniya-del2", en: "/leagues/germany-del2" },
   { ru: "/ligi/germaniya-oberliga", en: "/leagues/germany-oberliga" },
   { ru: "/ligi/chehiya-tipsport-extraliga", en: "/leagues/czechia-tipsport-extraliga" },
-  { ru: "/ligi/chehiya-maxa-liga", en: "/leagues/czechia-maxa-liga" }
+  { ru: "/ligi/chehiya-maxa-liga", en: "/leagues/czechia-maxa-liga" },
+  { ru: "/ligi/slovakiya-tipsport-liga", en: "/leagues/slovakia-tipsport-liga" },
+  { ru: "/ligi/slovakiya-tipos-shl", en: "/leagues/slovakia-tipos-shl" },
+  { ru: "/ligi/polsha-tauron-hokej-liga", en: "/leagues/poland-tauron-hokej-liga" },
+  { ru: "/ligi/polsha-1-liga-mhl", en: "/leagues/poland-1-liga-mhl" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
