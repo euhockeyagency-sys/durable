@@ -587,3 +587,86 @@ test("health reports an unnotified form as such", async () => {
   const response = await request(app).get("/api/health").expect(200);
   assert.deepEqual(response.body.notifications, { email: false, telegram: false, emailTo: null });
 });
+
+// --- Tier 0 crawl guards: the internal link graph must be clean ------------
+//
+// ~18% of the site's internal links were broken, redirected or carried an
+// unsubstituted template token before these landed. A leaking crawl graph
+// cannot rank, so all three failure classes are build errors. The crawler
+// asserts on arrays of offending edges, not counts, so a failure names exactly
+// which link on which page is wrong.
+
+function internalTarget(href) {
+  // Returns the request path for an internal link, or null to skip (external,
+  // mailto/tel, pure anchor, protocol-relative). Query and hash are dropped:
+  // routing ignores them and they only fragment dedup.
+  if (!href || href.startsWith("#") || href.startsWith("//")) return null;
+  if (/^(?:mailto:|tel:|https?:\/\/(?!eha\.test\b))/i.test(href)) return null;
+  let rest = href.replace(/^https:\/\/eha\.test/i, "");
+  if (!rest.startsWith("/")) return null;
+  return rest.split("#")[0].split("?")[0] || "/";
+}
+
+function extractHrefs(html) {
+  return [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
+}
+
+test("no rendered page ships an unsubstituted template token", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const offenders = [];
+  for (const page of PAGES) {
+    for (const [route] of [[page.en], [`/ru${page.ru === "/" ? "" : page.ru}` || "/ru/"]]) {
+      const url = route === "/ru" ? "/ru/" : route;
+      const res = await request(app).get(url).set("Host", "eha.test");
+      const tokens = res.text.match(/\{\{[A-Z_]+\}\}/g);
+      if (tokens) offenders.push(`${url}: ${[...new Set(tokens)].join(", ")}`);
+    }
+  }
+  assert.deepEqual(offenders, [], `unsubstituted tokens:\n${offenders.join("\n")}`);
+});
+
+test("every internal link resolves 200 at the exact URL linked", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const seen = new Set();
+  const queue = ["/", "/ru/"];
+  const broken = [];      // link target 404s
+  const redirecting = []; // link target 301/302s (a wasted hop = not canonical)
+  const request200 = async (url) => request(app).get(url).set("Host", "eha.test");
+
+  while (queue.length) {
+    const url = queue.shift();
+    if (seen.has(url)) continue;
+    seen.add(url);
+    const res = await request200(url);
+    const isHtml = (res.headers["content-type"] || "").includes("text/html");
+    if (!isHtml) continue; // asset already confirmed 200 below by its own edge
+    for (const href of extractHrefs(res.text)) {
+      const target = internalTarget(href);
+      if (target === null) continue;
+      const edge = await request200(target);
+      if (edge.status === 404) broken.push(`${url} -> ${target} (404)`);
+      else if (edge.status >= 300 && edge.status < 400) {
+        redirecting.push(`${url} -> ${target} (${edge.status} -> ${edge.headers.location})`);
+      }
+      const nextIsHtml = (edge.headers["content-type"] || "").includes("text/html");
+      if (edge.status === 200 && nextIsHtml && !seen.has(target)) queue.push(target);
+    }
+  }
+  assert.deepEqual(broken, [], `broken internal links:\n${broken.join("\n")}`);
+  assert.deepEqual(redirecting, [], `internal links that redirect (link to the canonical URL instead):\n${redirecting.join("\n")}`);
+  assert.ok(seen.size > 150, `crawler only reached ${seen.size} URLs — expected the whole site`);
+});
+
+test("a doubled /ru/ prefix 301s to the canonical URL", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const res = await request(app).get("/ru/ru/ligi/daniya-metal-ligaen").set("Host", "eha.test").expect(301);
+  assert.equal(res.headers.location, "https://eha.test/ru/ligi/daniya-metal-ligaen");
+  const triple = await request(app).get("/ru/ru/ru/services").set("Host", "eha.test").expect(301);
+  assert.equal(triple.headers.location, "https://eha.test/ru/services");
+});
+
+test("the RU leagues hub never emits a doubled /ru/ru/ link", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const res = await request(app).get("/ru/ligi-evropy").set("Host", "eha.test").expect(200);
+  assert.doesNotMatch(res.text, /href="\/ru\/ru\//);
+});

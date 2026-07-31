@@ -83,7 +83,15 @@ const PAGES = [
   { ru: "/ligi/niderlandy-eredivisie", en: "/leagues/netherlands-eredivisie" },
   { ru: "/ligi/vengriya-erste-liga", en: "/leagues/hungary-erste-liga" },
   { ru: "/ligi/vengriya-andersen-liga", en: "/leagues/hungary-andersen-liga" },
-  { ru: "/ligi/rumyniya-campionatul-national", en: "/leagues/romania-campionatul-national" }
+  { ru: "/ligi/rumyniya-campionatul-national", en: "/leagues/romania-campionatul-national" },
+  { ru: "/guides/hokkej-v-estonii", en: "/guides/hockey-in-estonia" },
+  { ru: "/guides/hokkej-v-vengrii", en: "/guides/hockey-in-hungary" },
+  { ru: "/guides/hokkej-v-yaponii", en: "/guides/hockey-in-japan" },
+  { ru: "/guides/hokkej-v-kazahstane", en: "/guides/hockey-in-kazakhstan" },
+  { ru: "/guides/hokkej-v-latvii", en: "/guides/hockey-in-latvia" },
+  { ru: "/guides/hokkej-v-litve", en: "/guides/hockey-in-lithuania" },
+  { ru: "/guides/hokkej-v-rumynii", en: "/guides/hockey-in-romania" },
+  { ru: "/guides/hokkej-v-slovenii", en: "/guides/hockey-in-slovenia" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
@@ -157,7 +165,16 @@ function resolveLocale(host, pathname, config) {
   // Russian lives under /ru/. Serve it from public/ru with internal links and
   // absolute URLs prefixed, so canonical/hreflang/sitemap all read .com/ru/...
   if (ruPrefixed) {
-    const rest = pathname === ruPrefix ? "/" : (pathname.slice(ruPrefix.length) || "/");
+    let rest = pathname === ruPrefix ? "/" : (pathname.slice(ruPrefix.length) || "/");
+    // A doubled prefix (/ru/ru/...) is a duplicate URL. Collapse every extra
+    // prefix and 301 to the single canonical /ru/ URL so it can never be served
+    // or indexed twice — this catches external inbound links too.
+    if (rest === ruPrefix || rest.startsWith(`${ruPrefix}/`)) {
+      while (rest === ruPrefix || rest.startsWith(`${ruPrefix}/`)) {
+        rest = rest === ruPrefix ? "/" : (rest.slice(ruPrefix.length) || "/");
+      }
+      return { redirect: { status: 301, location: joinBase(config.ruUrl, rest) } };
+    }
     return { locale: "ru", root: "ru", logicalPath: rest, urlPrefix: ruPrefix };
   }
 

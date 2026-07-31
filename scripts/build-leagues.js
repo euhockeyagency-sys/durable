@@ -14,15 +14,19 @@ const END = "<!-- LEAGUES:END -->";
 
 // Per-locale presentation: open-column label, table cell data-labels, and the
 // target page that holds the static rows.
+// baseToken is prepended to internal league links. Both locales use logical
+// paths (no language prefix): EN is served from the root, and the /ru/ prefix is
+// applied at render time by prefixInternalLinks. A non-empty token would ship a
+// literal {{RU}}/{{EN}} to the browser as a broken relative URL.
 const LOCALES = {
   ru: {
-    baseToken: "{{RU}}",
+    baseToken: "",
     openLabel: { high: "Открыта", mid: "Ограниченно", low: "Сложно" },
     labels: { country: "Страна", league: "Лига", level: "Уровень", profile: "Характеристика", imports: "Для легионеров" },
     page: path.join(ROOT, "public", "ru", "ligi-evropy.html")
   },
   en: {
-    baseToken: "{{EN}}",
+    baseToken: "",
     openLabel: { high: "Open", mid: "Limited", low: "Hard" },
     labels: { country: "Country", league: "League", level: "Level", profile: "Profile", imports: "For imports" },
     page: path.join(ROOT, "public", "en", "european-leagues.html")

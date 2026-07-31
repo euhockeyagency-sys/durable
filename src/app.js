@@ -342,6 +342,10 @@ function buildSocialTags(html, pageUrl, isArticle, imageUrl, locale) {
     `<meta name="twitter:image" content="${img}">`;
 }
 
+// The only files served from the shared public/ root (everything else lives in a
+// language directory). Keep in sync with the actual contents of public/.
+const SHARED_ROOT_ALLOW = /^\/(?:assets\/|favicon\.svg$|robots\.txt$|site\.js$|styles\.css$|google[0-9a-f]+\.html$|yandex_[0-9a-f]+\.html$)/i;
+
 function servePublic(req, res, config) {
   let pathname;
   try {
@@ -358,12 +362,15 @@ function servePublic(req, res, config) {
   const requested = logicalPath === "/" ? "/index.html"
     : (path.extname(logicalPath) ? logicalPath : `${logicalPath}.html`);
   const publicRoot = path.resolve(config.publicDir) + path.sep;
-  // Try the language directory first, then the shared root (assets, styles.js,
-  // search-engine verification files live at the shared root).
-  const candidates = [
-    path.resolve(config.publicDir, root, `.${requested}`),
-    path.resolve(config.publicDir, `.${requested}`)
-  ];
+  // Try the language directory first. The shared root holds only assets and the
+  // handful of language-neutral files below (styles, script, favicon, robots,
+  // search-engine verification), so it is tried ONLY for those — otherwise a
+  // language path like /ru/ru/services would resolve against the shared root and
+  // serve a duplicate URL that should have 404'd.
+  const candidates = [path.resolve(config.publicDir, root, `.${requested}`)];
+  if (SHARED_ROOT_ALLOW.test(requested)) {
+    candidates.push(path.resolve(config.publicDir, `.${requested}`));
+  }
   const context = { locale, logicalPath, urlPrefix };
 
   const tryNext = (index) => {
@@ -399,6 +406,11 @@ function renderBody(data, extension, config, context) {
   let html = data.toString("utf8")
     .replaceAll("{{BASE_URL}}", baseUrl)
     .replaceAll("{{EN}}", enPrefix)
+    // Russian internal links are logical (no /ru/); prefixInternalLinks applies
+    // the /ru/ prefix below, so the RU link-prefix token resolves to empty just
+    // like {{EN}}. Without this the raw token shipped to the browser as a broken
+    // relative URL (e.g. /ru/ligi/x/{{RU}}/services).
+    .replaceAll("{{RU}}", "")
     .replaceAll("{{ALT_URL}}", altUrlFor(locale, logicalPath, config))
     .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
     .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
@@ -430,8 +442,12 @@ function renderBody(data, extension, config, context) {
 }
 
 function prefixInternalLinks(html, prefix) {
+  const seg = prefix.replace(/^\/+/, ""); // "/ru" -> "ru"
   return html.replace(/href="\/([^"]*)"/g, (match, target) => {
     if (/^(?:assets\/|styles\.css(?:\?|$)|site\.js(?:\?|$)|favicon\.svg$)/.test(target)) return match;
+    // Idempotent: a link already under the prefix must not be prefixed again,
+    // or it becomes a duplicate /ru/ru/... URL.
+    if (target === seg || target.startsWith(`${seg}/`)) return match;
     return `href="${prefix}/${target}"`;
   });
 }
@@ -471,6 +487,7 @@ function sendBody(req, res, body, extension, status = 200) {
 
 // Branded 404 page in the requested language; falls back to plain text.
 function serveNotFound(req, res, config, locale = "ru", root = "ru") {
+  res.set("X-Robots-Tag", "noindex");
   fs.readFile(path.join(config.publicDir, root, "404.html"), (error, data) => {
     if (error) return res.status(404).type("text").send("Not found");
     sendBody(req, res, renderBody(data, ".html", config, { locale, logicalPath: "/404" }), ".html", 404);

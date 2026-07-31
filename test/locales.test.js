@@ -1,5 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const { PAGES, resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("../src/locales");
 
 // Consolidated single-domain model: English at the primary root, Russian under
@@ -76,6 +78,34 @@ test("hreflang alternates come from the page table, all on the primary domain", 
     en: "https://eha.test/guides/hockey-in-poland"
   });
   assert.equal(altUrlFor("en", "/guides/hockey-video-for-clubs", cfg), "https://eha.test/ru/guides/video-dlya-kluba");
+});
+
+test("every published page is registered in the PAGES table", () => {
+  // The companion test in app.test.js walks table -> file. This walks file ->
+  // table: a page that ships without a PAGES row silently loses hreflang and
+  // gets a language switcher that dumps the visitor on the home page, and the
+  // table->file test can never catch it. Utility pages that are intentionally
+  // language-local (no cross-language counterpart) are the only exceptions.
+  const publicDir = path.join(__dirname, "..", "public");
+  const UTILITY = /^(404|application-success)$/;
+  const columns = { en: new Set(PAGES.map((p) => p.en)), ru: new Set(PAGES.map((p) => p.ru)) };
+  const missing = [];
+  for (const locale of ["en", "ru"]) {
+    const root = path.join(publicDir, locale);
+    const walk = (dir, prefix) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) { if (entry.name !== "assets") walk(full, `${prefix}${entry.name}/`); continue; }
+        if (!entry.name.endsWith(".html")) continue;
+        const base = entry.name.replace(/\.html$/, "");
+        if (UTILITY.test(base)) continue;
+        const slug = base === "index" && prefix === "" ? "/" : `/${prefix}${base}`;
+        if (!columns[locale].has(slug)) missing.push(`${locale}: ${slug}`);
+      }
+    };
+    walk(root, "");
+  }
+  assert.deepEqual(missing, [], `pages missing from PAGES:\n${missing.join("\n")}`);
 });
 
 test("page table covers every published bilingual pair without duplicate paths", () => {
