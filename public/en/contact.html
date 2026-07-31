@@ -66,6 +66,17 @@
 <label>Full name<input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
+<div class="two">
+<label>Year of birth<input name="birthYear" type="number" inputmode="numeric" min="1966" max="2018" required>
+<span class="field-error" data-error-for="birthYear"></span>
+</label>
+<label>Citizenship<input name="citizenship" autocomplete="country-name" maxlength="100" required>
+<span class="field-error" data-error-for="citizenship"></span>
+</label>
+</div>
+<label>Current club or “no club”<input name="currentClub" maxlength="160" required>
+<span class="field-error" data-error-for="currentClub"></span>
+</label>
 <label>Position<select name="position" required>
 <option value="">Select</option>
 <option value="forward">Forward</option>
@@ -117,7 +128,7 @@
 <span class="field-error" data-error-for="parentConsent"></span>
 </section>
 <label>Resume, photos or highlight video
-<input type="file" name="files" accept="application/pdf,image/jpeg,image/png,video/mp4,video/quicktime,video/webm,.pdf,.jpg,.jpeg,.png,.mp4,.mov,.webm" multiple>
+<input type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
 <small>You can add a resume, photos and a short highlight video. Up to 3 files, each up to 5 MB, with a 10 MB total limit. For larger videos, use the YouTube, Vimeo or Google Drive link fields above. Do not send passport, medical or other sensitive documents.</small>
 <span class="field-error" data-error-for="files"></span>
 </label>
@@ -129,7 +140,7 @@
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
 <label class="honeypot" aria-hidden="true">Your website<input name="website" tabindex="-1" autocomplete="off"></label>
-<input type="hidden" name="birthYear" value="2000"><input type="hidden" name="citizenship" value="Not provided"><input type="hidden" name="currentClub" value="Not provided"><input type="hidden" name="locale" value="en"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer">
+<input type="hidden" name="locale" value="en"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer">
 <button class="btn primary" type="submit">Send application</button>
 <p class="form-note">By submitting you confirm the details are accurate. The first assessment is free and carries no obligation.</p>
 </form>

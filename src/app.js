@@ -469,11 +469,27 @@ function buildHreflang(logicalPath, locale, config) {
 function sendBody(req, res, body, extension, status = 200) {
   res.status(status);
   res.set("Content-Type", CONTENT_TYPES[extension] || "application/octet-stream");
-  res.set("Cache-Control", extension === ".html"
-    ? "no-cache, no-store, must-revalidate"
-    : "public, max-age=604800");
+  const cacheableHtml = extension === ".html" && status === 200;
+  res.set("Cache-Control", cacheableHtml
+    ? "public, max-age=0, must-revalidate"
+    : extension === ".html" ? "no-cache, no-store, must-revalidate" : "public, max-age=604800");
+  if (cacheableHtml) {
+    const etag = `"${createHash("sha256").update(body).digest("hex")}"`;
+    res.set("ETag", etag);
+    if (req.headers["if-none-match"] === etag) return res.status(304).end();
+  }
   const compressible = [".html", ".css", ".js", ".svg", ".txt", ".xml"].includes(extension);
-  if (compressible && /gzip/.test(req.headers["accept-encoding"] || "")) {
+  const acceptedEncoding = req.headers["accept-encoding"] || "";
+  if (compressible && /br/.test(acceptedEncoding)) {
+    zlib.brotliCompress(body, (brotliError, compressed) => {
+      if (brotliError) return res.send(body);
+      res.set("Content-Encoding", "br");
+      res.set("Vary", "Accept-Encoding");
+      res.send(compressed);
+    });
+    return;
+  }
+  if (compressible && /gzip/.test(acceptedEncoding)) {
     zlib.gzip(body, (gzipError, compressed) => {
       if (gzipError) return res.send(body);
       res.set("Content-Encoding", "gzip");
@@ -482,6 +498,7 @@ function sendBody(req, res, body, extension, status = 200) {
     });
     return;
   }
+  if (compressible) res.set("Vary", "Accept-Encoding");
   res.send(body);
 }
 
