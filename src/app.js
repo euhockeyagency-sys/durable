@@ -9,6 +9,7 @@ const { createServices } = require("./services");
 const { validateClubRequest } = require("./validation");
 const { messages, normalizeLocale } = require("./messages");
 const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales");
+const { leagueEditorial } = require("./league-editorial");
 
 const CONTENT_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -417,6 +418,10 @@ function renderBody(data, extension, config, context) {
     .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
   if (extension === ".html" && urlPrefix) {
     html = prefixInternalLinks(html, urlPrefix);
+  }
+  if (extension === ".html") {
+    const editorial = leagueEditorial(logicalPath, locale);
+    if (editorial) html = html.replace('<section data-country-section="11"', `${editorial}<section data-country-section="11"`);
   }
   if (extension === ".html" && !config.turnstileConfigured) {
     html = html
