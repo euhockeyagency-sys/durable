@@ -91,7 +91,11 @@ const PAGES = [
   { ru: "/guides/hokkej-v-latvii", en: "/guides/hockey-in-latvia" },
   { ru: "/guides/hokkej-v-litve", en: "/guides/hockey-in-lithuania" },
   { ru: "/guides/hokkej-v-rumynii", en: "/guides/hockey-in-romania" },
-  { ru: "/guides/hokkej-v-slovenii", en: "/guides/hockey-in-slovenia" }
+  { ru: "/guides/hokkej-v-slovenii", en: "/guides/hockey-in-slovenia" },
+  { ru: "/ligi/italiya-ihl-serie-a", en: "/leagues/italy-ihl-serie-a" },
+  { ru: "/ligi/italiya-italian-hockey-league", en: "/leagues/italy-italian-hockey-league" },
+  { ru: "/ligi/latviya-1-liga", en: "/leagues/latvia-1-liga" },
+  { ru: "/ligi/latviya-optibet-hokeja-liga", en: "/leagues/latvia-optibet-hokeja-liga" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
