@@ -76,7 +76,11 @@ const PAGES = [
   { ru: "/ligi/franciya-ligue-magnus", en: "/leagues/france-ligue-magnus" },
   { ru: "/ligi/franciya-division-1", en: "/leagues/france-division-1" },
   { ru: "/ligi/velikobritaniya-eihl", en: "/leagues/uk-eihl" },
-  { ru: "/ligi/velikobritaniya-planet-ice-national-league", en: "/leagues/uk-planet-ice-national-league" }
+  { ru: "/ligi/velikobritaniya-planet-ice-national-league", en: "/leagues/uk-planet-ice-national-league" },
+  { ru: "/ligi/shvejcariya-national-league", en: "/leagues/switzerland-national-league" },
+  { ru: "/ligi/shvejcariya-sky-swiss-league", en: "/leagues/switzerland-sky-swiss-league" },
+  { ru: "/ligi/niderlandy-cehl", en: "/leagues/netherlands-cehl" },
+  { ru: "/ligi/niderlandy-eredivisie", en: "/leagues/netherlands-eredivisie" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
