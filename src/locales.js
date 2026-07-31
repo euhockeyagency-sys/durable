@@ -66,7 +66,9 @@ const PAGES = [
   { ru: "/ligi/slovakiya-tipsport-liga", en: "/leagues/slovakia-tipsport-liga" },
   { ru: "/ligi/slovakiya-tipos-shl", en: "/leagues/slovakia-tipos-shl" },
   { ru: "/ligi/polsha-tauron-hokej-liga", en: "/leagues/poland-tauron-hokej-liga" },
-  { ru: "/ligi/polsha-1-liga-mhl", en: "/leagues/poland-1-liga-mhl" }
+  { ru: "/ligi/polsha-1-liga-mhl", en: "/leagues/poland-1-liga-mhl" },
+  { ru: "/ligi/avstriya-ice-hockey-league", en: "/leagues/austria-ice-hockey-league" },
+  { ru: "/ligi/alps-hockey-league", en: "/leagues/alps-hockey-league" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
