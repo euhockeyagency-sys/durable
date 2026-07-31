@@ -167,6 +167,24 @@ test("rendered HTML inlines critical CSS and defers the full stylesheet", async 
   assert.match(response.text, /media="print" onload="this\.media='all'"/);
 });
 
+test("priority league pages receive distinct editorial assessments in both languages", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const routes = [
+    "/leagues/czechia-maxa-liga", "/leagues/czechia-tipsport-extraliga",
+    "/leagues/germany-del2", "/leagues/germany-oberliga",
+    "/leagues/denmark-1-division", "/leagues/denmark-metal-ligaen",
+    "/leagues/poland-1-liga-mhl", "/leagues/poland-tauron-hokej-liga",
+    "/ru/ligi/chehiya-maxa-liga", "/ru/ligi/chehiya-tipsport-extraliga",
+    "/ru/ligi/germaniya-del2", "/ru/ligi/germaniya-oberliga",
+    "/ru/ligi/daniya-1-division", "/ru/ligi/daniya-metal-ligaen",
+    "/ru/ligi/polsha-1-liga-mhl", "/ru/ligi/polsha-tauron-hokej-liga"
+  ];
+  for (const route of routes) {
+    const response = await request(app).get(route).set("Host", "eha.test").expect(200);
+    assert.match(response.text, /class="editorial-assessment"/);
+  }
+});
+
 test("compresses HTML with Brotli when the client supports it", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app).get("/").set("Host", "eha.test").set("Accept-Encoding", "br").expect(200);
