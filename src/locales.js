@@ -58,7 +58,11 @@ const PAGES = [
   { ru: "/ligi/finlyandiya-mestis", en: "/leagues/finland-mestis" },
   { ru: "/ligi/finlyandiya-suomi-sarja", en: "/leagues/finland-suomi-sarja" },
   { ru: "/ligi/shvetsiya-hockeyallsvenskan", en: "/leagues/sweden-hockeyallsvenskan" },
-  { ru: "/ligi/shvetsiya-hockeyettan", en: "/leagues/sweden-hockeyettan" }
+  { ru: "/ligi/shvetsiya-hockeyettan", en: "/leagues/sweden-hockeyettan" },
+  { ru: "/ligi/germaniya-del2", en: "/leagues/germany-del2" },
+  { ru: "/ligi/germaniya-oberliga", en: "/leagues/germany-oberliga" },
+  { ru: "/ligi/chehiya-tipsport-extraliga", en: "/leagues/czechia-tipsport-extraliga" },
+  { ru: "/ligi/chehiya-maxa-liga", en: "/leagues/czechia-maxa-liga" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
