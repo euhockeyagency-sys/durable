@@ -43,6 +43,7 @@ function serviceMock(options = {}) {
         async insert(value) {
           if (table === "applications" && options.persistenceFailure) return { error: new Error("database down") };
           if (table === "application_files" && options.metadataFailure) return { error: new Error("metadata down") };
+          if (table === "application_notifications" && options.notificationAuditFailure) throw new Error("audit down");
           rows[table].push(value);
           return { error: null };
         },
@@ -140,6 +141,21 @@ test("serves the primary domain without redirecting", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   await request(app).get("/").set("Host", "eha.test").expect(200);
   await request(app).get("/ru/").set("Host", "eha.test").expect(200);
+});
+
+test("HTML responses support revalidation with ETag", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const first = await request(app).get("/").set("Host", "eha.test").expect(200);
+  assert.match(first.headers.etag, /^"[a-f0-9]{64}"$/);
+  assert.equal(first.headers["cache-control"], "public, max-age=0, must-revalidate");
+  await request(app).get("/").set("Host", "eha.test").set("If-None-Match", first.headers.etag).expect(304);
+});
+
+test("compresses HTML with Brotli when the client supports it", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app).get("/").set("Host", "eha.test").set("Accept-Encoding", "br").expect(200);
+  assert.equal(response.headers["content-encoding"], "br");
+  assert.equal(response.headers.vary, "Accept-Encoding");
 });
 
 test("robots.txt advertises both sitemaps on the primary origin", async () => {
@@ -350,6 +366,24 @@ test("keeps a saved application when notifications fail", async () => {
   await validRequest(request(app)).expect(201);
   assert.equal(services.rows.applications.length, 1);
   assert.deepEqual(services.rows.application_notifications.map((row) => row.status), ["failed", "failed"]);
+});
+
+test("keeps a saved application when notification audit fails", async () => {
+  const services = serviceMock({ notificationAuditFailure: true });
+  const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app)).expect(201);
+  assert.equal(services.rows.applications.length, 1);
+});
+
+test("application forms collect the fields required to assess age and eligibility", () => {
+  for (const locale of ["en", "ru"]) {
+    const html = fs.readFileSync(path.join(__dirname, "..", "public", locale, "contact.html"), "utf8");
+    assert.match(html, /name="birthYear" type="number"/);
+    assert.match(html, /name="citizenship"[^>]*required/);
+    assert.match(html, /name="currentClub"[^>]*required/);
+    assert.doesNotMatch(html, /name="birthYear" value="2000"/);
+    assert.doesNotMatch(html, /video\/(?:mp4|quicktime|webm)/);
+  }
 });
 
 test("limits the sixth attempt from one address", async () => {

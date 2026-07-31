@@ -66,6 +66,17 @@
 <label>Имя и фамилия<input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
+<div class="two">
+<label>Год рождения<input name="birthYear" type="number" inputmode="numeric" min="1966" max="2018" required>
+<span class="field-error" data-error-for="birthYear"></span>
+</label>
+<label>Гражданство<input name="citizenship" autocomplete="country-name" maxlength="100" required>
+<span class="field-error" data-error-for="citizenship"></span>
+</label>
+</div>
+<label>Текущий клуб или «без клуба»<input name="currentClub" maxlength="160" required>
+<span class="field-error" data-error-for="currentClub"></span>
+</label>
 <label>Позиция<select name="position" required>
 <option value="">Выберите</option>
 <option value="forward">Нападающий</option>
@@ -117,7 +128,7 @@
 <span class="field-error" data-error-for="parentConsent"></span>
 </section>
 <label>Резюме, фотографии или видео хайлайтов
-<input type="file" name="files" accept="application/pdf,image/jpeg,image/png,video/mp4,video/quicktime,video/webm,.pdf,.jpg,.jpeg,.png,.mp4,.mov,.webm" multiple>
+<input type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
 <small>Можно добавить резюме, фотографии и короткое видео с хайлайтами. До 3 файлов, каждый до 5 МБ, общий размер до 10 МБ. Для больших видео используйте ссылки YouTube, Vimeo или Google Drive выше. Не отправляйте паспорт, медицинские или другие чувствительные документы.</small>
 <span class="field-error" data-error-for="files"></span>
 </label>
@@ -129,7 +140,7 @@
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
 <label class="honeypot" aria-hidden="true">Ваш сайт<input name="website" tabindex="-1" autocomplete="off"></label>
-<input type="hidden" name="birthYear" value="2000"><input type="hidden" name="citizenship" value="Не указано"><input type="hidden" name="currentClub" value="Не указано"><input type="hidden" name="locale" value="ru"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer">
+<input type="hidden" name="locale" value="ru"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer">
 <button class="btn primary" type="submit">Отправить заявку</button>
 <p class="form-note">После сохранения вы получите номер заявки. Если форма недоступна, напишите в WhatsApp. Ответ в течение 48 часов.</p>
 </form>

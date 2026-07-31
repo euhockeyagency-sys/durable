@@ -104,7 +104,14 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
       });
     }
 
-    await deliverNotifications(services, application, config);
+    // Persistence has already succeeded. Notification/audit failures must not
+    // turn this response into a 500, otherwise the player retries and creates
+    // a duplicate application.
+    try {
+      await deliverNotifications(services, application, config);
+    } catch (error) {
+      console.error("Notification delivery failed after application was stored", error.message);
+    }
     return res.status(201).json({ ok: true, applicationId, reference });
   };
 }
@@ -177,15 +184,19 @@ async function deliverNotifications(services, application, config = {}) {
         errorMessage
       );
     }
-    const { error } = await services.supabase.from("application_notifications").insert({
-      application_id: application.id,
-      channel,
-      status,
-      provider_id: providerId,
-      error_message: errorMessage,
-      attempted_at: new Date().toISOString()
-    });
-    if (error) console.error(`${channel} notification audit failed`, error.message);
+    try {
+      const { error } = await services.supabase.from("application_notifications").insert({
+        application_id: application.id,
+        channel,
+        status,
+        provider_id: providerId,
+        error_message: errorMessage,
+        attempted_at: new Date().toISOString()
+      });
+      if (error) console.error(`${channel} notification audit failed`, error.message);
+    } catch (error) {
+      console.error(`${channel} notification audit failed`, error.message);
+    }
   }));
 }
 
