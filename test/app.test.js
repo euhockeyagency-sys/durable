@@ -151,6 +151,14 @@ test("HTML responses support revalidation with ETag", async () => {
   await request(app).get("/").set("Host", "eha.test").set("If-None-Match", first.headers.etag).expect(304);
 });
 
+test("rendered pages preload the locale-specific Oswald subset", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const en = await request(app).get("/").set("Host", "eha.test").expect(200);
+  const ru = await request(app).get("/ru/").set("Host", "eha.test").expect(200);
+  assert.match(en.text, /preload" as="font" href="\/assets\/fonts\/oswald-500-latin\.woff2/);
+  assert.match(ru.text, /preload" as="font" href="\/assets\/fonts\/oswald-500-cyrillic\.woff2/);
+});
+
 test("compresses HTML with Brotli when the client supports it", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app).get("/").set("Host", "eha.test").set("Accept-Encoding", "br").expect(200);
