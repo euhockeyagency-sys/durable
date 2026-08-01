@@ -21,6 +21,7 @@ const PAGES = [
   { ru: "/privacy",             en: "/privacy" },
   { ru: "/kalkulyator-urovnya", en: "/level-calculator" },
   { ru: "/ligi-evropy",         en: "/european-leagues" },
+  { ru: "/otkrytye-ligi-dlya-legionerov", en: "/open-hockey-leagues-for-imports" },
   { ru: "/guides/hokkej-v-polshe", en: "/guides/hockey-in-poland" },
   { ru: "/metodologiya", en: "/editorial-methodology" },
   { ru: "/hokkejnye-strany", en: "/hockey-countries" },
