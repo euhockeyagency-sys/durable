@@ -205,6 +205,48 @@ const FACTS = {
     sources: [
       { label: { en: "Wikipedia — DEL2", ru: "Wikipedia — DEL2" }, url: "https://en.wikipedia.org/wiki/DEL2" }
     ]
+  },
+
+  "/leagues/uk-eihl": {
+    season: "2025/26",
+    regularGames: 54,
+    verified: { en: "1 August 2026", ru: "1 августа 2026" },
+    clubs: [
+      { name: "Belfast Giants", city: { en: "Belfast", ru: "Белфаст" }, arena: "SSE Arena Belfast", capacity: 8700 },
+      { name: "Cardiff Devils", city: { en: "Cardiff", ru: "Кардифф" }, arena: "Vindico Arena", capacity: 3110 },
+      { name: "Coventry Blaze", city: { en: "Coventry", ru: "Ковентри" }, arena: "Planet Ice Coventry", capacity: 3000 },
+      { name: "Dundee Stars", city: { en: "Dundee", ru: "Данди" }, arena: "Dundee Ice Arena", capacity: 2700 },
+      { name: "Fife Flyers", city: { en: "Kirkcaldy", ru: "Керколди" }, arena: "Fife Ice Arena", capacity: 3525 },
+      { name: "Glasgow Clan", city: { en: "Glasgow", ru: "Глазго" }, arena: "Braehead Arena", capacity: 4000 },
+      { name: "Guildford Flames", city: { en: "Guildford", ru: "Гилфорд" }, arena: "Guildford Spectrum", capacity: 2200 },
+      { name: "Manchester Storm", city: { en: "Altrincham", ru: "Олтрингем" }, arena: "Planet Ice Altrincham", capacity: 2440 },
+      { name: "Nottingham Panthers", city: { en: "Nottingham", ru: "Ноттингем" }, arena: "Motorpoint Arena Nottingham", capacity: 7500 },
+      { name: "Sheffield Steelers", city: { en: "Sheffield", ru: "Шеффилд" }, arena: "Utilita Arena Sheffield", capacity: 9300 }
+    ],
+    sources: [
+      { label: { en: "Wikipedia — 2025–26 EIHL season", ru: "Wikipedia — сезон EIHL 2025/26" }, url: "https://en.wikipedia.org/wiki/2025%E2%80%9326_EIHL_season" }
+    ]
+  },
+
+  "/leagues/switzerland-sky-swiss-league": {
+    season: "2025/26",
+    verified: { en: "1 August 2026", ru: "1 августа 2026" },
+    clubs: [
+      { name: "EHC Arosa", city: { en: "Arosa", ru: "Ароза" }, arena: "Sport- und Kongresszentrum Arosa", capacity: 2200 },
+      { name: "EHC Basel", city: { en: "Basel", ru: "Базель" }, arena: "St. Jakob Arena", capacity: 6700 },
+      { name: "EHC Chur", city: { en: "Chur", ru: "Кур" }, arena: "Thomas Domenig Stadion", capacity: 6500 },
+      { name: "HC La Chaux-de-Fonds", city: { en: "La Chaux-de-Fonds", ru: "Ла-Шо-де-Фон" }, arena: "Patinoire des Mélèzes", capacity: 7200 },
+      { name: "GCK Lions", city: { en: "Küsnacht", ru: "Кюснахт" }, arena: "Eishalle Küsnacht", capacity: 2200 },
+      { name: "GDT Bellinzona Snakes", city: { en: "Bellinzona", ru: "Беллинцона" }, arena: "Centro Sportivo", capacity: 2100 },
+      { name: "EHC Olten", city: { en: "Olten", ru: "Ольтен" }, arena: "Kleinholz Stadion", capacity: 6500 },
+      { name: "HC Sierre", city: { en: "Sierre", ru: "Сьер" }, arena: "Patinoire de Graben", capacity: 4500 },
+      { name: "HC Thurgau", city: { en: "Weinfelden", ru: "Вайнфельден" }, arena: "Güttingersreuti", capacity: 3200 },
+      { name: "EHC Visp", city: { en: "Visp", ru: "Висп" }, arena: "Lonza Arena", capacity: 5150 },
+      { name: "EHC Winterthur", city: { en: "Winterthur", ru: "Винтертур" }, arena: "Zielbau Arena", capacity: 3000 }
+    ],
+    sources: [
+      { label: { en: "Wikipedia — Swiss League", ru: "Wikipedia — Swiss League" }, url: "https://en.wikipedia.org/wiki/Swiss_League" }
+    ]
   }
 };
 
@@ -216,7 +258,9 @@ const RU_TO_EN_PATH = new Map([
   ["/ligi/avstriya-ice-hockey-league", "/leagues/austria-ice-hockey-league"],
   ["/ligi/franciya-ligue-magnus", "/leagues/france-ligue-magnus"],
   ["/ligi/chehiya-tipsport-extraliga", "/leagues/czechia-tipsport-extraliga"],
-  ["/ligi/germaniya-del2", "/leagues/germany-del2"]
+  ["/ligi/germaniya-del2", "/leagues/germany-del2"],
+  ["/ligi/velikobritaniya-eihl", "/leagues/uk-eihl"],
+  ["/ligi/shvejcariya-sky-swiss-league", "/leagues/switzerland-sky-swiss-league"]
 ]);
 
 const COPY = {
