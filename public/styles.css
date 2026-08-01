@@ -604,7 +604,7 @@ footer small{display:block}
 .country-guide>section:first-child{border-top:0}
 .section-number{display:inline-block;margin-bottom:12px;color:#69b4ff;font:700 13px Oswald;letter-spacing:.15em}
 .league-clubs .table-wrap{overflow-x:auto;margin:6px 0 16px}
-.league-clubs table{width:100%;border-collapse:collapse;font-size:15px;min-width:520px}
+.league-clubs table{width:100%;border-collapse:collapse;font-size:15px}
 .league-clubs th,.league-clubs td{text-align:left;padding:10px 14px;border-bottom:1px solid rgba(115,184,255,.14)}
 .league-clubs th{color:var(--white);font:700 12px Oswald;letter-spacing:.08em;text-transform:uppercase}
 .league-clubs td{color:#c3d0dc}

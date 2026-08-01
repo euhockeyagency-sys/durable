@@ -189,12 +189,27 @@ test("league pages with verified facts render a season-labelled club table in bo
   const app = createApp({ config: config(), services: serviceMock() });
   const en = await request(app).get("/leagues/finland-mestis").set("Host", "eha.test").expect(200);
   assert.match(en.text, /Clubs: 2025\/26 season/);
-  assert.match(en.text, /<table>/);
+  assert.match(en.text, /<table[ >]/);
   assert.match(en.text, /Kokkola/);
   assert.match(en.text, /rel="nofollow noopener"/); // sources cited, external and non-endorsing
   const ru = await request(app).get("/ru/ligi/finlyandiya-mestis").set("Host", "eha.test").expect(200);
   assert.match(ru.text, /Клубы: сезон 2025\/26/);
   assert.match(ru.text, /Коккола/);
+});
+
+test("club tables cover multiple leagues, with an arena column only when data exists", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  // Full table: Swiss NL carries arena + capacity columns.
+  const swiss = await request(app).get("/leagues/switzerland-national-league").set("Host", "eha.test").expect(200);
+  assert.match(swiss.text, /PostFinance Arena/);
+  assert.match(swiss.text, /<th>Capacity<\/th>/);
+  // Club-and-city-only: Slovak Extraliga must NOT invent an arena column.
+  const slovak = await request(app).get("/leagues/slovakia-tipsport-liga").set("Host", "eha.test").expect(200);
+  assert.match(slovak.text, /HC Košice/);
+  assert.doesNotMatch(slovak.text, /<th>Arena<\/th>/);
+  // Russian mirror resolves and localises the city.
+  const swissRu = await request(app).get("/ru/ligi/shvejcariya-national-league").set("Host", "eha.test").expect(200);
+  assert.match(swissRu.text, /Цюрих/);
 });
 
 test("compresses HTML with Brotli when the client supports it", async () => {
@@ -713,23 +728,37 @@ test("every internal link resolves 200 at the exact URL linked", async () => {
   const redirecting = []; // link target 301/302s (a wasted hop = not canonical)
   const request200 = async (url) => request(app).get(url).set("Host", "eha.test");
 
+  // Fetch each distinct URL at most once. A page links the same targets many
+  // times over (nav, footer, breadcrumbs), so without this the crawl fires
+  // thousands of redundant requests, exhausting sockets and surfacing spurious
+  // 404s for URLs that individually serve 200. Dedup keeps the graph assertions
+  // identical while making the crawl deterministic and fast.
+  const edgeCache = new Map();
+  const probe = async (target) => {
+    const cached = edgeCache.get(target);
+    if (cached) return cached;
+    const res = await request200(target);
+    const isHtml = (res.headers["content-type"] || "").includes("text/html");
+    const info = { status: res.status, location: res.headers.location, isHtml, text: isHtml ? res.text : "" };
+    edgeCache.set(target, info);
+    return info;
+  };
+
   while (queue.length) {
     const url = queue.shift();
     if (seen.has(url)) continue;
     seen.add(url);
-    const res = await request200(url);
-    const isHtml = (res.headers["content-type"] || "").includes("text/html");
-    if (!isHtml) continue; // asset already confirmed 200 below by its own edge
-    for (const href of extractHrefs(res.text)) {
+    const page = await probe(url);
+    if (!page.isHtml) continue; // asset already confirmed 200 by its own edge
+    for (const href of extractHrefs(page.text)) {
       const target = internalTarget(href);
       if (target === null) continue;
-      const edge = await request200(target);
+      const edge = await probe(target);
       if (edge.status === 404) broken.push(`${url} -> ${target} (404)`);
       else if (edge.status >= 300 && edge.status < 400) {
-        redirecting.push(`${url} -> ${target} (${edge.status} -> ${edge.headers.location})`);
+        redirecting.push(`${url} -> ${target} (${edge.status} -> ${edge.location})`);
       }
-      const nextIsHtml = (edge.headers["content-type"] || "").includes("text/html");
-      if (edge.status === 200 && nextIsHtml && !seen.has(target)) queue.push(target);
+      if (edge.status === 200 && edge.isHtml && !seen.has(target)) queue.push(target);
     }
   }
   assert.deepEqual(broken, [], `broken internal links:\n${broken.join("\n")}`);

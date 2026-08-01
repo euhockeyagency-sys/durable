@@ -5,7 +5,10 @@
 //
 // Data is for the LAST COMPLETED season until a federation confirms the new
 // one, because upcoming-season rosters are not authoritative until then. The
-// `season` field is rendered verbatim so the label is never ambiguous.
+// `season` field is rendered verbatim so the label is never ambiguous. Arena
+// and capacity are optional per club: a column is shown only when at least one
+// club in the league carries that field, so a club-and-city-only league (where
+// arena data could not be verified) still renders cleanly rather than guessing.
 
 const FACTS = {
   "/leagues/finland-mestis": {
@@ -28,30 +31,110 @@ const FACTS = {
       { label: "Elite Prospects — Mestis 2025/26", url: "https://www.eliteprospects.com/league/mestis/2025-2026" },
       { label: { en: "Wikipedia — 2025–26 Mestis season", ru: "Wikipedia — сезон Mestis 2025/26" }, url: "https://en.wikipedia.org/wiki/2025%E2%80%9326_Mestis_season" }
     ]
+  },
+
+  "/leagues/sweden-hockeyallsvenskan": {
+    season: "2025/26",
+    regularGames: 52,
+    verified: { en: "1 August 2026", ru: "1 августа 2026" },
+    clubs: [
+      { name: "AIK", city: { en: "Stockholm", ru: "Стокгольм" }, arena: "Hovet", capacity: 8094 },
+      { name: "Almtuna IS", city: { en: "Uppsala", ru: "Уппсала" }, arena: "Upplands Bilforum Arena", capacity: 2800 },
+      { name: "IF Björklöven", city: { en: "Umeå", ru: "Умео" }, arena: "Winpos Arena", capacity: 5400 },
+      { name: "Kalmar HC", city: { en: "Kalmar", ru: "Кальмар" }, arena: "Hatstore Arena", capacity: 2500 },
+      { name: "BIK Karlskoga", city: { en: "Karlskoga", ru: "Карлскуга" }, arena: "Nobelhallen", capacity: 6300 },
+      { name: "Modo Hockey", city: { en: "Örnsköldsvik", ru: "Эрншёльдсвик" }, arena: "Hägglunds Arena", capacity: 7265 },
+      { name: "Mora IK", city: { en: "Mora", ru: "Мура" }, arena: "Smidjegrav Arena", capacity: 4500 },
+      { name: "Nybro Vikings", city: { en: "Nybro", ru: "Нюбру" }, arena: "Liljas Arena", capacity: 2380 },
+      { name: "IK Oskarshamn", city: { en: "Oskarshamn", ru: "Оскарсхамн" }, arena: "Be-Ge Hockey Center", capacity: 3275 },
+      { name: "Södertälje SK", city: { en: "Södertälje", ru: "Сёдертелье" }, arena: "Scaniarinken", capacity: 6200 },
+      { name: "IF Troja-Ljungby", city: { en: "Ljungby", ru: "Юнгбю" }, arena: "Ljungby Arena", capacity: 3620 },
+      { name: "Västerås IK", city: { en: "Västerås", ru: "Вестерос" }, arena: "ABB Arena Nord", capacity: 4902 },
+      { name: "Vimmerby HC", city: { en: "Vimmerby", ru: "Виммербю" }, arena: "VBO Arena", capacity: 1750 },
+      { name: "Östersunds IK", city: { en: "Östersund", ru: "Эстерсунд" }, arena: "Östersund Arena", capacity: 2700 }
+    ],
+    sources: [
+      { label: { en: "Wikipedia — 2025–26 HockeyAllsvenskan season", ru: "Wikipedia — сезон HockeyAllsvenskan 2025/26" }, url: "https://en.wikipedia.org/wiki/2025%E2%80%9326_HockeyAllsvenskan_season" }
+    ]
+  },
+
+  "/leagues/switzerland-national-league": {
+    season: "2025/26",
+    regularGames: 52,
+    verified: { en: "1 August 2026", ru: "1 августа 2026" },
+    clubs: [
+      { name: "HC Ajoie", city: { en: "Porrentruy", ru: "Порантрюи" }, arena: "Raiffeisen Arena", capacity: 5078 },
+      { name: "HC Ambrì-Piotta", city: { en: "Ambrì", ru: "Амбри" }, arena: "Gottardo Arena", capacity: 6775 },
+      { name: "SC Bern", city: { en: "Bern", ru: "Берн" }, arena: "PostFinance Arena", capacity: 17031 },
+      { name: "EHC Biel", city: { en: "Biel/Bienne", ru: "Биль" }, arena: "Tissot Arena", capacity: 6562 },
+      { name: "HC Davos", city: { en: "Davos", ru: "Давос" }, arena: "Eisstadion Davos", capacity: 6547 },
+      { name: "Fribourg-Gottéron", city: { en: "Fribourg", ru: "Фрибур" }, arena: "BCF Arena", capacity: 9075 },
+      { name: "Genève-Servette HC", city: { en: "Geneva", ru: "Женева" }, arena: "Patinoire des Vernets", capacity: 7135 },
+      { name: "EHC Kloten", city: { en: "Kloten", ru: "Клотен" }, arena: "SWISS Arena", capacity: 7624 },
+      { name: "Lausanne HC", city: { en: "Lausanne", ru: "Лозанна" }, arena: "Vaudoise Aréna", capacity: 9600 },
+      { name: "HC Lugano", city: { en: "Lugano", ru: "Лугано" }, arena: "Cornèr Arena", capacity: 7800 },
+      { name: "SCL Tigers", city: { en: "Langnau", ru: "Лангнау" }, arena: "Ilfis Stadium", capacity: 6000 },
+      { name: "SC Rapperswil-Jona Lakers", city: { en: "Rapperswil", ru: "Рапперсвиль" }, arena: "St. Galler Kantonalbank Arena", capacity: 6100 },
+      { name: "ZSC Lions", city: { en: "Zürich", ru: "Цюрих" }, arena: "Swiss Life Arena", capacity: 12000 },
+      { name: "EV Zug", city: { en: "Zug", ru: "Цуг" }, arena: "Bossard Arena", capacity: 7200 }
+    ],
+    sources: [
+      { label: { en: "Wikipedia — 2025–26 National League season", ru: "Wikipedia — сезон National League 2025/26" }, url: "https://en.wikipedia.org/wiki/2025%E2%80%9326_National_League_(ice_hockey)_season" }
+    ]
+  },
+
+  "/leagues/slovakia-tipsport-liga": {
+    season: "2025/26",
+    regularGames: 54,
+    verified: { en: "1 August 2026", ru: "1 августа 2026" },
+    // Club + city only: the season source did not carry verified arena
+    // capacities and had an arena-name error, so no arena column is published.
+    clubs: [
+      { name: "HK Nitra", city: { en: "Nitra", ru: "Нитра" } },
+      { name: "HC Slovan Bratislava", city: { en: "Bratislava", ru: "Братислава" } },
+      { name: "HC Košice", city: { en: "Košice", ru: "Кошице" } },
+      { name: "Vlci Žilina", city: { en: "Žilina", ru: "Жилина" } },
+      { name: "HC '05 Banská Bystrica", city: { en: "Banská Bystrica", ru: "Банска-Бистрица" } },
+      { name: "HK Poprad", city: { en: "Poprad", ru: "Попрад" } },
+      { name: "HK Spišská Nová Ves", city: { en: "Spišská Nová Ves", ru: "Спишска-Нова-Вес" } },
+      { name: "MHk 32 Liptovský Mikuláš", city: { en: "Liptovský Mikuláš", ru: "Липтовски-Микулаш" } },
+      { name: "HK Dukla Michalovce", city: { en: "Michalovce", ru: "Михаловце" } },
+      { name: "HKM Zvolen", city: { en: "Zvolen", ru: "Зволен" } },
+      { name: "HK Dukla Trenčín", city: { en: "Trenčín", ru: "Тренчин" } },
+      { name: "HC 21 Prešov", city: { en: "Prešov", ru: "Прешов" } }
+    ],
+    sources: [
+      { label: { en: "Wikipedia — 2025–26 Slovak Extraliga season", ru: "Wikipedia — сезон Slovak Extraliga 2025/26" }, url: "https://en.wikipedia.org/wiki/2025%E2%80%9326_Slovak_Extraliga_season" }
+    ]
   }
 };
 
 const RU_TO_EN_PATH = new Map([
-  ["/ligi/finlyandiya-mestis", "/leagues/finland-mestis"]
+  ["/ligi/finlyandiya-mestis", "/leagues/finland-mestis"],
+  ["/ligi/shvetsiya-hockeyallsvenskan", "/leagues/sweden-hockeyallsvenskan"],
+  ["/ligi/shvejcariya-national-league", "/leagues/switzerland-national-league"],
+  ["/ligi/slovakiya-tipsport-liga", "/leagues/slovakia-tipsport-liga"]
 ]);
 
 const COPY = {
-  en: (f) => ({
-    label: `${f.season} season`,
-    heading: `Clubs: ${f.season} season`,
-    intro: `${f.clubs.length} clubs, ${f.regularGames} regular-season games. Home cities and arena capacities for the last completed season — the reference imports use to gauge travel, market size and where a realistic vacancy is likely.`,
-    cols: ["Club", "City", "Arena", "Capacity"],
-    verified: `Verified ${f.verified.en} against`,
-    localeName: (c) => c.en
-  }),
-  ru: (f) => ({
-    label: `сезон ${f.season}`,
-    heading: `Клубы: сезон ${f.season}`,
-    intro: `${f.clubs.length} клубов, ${f.regularGames} матчей в регулярном чемпионате. Города и вместимость арен за последний сыгранный сезон — ориентир по логистике, размеру рынка и тому, где реальнее ждать вакансию для легионера.`,
-    cols: ["Клуб", "Город", "Арена", "Вместимость"],
-    verified: `Проверено ${f.verified.ru} по источникам:`,
-    localeName: (c) => c.ru
-  })
+  en: {
+    label: (f) => `${f.season} season`,
+    heading: (f) => `Clubs: ${f.season} season`,
+    intro: (f, hasArena) =>
+      `${f.clubs.length} clubs, ${f.regularGames} regular-season games. Home cities${hasArena ? " and arena capacities" : ""} for the last completed season — the reference imports use to gauge travel, market size and where a realistic vacancy is likely.`,
+    cols: { club: "Club", city: "City", arena: "Arena", capacity: "Capacity" },
+    verified: (f) => `Verified ${f.verified.en} against`,
+    city: (c) => c.en
+  },
+  ru: {
+    label: (f) => `сезон ${f.season}`,
+    heading: (f) => `Клубы: сезон ${f.season}`,
+    intro: (f, hasArena) =>
+      `${f.clubs.length} клубов, ${f.regularGames} матчей в регулярном чемпионате. Города${hasArena ? " и вместимость арен" : ""} за последний сыгранный сезон — ориентир по логистике, размеру рынка и тому, где реальнее ждать вакансию для легионера.`,
+    cols: { club: "Клуб", city: "Город", arena: "Арена", capacity: "Вместимость" },
+    verified: (f) => `Проверено ${f.verified.ru} по источникам:`,
+    city: (c) => c.ru || c.en
+  }
 };
 
 const escape = (value) =>
@@ -63,12 +146,18 @@ function leagueFacts(logicalPath, locale) {
   const key = locale === "ru" ? RU_TO_EN_PATH.get(logicalPath) : logicalPath;
   const facts = FACTS[key];
   if (!facts) return "";
-  const t = (COPY[locale] || COPY.en)(facts);
+  const t = COPY[locale] || COPY.en;
+  const hasArena = facts.clubs.some((club) => club.arena);
+  const hasCapacity = facts.clubs.some((club) => Number.isFinite(club.capacity));
 
+  const columns = ["club", "city", ...(hasArena ? ["arena"] : []), ...(hasCapacity ? ["capacity"] : [])];
+  const head = columns.map((col) => `<th>${escape(t.cols[col])}</th>`).join("");
   const rows = facts.clubs
     .map((club) => {
-      const capacity = Number.isFinite(club.capacity) ? escape(club.capacity.toLocaleString("en-US")) : "";
-      return `<tr><td>${escape(club.name)}</td><td>${escape(localized(club.city, locale))}</td><td>${escape(club.arena)}</td><td class="num">${capacity}</td></tr>`;
+      const cells = [`<td>${escape(club.name)}</td>`, `<td>${escape(t.city(club.city))}</td>`];
+      if (hasArena) cells.push(`<td>${escape(club.arena || "—")}</td>`);
+      if (hasCapacity) cells.push(`<td class="num">${Number.isFinite(club.capacity) ? escape(club.capacity.toLocaleString("en-US")) : "—"}</td>`);
+      return `<tr>${cells.join("")}</tr>`;
     })
     .join("");
 
@@ -78,13 +167,11 @@ function leagueFacts(logicalPath, locale) {
 
   return (
     `<section class="league-clubs">` +
-    `<span class="section-number">${escape(t.label)}</span>` +
-    `<h2>${escape(t.heading)}</h2>` +
-    `<p>${escape(t.intro)}</p>` +
-    `<div class="table-wrap"><table><thead><tr>` +
-    t.cols.map((col) => `<th>${escape(col)}</th>`).join("") +
-    `</tr></thead><tbody>${rows}</tbody></table></div>` +
-    `<p class="source-note">${escape(t.verified)} ${sources}.</p>` +
+    `<span class="section-number">${escape(t.label(facts))}</span>` +
+    `<h2>${escape(t.heading(facts))}</h2>` +
+    `<p>${escape(t.intro(facts, hasArena))}</p>` +
+    `<div class="table-wrap"><table style="min-width:${columns.length * 130}px"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>` +
+    `<p class="source-note">${escape(t.verified(facts))} ${sources}.</p>` +
     `</section>`
   );
 }
