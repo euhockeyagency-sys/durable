@@ -167,6 +167,27 @@ test("rendered HTML inlines critical CSS and defers the full stylesheet", async 
   assert.match(response.text, /media="print" onload="this\.media='all'"/);
 });
 
+test("the sitemap carries lastmod but no changefreq or priority noise", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const res = await request(app).get("/sitemap.xml").set("Host", "eha.test").expect(200);
+  assert.match(res.text, /<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/);
+  assert.doesNotMatch(res.text, /<changefreq>/);
+  assert.doesNotMatch(res.text, /<priority>/);
+});
+
+test("the leagues hub carries an ItemList of its league pages", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  for (const [route, host, needle] of [
+    ["/european-leagues", "eha.test", "https://eha.test/leagues/"],
+    ["/ru/ligi-evropy", "eha.test", "https://eha.test/ru/ligi/"]
+  ]) {
+    const res = await request(app).get(route).set("Host", host).expect(200);
+    assert.match(res.text, /"@type":"ItemList"/);
+    assert.match(res.text, /"@type":"ListItem"/);
+    assert.ok(res.text.includes(needle), `${route} ItemList should link ${needle}`);
+  }
+});
+
 test("the guides hub links every published guide in both languages", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const guidePages = PAGES.filter((p) => p.en.startsWith("/guides/"));

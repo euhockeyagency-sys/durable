@@ -12,6 +12,7 @@ const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales
 const { leagueEditorial } = require("./league-editorial");
 const { leagueFacts } = require("./league-facts");
 const { guideIndex, relatedGuides } = require("./guide-index");
+const { leaguesItemList } = require("./league-list");
 
 const CONTENT_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -454,8 +455,12 @@ function renderBody(data, extension, config, context) {
       `<noscript><link rel="stylesheet" href="${stylesheetHref}"></noscript>`;
     const feedTitle = locale === "en" ? "EHA — resources for players" : "EHA — материалы для хоккеистов";
     const feed = `<link rel="alternate" type="application/rss+xml" title="${feedTitle}" href="${baseUrl}/feed.xml">`;
+    // The leagues hub lists its member pages as an ItemList, mirroring the
+    // countries hub, so both engines can read what the hub collects.
+    const hubItemList = (logicalPath === "/european-leagues" || logicalPath === "/ligi-evropy")
+      ? leaguesItemList(locale, baseUrl) : "";
     html = html.replace(`<link rel="stylesheet" href="${stylesheetHref}">`, deferredStylesheet)
-      .replace("</head>", `${fontPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${YANDEX_METRIKA}</head>`);
+      .replace("</head>", `${fontPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${hubItemList}${YANDEX_METRIKA}</head>`);
   }
   return Buffer.from(html);
 }
@@ -575,15 +580,13 @@ function xmlEscape(value) {
 
 function buildSitemap(config, locale = "ru") {
   const base = baseUrlFor(locale, config);
+  // No <changefreq>/<priority>: Google ignores both and Yandex barely uses them,
+  // so they are pure noise. <lastmod> (from the git commit map) is the only hint
+  // the crawlers actually act on.
   const rows = collectPages(config.publicDir, locale)
     .sort((a, b) => a.slug.localeCompare(b.slug))
-    .map(({ slug, mtime }) => {
-      const isArticle = slug.startsWith("/guides/");
-      const priority = slug === "/" ? "1.0" : slug === "/privacy" ? "0.3" : isArticle ? "0.8" : "0.9";
-      const changefreq = slug === "/" || slug === "/guides" ? "weekly" : slug === "/privacy" ? "yearly" : "monthly";
-      return `  <url><loc>${xmlEscape(joinUrl(base, slug))}</loc><lastmod>${mtime.toISOString().slice(0, 10)}</lastmod>` +
-        `<changefreq>${changefreq}</changefreq><priority>${priority}</priority></url>`;
-    });
+    .map(({ slug, mtime }) =>
+      `  <url><loc>${xmlEscape(joinUrl(base, slug))}</loc><lastmod>${mtime.toISOString().slice(0, 10)}</lastmod></url>`);
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${rows.join("\n")}\n</urlset>\n`;
 }
 
