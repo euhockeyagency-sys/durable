@@ -155,6 +155,56 @@ const FACTS = {
     sources: [
       { label: { en: "Wikipedia — Ligue Magnus", ru: "Wikipedia — Ligue Magnus" }, url: "https://en.wikipedia.org/wiki/Ligue_Magnus" }
     ]
+  },
+
+  "/leagues/czechia-tipsport-extraliga": {
+    season: "2025/26",
+    regularGames: 52,
+    verified: { en: "1 August 2026", ru: "1 августа 2026" },
+    // Club + city: the season source did not carry verified arenas.
+    clubs: [
+      { name: "HC Dynamo Pardubice", city: { en: "Pardubice", ru: "Пардубице" } },
+      { name: "HC Škoda Plzeň", city: { en: "Plzeň", ru: "Пльзень" } },
+      { name: "HC Bílí Tygři Liberec", city: { en: "Liberec", ru: "Либерец" } },
+      { name: "Mountfield HK", city: { en: "Hradec Králové", ru: "Градец-Кралове" } },
+      { name: "HC Oceláři Třinec", city: { en: "Třinec", ru: "Тршинец" } },
+      { name: "HC Energie Karlovy Vary", city: { en: "Karlovy Vary", ru: "Карловы Вары" } },
+      { name: "HC Sparta Praha", city: { en: "Prague", ru: "Прага" } },
+      { name: "HC Kometa Brno", city: { en: "Brno", ru: "Брно" } },
+      { name: "Motor České Budějovice", city: { en: "České Budějovice", ru: "Ческе-Будеёвице" } },
+      { name: "Rytíři Kladno", city: { en: "Kladno", ru: "Кладно" } },
+      { name: "HC Vítkovice Ridera", city: { en: "Ostrava", ru: "Острава" } },
+      { name: "HC Olomouc", city: { en: "Olomouc", ru: "Оломоуц" } },
+      { name: "BK Mladá Boleslav", city: { en: "Mladá Boleslav", ru: "Млада-Болеслав" } },
+      { name: "HC Litvínov", city: { en: "Litvínov", ru: "Литвинов" } }
+    ],
+    sources: [
+      { label: { en: "Wikipedia — 2025–26 Czech Extraliga season", ru: "Wikipedia — сезон Czech Extraliga 2025/26" }, url: "https://en.wikipedia.org/wiki/2025%E2%80%9326_Czech_Extraliga_season" }
+    ]
+  },
+
+  "/leagues/germany-del2": {
+    season: "2025/26",
+    verified: { en: "1 August 2026", ru: "1 августа 2026" },
+    clubs: [
+      { name: "Blue Devils Weiden", city: { en: "Weiden", ru: "Вайден" }, arena: "Hans-Schröpf-Arena", capacity: 2560 },
+      { name: "Düsseldorfer EG", city: { en: "Düsseldorf", ru: "Дюссельдорф" }, arena: "PSD Bank Dome", capacity: 14282 },
+      { name: "EC Bad Nauheim", city: { en: "Bad Nauheim", ru: "Бад-Наухайм" }, arena: "Colonel Knight Stadion", capacity: 4500 },
+      { name: "EC Kassel Huskies", city: { en: "Kassel", ru: "Кассель" }, arena: "Eissporthalle Kassel", capacity: 6100 },
+      { name: "EHC Freiburg", city: { en: "Freiburg im Breisgau", ru: "Фрайбург" }, arena: "Echte Helden Arena", capacity: 3500 },
+      { name: "Eisbären Regensburg", city: { en: "Regensburg", ru: "Регенсбург" }, arena: "Donau-Arena", capacity: 4961 },
+      { name: "Eispiraten Crimmitschau", city: { en: "Crimmitschau", ru: "Кримичау" }, arena: "Eisstadion im Sahnpark", capacity: 5222 },
+      { name: "ESV Kaufbeuren", city: { en: "Kaufbeuren", ru: "Кауфбойрен" }, arena: "Erdgas Schwaben Arena", capacity: 3100 },
+      { name: "EV Landshut", city: { en: "Landshut", ru: "Ландсхут" }, arena: "VR-Bank Landshut Arena", capacity: 4448 },
+      { name: "Krefeld Pinguine", city: { en: "Krefeld", ru: "Крефельд" }, arena: "Yayla-Arena", capacity: 8029 },
+      { name: "Lausitzer Füchse", city: { en: "Weißwasser", ru: "Вайсвассер" }, arena: "Eisstadion Weißwasser", capacity: 3050 },
+      { name: "Ravensburg Towerstars", city: { en: "Ravensburg", ru: "Равенсбург" }, arena: "Eissporthalle Ravensburg", capacity: 3300 },
+      { name: "SC Bietigheim Steelers", city: { en: "Bietigheim-Bissingen", ru: "Битигхайм-Биссинген" }, arena: "EgeTrans Arena", capacity: 4500 },
+      { name: "Starbulls Rosenheim", city: { en: "Rosenheim", ru: "Розенхайм" }, arena: "ROFA-Stadion", capacity: 4425 }
+    ],
+    sources: [
+      { label: { en: "Wikipedia — DEL2", ru: "Wikipedia — DEL2" }, url: "https://en.wikipedia.org/wiki/DEL2" }
+    ]
   }
 };
 
@@ -164,7 +214,9 @@ const RU_TO_EN_PATH = new Map([
   ["/ligi/shvejcariya-national-league", "/leagues/switzerland-national-league"],
   ["/ligi/slovakiya-tipsport-liga", "/leagues/slovakia-tipsport-liga"],
   ["/ligi/avstriya-ice-hockey-league", "/leagues/austria-ice-hockey-league"],
-  ["/ligi/franciya-ligue-magnus", "/leagues/france-ligue-magnus"]
+  ["/ligi/franciya-ligue-magnus", "/leagues/france-ligue-magnus"],
+  ["/ligi/chehiya-tipsport-extraliga", "/leagues/czechia-tipsport-extraliga"],
+  ["/ligi/germaniya-del2", "/leagues/germany-del2"]
 ]);
 
 const COPY = {
