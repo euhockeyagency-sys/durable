@@ -167,6 +167,19 @@ test("rendered HTML inlines critical CSS and defers the full stylesheet", async 
   assert.match(response.text, /media="print" onload="this\.media='all'"/);
 });
 
+test("the guides hub links every published guide in both languages", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const guidePages = PAGES.filter((p) => p.en.startsWith("/guides/"));
+  for (const [route, column, prefix] of [["/guides", "en", ""], ["/ru/guides", "ru", "/ru"]]) {
+    const res = await request(app).get(route).set("Host", "eha.test").expect(200);
+    assert.match(res.text, /class="guide-index/);
+    const missing = guidePages
+      .map((p) => `${prefix}${p[column]}`)
+      .filter((href) => !res.text.includes(`href="${href}"`));
+    assert.deepEqual(missing, [], `guides hub ${route} is missing links:\n${missing.join("\n")}`);
+  }
+});
+
 test("priority league pages receive distinct editorial assessments in both languages", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const routes = [
