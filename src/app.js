@@ -11,7 +11,7 @@ const { messages, normalizeLocale } = require("./messages");
 const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales");
 const { leagueEditorial } = require("./league-editorial");
 const { leagueFacts } = require("./league-facts");
-const { guideIndex } = require("./guide-index");
+const { guideIndex, relatedGuides } = require("./guide-index");
 
 const CONTENT_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -427,6 +427,7 @@ function renderBody(data, extension, config, context) {
     const editorial = leagueEditorial(logicalPath, locale);
     if (editorial) html = html.replace('<section data-country-section="11"', `${editorial}<section data-country-section="11"`);
     if (logicalPath === "/guides") html = html.replace('<section class="cta"', `${guideIndex(locale)}<section class="cta"`);
+    else if (logicalPath.startsWith("/guides/")) html = html.replace("</main>", `${relatedGuides(logicalPath, locale)}</main>`);
   }
   if (extension === ".html" && !config.turnstileConfigured) {
     html = html

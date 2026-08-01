@@ -618,6 +618,12 @@ footer small{display:block}
 .guide-cat li{margin:0 0 10px;line-height:1.4}
 .guide-cat a{color:#c3d0dc;font-size:16px;text-decoration:none;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
 .guide-cat a:hover{color:#73b8ff;border-color:rgba(115,184,255,.5)}
+.related-guides{padding-top:8px}
+.related-guides>h2{margin:0 0 18px}
+.related-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px 32px}
+.related-list li{line-height:1.4}
+.related-list a{color:#c3d0dc;font-size:16px;text-decoration:none;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
+.related-list a:hover{color:#73b8ff;border-color:rgba(115,184,255,.5)}
 .country-guide h2{margin:0 0 22px}
 .country-guide ol{padding-left:22px;margin:0 0 24px}
 .country-guide ol li{color:#c3d0dc;font-size:17px;line-height:1.75;margin-bottom:14px}

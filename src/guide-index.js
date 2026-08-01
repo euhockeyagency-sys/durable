@@ -85,4 +85,41 @@ function guideIndex(locale) {
   );
 }
 
-module.exports = { guideIndex, GUIDES };
+// Sideways links between guides. Injected before </main> on each individual
+// guide page, so every guide both offers and receives contextual links. The
+// picks are the next few guides in the same category, chosen cyclically, so
+// inbound links spread evenly and no guide is left with too few (the thin
+// country guides in particular). Titled distinctly so it coexists with any
+// hand-written "Related guides" block a page may already carry.
+const RELATED_COUNT = 5;
+const RELATED_COPY = {
+  en: { heading: "More guides on this topic" },
+  ru: { heading: "Ещё материалы по теме" }
+};
+
+function relatedGuides(logicalPath, locale) {
+  const loc = locale === "ru" ? "ru" : "en";
+  const prefix = loc === "ru" ? "/ru" : "";
+  const match = logicalPath.match(/^\/guides\/(.+)$/);
+  if (!match) return "";
+  const self = GUIDES.find((g) => g.en === match[1] || g.ru === match[1]);
+  if (!self) return "";
+  const siblings = GUIDES.filter((g) => g.cat === self.cat);
+  const index = siblings.indexOf(self);
+  const picks = [];
+  for (let step = 1; step <= RELATED_COUNT && picks.length < siblings.length - 1; step += 1) {
+    picks.push(siblings[(index + step) % siblings.length]);
+  }
+  if (!picks.length) return "";
+  const links = picks
+    .map((g) => `<li><a href="${prefix}/guides/${g[loc]}">${escape(g.title[loc])}</a></li>`)
+    .join("");
+  return (
+    `<section class="related-guides wrap">` +
+    `<h2>${escape(RELATED_COPY[loc].heading)}</h2>` +
+    `<ul class="related-list">${links}</ul>` +
+    `</section>`
+  );
+}
+
+module.exports = { guideIndex, relatedGuides, GUIDES };

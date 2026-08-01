@@ -180,6 +180,28 @@ test("the guides hub links every published guide in both languages", async () =>
   }
 });
 
+test("related-guides links give every guide at least three inbound links", () => {
+  const { GUIDES, relatedGuides } = require("../src/guide-index");
+  const inbound = new Map(GUIDES.map((g) => [g.en, 0]));
+  for (const g of GUIDES) {
+    const html = relatedGuides(`/guides/${g.en}`, "en");
+    for (const target of GUIDES) {
+      if (html.includes(`href="/guides/${target.en}"`)) inbound.set(target.en, inbound.get(target.en) + 1);
+    }
+  }
+  const thin = [...inbound].filter(([, n]) => n < 3).map(([slug, n]) => `${slug}: ${n}`);
+  assert.deepEqual(thin, [], `guides with fewer than 3 inbound related-links:\n${thin.join("\n")}`);
+});
+
+test("a guide page renders the related-guides block in both languages", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const en = await request(app).get("/guides/hockey-in-estonia").set("Host", "eha.test").expect(200);
+  assert.match(en.text, /class="related-guides/);
+  assert.ok((en.text.match(/class="related-list"[\s\S]*?<\/ul>/)[0].match(/<a /g) || []).length >= 3);
+  const ru = await request(app).get("/ru/guides/hokkej-v-estonii").set("Host", "eha.test").expect(200);
+  assert.match(ru.text, /Ещё материалы по теме/);
+});
+
 test("priority league pages receive distinct editorial assessments in both languages", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const routes = [
