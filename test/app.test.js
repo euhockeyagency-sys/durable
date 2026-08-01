@@ -185,6 +185,18 @@ test("priority league pages receive distinct editorial assessments in both langu
   }
 });
 
+test("league pages with verified facts render a season-labelled club table in both languages", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const en = await request(app).get("/leagues/finland-mestis").set("Host", "eha.test").expect(200);
+  assert.match(en.text, /Clubs: 2025\/26 season/);
+  assert.match(en.text, /<table>/);
+  assert.match(en.text, /Kokkola/);
+  assert.match(en.text, /rel="nofollow noopener"/); // sources cited, external and non-endorsing
+  const ru = await request(app).get("/ru/ligi/finlyandiya-mestis").set("Host", "eha.test").expect(200);
+  assert.match(ru.text, /Клубы: сезон 2025\/26/);
+  assert.match(ru.text, /Коккола/);
+});
+
 test("compresses HTML with Brotli when the client supports it", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app).get("/").set("Host", "eha.test").set("Accept-Encoding", "br").expect(200);

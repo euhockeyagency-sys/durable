@@ -10,6 +10,7 @@ const { validateClubRequest } = require("./validation");
 const { messages, normalizeLocale } = require("./messages");
 const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales");
 const { leagueEditorial } = require("./league-editorial");
+const { leagueFacts } = require("./league-facts");
 
 const CONTENT_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -420,6 +421,8 @@ function renderBody(data, extension, config, context) {
     html = prefixInternalLinks(html, urlPrefix);
   }
   if (extension === ".html") {
+    const facts = leagueFacts(logicalPath, locale);
+    if (facts) html = html.replace('<section data-country-section="3"', `${facts}<section data-country-section="3"`);
     const editorial = leagueEditorial(logicalPath, locale);
     if (editorial) html = html.replace('<section data-country-section="11"', `${editorial}<section data-country-section="11"`);
   }

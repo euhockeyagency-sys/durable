@@ -603,6 +603,13 @@ footer small{display:block}
 .country-guide>section{position:relative;padding:58px 0;border-top:1px solid var(--line)}
 .country-guide>section:first-child{border-top:0}
 .section-number{display:inline-block;margin-bottom:12px;color:#69b4ff;font:700 13px Oswald;letter-spacing:.15em}
+.league-clubs .table-wrap{overflow-x:auto;margin:6px 0 16px}
+.league-clubs table{width:100%;border-collapse:collapse;font-size:15px;min-width:520px}
+.league-clubs th,.league-clubs td{text-align:left;padding:10px 14px;border-bottom:1px solid rgba(115,184,255,.14)}
+.league-clubs th{color:var(--white);font:700 12px Oswald;letter-spacing:.08em;text-transform:uppercase}
+.league-clubs td{color:#c3d0dc}
+.league-clubs td.num{text-align:right;font-variant-numeric:tabular-nums}
+.league-clubs .source-note{color:#8ea2b4;font-size:14px;margin:0}
 .country-guide h2{margin:0 0 22px}
 .country-guide ol{padding-left:22px;margin:0 0 24px}
 .country-guide ol li{color:#c3d0dc;font-size:17px;line-height:1.75;margin-bottom:14px}
