@@ -106,6 +106,55 @@ const FACTS = {
     sources: [
       { label: { en: "Wikipedia — 2025–26 Slovak Extraliga season", ru: "Wikipedia — сезон Slovak Extraliga 2025/26" }, url: "https://en.wikipedia.org/wiki/2025%E2%80%9326_Slovak_Extraliga_season" }
     ]
+  },
+
+  "/leagues/austria-ice-hockey-league": {
+    season: "2025/26",
+    verified: { en: "1 August 2026", ru: "1 августа 2026" },
+    // Multinational league (Austria, Italy, Slovenia, Hungary): the country
+    // column is shown because clubs carry one.
+    clubs: [
+      { name: "EC iDM Wärmepumpen VSV", city: { en: "Villach", ru: "Филлах" }, country: { en: "Austria", ru: "Австрия" }, arena: "Villacher Stadthalle", capacity: 4800 },
+      { name: "EC KAC", city: { en: "Klagenfurt", ru: "Клагенфурт" }, country: { en: "Austria", ru: "Австрия" }, arena: "Stadthalle Klagenfurt", capacity: 5500 },
+      { name: "EC Red Bull Salzburg", city: { en: "Salzburg", ru: "Зальцбург" }, country: { en: "Austria", ru: "Австрия" }, arena: "Eisarena Salzburg", capacity: 3600 },
+      { name: "Fehérvár AV19", city: { en: "Székesfehérvár", ru: "Секешфехервар" }, country: { en: "Hungary", ru: "Венгрия" }, arena: "Alba Aréna", capacity: 6000 },
+      { name: "Ferencvárosi TC", city: { en: "Budapest", ru: "Будапешт" }, country: { en: "Hungary", ru: "Венгрия" }, arena: "Tüskecsarnok", capacity: 2540 },
+      { name: "Graz99ers", city: { en: "Graz", ru: "Грац" }, country: { en: "Austria", ru: "Австрия" }, arena: "Eisstadion Liebenau", capacity: 4050 },
+      { name: "HC Bozen–Bolzano", city: { en: "Bolzano", ru: "Больцано" }, country: { en: "Italy", ru: "Италия" }, arena: "Sparkasse Arena", capacity: 7220 },
+      { name: "HC Pustertal Wölfe", city: { en: "Bruneck", ru: "Брунико" }, country: { en: "Italy", ru: "Италия" }, arena: "Intercable Arena", capacity: 3100 },
+      { name: "HC TWK Innsbruck", city: { en: "Innsbruck", ru: "Инсбрук" }, country: { en: "Austria", ru: "Австрия" }, arena: "TIWAG Arena", capacity: 3200 },
+      { name: "HK Olimpija Ljubljana", city: { en: "Ljubljana", ru: "Любляна" }, country: { en: "Slovenia", ru: "Словения" }, arena: "Tivoli Hall", capacity: 6800 },
+      { name: "Steinbach Black Wings Linz", city: { en: "Linz", ru: "Линц" }, country: { en: "Austria", ru: "Австрия" }, arena: "Linz AG Eisarena", capacity: 3800 },
+      { name: "Vienna Capitals", city: { en: "Vienna", ru: "Вена" }, country: { en: "Austria", ru: "Австрия" }, arena: "Erste Bank Arena", capacity: 7022 },
+      { name: "Pioneers Vorarlberg", city: { en: "Feldkirch", ru: "Фельдкирх" }, country: { en: "Austria", ru: "Австрия" }, arena: "Vorarlberghalle", capacity: 5200 }
+    ],
+    sources: [
+      { label: { en: "Wikipedia — ICE Hockey League", ru: "Wikipedia — ICE Hockey League" }, url: "https://en.wikipedia.org/wiki/ICE_Hockey_League" }
+    ]
+  },
+
+  "/leagues/france-ligue-magnus": {
+    season: "2025/26",
+    verified: { en: "1 August 2026", ru: "1 августа 2026" },
+    // Club, city and arena verified; the source did not carry capacities, so no
+    // capacity column is published.
+    clubs: [
+      { name: "Gothiques d'Amiens", city: { en: "Amiens", ru: "Амьен" }, arena: "Coliséum" },
+      { name: "Ducs d'Angers", city: { en: "Angers", ru: "Анже" }, arena: "IceParc" },
+      { name: "Anglet Hormadi Élite", city: { en: "Anglet", ru: "Англе" }, arena: "Patinoire de la Barre" },
+      { name: "Boxers de Bordeaux", city: { en: "Bordeaux", ru: "Бордо" }, arena: "Patinoire de Mériadeck" },
+      { name: "Diables Rouges de Briançon", city: { en: "Briançon", ru: "Бриансон" }, arena: "Patinoire René Froger" },
+      { name: "Jokers de Cergy-Pontoise", city: { en: "Cergy-Pontoise", ru: "Сержи-Понтуаз" }, arena: "Aren'Ice" },
+      { name: "Pionniers de Chamonix", city: { en: "Chamonix", ru: "Шамони" }, arena: "Centre Sportif Richard Bozon" },
+      { name: "Rapaces de Gap", city: { en: "Gap", ru: "Гап" }, arena: "Alp'Arena" },
+      { name: "Brûleurs de Loups", city: { en: "Grenoble", ru: "Гренобль" }, arena: "Patinoire Pôle Sud" },
+      { name: "Spartiates de Marseille", city: { en: "Marseille", ru: "Марсель" }, arena: "Palais omnisports Marseille Grand-Est" },
+      { name: "Aigles de Nice", city: { en: "Nice", ru: "Ницца" }, arena: "Patinoire Jean Bouin" },
+      { name: "Dragons de Rouen", city: { en: "Rouen", ru: "Руан" }, arena: "Patinoire de l'Île Lacroix" }
+    ],
+    sources: [
+      { label: { en: "Wikipedia — Ligue Magnus", ru: "Wikipedia — Ligue Magnus" }, url: "https://en.wikipedia.org/wiki/Ligue_Magnus" }
+    ]
   }
 };
 
@@ -113,25 +162,27 @@ const RU_TO_EN_PATH = new Map([
   ["/ligi/finlyandiya-mestis", "/leagues/finland-mestis"],
   ["/ligi/shvetsiya-hockeyallsvenskan", "/leagues/sweden-hockeyallsvenskan"],
   ["/ligi/shvejcariya-national-league", "/leagues/switzerland-national-league"],
-  ["/ligi/slovakiya-tipsport-liga", "/leagues/slovakia-tipsport-liga"]
+  ["/ligi/slovakiya-tipsport-liga", "/leagues/slovakia-tipsport-liga"],
+  ["/ligi/avstriya-ice-hockey-league", "/leagues/austria-ice-hockey-league"],
+  ["/ligi/franciya-ligue-magnus", "/leagues/france-ligue-magnus"]
 ]);
 
 const COPY = {
   en: {
     label: (f) => `${f.season} season`,
     heading: (f) => `Clubs: ${f.season} season`,
-    intro: (f, hasArena) =>
-      `${f.clubs.length} clubs, ${f.regularGames} regular-season games. Home cities${hasArena ? " and arena capacities" : ""} for the last completed season — the reference imports use to gauge travel, market size and where a realistic vacancy is likely.`,
-    cols: { club: "Club", city: "City", arena: "Arena", capacity: "Capacity" },
+    intro: (f) =>
+      `${f.clubs.length} clubs${f.regularGames ? `, ${f.regularGames} regular-season games` : ""}. Where the clubs are based in the last completed season — the reference imports use to gauge travel, market size and where a realistic vacancy is likely.`,
+    cols: { club: "Club", city: "City", country: "Country", arena: "Arena", capacity: "Capacity" },
     verified: (f) => `Verified ${f.verified.en} against`,
     city: (c) => c.en
   },
   ru: {
     label: (f) => `сезон ${f.season}`,
     heading: (f) => `Клубы: сезон ${f.season}`,
-    intro: (f, hasArena) =>
-      `${f.clubs.length} клубов, ${f.regularGames} матчей в регулярном чемпионате. Города${hasArena ? " и вместимость арен" : ""} за последний сыгранный сезон — ориентир по логистике, размеру рынка и тому, где реальнее ждать вакансию для легионера.`,
-    cols: { club: "Клуб", city: "Город", arena: "Арена", capacity: "Вместимость" },
+    intro: (f) =>
+      `${f.clubs.length} клубов${f.regularGames ? `, ${f.regularGames} матчей в регулярном чемпионате` : ""}. Где базируются клубы в последнем сыгранном сезоне — ориентир по логистике, размеру рынка и тому, где реальнее ждать вакансию для легионера.`,
+    cols: { club: "Клуб", city: "Город", country: "Страна", arena: "Арена", capacity: "Вместимость" },
     verified: (f) => `Проверено ${f.verified.ru} по источникам:`,
     city: (c) => c.ru || c.en
   }
@@ -147,14 +198,16 @@ function leagueFacts(logicalPath, locale) {
   const facts = FACTS[key];
   if (!facts) return "";
   const t = COPY[locale] || COPY.en;
+  const hasCountry = facts.clubs.some((club) => club.country);
   const hasArena = facts.clubs.some((club) => club.arena);
   const hasCapacity = facts.clubs.some((club) => Number.isFinite(club.capacity));
 
-  const columns = ["club", "city", ...(hasArena ? ["arena"] : []), ...(hasCapacity ? ["capacity"] : [])];
+  const columns = ["club", "city", ...(hasCountry ? ["country"] : []), ...(hasArena ? ["arena"] : []), ...(hasCapacity ? ["capacity"] : [])];
   const head = columns.map((col) => `<th>${escape(t.cols[col])}</th>`).join("");
   const rows = facts.clubs
     .map((club) => {
       const cells = [`<td>${escape(club.name)}</td>`, `<td>${escape(t.city(club.city))}</td>`];
+      if (hasCountry) cells.push(`<td>${escape(club.country ? localized(club.country, locale) : "—")}</td>`);
       if (hasArena) cells.push(`<td>${escape(club.arena || "—")}</td>`);
       if (hasCapacity) cells.push(`<td class="num">${Number.isFinite(club.capacity) ? escape(club.capacity.toLocaleString("en-US")) : "—"}</td>`);
       return `<tr>${cells.join("")}</tr>`;
@@ -169,7 +222,7 @@ function leagueFacts(logicalPath, locale) {
     `<section class="league-clubs">` +
     `<span class="section-number">${escape(t.label(facts))}</span>` +
     `<h2>${escape(t.heading(facts))}</h2>` +
-    `<p>${escape(t.intro(facts, hasArena))}</p>` +
+    `<p>${escape(t.intro(facts))}</p>` +
     `<div class="table-wrap"><table style="min-width:${columns.length * 130}px"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>` +
     `<p class="source-note">${escape(t.verified(facts))} ${sources}.</p>` +
     `</section>`
