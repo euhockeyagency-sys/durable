@@ -14,6 +14,26 @@ const { leagueFacts } = require("./league-facts");
 const { guideIndex, relatedGuides } = require("./guide-index");
 const { leaguesItemList } = require("./league-list");
 
+const PRIORITY_LEAGUE_LINKS = [
+  { en: "/leagues/czechia-maxa-liga", ru: "/ligi/chehiya-maxa-liga", title: { en: "Czechia Maxa liga", ru: "Чехия — Maxa liga" } },
+  { en: "/leagues/czechia-tipsport-extraliga", ru: "/ligi/chehiya-tipsport-extraliga", title: { en: "Czechia Tipsport Extraliga", ru: "Чехия — Tipsport Extraliga" } },
+  { en: "/leagues/finland-mestis", ru: "/ligi/finlyandiya-mestis", title: { en: "Finland Mestis", ru: "Финляндия — Mestis" } },
+  { en: "/leagues/germany-del2", ru: "/ligi/germaniya-del2", title: { en: "Germany DEL2", ru: "Германия — DEL2" } },
+  { en: "/leagues/sweden-hockeyallsvenskan", ru: "/ligi/shvetsiya-hockeyallsvenskan", title: { en: "Sweden HockeyAllsvenskan", ru: "Швеция — HockeyAllsvenskan" } }
+];
+
+function leagueRelatedLinks(logicalPath, locale) {
+  if (!logicalPath.startsWith("/leagues/") && !logicalPath.startsWith("/ligi/")) return "";
+  const loc = locale === "ru" ? "ru" : "en";
+  const prefix = loc === "ru" ? "/ru" : "";
+  const current = PRIORITY_LEAGUE_LINKS.find((link) => link[loc] === logicalPath);
+  const priority = current ? PRIORITY_LEAGUE_LINKS.filter((link) => link !== current) : PRIORITY_LEAGUE_LINKS;
+  const links = priority
+    .map((link) => `<li><a href="${prefix}${link[loc]}">${link.title[loc]}</a></li>`)
+    .join("");
+  return `<section class="related-guides wrap"><h2>${loc === "ru" ? "Сравнить маршруты по лигам" : "Compare league routes"}</h2><ul class="related-list"><li><a href="${prefix}${loc === "ru" ? "/otkrytye-ligi-dlya-legionerov" : "/open-hockey-leagues-for-imports"}">${loc === "ru" ? "Самые открытые лиги для легионеров" : "Most open leagues for import players"}</a></li><li><a href="${prefix}/guides/${loc === "ru" ? "transfernye-okna-v-hokkee" : "hockey-transfer-windows"}">${loc === "ru" ? "Трансферные окна" : "Hockey transfer windows"}</a></li>${links}</ul></section>`;
+}
+
 const CONTENT_TYPES = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -429,6 +449,7 @@ function renderBody(data, extension, config, context) {
     if (editorial) html = html.replace('<section data-country-section="11"', `${editorial}<section data-country-section="11"`);
     if (logicalPath === "/guides") html = html.replace('<section class="cta"', `${guideIndex(locale)}<section class="cta"`);
     else if (logicalPath.startsWith("/guides/")) html = html.replace("</main>", `${relatedGuides(logicalPath, locale)}</main>`);
+    else if (logicalPath.startsWith("/leagues/") || logicalPath.startsWith("/ligi/")) html = html.replace("</main>", `${leagueRelatedLinks(logicalPath, locale)}</main>`);
   }
   if (extension === ".html" && !config.turnstileConfigured) {
     html = html

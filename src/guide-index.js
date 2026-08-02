@@ -93,8 +93,8 @@ function guideIndex(locale) {
 // hand-written "Related guides" block a page may already carry.
 const RELATED_COUNT = 5;
 const RELATED_COPY = {
-  en: { heading: "More guides on this topic" },
-  ru: { heading: "Ещё материалы по теме" }
+  en: { heading: "More guides on this topic", transfer: "Hockey transfer windows" },
+  ru: { heading: "Ещё материалы по теме", transfer: "Трансферные окна в хоккее" }
 };
 
 function relatedGuides(logicalPath, locale) {
@@ -114,10 +114,13 @@ function relatedGuides(logicalPath, locale) {
   const links = picks
     .map((g) => `<li><a href="${prefix}/guides/${g[loc]}">${escape(g.title[loc])}</a></li>`)
     .join("");
+  const transferLink = self.cat === "countries"
+    ? `<li><a href="${prefix}/guides/${loc === "ru" ? "transfernye-okna-v-hokkee" : "hockey-transfer-windows"}">${escape(RELATED_COPY[loc].transfer)}</a></li>`
+    : "";
   return (
     `<section class="related-guides wrap">` +
     `<h2>${escape(RELATED_COPY[loc].heading)}</h2>` +
-    `<ul class="related-list">${links}</ul>` +
+    `<ul class="related-list">${links}${transferLink}</ul>` +
     `</section>`
   );
 }
