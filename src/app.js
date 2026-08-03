@@ -49,11 +49,34 @@ const CONTENT_TYPES = {
 
 const PRIMARY_ORIGIN = "https://eurohockeyagency.com";
 const PRIMARY_HOST = "eurohockeyagency.com";
+// URLs from the previous (Durable) site that Google still has indexed. Search
+// Console showed 21 of the 27 indexed URLs returning 404, so every visitor and
+// every ranking signal those pages had earned was being thrown away. Each one
+// is mapped to the page that replaced it; a redirect to a relevant page keeps
+// the signal, a 404 does not.
 const LEGACY_PATHS = new Map([
   ["/about", "/agent"],
   ["/about-the-agent", "/agent"],
+  ["/about-me", "/agent"],
   ["/clients", "/cases"],
-  ["/contact-us", "/contact"]
+  ["/contact-us", "/contact"],
+  ["/hockey-agent-europe", "/"],
+  ["/blog", "/guides"],
+  ["/blog/playing-hockey-in-poland--guide-for-import-players--2026-27", "/guides/hockey-in-poland"],
+  ["/blog/playing-hockey-in-czech-republic-guide-for-import-players", "/guides/hockey-in-czechia"],
+  ["/blog/hockey-cv-template-for-european-clubs--2026-guide", "/guides/hockey-resume-for-european-clubs"],
+  ["/blog/essential-steps-to-become-a-professional-hockey-player-in-europe", "/guides/find-a-hockey-club-in-europe"],
+  ["/blog/how-to-read-european-hockey-contract", "/guides/how-to-verify-a-hockey-club-offer"],
+  ["/blog/visa-work-permit-requirements-hockey-players-sweden", "/guides/work-visa-for-hockey-player"],
+  ["/blog/hockey-consulting-for-beginners--everything-you-need-to-know", "/guides/how-a-hockey-agent-works"],
+  ["/blog/comparing-sports-agencies-in-europe--key-factors-to-consider", "/guides/how-a-hockey-agent-works"],
+  ["/blog/expert-tips-for-choosing-the-right-hockey-agency", "/guides/how-a-hockey-agent-works"],
+  ["/blog/how-to-navigate-the-european-sports-agency-landscape--expert-tips", "/guides/how-a-hockey-agent-works"],
+  ["/blog/how-european-hockey-is-transforming--differentiation-strategies-in-emerging-leagues--nla--icehl--nhl-pathways", "/european-leagues"],
+  ["/blog/comprehensive-guide-to-hockey-career-development-in-europe", "/for-players"],
+  ["/blog/european-hockey-agency--your-guide-to-the-world-of-hockey", "/guides"],
+  ["/blog/myths-about-off-season-training-for-hockey-players--what-you-really-need-to-know", "/guides"],
+  ["/blog/new-post", "/guides"]
 ]);
 
 function createApp({ config, services, now, randomUUID } = {}) {
@@ -67,6 +90,10 @@ function createApp({ config, services, now, randomUUID } = {}) {
     const query = req.originalUrl.includes("?") ? req.originalUrl.slice(req.originalUrl.indexOf("?")) : "";
     return res.redirect(301, `${LEGACY_PATHS.get(req.path)}${query}`);
   });
+  // Search Console only lists the URLs it has indexed, so the old blog may hold
+  // posts beyond the mapped ones. Send any remaining /blog/... to the hub that
+  // replaced it instead of letting it 404.
+  app.get("/blog/*path", (_req, res) => res.redirect(301, "/guides"));
 
   const upload = multer({
     storage: multer.memoryStorage(),

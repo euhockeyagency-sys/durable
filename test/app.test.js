@@ -588,8 +588,10 @@ test("legacy public URLs redirect permanently to the current structure", async (
   for (const [legacy, current] of [
     ["/about", "/agent"],
     ["/about-the-agent", "/agent"],
+    ["/about-me", "/agent"],
     ["/clients", "/cases"],
-    ["/contact-us", "/contact"]
+    ["/contact-us", "/contact"],
+    ["/hockey-agent-europe", "/"]
   ]) {
     const response = await request(app)
       .get(`${legacy}?source=search`)
@@ -597,6 +599,33 @@ test("legacy public URLs redirect permanently to the current structure", async (
       .expect(301);
     assert.equal(response.headers.location, `${current}?source=search`);
   }
+});
+
+// Google still has the previous Durable site indexed; these URLs used to 404,
+// discarding both the visitors arriving from search and the ranking signal the
+// posts had earned.
+test("old blog posts redirect to the guide that replaced them", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  for (const [legacy, current] of [
+    ["/blog", "/guides"],
+    ["/blog/playing-hockey-in-poland--guide-for-import-players--2026-27", "/guides/hockey-in-poland"],
+    ["/blog/playing-hockey-in-czech-republic-guide-for-import-players", "/guides/hockey-in-czechia"],
+    ["/blog/hockey-cv-template-for-european-clubs--2026-guide", "/guides/hockey-resume-for-european-clubs"],
+    ["/blog/essential-steps-to-become-a-professional-hockey-player-in-europe", "/guides/find-a-hockey-club-in-europe"],
+    ["/blog/how-to-read-european-hockey-contract", "/guides/how-to-verify-a-hockey-club-offer"],
+    ["/blog/visa-work-permit-requirements-hockey-players-sweden", "/guides/work-visa-for-hockey-player"],
+    ["/blog/expert-tips-for-choosing-the-right-hockey-agency", "/guides/how-a-hockey-agent-works"],
+    ["/blog/comprehensive-guide-to-hockey-career-development-in-europe", "/for-players"]
+  ]) {
+    const response = await request(app).get(legacy).set("Host", "eha.test").expect(301);
+    assert.equal(response.headers.location, current);
+  }
+});
+
+test("an unmapped post from the old blog falls back to the guides hub", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app).get("/blog/a-post-that-was-never-mapped").set("Host", "eha.test").expect(301);
+  assert.equal(response.headers.location, "/guides");
 });
 
 test("Poland country guides contain all twelve sections", () => {
