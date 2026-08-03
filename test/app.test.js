@@ -615,7 +615,14 @@ test("old blog posts redirect to the guide that replaced them", async () => {
     ["/blog/how-to-read-european-hockey-contract", "/guides/how-to-verify-a-hockey-club-offer"],
     ["/blog/visa-work-permit-requirements-hockey-players-sweden", "/guides/work-visa-for-hockey-player"],
     ["/blog/expert-tips-for-choosing-the-right-hockey-agency", "/guides/how-a-hockey-agent-works"],
-    ["/blog/comprehensive-guide-to-hockey-career-development-in-europe", "/for-players"]
+    ["/blog/comprehensive-guide-to-hockey-career-development-in-europe", "/for-players"],
+    // Reported by Search Console as soft 404s / robots-blocked.
+    ["/blog/hockey-cv-template-european-clubs", "/guides/hockey-resume-for-european-clubs"],
+    ["/blog/how-to-get-hockey-tryout-in-europe", "/guides/travelling-for-a-hockey-tryout"],
+    ["/blog/north-american-vs-european-hockey-key-differences", "/guides/hockey-in-usa"],
+    ["/hockey-agent-in-europe", "/"],
+    // The one Russian post on the old blog goes to the Russian guide.
+    ["/blog/nuzhen-li-hokkey-agent-v-evrope", "/ru/guides/kak-rabotaet-hokkejnyj-agent"]
   ]) {
     const response = await request(app).get(legacy).set("Host", "eha.test").expect(301);
     assert.equal(response.headers.location, current);

@@ -61,7 +61,19 @@ const LEGACY_PATHS = new Map([
   ["/clients", "/cases"],
   ["/contact-us", "/contact"],
   ["/hockey-agent-europe", "/"],
+  ["/hockey-agent-in-europe", "/"],
   ["/blog", "/guides"],
+  // Posts Search Console reports as soft 404s or robots-blocked: the /blog/*
+  // fallback below already keeps them out of a 404, but pointing each at the
+  // guide on the same subject preserves the topical signal the post earned.
+  ["/blog/hockey-cv-template-european-clubs", "/guides/hockey-resume-for-european-clubs"],
+  ["/blog/hockey-cv-for-europe--what-every-player-must-include", "/guides/hockey-resume-for-european-clubs"],
+  ["/blog/north-american-vs-european-hockey-key-differences", "/guides/hockey-in-usa"],
+  ["/blog/success-stories-how-players-achieve-their-dreams-in-europe", "/cases"],
+  ["/blog/do-i-need-hockey-agent-europe", "/guides/how-a-hockey-agent-works"],
+  ["/blog/how-to-get-hockey-tryout-in-europe", "/guides/travelling-for-a-hockey-tryout"],
+  // The old blog had one Russian post; it belongs on the Russian tree.
+  ["/blog/nuzhen-li-hokkey-agent-v-evrope", "/ru/guides/kak-rabotaet-hokkejnyj-agent"],
   ["/blog/playing-hockey-in-poland--guide-for-import-players--2026-27", "/guides/hockey-in-poland"],
   ["/blog/playing-hockey-in-czech-republic-guide-for-import-players", "/guides/hockey-in-czechia"],
   ["/blog/hockey-cv-template-for-european-clubs--2026-guide", "/guides/hockey-resume-for-european-clubs"],
