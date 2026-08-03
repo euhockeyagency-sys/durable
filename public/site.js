@@ -27,7 +27,7 @@ if(form){
       const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}}),data=await response.json().catch(()=>({}));
       if(!response.ok){showErrors(data.errors);status.textContent=data.message||T.checkForm;status.classList.add('error');if(window.turnstile)turnstile.reset();return}
       const localePrefix=location.pathname.startsWith('/ru/')||location.pathname==='/ru'?'/ru':location.pathname.startsWith('/en/')||location.pathname==='/en'?'/en':'';
-      sessionStorage.removeItem('eha-application-draft');location.assign(`${localePrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
+      sessionStorage.removeItem('eha-application-draft');if(window.turnstile)turnstile.reset();location.assign(`${localePrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
     }catch(error){status.textContent=T.noConn;status.classList.add('error');if(window.turnstile)turnstile.reset()}
     finally{button.disabled=false;button.textContent=T.submit}
   });
@@ -52,6 +52,12 @@ if(clubForm){
     finally{button.disabled=false;button.textContent=T.clubSubmit}
   });
 }
+
+// Turnstile tokens are single-use and expire after a few minutes. When the
+// browser restores a submitted form from the back/forward cache, the widget
+// still holds the token that was already redeemed, so the next submit is
+// rejected with timeout-or-duplicate. Issue a fresh challenge on restore.
+addEventListener('pageshow',event=>{if(event.persisted&&window.turnstile&&q('.cf-turnstile'))turnstile.reset()});
 
 const reference=q('[data-application-reference]');
 if(reference){const value=new URLSearchParams(location.search).get('ref')||'';if(/^EHA-\d{6}-[A-F0-9]{6}$/.test(value)){reference.textContent=value;const link=q('[data-success-whatsapp]');if(link)link.href=`https://wa.me/375297957818?text=${encodeURIComponent(T.waGreeting(value))}`}else reference.textContent=T.notFound}
