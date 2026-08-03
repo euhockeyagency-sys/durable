@@ -32,6 +32,10 @@ function loadConfig(env = process.env) {
   const contactEmail = env.CONTACT_EMAIL || env.NOTIFICATION_EMAIL || "privacy@eurohockeyagency.com";
   const notificationEmail = env.NOTIFICATION_EMAIL || env.CONTACT_EMAIL || "";
   const resendFrom = env.RESEND_FROM || DEFAULT_RESEND_FROM;
+  // Turnstile's secret is read from TURNSTILE_SECRET, falling back to the
+  // older TURNSTILE_SECRET_KEY so an environment set under either name keeps
+  // the captcha working. Never inline the value — it only ever comes from env.
+  const turnstileSecret = env.TURNSTILE_SECRET || env.TURNSTILE_SECRET_KEY || "";
   const telegramConfigured = Boolean(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID);
   const emailConfigured = Boolean(env.RESEND_API_KEY && resendFrom && notificationEmail);
   return {
@@ -50,7 +54,7 @@ function loadConfig(env = process.env) {
     supabaseUrl: env.SUPABASE_URL || "",
     supabaseSecretKey: env.SUPABASE_SECRET_KEY || "",
     turnstileSiteKey: env.TURNSTILE_SITE_KEY || "",
-    turnstileSecretKey: env.TURNSTILE_SECRET_KEY || "",
+    turnstileSecretKey: turnstileSecret,
     turnstileExpectedHostname: env.TURNSTILE_EXPECTED_HOSTNAME || "",
     telegramBotToken: env.TELEGRAM_BOT_TOKEN || "",
     telegramChatId: env.TELEGRAM_CHAT_ID || "",
@@ -62,7 +66,7 @@ function loadConfig(env = process.env) {
       : false,
     applicationConfigured: missingApplicationKeys.length === 0,
     missingApplicationKeys,
-    turnstileConfigured: Boolean(env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY),
+    turnstileConfigured: Boolean(env.TURNSTILE_SITE_KEY && turnstileSecret),
     telegramConfigured,
     emailConfigured,
     // Club requests are notification-only (no database fallback), so both
