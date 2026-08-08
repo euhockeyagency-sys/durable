@@ -51,8 +51,31 @@ Deno.serve(async (request) => {
     else deleted += 1;
   }
 
-  return new Response(JSON.stringify({ ok: failures.length === 0, scanned: applications?.length || 0, deleted, failures }), {
-    status: failures.length ? 207 : 200,
+  // Club leads carry no file attachments, so this is a plain retention sweep.
+  const { data: clubRequests, error: clubRequestsError } = await supabase
+    .from("club_requests")
+    .select("id")
+    .lt("retention_until", new Date().toISOString())
+    .in("status", ["new", "rejected", "archived"])
+    .limit(100);
+
+  if (clubRequestsError) return responseError("query_failed", clubRequestsError.message);
+  let clubRequestsDeleted = 0;
+  const clubRequestFailures: Array<{ id: string; error: string }> = [];
+
+  for (const clubRequest of clubRequests || []) {
+    const { error: deleteError } = await supabase.from("club_requests").delete().eq("id", clubRequest.id);
+    if (deleteError) clubRequestFailures.push({ id: clubRequest.id, error: deleteError.message });
+    else clubRequestsDeleted += 1;
+  }
+
+  const ok = failures.length === 0 && clubRequestFailures.length === 0;
+  return new Response(JSON.stringify({
+    ok,
+    applications: { scanned: applications?.length || 0, deleted, failures },
+    clubRequests: { scanned: clubRequests?.length || 0, deleted: clubRequestsDeleted, failures: clubRequestFailures }
+  }), {
+    status: ok ? 200 : 207,
     headers
   });
 });

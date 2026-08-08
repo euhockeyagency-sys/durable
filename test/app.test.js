@@ -34,7 +34,10 @@ function config(overrides = {}) {
 }
 
 function serviceMock(options = {}) {
-  const rows = { applications: [], application_files: [], application_notifications: [] };
+  const rows = {
+    applications: [], application_files: [], application_notifications: [],
+    club_requests: [], club_request_notifications: []
+  };
   const uploaded = [];
   const removed = [];
   const supabase = {
@@ -44,8 +47,23 @@ function serviceMock(options = {}) {
           if (table === "applications" && options.persistenceFailure) return { error: new Error("database down") };
           if (table === "application_files" && options.metadataFailure) return { error: new Error("metadata down") };
           if (table === "application_notifications" && options.notificationAuditFailure) throw new Error("audit down");
+          if (table === "club_requests" && options.clubPersistenceFailure) return { error: new Error("database down") };
+          if (table === "club_request_notifications" && options.clubNotificationAuditFailure) throw new Error("audit down");
           rows[table].push(value);
           return { error: null };
+        },
+        update(patch) {
+          return { async eq(column, id) {
+            const row = rows[table].find((r) => r[column] === id);
+            if (row) Object.assign(row, patch);
+            return { error: row ? null : new Error("not found") };
+          } };
+        },
+        select() {
+          return {
+            order() { return this; },
+            limit() { return Promise.resolve({ data: rows[table], error: null }); }
+          };
         },
         delete() {
           return { async eq(_column, id) { rows[table] = rows[table].filter((row) => row.id !== id && row.application_id !== id); return { error: null }; } };
@@ -313,14 +331,22 @@ test("loads Turnstile when captcha is configured", async () => {
   assert.match(response.text, /class="cf-turnstile" data-sitekey="test-site-key"/);
 });
 
-test("delivers a valid club request without writing to Supabase", async () => {
+test("stores a valid club request in Supabase and notification audits", async () => {
   const services = serviceMock();
   const app = createApp({ config: config({ clubRequestConfigured: true }), services, now: () => new Date("2026-07-23T12:00:00Z") });
   const response = await validClubRequest(request(app)).expect(201);
   assert.equal(response.body.ok, true);
   assert.match(response.body.reference, /^EHA-CLUB-202607-[A-F0-9]{6}$/);
-  assert.equal(services.rows.applications.length, 0);
-  assert.equal(services.rows.application_notifications.length, 0);
+  assert.equal(services.rows.club_requests.length, 1);
+  assert.equal(services.rows.club_requests[0].status, "new");
+  assert.deepEqual(services.rows.club_request_notifications.map((row) => row.status), ["sent", "sent"]);
+});
+
+test("returns 503 and stores nothing when club request persistence fails", async () => {
+  const services = serviceMock({ clubPersistenceFailure: true });
+  const app = createApp({ config: config({ clubRequestConfigured: true }), services });
+  await validClubRequest(request(app)).expect(503);
+  assert.equal(services.rows.club_requests.length, 0);
 });
 
 test("club request accepts phone when email is empty", async () => {
@@ -347,11 +373,54 @@ test("club request honeypot prevents notification delivery", async () => {
   assert.equal(calls, 0);
 });
 
-test("club request reports a notification channel failure", async () => {
+test("keeps a saved club request when a notification channel fails", async () => {
   const services = serviceMock({ clubEmailFailure: true });
   const app = createApp({ config: config({ clubRequestConfigured: true }), services });
-  const response = await validClubRequest(request(app)).expect(502);
-  assert.equal(response.body.code, "notification_failed");
+  const response = await validClubRequest(request(app)).expect(201);
+  assert.equal(response.body.ok, true);
+  assert.equal(services.rows.club_requests.length, 1);
+  const statuses = services.rows.club_request_notifications.map((row) => row.status).sort();
+  assert.deepEqual(statuses, ["failed", "sent"]);
+});
+
+test("the admin route is absent without an admin secret", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  await request(app).get("/admin/anything").expect(404);
+});
+
+test("admin page lists applications and club requests with noindex", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config({ adminConfigured: true, adminSecret: "test-admin-secret-1234" }), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app)).expect(201);
+  await validClubRequest(request(app)).expect(201);
+  const response = await request(app).get("/admin/test-admin-secret-1234").expect(200);
+  assert.equal(response.headers["x-robots-tag"], "noindex");
+  assert.match(response.text, /Иван Иванов/);
+  assert.match(response.text, /HC Test/);
+});
+
+test("the admin route 404s on the wrong secret", async () => {
+  const app = createApp({ config: config({ adminConfigured: true, adminSecret: "test-admin-secret-1234" }), services: serviceMock() });
+  await request(app).get("/admin/wrong-secret").expect(404);
+});
+
+test("admin status update changes an application's status and rejects an unknown status", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config({ adminConfigured: true, adminSecret: "test-admin-secret-1234" }), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app)).expect(201);
+  const applicationId = services.rows.applications[0].id;
+  await request(app)
+    .post("/admin/test-admin-secret-1234/status")
+    .type("form")
+    .send({ table: "applications", id: applicationId, status: "contacted" })
+    .expect(303);
+  assert.equal(services.rows.applications[0].status, "contacted");
+
+  await request(app)
+    .post("/admin/test-admin-secret-1234/status")
+    .type("form")
+    .send({ table: "applications", id: applicationId, status: "not-a-real-status" })
+    .expect(400);
 });
 
 test("club request rate limiter rejects the sixth attempt", async () => {

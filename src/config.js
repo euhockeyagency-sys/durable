@@ -69,9 +69,15 @@ function loadConfig(env = process.env) {
     turnstileConfigured: Boolean(env.TURNSTILE_SITE_KEY && turnstileSecret),
     telegramConfigured,
     emailConfigured,
-    // Club requests are notification-only (no database fallback), so both
-    // channels must be available before the public form is enabled.
-    clubRequestConfigured: telegramConfigured && emailConfigured
+    // Club requests are persisted to Supabase before notifying, exactly like
+    // applications, so both notification channels AND storage must be ready
+    // before the public form is enabled.
+    clubRequestConfigured: telegramConfigured && emailConfigured && missingApplicationKeys.length === 0,
+    // The admin view's URL is its only credential (same trust model as the MCP
+    // content editor), so a short/missing secret disables the route entirely
+    // rather than serving it under a guessable path.
+    adminSecret: env.ADMIN_SECRET || "",
+    adminConfigured: Boolean(env.ADMIN_SECRET && env.ADMIN_SECRET.length >= 16) && missingApplicationKeys.length === 0
   };
 }
 

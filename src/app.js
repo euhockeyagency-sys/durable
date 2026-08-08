@@ -154,6 +154,39 @@ function createApp({ config, services, now, randomUUID } = {}) {
     res.set("Allow", "POST").status(405).json({ ok: false, code: "method_not_allowed" });
   });
 
+  // Secret-path admin view, same trust model as the MCP content editor
+  // (mcp/server.mjs): the URL itself is the credential, never linked from the
+  // public site, and excluded from search indexing below.
+  if (config.adminConfigured) {
+    const adminPath = `/admin/${config.adminSecret}`;
+    app.get(adminPath, async (_req, res) => {
+      res.set("X-Robots-Tag", "noindex");
+      try {
+        const [applications, clubRequests] = await Promise.all([
+          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, current_club, phone, email, created_at"),
+          fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, created_at")
+        ]);
+        res.type("html").send(renderAdminPage(adminPath, applications, clubRequests));
+      } catch (error) {
+        console.error("Admin page query failed", error.message);
+        res.status(503).type("text").send("Could not load admin data.");
+      }
+    });
+    app.post(`${adminPath}/status`, express.urlencoded({ extended: false, limit: "1kb" }), async (req, res) => {
+      res.set("X-Robots-Tag", "noindex");
+      const { table, id, status } = req.body || {};
+      if (!ADMIN_TABLES.has(table) || !ADMIN_STATUSES.has(status) || !id) {
+        return res.status(400).type("text").send("Invalid request.");
+      }
+      const { error } = await appServices.supabase.from(table).update({ status }).eq("id", id);
+      if (error) {
+        console.error("Admin status update failed", error.message);
+        return res.status(503).type("text").send("Could not update status.");
+      }
+      res.redirect(303, adminPath);
+    });
+  }
+
   app.use((error, _req, res, next) => {
     if (!(error instanceof multer.MulterError)) return next(error);
     const tooLarge = ["LIMIT_FILE_SIZE", "LIMIT_FILE_COUNT", "LIMIT_UNEXPECTED_FILE"].includes(error.code);
@@ -294,31 +327,138 @@ function createClubRequestHandler({ config, services, now = () => new Date(), ra
 
     const createdAt = now();
     const reference = createClubRequestReference(createdAt, randomUUID);
-    const clubRequest = { ...validation.value, reference, createdAt: createdAt.toISOString() };
-    const deliveries = [];
-    if (config.telegramConfigured !== false) {
-      deliveries.push(["telegram", () => services.sendClubRequestTelegram(clubRequest)]);
-    }
-    if (config.emailConfigured !== false) {
-      deliveries.push(["email", () => services.sendClubRequestEmail(clubRequest)]);
-    }
-    const results = await Promise.allSettled(deliveries.map(([, send]) => send()));
-    const failed = results
-      .map((result, index) => result.status === "rejected"
-        ? `${deliveries[index][0]}: ${String(result.reason?.message || result.reason).slice(0, 300)}`
-        : null)
-      .filter(Boolean);
-    if (failed.length) {
-      console.error(`Club request ${reference} notification failure`, failed.join("; "));
-      return res.status(502).json({
+    const clubRequestId = randomUUID();
+    const clubRequest = { ...validation.value, id: clubRequestId, reference, createdAt: createdAt.toISOString() };
+    const retentionUntil = new Date(createdAt);
+    retentionUntil.setUTCFullYear(retentionUntil.getUTCFullYear() + 1);
+    const row = toClubRequestRow(clubRequest, retentionUntil);
+
+    const { error: insertError } = await services.supabase.from("club_requests").insert(row);
+    if (insertError) {
+      console.error("Club request persistence failed", insertError.message);
+      return res.status(503).json({
         ok: false,
-        code: "notification_failed",
-        message: m.notificationFailed,
+        code: "persistence_failed",
+        message: m.persistenceFailed,
         contactEmail: config.contactEmail
       });
     }
+
+    // Persistence has already succeeded. Notification failures must not turn
+    // this response into an error, otherwise the club retries and creates a
+    // duplicate request — the same reasoning as applications (src/applications.js).
+    try {
+      await deliverClubRequestNotifications(services, row, config);
+    } catch (error) {
+      console.error("Club request notification delivery failed after the request was stored", error.message);
+    }
     return res.status(201).json({ ok: true, reference });
   };
+}
+
+function toClubRequestRow(clubRequest, retentionUntil) {
+  return {
+    id: clubRequest.id,
+    reference_code: clubRequest.reference,
+    status: "new",
+    club_name: clubRequest.clubName,
+    contact_name: clubRequest.contactName,
+    email: clubRequest.email,
+    phone: clubRequest.phone,
+    country: clubRequest.country,
+    position_needed: clubRequest.positionNeeded,
+    level: clubRequest.level,
+    message: clubRequest.message,
+    data_consent_at: clubRequest.createdAt,
+    locale: clubRequest.locale,
+    retention_until: retentionUntil.toISOString()
+  };
+}
+
+async function deliverClubRequestNotifications(services, row, config = {}) {
+  const clubRequest = {
+    reference: row.reference_code,
+    clubName: row.club_name,
+    contactName: row.contact_name,
+    email: row.email,
+    phone: row.phone,
+    country: row.country,
+    positionNeeded: row.position_needed,
+    level: row.level,
+    message: row.message,
+    locale: row.locale
+  };
+  const channels = [];
+  if (config.telegramConfigured !== false) channels.push(["telegram", () => services.sendClubRequestTelegram(clubRequest)]);
+  if (config.emailConfigured !== false) channels.push(["email", () => services.sendClubRequestEmail(clubRequest)]);
+  if (!channels.length) {
+    console.error(
+      `No notification channel is configured — club request ${row.reference_code} was stored but not delivered. ` +
+      "Set RESEND_API_KEY (email) or TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (Telegram)."
+    );
+    return;
+  }
+  await Promise.all(channels.map(async ([channel, send]) => {
+    let providerId = null;
+    let status = "sent";
+    let errorMessage = null;
+    try {
+      providerId = await send();
+    } catch (error) {
+      status = "failed";
+      errorMessage = String(error.message || error).slice(0, 1000);
+      console.error(
+        `${channel} notification failed for club request ${row.reference_code} (request is stored, deliver it manually)`,
+        errorMessage
+      );
+    }
+    try {
+      const { error } = await services.supabase.from("club_request_notifications").insert({
+        club_request_id: row.id,
+        channel,
+        status,
+        provider_id: providerId,
+        error_message: errorMessage,
+        attempted_at: new Date().toISOString()
+      });
+      if (error) console.error(`${channel} club request notification audit failed`, error.message);
+    } catch (error) {
+      console.error(`${channel} club request notification audit failed`, error.message);
+    }
+  }));
+}
+
+const ADMIN_TABLES = new Set(["applications", "club_requests"]);
+const ADMIN_STATUSES = new Set(["new", "contacted", "qualified", "rejected", "archived"]);
+
+async function fetchAdminRows(supabase, table, columns) {
+  const { data, error } = await supabase.from(table).select(columns).order("created_at", { ascending: false }).limit(200);
+  if (error) throw error;
+  return data || [];
+}
+
+function renderAdminPage(adminPath, applications, clubRequests) {
+  const statusOptions = [...ADMIN_STATUSES]
+    .map((status) => `<option value="${status}">${status}</option>`).join("");
+  const statusForm = (table, id, currentStatus) => `<form method="post" action="${adminPath}/status">` +
+    `<input type="hidden" name="table" value="${table}"><input type="hidden" name="id" value="${htmlEscape(id)}">` +
+    `<select name="status">${statusOptions.replace(`value="${currentStatus}"`, `value="${currentStatus}" selected`)}</select>` +
+    `<button type="submit">Save</button></form>`;
+  const applicationRows = applications.map((a) => `<tr><td>${htmlEscape(a.reference_code)}</td>` +
+    `<td>${htmlEscape(a.player_name)}</td><td>${htmlEscape(a.current_club)}</td>` +
+    `<td>${htmlEscape(a.phone)}${a.email ? `<br>${htmlEscape(a.email)}` : ""}</td>` +
+    `<td>${htmlEscape(a.created_at)}</td><td>${statusForm("applications", a.id, a.status)}</td></tr>`).join("");
+  const clubRequestRows = clubRequests.map((c) => `<tr><td>${htmlEscape(c.reference_code)}</td>` +
+    `<td>${htmlEscape(c.club_name)}</td><td>${htmlEscape(c.contact_name)}</td>` +
+    `<td>${c.phone ? htmlEscape(c.phone) : ""}${c.email ? `<br>${htmlEscape(c.email)}` : ""}</td>` +
+    `<td>${htmlEscape(c.created_at)}</td><td>${statusForm("club_requests", c.id, c.status)}</td></tr>`).join("");
+  return `<!doctype html><html><head><meta charset="utf-8"><title>EHA admin</title>` +
+    `<style>body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#0b1520}table{border-collapse:collapse;width:100%;margin-bottom:40px}` +
+    `th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f2f4f6}` +
+    `select,button{font:inherit}</style></head><body>` +
+    `<h1>Applications</h1><table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
+    `<h1>Club requests</h1><table><tr><th>Ref</th><th>Club</th><th>Contact</th><th>Contact info</th><th>Created</th><th>Status</th></tr>${clubRequestRows}</table>` +
+    `</body></html>`;
 }
 
 function cryptoRandomUUID() {

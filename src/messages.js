@@ -39,8 +39,7 @@ const MESSAGES = {
     country: "Укажите страну или рынок.",
     positionNeeded: "Укажите нужную позицию.",
     level: "Укажите лигу или уровень команды.",
-    clubMessage: "Опишите, какого игрока вы ищете.",
-    notificationFailed: "Не удалось доставить запрос. Попробуйте ещё раз или свяжитесь с нами напрямую."
+    clubMessage: "Опишите, какого игрока вы ищете."
   },
   en: {
     playerName: "Enter your first and last name.",
@@ -77,8 +76,7 @@ const MESSAGES = {
     country: "Enter the country or market.",
     positionNeeded: "Enter the position needed.",
     level: "Enter the league or team level.",
-    clubMessage: "Describe the player you need.",
-    notificationFailed: "We could not deliver the request. Please try again or contact us directly."
+    clubMessage: "Describe the player you need."
   }
 };
 
