@@ -4,28 +4,6 @@ window.EHA_LEAGUES = {
   "windowNote": "The main roster-building window is April–August; targeted additions are possible during the season.",
   "leagues": [
     {
-      "country": "Sweden",
-      "flag": "🇸🇪",
-      "name": "J20 Nationell",
-      "url": "/leagues/sweden-j20",
-      "tier": 1,
-      "age": "junior",
-      "open": "mid",
-      "note": "U20: ages 19–20; normally players born 2007–2008 in 2026/27",
-      "imports": "Under-18 players need home-federation documents, representation and education"
-    },
-    {
-      "country": "Sweden",
-      "flag": "🇸🇪",
-      "name": "J18 Nationell",
-      "url": "/leagues/sweden-j18",
-      "tier": 2,
-      "age": "junior",
-      "open": "mid",
-      "note": "U18: ages 17–18; normally players born 2009–2010 in 2026/27",
-      "imports": "Under-18 players need home-federation documents, representation and education"
-    },
-    {
       "country": "Finland",
       "flag": "🇫🇮",
       "name": "Liiga",
