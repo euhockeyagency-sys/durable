@@ -22,14 +22,16 @@ const LOCALES = {
   ru: {
     baseToken: "",
     openLabel: { high: "Открыта", mid: "Ограниченно", low: "Сложно" },
-    labels: { country: "Страна", league: "Лига", level: "Уровень", profile: "Характеристика", imports: "Для легионеров" },
-    page: path.join(ROOT, "public", "ru", "ligi-evropy.html")
+    labels: { country: "Страна", league: "Лига", level: "Уровень", age: "Возраст", profile: "Характеристика", imports: "Для легионеров" },
+    page: path.join(ROOT, "public", "ru", "ligi-evropy.html"),
+    juniorPage: path.join(ROOT, "public", "ru", "yuniorskie-ligi-evropy.html")
   },
   en: {
     baseToken: "",
     openLabel: { high: "Open", mid: "Limited", low: "Hard" },
-    labels: { country: "Country", league: "League", level: "Level", profile: "Profile", imports: "For imports" },
-    page: path.join(ROOT, "public", "en", "european-leagues.html")
+    labels: { country: "Country", league: "League", level: "Level", age: "Age", profile: "Profile", imports: "For imports" },
+    page: path.join(ROOT, "public", "en", "european-leagues.html"),
+    juniorPage: path.join(ROOT, "public", "en", "junior-hockey-leagues.html")
   }
 };
 
@@ -54,6 +56,7 @@ function localizeData(locale) {
       name: l.name,
       url: l.url ? l.url[locale] : null,
       tier: l.tier,
+      age: l.age || "senior",
       open: l.open,
       note: l.note[locale],
       imports: l.imports[locale]
@@ -68,44 +71,47 @@ function writeDataFile(locale) {
   fs.writeFileSync(path.join(ROOT, "public", "assets", `leagues.${locale}.js`), banner + body);
 }
 
-function renderRows(locale) {
+function renderRows(locale, age = "senior") {
   const { openLabel, labels } = LOCALES[locale];
-  return source.leagues.map((l) => {
+  return source.leagues.filter((l) => (l.age || "senior") === age).map((l) => {
     const country = l.country[locale];
     const open = openLabel[l.open] || l.open;
     const leagueName = l.url && l.url[locale]
       ? `<a href="${LOCALES[locale].baseToken}${esc(l.url[locale])}"><b>${esc(l.name)}</b></a>`
       : `<b>${esc(l.name)}</b>`;
-    return `<tr data-country="${esc(country)}" data-tier="${l.tier}" data-open="${esc(l.open)}">` +
+    return `<tr data-country="${esc(country)}" data-tier="${l.tier}" data-age="${esc(l.age || "senior")}" data-open="${esc(l.open)}">` +
       `<td data-label="${esc(labels.country)}">${esc(l.flag)} ${esc(country)}</td>` +
       `<td data-label="${esc(labels.league)}">${leagueName}</td>` +
       `<td data-label="${esc(labels.level)}"><span class="tier tier-${l.tier}">${l.tier}</span></td>` +
+      `<td data-label="${esc(labels.age)}">${l.age === "junior" ? (/18/.test(l.name) ? "U18" : "U20") : "Senior"}</td>` +
       `<td data-label="${esc(labels.profile)}">${esc(l.note[locale])}</td>` +
       `<td data-label="${esc(labels.imports)}"><span class="open open-${esc(l.open)}">${esc(open)}</span> ${esc(l.imports[locale])}</td>` +
       `</tr>`;
   }).join("\n");
 }
 
-function injectRows(locale) {
-  const { page } = LOCALES[locale];
-  if (!fs.existsSync(page)) {
-    console.log(`пропуск строк (${locale}): страница ещё не создана — ${path.relative(ROOT, page)}`);
+function injectRows(locale, age = "senior") {
+  const { page, juniorPage } = LOCALES[locale];
+  const target = age === "junior" ? juniorPage : page;
+  if (!fs.existsSync(target)) {
+    console.log(`пропуск строк (${locale}, ${age}): страница ещё не создана — ${path.relative(ROOT, target)}`);
     return;
   }
-  const html = fs.readFileSync(page, "utf8");
+  const html = fs.readFileSync(target, "utf8");
   const startIndex = html.indexOf(START);
   const endIndex = html.indexOf(END);
   if (startIndex === -1 || endIndex === -1) {
-    console.error(`Маркеры LEAGUES:START/END не найдены в ${path.relative(ROOT, page)}`);
+    console.error(`Маркеры LEAGUES:START/END не найдены в ${path.relative(ROOT, target)}`);
     process.exitCode = 1;
     return;
   }
-  const updated = html.slice(0, startIndex + START.length) + "\n" + renderRows(locale) + "\n" + html.slice(endIndex);
-  fs.writeFileSync(page, updated);
-  console.log(`вставлено строк (${locale}): ${source.leagues.length}`);
+  const updated = html.slice(0, startIndex + START.length) + "\n" + renderRows(locale, age) + "\n" + html.slice(endIndex);
+  fs.writeFileSync(target, updated);
+  console.log(`вставлено строк (${locale}, ${age}): ${source.leagues.filter((l) => (l.age || "senior") === age).length}`);
 }
 
 for (const locale of Object.keys(LOCALES)) {
   writeDataFile(locale);
-  injectRows(locale);
+  injectRows(locale, "senior");
+  injectRows(locale, "junior");
 }

@@ -478,6 +478,10 @@ function securityHeaders(_req, res, next) {
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    // No "preload": submitting to the browser preload list is practically
+    // irreversible (it sticks for months after removal), so that step waits
+    // until we're certain no http-only subdomain will ever need this domain.
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains",
     "Content-Security-Policy": "default-src 'self'; img-src 'self' data: https://mc.yandex.ru https://*.mc.yandex.ru https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://mc.yandex.ru https://www.googletagmanager.com; frame-src https://challenges.cloudflare.com https://mc.yandex.ru; connect-src 'self' https://challenges.cloudflare.com https://mc.yandex.ru https://*.mc.yandex.ru https://mc.yandex.md https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
   });
   next();

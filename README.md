@@ -82,6 +82,10 @@ supabase migration list
 
 `GET /admin/<ADMIN_SECRET>` — список заявок игроков и клубных запросов со сменой статуса (`new`/`contacted`/`qualified`/`rejected`/`archived`). URL сам по себе и есть credential (тот же принцип, что у MCP-редактора) — нигде не публикуется, отдаётся с `X-Robots-Tag: noindex`. Задайте `ADMIN_SECRET` (от 16 случайных символов) в окружении, иначе роут отключён. Без ручной смены статуса заявка так и останется `new` и будет автоматически удалена через 12 месяцев вместе с файлами (см. `supabase/functions/cleanup-applications`).
 
+## Мониторинг падений
+
+`.github/workflows/uptime.yml` каждые 15 минут дергает `/api/health` на проде. При ошибке или `ok:false` шлёт сообщение тем же Telegram-ботом, что и уведомления о заявках — задайте `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_ID` как GitHub Actions secrets (`gh secret set`), отдельно от `.env.production` на сервере. Без этих secrets алерт в Telegram не уходит, но красный запуск workflow в Actions всё равно виден.
+
 ## Проверки и публикация
 
 ```bash

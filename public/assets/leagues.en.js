@@ -70,6 +70,28 @@ window.EHA_LEAGUES = {
       "imports": "A realistic entry point; an EU passport matters a lot"
     },
     {
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "name": "J20 Nationell",
+      "url": "/leagues/sweden-j20",
+      "tier": 1,
+      "age": "junior",
+      "open": "low",
+      "note": "Upper junior division, U20",
+      "imports": "Transfer of a minor is not automatic — extra SIF/IIHF conditions apply"
+    },
+    {
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "name": "J18 Nationell",
+      "url": "/leagues/sweden-j18",
+      "tier": 1,
+      "age": "junior",
+      "open": "low",
+      "note": "Upper junior division, U18",
+      "imports": "Transfer of a minor is not automatic — extra SIF/IIHF conditions apply"
+    },
+    {
       "country": "Czechia",
       "flag": "🇨🇿",
       "name": "Tipsport Extraliga",
@@ -460,7 +482,7 @@ window.EHA_LEAGUES = {
       "name": "CHL (WHL / OHL / QMJHL)",
       "url": null,
       "tier": 1,
-      "age": "senior",
+      "age": "junior",
       "open": "low",
       "note": "Major junior league, entry only through the annual CHL Import Draft",
       "imports": "Max 3 imports per roster; you cannot sign outside the draft"
@@ -482,7 +504,7 @@ window.EHA_LEAGUES = {
       "name": "NCDC",
       "url": null,
       "tier": 2,
-      "age": "senior",
+      "age": "junior",
       "open": "mid",
       "note": "Tuition-free junior league, expanding nationwide",
       "imports": "Not USA Hockey-sanctioned, but growing faster than rival leagues"

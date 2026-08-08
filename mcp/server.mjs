@@ -174,6 +174,28 @@ async function run(command, args, options = {}) {
   }
 }
 
+// Runs `npm test` and reports whether it's safe to push. The server only has
+// production dependencies installed (deploy.sh runs `npm ci --omit=dev`), so
+// test/app.test.js can't load there (needs supertest) — that HTTP-level suite,
+// including the crawler link-graph guards, still runs in GitHub Actions on
+// every push and blocks deployment on its own. What runs here (config.test.js,
+// locales.test.js) still catches the PAGES-table invariants that guard the
+// language switcher and hreflang, which is the class of bug worth stopping
+// before it leaves this machine.
+async function runTestGate() {
+  const result = await run("npm", ["test"], { timeout: 180_000 });
+  const output = [result.stdout, result.stderr].filter(Boolean).join("\n");
+  const summary = output.split("\n")
+    .filter((line) => /^(# (tests|pass|fail|suites)|not ok )/.test(line.trim()))
+    .join("\n");
+  const missingDevDeps = /Cannot find module 'supertest'/.test(output);
+  if (missingDevDeps) {
+    const otherFailures = output.split("\n").filter((line) => /^not ok /.test(line.trim()) && !/app\.test\.js/.test(line));
+    return { pass: otherFailures.length === 0, summary };
+  }
+  return { pass: result.ok, summary: summary || output.slice(-2000) };
+}
+
 // `paths` are staged explicitly (never `git add -A`) so untracked server-side
 // infrastructure scripts sitting in the repo folder are never committed.
 async function gitSave(message, paths = ["public"]) {
@@ -182,6 +204,10 @@ async function gitSave(message, paths = ["public"]) {
     const { stdout: status } = await pexec("git", ["status", "--porcelain"], { cwd: REPO });
     if (!status.trim()) return "no changes";
     await pexec("git", ["commit", "-m", message], { cwd: REPO });
+    const gate = await runTestGate();
+    if (!gate.pass) {
+      return "saved locally; tests failed, NOT pushed (fix and run_tests again — the next gitSave will push once green):\n" + gate.summary;
+    }
     try {
       await pexec("git", ["fetch", "origin", "main"], { cwd: REPO });
       await pexec("git", ["rebase", "--autostash", "origin/main"], { cwd: REPO });

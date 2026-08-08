@@ -70,6 +70,28 @@ window.EHA_LEAGUES = {
       "imports": "Реальная точка входа; паспорт ЕС решает многое"
     },
     {
+      "country": "Швеция",
+      "flag": "🇸🇪",
+      "name": "J20 Nationell",
+      "url": "/ligi/shvetsiya-j20",
+      "tier": 1,
+      "age": "junior",
+      "open": "low",
+      "note": "Верхний юниорский дивизион, до 20 лет",
+      "imports": "Трансфер несовершеннолетнего не автоматический — доп. условия SIF/IIHF"
+    },
+    {
+      "country": "Швеция",
+      "flag": "🇸🇪",
+      "name": "J18 Nationell",
+      "url": "/ligi/shvetsiya-j18",
+      "tier": 1,
+      "age": "junior",
+      "open": "low",
+      "note": "Верхний юниорский дивизион, до 18 лет",
+      "imports": "Трансфер несовершеннолетнего не автоматический — доп. условия SIF/IIHF"
+    },
+    {
       "country": "Чехия",
       "flag": "🇨🇿",
       "name": "Tipsport Extraliga",
@@ -460,7 +482,7 @@ window.EHA_LEAGUES = {
       "name": "CHL (WHL / OHL / QMJHL)",
       "url": null,
       "tier": 1,
-      "age": "senior",
+      "age": "junior",
       "open": "low",
       "note": "Юниорская лига, вход только через ежегодный импорт-драфт CHL",
       "imports": "Максимум 3 легионера в составе; подписать контракт вне драфта нельзя"
@@ -482,7 +504,7 @@ window.EHA_LEAGUES = {
       "name": "NCDC",
       "url": null,
       "tier": 2,
-      "age": "senior",
+      "age": "junior",
       "open": "mid",
       "note": "Юниорская лига без взносов за обучение, расширяется на всю страну",
       "imports": "Не санкционирована USA Hockey, но растёт быстрее конкурентов"

@@ -1,0 +1,50 @@
+name: Uptime check
+
+# Scheduled ping of the live site's health endpoint. Everything else (errors,
+# crashes) only reaches console.error -> the systemd journal, so nobody finds
+# out about an outage unless they check by hand. This is the cheap floor: no
+# new accounts or infrastructure, just a periodic curl with a Telegram alert
+# on failure, using the same bot the site already notifies applications with.
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Ping /api/health
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check site health
+        id: health
+        run: |
+          set +e
+          BODY=$(curl -fsS --max-time 15 https://eurohockeyagency.com/api/health)
+          CURL_STATUS=$?
+          set -e
+          if [ $CURL_STATUS -ne 0 ]; then
+            echo "curl failed with exit code $CURL_STATUS"
+            echo "failure_reason=request to /api/health failed (exit $CURL_STATUS) — site may be down" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          if ! node -e 'const h=JSON.parse(process.argv[1]); process.exit(h.ok===true?0:1)' "$BODY"; then
+            echo "$BODY"
+            echo "failure_reason=/api/health responded but ok was not true: $BODY" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          echo "site healthy"
+
+      - name: Alert on Telegram
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "Telegram secrets not configured; skipping alert (the red workflow run is the fallback signal)."
+            exit 0
+          fi
+          TEXT="EHA site check failed: ${{ steps.health.outputs.failure_reason || 'see workflow run' }}"
+          curl -fsS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${TEXT}" > /dev/null
