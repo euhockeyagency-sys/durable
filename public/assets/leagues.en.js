@@ -4,11 +4,34 @@ window.EHA_LEAGUES = {
   "windowNote": "The main roster-building window is April–August; targeted additions are possible during the season.",
   "leagues": [
     {
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "name": "J20 Nationell",
+      "url": "/leagues/sweden-j20",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "U20: ages 19–20; normally players born 2007–2008 in 2026/27",
+      "imports": "Under-18 players need home-federation documents, representation and education"
+    },
+    {
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "name": "J18 Nationell",
+      "url": "/leagues/sweden-j18",
+      "tier": 2,
+      "age": "junior",
+      "open": "mid",
+      "note": "U18: ages 17–18; normally players born 2009–2010 in 2026/27",
+      "imports": "Under-18 players need home-federation documents, representation and education"
+    },
+    {
       "country": "Finland",
       "flag": "🇫🇮",
       "name": "Liiga",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "low",
       "note": "Top division, elite level",
       "imports": "Few spots; only clear upgrades are signed"
@@ -19,6 +42,7 @@ window.EHA_LEAGUES = {
       "name": "Mestis",
       "url": "/leagues/finland-mestis",
       "tier": 2,
+      "age": "senior",
       "open": "mid",
       "note": "Second division, professional",
       "imports": "A lower bar than Liiga"
@@ -29,6 +53,7 @@ window.EHA_LEAGUES = {
       "name": "Suomi-sarja",
       "url": "/leagues/finland-suomi-sarja",
       "tier": 3,
+      "age": "senior",
       "open": "mid",
       "note": "Third level, semi-pro",
       "imports": "Good for entry and adapting"
@@ -39,6 +64,7 @@ window.EHA_LEAGUES = {
       "name": "SHL",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "low",
       "note": "One of the strongest leagues in the world",
       "imports": "Only a handful of imports make it"
@@ -49,6 +75,7 @@ window.EHA_LEAGUES = {
       "name": "HockeyAllsvenskan",
       "url": "/leagues/sweden-hockeyallsvenskan",
       "tier": 2,
+      "age": "senior",
       "open": "low",
       "note": "Second division, strong and fully professional",
       "imports": "Competition is high"
@@ -59,6 +86,7 @@ window.EHA_LEAGUES = {
       "name": "HockeyEttan",
       "url": "/leagues/sweden-hockeyettan",
       "tier": 3,
+      "age": "senior",
       "open": "mid",
       "note": "Third level, regional groups",
       "imports": "A realistic entry point; an EU passport matters a lot"
@@ -69,6 +97,7 @@ window.EHA_LEAGUES = {
       "name": "Tipsport Extraliga",
       "url": "/leagues/czechia-tipsport-extraliga",
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Top division, one of Europe's strongest",
       "imports": "Import spots are limited"
@@ -79,6 +108,7 @@ window.EHA_LEAGUES = {
       "name": "Maxa liga",
       "url": "/leagues/czechia-maxa-liga",
       "tier": 2,
+      "age": "senior",
       "open": "mid",
       "note": "Second division, professional",
       "imports": "A common entry point for imports"
@@ -89,6 +119,7 @@ window.EHA_LEAGUES = {
       "name": "2. liga",
       "url": null,
       "tier": 3,
+      "age": "senior",
       "open": "mid",
       "note": "Third level, regional groups",
       "imports": "Entry and adapting to the market"
@@ -99,6 +130,7 @@ window.EHA_LEAGUES = {
       "name": "Tipos extraliga",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Top division",
       "imports": "Imports allowed, with a seasonal limit"
@@ -109,6 +141,7 @@ window.EHA_LEAGUES = {
       "name": "1. liga",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Second division",
       "imports": "Fairly open to imports"
@@ -119,6 +152,7 @@ window.EHA_LEAGUES = {
       "name": "DEL",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Top division, strong budgets",
       "imports": "A notable number of foreigners; high competition"
@@ -129,6 +163,7 @@ window.EHA_LEAGUES = {
       "name": "DEL2",
       "url": "/leagues/germany-del2",
       "tier": 2,
+      "age": "senior",
       "open": "mid",
       "note": "Second division, professional",
       "imports": "A realistic entry point"
@@ -139,6 +174,7 @@ window.EHA_LEAGUES = {
       "name": "Oberliga",
       "url": "/leagues/germany-oberliga",
       "tier": 3,
+      "age": "senior",
       "open": "high",
       "note": "Third level, North and South groups",
       "imports": "Many teams — openings appear most often here"
@@ -149,6 +185,7 @@ window.EHA_LEAGUES = {
       "name": "ICE Hockey League",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "International top division",
       "imports": "Many imports, but the level is high"
@@ -159,9 +196,21 @@ window.EHA_LEAGUES = {
       "name": "Alps Hockey League",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "International league (Austria, Italy, Slovenia)",
       "imports": "Open to foreigners"
+    },
+    {
+      "country": "Slovenia",
+      "flag": "🇸🇮",
+      "name": "Alps Hockey League",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "high",
+      "note": "Top clubs play not at home but in Austria's ICE Hockey League and Alps Hockey League",
+      "imports": "Up to 4 imports on the game sheet; an import goalie takes up 2 of those spots"
     },
     {
       "country": "Poland",
@@ -169,6 +218,7 @@ window.EHA_LEAGUES = {
       "name": "PHL",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Top division, a growing market",
       "imports": "Clubs traditionally sign imports actively"
@@ -179,6 +229,7 @@ window.EHA_LEAGUES = {
       "name": "1 liga",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Second division",
       "imports": "Entry and adapting"
@@ -189,6 +240,7 @@ window.EHA_LEAGUES = {
       "name": "Eliteserien",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Top division",
       "imports": "An import limit applies"
@@ -199,6 +251,7 @@ window.EHA_LEAGUES = {
       "name": "1. divisjon",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Second division",
       "imports": "A more accessible entry"
@@ -209,6 +262,7 @@ window.EHA_LEAGUES = {
       "name": "Metal Ligaen",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Top division",
       "imports": "Imports allowed, spots limited"
@@ -219,6 +273,7 @@ window.EHA_LEAGUES = {
       "name": "1. division",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Second division",
       "imports": "Easier to enter"
@@ -229,6 +284,7 @@ window.EHA_LEAGUES = {
       "name": "National League",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "low",
       "note": "One of the strongest and richest leagues",
       "imports": "An extremely high bar"
@@ -239,6 +295,7 @@ window.EHA_LEAGUES = {
       "name": "Swiss League",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "low",
       "note": "Second division, strong level",
       "imports": "Tough selection"
@@ -249,6 +306,7 @@ window.EHA_LEAGUES = {
       "name": "MyHockey League",
       "url": null,
       "tier": 3,
+      "age": "senior",
       "open": "mid",
       "note": "Third level, semi-pro",
       "imports": "Entry is possible"
@@ -259,6 +317,7 @@ window.EHA_LEAGUES = {
       "name": "Ligue Magnus",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Top division",
       "imports": "An import limit applies"
@@ -269,6 +328,7 @@ window.EHA_LEAGUES = {
       "name": "Division 1",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Second division",
       "imports": "An accessible entry"
@@ -279,6 +339,7 @@ window.EHA_LEAGUES = {
       "name": "Division 2",
       "url": null,
       "tier": 3,
+      "age": "senior",
       "open": "high",
       "note": "Third level",
       "imports": "Open, lower level"
@@ -289,6 +350,7 @@ window.EHA_LEAGUES = {
       "name": "Erste Liga",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "International league (Hungary, Romania)",
       "imports": "Open to imports"
@@ -299,6 +361,7 @@ window.EHA_LEAGUES = {
       "name": "EIHL",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Top division, many foreigners",
       "imports": "Work visas required"
@@ -309,6 +372,7 @@ window.EHA_LEAGUES = {
       "name": "NIHL National",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Second level",
       "imports": "More accessible, but lower level"
@@ -319,6 +383,7 @@ window.EHA_LEAGUES = {
       "name": "IHL Serie A",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Top division",
       "imports": "Open to imports"
@@ -329,9 +394,32 @@ window.EHA_LEAGUES = {
       "name": "Optibet hokeja līga",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Top division",
       "imports": "Fairly open, a familiar style of hockey"
+    },
+    {
+      "country": "Lithuania",
+      "flag": "🇱🇹",
+      "name": "Optibet hokeja līga",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "high",
+      "note": "No strong domestic league — Lithuanian clubs play in Latvia's Optibet hokeja līga",
+      "imports": "Same market as Latvia; an EU passport removes the visa question"
+    },
+    {
+      "country": "Estonia",
+      "flag": "🇪🇪",
+      "name": "Unibet Hokiliiga",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "high",
+      "note": "Top division, 5–6 clubs",
+      "imports": "No import limit; an IIHF transfer card is required"
     },
     {
       "country": "Netherlands",
@@ -339,6 +427,7 @@ window.EHA_LEAGUES = {
       "name": "BeNe League",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Joint league of the Netherlands and Belgium",
       "imports": "Open, mid-level"
@@ -349,9 +438,10 @@ window.EHA_LEAGUES = {
       "name": "Liga Nacional",
       "url": null,
       "tier": 1,
-      "open": "high",
-      "note": "Top division, a small market",
-      "imports": "Open, modest level"
+      "age": "senior",
+      "open": "mid",
+      "note": "Top division, 9 clubs, semi-professional",
+      "imports": "Max 4 non-Spain-eligible players per game; an import goalie takes up 2 of those spots"
     },
     {
       "country": "Romania",
@@ -359,9 +449,76 @@ window.EHA_LEAGUES = {
       "name": "Liga Naţională",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Top division",
       "imports": "Open to imports"
+    },
+    {
+      "country": "Kazakhstan",
+      "flag": "🇰🇿",
+      "name": "Pro Hokei Ligasy",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "mid",
+      "note": "Top division, 10 clubs (Barys plays separately in the KHL)",
+      "imports": "Since 2025 clubs cannot fund imports from state/quasi-state budgets — openness now depends on each club's private backing"
+    },
+    {
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "name": "Asia League Ice Hockey",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "low",
+      "note": "Only 6 clubs in the whole league (5 Japanese + 1 South Korean)",
+      "imports": "2–3 imports per club — roughly 10–15 spots in the entire country"
+    },
+    {
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "name": "CHL (WHL / OHL / QMJHL)",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "low",
+      "note": "Major junior league, entry only through the annual CHL Import Draft",
+      "imports": "Max 3 imports per roster; you cannot sign outside the draft"
+    },
+    {
+      "country": "USA",
+      "flag": "🇺🇸",
+      "name": "NCAA Division I",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "mid",
+      "note": "College hockey, no formal cap on international players",
+      "imports": "A paid pro contract before enrolling can jeopardise amateur eligibility — confirm with the NCAA Eligibility Center"
+    },
+    {
+      "country": "USA",
+      "flag": "🇺🇸",
+      "name": "NCDC",
+      "url": null,
+      "tier": 2,
+      "age": "senior",
+      "open": "mid",
+      "note": "Tuition-free junior league, expanding nationwide",
+      "imports": "Not USA Hockey-sanctioned, but growing faster than rival leagues"
+    },
+    {
+      "country": "USA",
+      "flag": "🇺🇸",
+      "name": "ECHL",
+      "url": null,
+      "tier": 2,
+      "age": "senior",
+      "open": "low",
+      "note": "AA-level pro league, 30 clubs (including one in Canada)",
+      "imports": "No formal import quota, but competition is high and a P-1 visa is required"
     }
   ]
 };

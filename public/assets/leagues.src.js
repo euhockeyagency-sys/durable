@@ -4,8 +4,9 @@
    /ligi-evropy (RU) and /european-leagues (EN). Edit here, then run:
      node scripts/build-leagues.js
    IMPORTANT: data is a guideline. Import limits and rules change season to
-   season and must be verified for the current year. tier: 1 top division, 2
-   second, 3 third. open: how realistic a spot is for an import — high|mid|low. */
+   season and must be verified for the current year. age defaults to senior;
+   junior records use age: "junior". tier: 1 top division, 2 second, 3 third.
+   open: how realistic a spot is for an import — high|mid|low. */
 window.EHA_LEAGUES_SRC = {
   updated: { ru: "июль 2026", en: "July 2026" },
   windowNote: {
@@ -13,6 +14,8 @@ window.EHA_LEAGUES_SRC = {
     en: "The main roster-building window is April–August; targeted additions are possible during the season."
   },
   leagues: [
+    { age: "junior", country: { ru: "Швеция", en: "Sweden" }, flag: "🇸🇪", name: "J20 Nationell", url: { ru: "/ligi/shvetsiya-j20", en: "/leagues/sweden-j20" }, tier: 1, open: "mid", note: { ru: "U20: 19–20 лет; базово игроки 2007–2008 г.р. в сезоне 2026/27", en: "U20: ages 19–20; normally players born 2007–2008 in 2026/27" }, imports: { ru: "До 18 лет нужны документы федерации, представитель и образование", en: "Under-18 players need home-federation documents, representation and education" } },
+    { age: "junior", country: { ru: "Швеция", en: "Sweden" }, flag: "🇸🇪", name: "J18 Nationell", url: { ru: "/ligi/shvetsiya-j18", en: "/leagues/sweden-j18" }, tier: 2, open: "mid", note: { ru: "U18: 17–18 лет; базово игроки 2009–2010 г.р. в сезоне 2026/27", en: "U18: ages 17–18; normally players born 2009–2010 in 2026/27" }, imports: { ru: "До 18 лет нужны документы федерации, представитель и образование", en: "Under-18 players need home-federation documents, representation and education" } },
     { country: { ru: "Финляндия", en: "Finland" }, flag: "🇫🇮", name: "Liiga", tier: 1, open: "low", note: { ru: "Высший дивизион, элитный уровень", en: "Top division, elite level" }, imports: { ru: "Мест мало, берут только явное усиление", en: "Few spots; only clear upgrades are signed" } },
     { country: { ru: "Финляндия", en: "Finland" }, flag: "🇫🇮", name: "Mestis", url: { ru: "/ligi/finlyandiya-mestis", en: "/leagues/finland-mestis" }, tier: 2, open: "mid", note: { ru: "Второй дивизион, профессиональный", en: "Second division, professional" }, imports: { ru: "Требования мягче, чем в Liiga", en: "A lower bar than Liiga" } },
     { country: { ru: "Финляндия", en: "Finland" }, flag: "🇫🇮", name: "Suomi-sarja", url: { ru: "/ligi/finlyandiya-suomi-sarja", en: "/leagues/finland-suomi-sarja" }, tier: 3, open: "mid", note: { ru: "Третий уровень, полупрофессиональный", en: "Third level, semi-pro" }, imports: { ru: "Подходит для входа и адаптации", en: "Good for entry and adapting" } },
@@ -34,6 +37,8 @@ window.EHA_LEAGUES_SRC = {
 
     { country: { ru: "Австрия", en: "Austria" }, flag: "🇦🇹", name: "ICE Hockey League", tier: 1, open: "mid", note: { ru: "Международный высший дивизион", en: "International top division" }, imports: { ru: "Легионеров много, но и уровень высокий", en: "Many imports, but the level is high" } },
     { country: { ru: "Австрия", en: "Austria" }, flag: "🇦🇹", name: "Alps Hockey League", tier: 2, open: "high", note: { ru: "Международная лига (Австрия, Италия, Словения)", en: "International league (Austria, Italy, Slovenia)" }, imports: { ru: "Открыта для иностранцев", en: "Open to foreigners" } },
+
+    { country: { ru: "Словения", en: "Slovenia" }, flag: "🇸🇮", name: "Alps Hockey League", tier: 1, open: "high", note: { ru: "Топ-клубы играют не дома, а в австрийских ICE Hockey League и Alps Hockey League", en: "Top clubs play not at home but in Austria's ICE Hockey League and Alps Hockey League" }, imports: { ru: "До 4 легионеров в заявке на матч, вратарь-легионер занимает 2 места", en: "Up to 4 imports on the game sheet; an import goalie takes up 2 of those spots" } },
 
     { country: { ru: "Польша", en: "Poland" }, flag: "🇵🇱", name: "PHL", tier: 1, open: "high", note: { ru: "Высший дивизион, растущий рынок", en: "Top division, a growing market" }, imports: { ru: "Клубы традиционно активно берут легионеров", en: "Clubs traditionally sign imports actively" } },
     { country: { ru: "Польша", en: "Poland" }, flag: "🇵🇱", name: "1 liga", tier: 2, open: "high", note: { ru: "Второй дивизион", en: "Second division" }, imports: { ru: "Вход и адаптация", en: "Entry and adapting" } },
@@ -60,11 +65,23 @@ window.EHA_LEAGUES_SRC = {
     { country: { ru: "Италия", en: "Italy" }, flag: "🇮🇹", name: "IHL Serie A", tier: 1, open: "high", note: { ru: "Высший дивизион", en: "Top division" }, imports: { ru: "Открыт для легионеров", en: "Open to imports" } },
 
     { country: { ru: "Латвия", en: "Latvia" }, flag: "🇱🇻", name: "Optibet hokeja līga", tier: 1, open: "high", note: { ru: "Высший дивизион", en: "Top division" }, imports: { ru: "Достаточно открыта, знакомый стиль хоккея", en: "Fairly open, a familiar style of hockey" } },
+    { country: { ru: "Литва", en: "Lithuania" }, flag: "🇱🇹", name: "Optibet hokeja līga", tier: 1, open: "high", note: { ru: "Своей сильной лиги нет — литовские клубы играют в латвийской Optibet hokeja līga", en: "No strong domestic league — Lithuanian clubs play in Latvia's Optibet hokeja līga" }, imports: { ru: "Тот же рынок, что и Латвия; паспорт ЕС снимает визовые вопросы", en: "Same market as Latvia; an EU passport removes the visa question" } },
+    { country: { ru: "Эстония", en: "Estonia" }, flag: "🇪🇪", name: "Unibet Hokiliiga", tier: 1, open: "high", note: { ru: "Высший дивизион, 5–6 клубов", en: "Top division, 5–6 clubs" }, imports: { ru: "Лимита на легионеров нет; нужен трансферный сертификат IIHF", en: "No import limit; an IIHF transfer card is required" } },
 
     { country: { ru: "Нидерланды", en: "Netherlands" }, flag: "🇳🇱", name: "BeNe League", tier: 1, open: "high", note: { ru: "Совместная лига Нидерландов и Бельгии", en: "Joint league of the Netherlands and Belgium" }, imports: { ru: "Открыта, уровень средний", en: "Open, mid-level" } },
 
-    { country: { ru: "Испания", en: "Spain" }, flag: "🇪🇸", name: "Liga Nacional", tier: 1, open: "high", note: { ru: "Высший дивизион, небольшой рынок", en: "Top division, a small market" }, imports: { ru: "Открыт, уровень невысокий", en: "Open, modest level" } },
+    { country: { ru: "Испания", en: "Spain" }, flag: "🇪🇸", name: "Liga Nacional", tier: 1, open: "mid", note: { ru: "Высший дивизион, 9 клубов, полу-профессиональный", en: "Top division, 9 clubs, semi-professional" }, imports: { ru: "Максимум 4 «неселектируемых» игрока на матч, вратарь-легионер занимает 2 места", en: "Max 4 non-Spain-eligible players per game; an import goalie takes up 2 of those spots" } },
 
-    { country: { ru: "Румыния", en: "Romania" }, flag: "🇷🇴", name: "Liga Naţională", tier: 1, open: "high", note: { ru: "Высший дивизион", en: "Top division" }, imports: { ru: "Открыт для легионеров", en: "Open to imports" } }
+    { country: { ru: "Румыния", en: "Romania" }, flag: "🇷🇴", name: "Liga Naţională", tier: 1, open: "high", note: { ru: "Высший дивизион", en: "Top division" }, imports: { ru: "Открыт для легионеров", en: "Open to imports" } },
+
+    { country: { ru: "Казахстан", en: "Kazakhstan" }, flag: "🇰🇿", name: "Pro Hokei Ligasy", tier: 1, open: "mid", note: { ru: "Высший дивизион, 10 клубов (Barys отдельно играет в КХЛ)", en: "Top division, 10 clubs (Barys plays separately in the KHL)" }, imports: { ru: "С 2025 года бюджетным клубам запрещено финансировать легионеров — открытость зависит от конкретного клуба", en: "Since 2025 clubs cannot fund imports from state/quasi-state budgets — openness now depends on each club's private backing" } },
+
+    { country: { ru: "Япония", en: "Japan" }, flag: "🇯🇵", name: "Asia League Ice Hockey", tier: 1, open: "low", note: { ru: "Всего 6 клубов на всю лигу (5 японских + 1 южнокорейский)", en: "Only 6 clubs in the whole league (5 Japanese + 1 South Korean)" }, imports: { ru: "2–3 легионера на клуб — по всей стране всего около 10–15 мест", en: "2–3 imports per club — roughly 10–15 spots in the entire country" } },
+
+    { country: { ru: "Канада", en: "Canada" }, flag: "🇨🇦", name: "CHL (WHL / OHL / QMJHL)", tier: 1, open: "low", note: { ru: "Юниорская лига, вход только через ежегодный импорт-драфт CHL", en: "Major junior league, entry only through the annual CHL Import Draft" }, imports: { ru: "Максимум 3 легионера в составе; подписать контракт вне драфта нельзя", en: "Max 3 imports per roster; you cannot sign outside the draft" } },
+
+    { country: { ru: "США", en: "USA" }, flag: "🇺🇸", name: "NCAA Division I", tier: 1, open: "mid", note: { ru: "Студенческий хоккей, формального лимита легионеров нет", en: "College hockey, no formal cap on international players" }, imports: { ru: "Оплачиваемый контракт в про-лиге до поступления может лишить любительского статуса — уточняйте в NCAA Eligibility Center", en: "A paid pro contract before enrolling can jeopardise amateur eligibility — confirm with the NCAA Eligibility Center" } },
+    { country: { ru: "США", en: "USA" }, flag: "🇺🇸", name: "NCDC", tier: 2, open: "mid", note: { ru: "Юниорская лига без взносов за обучение, расширяется на всю страну", en: "Tuition-free junior league, expanding nationwide" }, imports: { ru: "Не санкционирована USA Hockey, но растёт быстрее конкурентов", en: "Not USA Hockey-sanctioned, but growing faster than rival leagues" } },
+    { country: { ru: "США", en: "USA" }, flag: "🇺🇸", name: "ECHL", tier: 2, open: "low", note: { ru: "Профессиональная лига уровня AA, 30 клубов (включая один в Канаде)", en: "AA-level pro league, 30 clubs (including one in Canada)" }, imports: { ru: "Формальной квоты на легионеров нет, но конкуренция высокая и нужна виза P-1", en: "No formal import quota, but competition is high and a P-1 visa is required" } }
   ]
 };

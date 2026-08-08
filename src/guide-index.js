@@ -28,6 +28,7 @@ const GUIDES = [
   { en: "hockey-in-romania", ru: "hokkej-v-rumynii", cat: "countries", title: { en: "Hockey in Romania", ru: "Хоккей в Румынии" } },
   { en: "hockey-in-slovakia", ru: "hokkej-v-slovakii", cat: "countries", title: { en: "Hockey in Slovakia", ru: "Хоккей в Словакии" } },
   { en: "hockey-in-slovenia", ru: "hokkej-v-slovenii", cat: "countries", title: { en: "Hockey in Slovenia", ru: "Хоккей в Словении" } },
+  { en: "hockey-in-spain", ru: "hokkej-v-ispanii", cat: "countries", title: { en: "Hockey in Spain", ru: "Хоккей в Испании" } },
   { en: "hockey-in-sweden", ru: "hokkej-v-shvecii", cat: "countries", title: { en: "Hockey in Sweden", ru: "Хоккей в Швеции" } },
   { en: "hockey-in-switzerland", ru: "hokkej-v-shvejcarii", cat: "countries", title: { en: "Hockey in Switzerland", ru: "Хоккей в Швейцарии" } },
   { en: "hockey-in-united-kingdom", ru: "hokkej-v-velikobritanii", cat: "countries", title: { en: "Hockey in United Kingdom", ru: "Хоккей в Великобритании" } },

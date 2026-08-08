@@ -4,11 +4,34 @@ window.EHA_LEAGUES = {
   "windowNote": "Основное окно комплектования — апрель–август; точечные усиления возможны по ходу сезона.",
   "leagues": [
     {
+      "country": "Швеция",
+      "flag": "🇸🇪",
+      "name": "J20 Nationell",
+      "url": "/ligi/shvetsiya-j20",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "U20: 19–20 лет; базово игроки 2007–2008 г.р. в сезоне 2026/27",
+      "imports": "До 18 лет нужны документы федерации, представитель и образование"
+    },
+    {
+      "country": "Швеция",
+      "flag": "🇸🇪",
+      "name": "J18 Nationell",
+      "url": "/ligi/shvetsiya-j18",
+      "tier": 2,
+      "age": "junior",
+      "open": "mid",
+      "note": "U18: 17–18 лет; базово игроки 2009–2010 г.р. в сезоне 2026/27",
+      "imports": "До 18 лет нужны документы федерации, представитель и образование"
+    },
+    {
       "country": "Финляндия",
       "flag": "🇫🇮",
       "name": "Liiga",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "low",
       "note": "Высший дивизион, элитный уровень",
       "imports": "Мест мало, берут только явное усиление"
@@ -19,6 +42,7 @@ window.EHA_LEAGUES = {
       "name": "Mestis",
       "url": "/ligi/finlyandiya-mestis",
       "tier": 2,
+      "age": "senior",
       "open": "mid",
       "note": "Второй дивизион, профессиональный",
       "imports": "Требования мягче, чем в Liiga"
@@ -29,6 +53,7 @@ window.EHA_LEAGUES = {
       "name": "Suomi-sarja",
       "url": "/ligi/finlyandiya-suomi-sarja",
       "tier": 3,
+      "age": "senior",
       "open": "mid",
       "note": "Третий уровень, полупрофессиональный",
       "imports": "Подходит для входа и адаптации"
@@ -39,6 +64,7 @@ window.EHA_LEAGUES = {
       "name": "SHL",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "low",
       "note": "Один из сильнейших чемпионатов мира",
       "imports": "Попадают единицы"
@@ -49,6 +75,7 @@ window.EHA_LEAGUES = {
       "name": "HockeyAllsvenskan",
       "url": "/ligi/shvetsiya-hockeyallsvenskan",
       "tier": 2,
+      "age": "senior",
       "open": "low",
       "note": "Второй дивизион, сильный и полностью профессиональный",
       "imports": "Конкуренция высокая"
@@ -59,6 +86,7 @@ window.EHA_LEAGUES = {
       "name": "HockeyEttan",
       "url": "/ligi/shvetsiya-hockeyettan",
       "tier": 3,
+      "age": "senior",
       "open": "mid",
       "note": "Третий уровень, региональные группы",
       "imports": "Реальная точка входа; паспорт ЕС решает многое"
@@ -69,6 +97,7 @@ window.EHA_LEAGUES = {
       "name": "Tipsport Extraliga",
       "url": "/ligi/chehiya-tipsport-extraliga",
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Высший дивизион, один из сильнейших в Европе",
       "imports": "Легионерские места ограничены"
@@ -79,6 +108,7 @@ window.EHA_LEAGUES = {
       "name": "Maxa liga",
       "url": "/ligi/chehiya-maxa-liga",
       "tier": 2,
+      "age": "senior",
       "open": "mid",
       "note": "Второй дивизион, профессиональный",
       "imports": "Частая точка входа для легионера"
@@ -89,6 +119,7 @@ window.EHA_LEAGUES = {
       "name": "2. liga",
       "url": null,
       "tier": 3,
+      "age": "senior",
       "open": "mid",
       "note": "Третий уровень, региональные группы",
       "imports": "Вход и адаптация к рынку"
@@ -99,6 +130,7 @@ window.EHA_LEAGUES = {
       "name": "Tipos extraliga",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Высший дивизион",
       "imports": "Легионеры есть, лимит по сезону"
@@ -109,6 +141,7 @@ window.EHA_LEAGUES = {
       "name": "1. liga",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Второй дивизион",
       "imports": "Достаточно открыта для легионеров"
@@ -119,6 +152,7 @@ window.EHA_LEAGUES = {
       "name": "DEL",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Высший дивизион, сильные бюджеты",
       "imports": "Заметное число иностранцев, конкуренция высокая"
@@ -129,6 +163,7 @@ window.EHA_LEAGUES = {
       "name": "DEL2",
       "url": "/ligi/germaniya-del2",
       "tier": 2,
+      "age": "senior",
       "open": "mid",
       "note": "Второй дивизион, профессиональный",
       "imports": "Реальная точка входа"
@@ -139,6 +174,7 @@ window.EHA_LEAGUES = {
       "name": "Oberliga",
       "url": "/ligi/germaniya-oberliga",
       "tier": 3,
+      "age": "senior",
       "open": "high",
       "note": "Третий уровень, группы Север и Юг",
       "imports": "Много команд — чаще всего появляются вакансии"
@@ -149,6 +185,7 @@ window.EHA_LEAGUES = {
       "name": "ICE Hockey League",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Международный высший дивизион",
       "imports": "Легионеров много, но и уровень высокий"
@@ -159,9 +196,21 @@ window.EHA_LEAGUES = {
       "name": "Alps Hockey League",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Международная лига (Австрия, Италия, Словения)",
       "imports": "Открыта для иностранцев"
+    },
+    {
+      "country": "Словения",
+      "flag": "🇸🇮",
+      "name": "Alps Hockey League",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "high",
+      "note": "Топ-клубы играют не дома, а в австрийских ICE Hockey League и Alps Hockey League",
+      "imports": "До 4 легионеров в заявке на матч, вратарь-легионер занимает 2 места"
     },
     {
       "country": "Польша",
@@ -169,6 +218,7 @@ window.EHA_LEAGUES = {
       "name": "PHL",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Высший дивизион, растущий рынок",
       "imports": "Клубы традиционно активно берут легионеров"
@@ -179,6 +229,7 @@ window.EHA_LEAGUES = {
       "name": "1 liga",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Второй дивизион",
       "imports": "Вход и адаптация"
@@ -189,6 +240,7 @@ window.EHA_LEAGUES = {
       "name": "Eliteserien",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Высший дивизион",
       "imports": "Лимит на легионеров"
@@ -199,6 +251,7 @@ window.EHA_LEAGUES = {
       "name": "1. divisjon",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Второй дивизион",
       "imports": "Более доступный вход"
@@ -209,6 +262,7 @@ window.EHA_LEAGUES = {
       "name": "Metal Ligaen",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Высший дивизион",
       "imports": "Легионеры есть, места ограничены"
@@ -219,6 +273,7 @@ window.EHA_LEAGUES = {
       "name": "1. division",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Второй дивизион",
       "imports": "Доступнее для входа"
@@ -229,6 +284,7 @@ window.EHA_LEAGUES = {
       "name": "National League",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "low",
       "note": "Один из самых сильных и богатых чемпионатов",
       "imports": "Крайне высокая планка"
@@ -239,6 +295,7 @@ window.EHA_LEAGUES = {
       "name": "Swiss League",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "low",
       "note": "Второй дивизион, сильный уровень",
       "imports": "Жёсткий отбор"
@@ -249,6 +306,7 @@ window.EHA_LEAGUES = {
       "name": "MyHockey League",
       "url": null,
       "tier": 3,
+      "age": "senior",
       "open": "mid",
       "note": "Третий уровень, полупрофессиональный",
       "imports": "Возможен вход"
@@ -259,6 +317,7 @@ window.EHA_LEAGUES = {
       "name": "Ligue Magnus",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Высший дивизион",
       "imports": "Лимит на легионеров"
@@ -269,6 +328,7 @@ window.EHA_LEAGUES = {
       "name": "Division 1",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Второй дивизион",
       "imports": "Доступный вход"
@@ -279,6 +339,7 @@ window.EHA_LEAGUES = {
       "name": "Division 2",
       "url": null,
       "tier": 3,
+      "age": "senior",
       "open": "high",
       "note": "Третий уровень",
       "imports": "Открыт, уровень ниже"
@@ -289,6 +350,7 @@ window.EHA_LEAGUES = {
       "name": "Erste Liga",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Международная лига (Венгрия, Румыния)",
       "imports": "Открыта для легионеров"
@@ -299,6 +361,7 @@ window.EHA_LEAGUES = {
       "name": "EIHL",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "mid",
       "note": "Высший дивизион, много иностранцев",
       "imports": "Нужны рабочие визы"
@@ -309,6 +372,7 @@ window.EHA_LEAGUES = {
       "name": "NIHL National",
       "url": null,
       "tier": 2,
+      "age": "senior",
       "open": "high",
       "note": "Второй уровень",
       "imports": "Доступнее, но ниже уровнем"
@@ -319,6 +383,7 @@ window.EHA_LEAGUES = {
       "name": "IHL Serie A",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Высший дивизион",
       "imports": "Открыт для легионеров"
@@ -329,9 +394,32 @@ window.EHA_LEAGUES = {
       "name": "Optibet hokeja līga",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Высший дивизион",
       "imports": "Достаточно открыта, знакомый стиль хоккея"
+    },
+    {
+      "country": "Литва",
+      "flag": "🇱🇹",
+      "name": "Optibet hokeja līga",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "high",
+      "note": "Своей сильной лиги нет — литовские клубы играют в латвийской Optibet hokeja līga",
+      "imports": "Тот же рынок, что и Латвия; паспорт ЕС снимает визовые вопросы"
+    },
+    {
+      "country": "Эстония",
+      "flag": "🇪🇪",
+      "name": "Unibet Hokiliiga",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "high",
+      "note": "Высший дивизион, 5–6 клубов",
+      "imports": "Лимита на легионеров нет; нужен трансферный сертификат IIHF"
     },
     {
       "country": "Нидерланды",
@@ -339,6 +427,7 @@ window.EHA_LEAGUES = {
       "name": "BeNe League",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Совместная лига Нидерландов и Бельгии",
       "imports": "Открыта, уровень средний"
@@ -349,9 +438,10 @@ window.EHA_LEAGUES = {
       "name": "Liga Nacional",
       "url": null,
       "tier": 1,
-      "open": "high",
-      "note": "Высший дивизион, небольшой рынок",
-      "imports": "Открыт, уровень невысокий"
+      "age": "senior",
+      "open": "mid",
+      "note": "Высший дивизион, 9 клубов, полу-профессиональный",
+      "imports": "Максимум 4 «неселектируемых» игрока на матч, вратарь-легионер занимает 2 места"
     },
     {
       "country": "Румыния",
@@ -359,9 +449,76 @@ window.EHA_LEAGUES = {
       "name": "Liga Naţională",
       "url": null,
       "tier": 1,
+      "age": "senior",
       "open": "high",
       "note": "Высший дивизион",
       "imports": "Открыт для легионеров"
+    },
+    {
+      "country": "Казахстан",
+      "flag": "🇰🇿",
+      "name": "Pro Hokei Ligasy",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "mid",
+      "note": "Высший дивизион, 10 клубов (Barys отдельно играет в КХЛ)",
+      "imports": "С 2025 года бюджетным клубам запрещено финансировать легионеров — открытость зависит от конкретного клуба"
+    },
+    {
+      "country": "Япония",
+      "flag": "🇯🇵",
+      "name": "Asia League Ice Hockey",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "low",
+      "note": "Всего 6 клубов на всю лигу (5 японских + 1 южнокорейский)",
+      "imports": "2–3 легионера на клуб — по всей стране всего около 10–15 мест"
+    },
+    {
+      "country": "Канада",
+      "flag": "🇨🇦",
+      "name": "CHL (WHL / OHL / QMJHL)",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "low",
+      "note": "Юниорская лига, вход только через ежегодный импорт-драфт CHL",
+      "imports": "Максимум 3 легионера в составе; подписать контракт вне драфта нельзя"
+    },
+    {
+      "country": "США",
+      "flag": "🇺🇸",
+      "name": "NCAA Division I",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "mid",
+      "note": "Студенческий хоккей, формального лимита легионеров нет",
+      "imports": "Оплачиваемый контракт в про-лиге до поступления может лишить любительского статуса — уточняйте в NCAA Eligibility Center"
+    },
+    {
+      "country": "США",
+      "flag": "🇺🇸",
+      "name": "NCDC",
+      "url": null,
+      "tier": 2,
+      "age": "senior",
+      "open": "mid",
+      "note": "Юниорская лига без взносов за обучение, расширяется на всю страну",
+      "imports": "Не санкционирована USA Hockey, но растёт быстрее конкурентов"
+    },
+    {
+      "country": "США",
+      "flag": "🇺🇸",
+      "name": "ECHL",
+      "url": null,
+      "tier": 2,
+      "age": "senior",
+      "open": "low",
+      "note": "Профессиональная лига уровня AA, 30 клубов (включая один в Канаде)",
+      "imports": "Формальной квоты на легионеров нет, но конкуренция высокая и нужна виза P-1"
     }
   ]
 };
