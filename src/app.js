@@ -478,12 +478,18 @@ function securityHeaders(_req, res, next) {
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-    "Content-Security-Policy": "default-src 'self'; img-src 'self' data: https://mc.yandex.ru https://*.mc.yandex.ru; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://mc.yandex.ru; frame-src https://challenges.cloudflare.com https://mc.yandex.ru; connect-src 'self' https://challenges.cloudflare.com https://mc.yandex.ru https://*.mc.yandex.ru https://mc.yandex.md; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    "Content-Security-Policy": "default-src 'self'; img-src 'self' data: https://mc.yandex.ru https://*.mc.yandex.ru https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://mc.yandex.ru https://www.googletagmanager.com; frame-src https://challenges.cloudflare.com https://mc.yandex.ru; connect-src 'self' https://challenges.cloudflare.com https://mc.yandex.ru https://*.mc.yandex.ru https://mc.yandex.md https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
   });
   next();
 }
 
 const YANDEX_METRIKA = `<!-- Yandex.Metrika counter --><script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110889446','ym');ym(110889446,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",accurateTrackBounce:true,trackLinks:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/110889446" style="position:absolute;left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->`;
+
+// Consent Mode v2: analytics_storage defaults to denied and is only granted
+// once the cookie banner in site.js reads an accepted choice from
+// localStorage — either just now or from a previous visit. Must run before
+// the gtag.js script tag so no event fires with an undefined consent state.
+const GOOGLE_ANALYTICS = `<!-- Google tag (gtag.js) --><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{analytics_storage:'denied'});</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-TPD2W77SZ3"></script><script>gtag('js',new Date());gtag('config','G-TPD2W77SZ3');</script><!-- /Google tag -->`;
 
 // Cache-busting: CSS/JS are cached for a week, so their URLs must change when the
 // file changes — otherwise returning visitors keep the stale version for days.
@@ -660,7 +666,7 @@ function renderBody(data, extension, config, context) {
     const hubItemList = (logicalPath === "/european-leagues" || logicalPath === "/ligi-evropy")
       ? leaguesItemList(locale, baseUrl) : "";
     html = html.replace(`<link rel="stylesheet" href="${stylesheetHref}">`, deferredStylesheet)
-      .replace("</head>", `${fontPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${hubItemList}${YANDEX_METRIKA}</head>`);
+      .replace("</head>", `${fontPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${hubItemList}${YANDEX_METRIKA}${GOOGLE_ANALYTICS}</head>`);
   }
   return Buffer.from(html);
 }

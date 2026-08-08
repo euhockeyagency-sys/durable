@@ -331,6 +331,14 @@ test("loads Turnstile when captcha is configured", async () => {
   assert.match(response.text, /class="cf-turnstile" data-sitekey="test-site-key"/);
 });
 
+test("loads Google Analytics with consent defaulted to denied", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app).get("/").expect(200);
+  assert.match(response.text, /gtag\('consent','default',\{analytics_storage:'denied'\}\)/);
+  assert.match(response.text, /googletagmanager\.com\/gtag\/js\?id=G-TPD2W77SZ3/);
+  assert.match(response.headers["content-security-policy"], /https:\/\/www\.googletagmanager\.com/);
+});
+
 test("stores a valid club request in Supabase and notification audits", async () => {
   const services = serviceMock();
   const app = createApp({ config: config({ clubRequestConfigured: true }), services, now: () => new Date("2026-07-23T12:00:00Z") });

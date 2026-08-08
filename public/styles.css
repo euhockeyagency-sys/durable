@@ -342,6 +342,12 @@ footer .footer-links a:hover{color:#72b8ff;transform:translateX(4px)}
 footer small{grid-column:1/-1;border-top:1px solid var(--line);padding-top:22px;display:flex;justify-content:space-between;gap:20px}
 .whatsapp-float{position:fixed;z-index:60;right:24px;bottom:24px;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#20b866;color:white;box-shadow:0 12px 38px rgba(16,175,91,.35);font-weight:900;font-size:12px;letter-spacing:-.04em}
 .whatsapp-float:before{content:'';position:absolute;inset:-5px;border:1px solid rgba(55,224,139,.5);border-radius:50%;animation:pulse 2.5s infinite}
+.cookie-banner{position:fixed;z-index:70;left:16px;right:16px;bottom:16px;max-width:640px;margin:0 auto;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:20px 24px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px}
+.cookie-banner p{margin:0;flex:1 1 260px;font-size:13px;line-height:1.5;color:var(--muted)}
+.cookie-actions{display:flex;gap:10px;flex-shrink:0}
+.cookie-actions button{min-height:40px;padding:0 18px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;border:0;border-radius:6px;cursor:pointer}
+.cookie-actions [data-cookie="accept"]{background:var(--blue);color:#fff}
+.cookie-actions [data-cookie="decline"]{background:transparent;color:var(--white);border:1px solid var(--line)}
 @keyframes pulse{70%,100%{transform:scale(1.38);opacity:0}
 }
 
@@ -519,6 +525,8 @@ footer small{display:block}
 .related-head .text-link{margin-top:18px}
 .article-body p,.article-body li{font-size:16px}
 .whatsapp-float{width:52px;height:52px;right:16px;bottom:16px}
+.cookie-banner{padding:16px 18px;gap:12px}
+.cookie-actions{width:100%;justify-content:flex-end}
 .reading-progress{top:0}
 }
 
