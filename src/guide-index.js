@@ -53,12 +53,16 @@ const GUIDES = [
   { en: "documents-for-junior-and-senior-hockey-players", ru: "dokumenty-dlya-yuniora-i-vzroslogo-hokkeista", cat: "documents", title: { en: "Documents for junior and senior hockey players in Europe", ru: "Документы для юниора и взрослого хоккеиста в Европе" } },
   { en: "eu-vs-non-eu-passport-in-hockey", ru: "pasport-es-i-non-eu-v-hokkee", cat: "documents", title: { en: "EU vs non-EU passport in European hockey", ru: "Паспорт ЕС и non-EU в европейском хоккее" } },
   { en: "travelling-for-a-hockey-tryout", ru: "poezdka-na-prosmotr-v-hokkejnyj-klub", cat: "documents", title: { en: "Travelling for a hockey tryout", ru: "Поездка на просмотр в хоккейный клуб" } }
+  ,{ en: "what-to-ask-a-hockey-agent-before-a-trial", ru: "chto-sprosit-u-hokkejnogo-agenta-pered-prosmotrom", cat: "clubs", title: { en: "What to ask a hockey agent before a trial", ru: "Что спросить у хоккейного агента перед просмотром" } }
+  ,{ en: "running-an-efficient-trial-checklist", ru: "kak-provesti-effektivnyj-prosmotr", cat: "clubs", title: { en: "Running an efficient trial: a checklist", ru: "Эффективный просмотр: чек-лист для клуба" } }
+  ,{ en: "what-game-video-tells-a-club", ru: "chto-igrovoe-video-pokazyvaet-klubu", cat: "clubs", title: { en: "What game video tells a club", ru: "Что игровое видео показывает клубу" } }
 ];
 
 const CATEGORIES = [
   { id: "countries", label: { en: "By country", ru: "По странам" } },
   { id: "process", label: { en: "Getting signed", ru: "Как попасть в клуб" } },
   { id: "documents", label: { en: "Documents, visas & transfers", ru: "Документы, визы и трансферы" } }
+  ,{ id: "clubs", label: { en: "For clubs", ru: "Клубам" } }
 ];
 
 const COPY = {
@@ -109,7 +113,13 @@ function relatedGuides(logicalPath, locale) {
   if (!match) return "";
   const self = GUIDES.find((g) => g.en === match[1] || g.ru === match[1]);
   if (!self) return "";
-  const siblings = GUIDES.filter((g) => g.cat === self.cat);
+  // Keep the small club track connected to the existing club-facing video
+  // guide as well, so every new club guide receives three automatic inbound
+  // related links without misclassifying that player-preparation article in
+  // the hub.
+  const siblings = (self.cat === "clubs" || self.en === "hockey-video-for-clubs")
+    ? GUIDES.filter((g) => g.cat === "clubs" || g.en === "hockey-video-for-clubs")
+    : GUIDES.filter((g) => g.cat === self.cat);
   const index = siblings.indexOf(self);
   const picks = [];
   for (let step = 1; step <= RELATED_COUNT && picks.length < siblings.length - 1; step += 1) {
