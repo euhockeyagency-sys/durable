@@ -455,6 +455,39 @@ window.EHA_LEAGUES = {
       "imports": "Open to imports"
     },
     {
+      "country": "Serbia",
+      "flag": "🇷🇸",
+      "name": "International Hockey League (IHL)",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "mid",
+      "note": "Regional league with Slovenia and Croatia; a separate domestic championship also exists",
+      "imports": "Import limit not confirmed — verify with the league"
+    },
+    {
+      "country": "Croatia",
+      "flag": "🇭🇷",
+      "name": "IHL / Alps Hockey League",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "mid",
+      "note": "Clubs play across two regional leagues and a domestic championship",
+      "imports": "Import limit not confirmed — verify with the league"
+    },
+    {
+      "country": "Belgium",
+      "flag": "🇧🇪",
+      "name": "CEHL (бывшая BeNe League)",
+      "url": null,
+      "tier": 1,
+      "age": "senior",
+      "open": "mid",
+      "note": "Joint league with the Netherlands and Germany, being restructured as of 2026",
+      "imports": "Import limit is being reduced — verify with the league before acting"
+    },
+    {
       "country": "Kazakhstan",
       "flag": "🇰🇿",
       "name": "Pro Hokei Ligasy",

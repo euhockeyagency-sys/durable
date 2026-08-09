@@ -9,7 +9,9 @@
 
 const GUIDES = [
   { en: "hockey-in-austria", ru: "hokkej-v-avstrii", cat: "countries", title: { en: "Hockey in Austria", ru: "Хоккей в Австрии" } },
+  { en: "hockey-in-belgium", ru: "hokkej-v-belgii", cat: "countries", title: { en: "Hockey in Belgium", ru: "Хоккей в Бельгии" } },
   { en: "hockey-in-canada", ru: "hokkej-v-kanade", cat: "countries", title: { en: "Hockey in Canada", ru: "Хоккей в Канаде" } },
+  { en: "hockey-in-croatia", ru: "hokkej-v-horvatii", cat: "countries", title: { en: "Hockey in Croatia", ru: "Хоккей в Хорватии" } },
   { en: "hockey-in-czechia", ru: "hokkej-v-chexii", cat: "countries", title: { en: "Hockey in Czechia", ru: "Хоккей в Чехии" } },
   { en: "hockey-in-denmark", ru: "hokkej-v-danii", cat: "countries", title: { en: "Hockey in Denmark", ru: "Хоккей в Дании" } },
   { en: "hockey-in-estonia", ru: "hokkej-v-estonii", cat: "countries", title: { en: "Hockey in Estonia", ru: "Хоккей в Эстонии" } },
@@ -28,6 +30,7 @@ const GUIDES = [
   { en: "hockey-in-romania", ru: "hokkej-v-rumynii", cat: "countries", title: { en: "Hockey in Romania", ru: "Хоккей в Румынии" } },
   { en: "hockey-in-slovakia", ru: "hokkej-v-slovakii", cat: "countries", title: { en: "Hockey in Slovakia", ru: "Хоккей в Словакии" } },
   { en: "hockey-in-slovenia", ru: "hokkej-v-slovenii", cat: "countries", title: { en: "Hockey in Slovenia", ru: "Хоккей в Словении" } },
+  { en: "hockey-in-serbia", ru: "hokkej-v-serbii", cat: "countries", title: { en: "Hockey in Serbia", ru: "Хоккей в Сербии" } },
   { en: "hockey-in-spain", ru: "hokkej-v-ispanii", cat: "countries", title: { en: "Hockey in Spain", ru: "Хоккей в Испании" } },
   { en: "hockey-in-sweden", ru: "hokkej-v-shvecii", cat: "countries", title: { en: "Hockey in Sweden", ru: "Хоккей в Швеции" } },
   { en: "hockey-in-switzerland", ru: "hokkej-v-shvejcarii", cat: "countries", title: { en: "Hockey in Switzerland", ru: "Хоккей в Швейцарии" } },
@@ -38,6 +41,7 @@ const GUIDES = [
   { en: "hockey-resume-for-european-clubs", ru: "hokkejnoe-rezyume", cat: "process", title: { en: "Hockey resume for a European club", ru: "Хоккейное резюме для европейского клуба" } },
   { en: "hockey-video-for-clubs", ru: "video-dlya-kluba", cat: "process", title: { en: "Highlights or a full game?", ru: "Хайлайты или полная игра?" } },
   { en: "how-a-hockey-agent-works", ru: "kak-rabotaet-hokkejnyj-agent", cat: "process", title: { en: "How a hockey agent works", ru: "Как работает хоккейный агент" } },
+  { en: "hockey-player-salaries-in-europe", ru: "zarplaty-hokkeistov-v-evrope", cat: "process", title: { en: "Hockey player salaries in Europe", ru: "Зарплаты хоккеистов в Европе" } },
   { en: "hockey-agent-in-germany", ru: "hokkejnyj-agent-v-germanii", cat: "process", title: { en: "Hockey agent in Germany", ru: "Хоккейный агент в Германии" } },
   { en: "hockey-agent-in-sweden", ru: "hokkejnyj-agent-v-shvecii", cat: "process", title: { en: "Hockey agent in Sweden", ru: "Хоккейный агент в Швеции" } },
   { en: "how-to-verify-a-hockey-club-offer", ru: "kak-proverit-predlozhenie-hokkejnogo-kluba", cat: "process", title: { en: "How to verify a hockey club offer", ru: "Как проверить предложение хоккейного клуба" } },

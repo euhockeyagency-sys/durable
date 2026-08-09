@@ -181,6 +181,14 @@ const ARTICLES = [
   { slug: "ssha-ncaa-division-i", category: "Лиги · США", title: "NCAA Division I" },
   { slug: "usa-echl", category: "Leagues · United States", title: "ECHL", domain: "eurohockeyagency.com" },
   { slug: "ssha-echl", category: "Лиги · США", title: "ECHL" },
+  { slug: "hockey-in-serbia", category: "Countries · Serbia", title: "Hockey in Serbia: leagues, work permits and transfers", domain: "eurohockeyagency.com" },
+  { slug: "hokkej-v-serbii", category: "Страны · Сербия", title: "Хоккей в Сербии: лиги, работа и трансферы" },
+  { slug: "hockey-in-croatia", category: "Countries · Croatia", title: "Hockey in Croatia: leagues, EU rules and transfers", domain: "eurohockeyagency.com" },
+  { slug: "hokkej-v-horvatii", category: "Страны · Хорватия", title: "Хоккей в Хорватии: лиги, ЕС и трансферы" },
+  { slug: "hockey-in-belgium", category: "Countries · Belgium", title: "Hockey in Belgium: leagues, work permits and transfers", domain: "eurohockeyagency.com" },
+  { slug: "hokkej-v-belgii", category: "Страны · Бельгия", title: "Хоккей в Бельгии: лиги, работа и трансферы" },
+  { slug: "hockey-player-salaries-in-europe", category: "Reference", title: "Hockey player salaries in Europe", domain: "eurohockeyagency.com" },
+  { slug: "zarplaty-hokkeistov-v-evrope", category: "Справочник", title: "Зарплаты хоккеистов в Европе" },
 ];
 
 // Division pyramids: listed top (strongest) to bottom (entry level).
