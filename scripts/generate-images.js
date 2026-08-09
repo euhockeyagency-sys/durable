@@ -169,6 +169,18 @@ const ARTICLES = [
   { slug: "vengriya-andersen-liga", category: "Лиги · Венгрия", title: "Andersen Liga" },
   { slug: "vengriya-erste-liga", category: "Лиги · Венгрия", title: "Erste Liga" },
   { slug: "work-visa-for-hockey-player", category: "Documents", title: "Work visa for a hockey player", domain: "eurohockeyagency.com" },
+  { slug: "estonia-unibet-hokiliiga", category: "Leagues · Estonia", title: "Unibet Hokiliiga", domain: "eurohockeyagency.com" },
+  { slug: "estoniya-unibet-hokiliiga", category: "Лиги · Эстония", title: "Unibet Hokiliiga" },
+  { slug: "spain-liga-nacional", category: "Leagues · Spain", title: "Liga Nacional", domain: "eurohockeyagency.com" },
+  { slug: "ispaniya-liga-nacional", category: "Лиги · Испания", title: "Liga Nacional" },
+  { slug: "kazakhstan-pro-hokei-ligasy", category: "Leagues · Kazakhstan", title: "Pro Hokei Ligasy", domain: "eurohockeyagency.com" },
+  { slug: "kazahstan-pro-hokei-ligasy", category: "Лиги · Казахстан", title: "Pro Hokei Ligasy" },
+  { slug: "japan-asia-league", category: "Leagues · Japan", title: "Asia League Ice Hockey", domain: "eurohockeyagency.com" },
+  { slug: "yaponiya-asia-league", category: "Лиги · Япония", title: "Asia League Ice Hockey" },
+  { slug: "usa-ncaa-division-i", category: "Leagues · United States", title: "NCAA Division I", domain: "eurohockeyagency.com" },
+  { slug: "ssha-ncaa-division-i", category: "Лиги · США", title: "NCAA Division I" },
+  { slug: "usa-echl", category: "Leagues · United States", title: "ECHL", domain: "eurohockeyagency.com" },
+  { slug: "ssha-echl", category: "Лиги · США", title: "ECHL" },
 ];
 
 // Division pyramids: listed top (strongest) to bottom (entry level).

@@ -101,7 +101,13 @@ const PAGES = [
   { ru: "/ligi/italiya-ihl-serie-a", en: "/leagues/italy-ihl-serie-a" },
   { ru: "/ligi/italiya-italian-hockey-league", en: "/leagues/italy-italian-hockey-league" },
   { ru: "/ligi/latviya-1-liga", en: "/leagues/latvia-1-liga" },
-  { ru: "/ligi/latviya-optibet-hokeja-liga", en: "/leagues/latvia-optibet-hokeja-liga" }
+  { ru: "/ligi/latviya-optibet-hokeja-liga", en: "/leagues/latvia-optibet-hokeja-liga" },
+  { ru: "/ligi/estoniya-unibet-hokiliiga", en: "/leagues/estonia-unibet-hokiliiga" },
+  { ru: "/ligi/ispaniya-liga-nacional", en: "/leagues/spain-liga-nacional" },
+  { ru: "/ligi/kazahstan-pro-hokei-ligasy", en: "/leagues/kazakhstan-pro-hokei-ligasy" },
+  { ru: "/ligi/yaponiya-asia-league", en: "/leagues/japan-asia-league" },
+  { ru: "/ligi/ssha-ncaa-division-i", en: "/leagues/usa-ncaa-division-i" },
+  { ru: "/ligi/ssha-echl", en: "/leagues/usa-echl" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
