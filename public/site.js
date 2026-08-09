@@ -15,8 +15,9 @@ const wa=document.createElement('a');wa.className='whatsapp-float';wa.href='http
 // must be re-applied every load, since the default resets on each page.
 const CONSENT_KEY='eha-cookie-consent';
 const updateConsent=granted=>{if(typeof gtag==='function')gtag('consent','update',{analytics_storage:granted?'granted':'denied'})};
+const initYandex=()=>{if(typeof ym==='function')ym(110889446,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:'dataLayer',accurateTrackBounce:true,trackLinks:true})};
 const consent=localStorage.getItem(CONSENT_KEY);
-if(consent==='granted')updateConsent(true);
+if(consent==='granted'){updateConsent(true);initYandex()}
 else if(!consent){
   const banner=document.createElement('div');banner.className='cookie-banner';banner.setAttribute('role','dialog');banner.setAttribute('aria-label','Cookies');
   banner.innerHTML=`<p>${T.cookieText}</p><div class="cookie-actions"><button type="button" class="btn ghost" data-cookie="decline">${T.cookieDecline}</button><button type="button" class="btn primary" data-cookie="accept">${T.cookieAccept}</button></div>`;
@@ -26,6 +27,7 @@ else if(!consent){
     if(!choice)return;
     localStorage.setItem(CONSENT_KEY,choice==='accept'?'granted':'denied');
     updateConsent(choice==='accept');
+    if(choice==='accept')initYandex();
     banner.remove();
   });
 }

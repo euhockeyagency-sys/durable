@@ -487,7 +487,11 @@ function securityHeaders(_req, res, next) {
   next();
 }
 
-const YANDEX_METRIKA = `<!-- Yandex.Metrika counter --><script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110889446','ym');ym(110889446,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",accurateTrackBounce:true,trackLinks:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/110889446" style="position:absolute;left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->`;
+// Loader only — the ym(...,'init',...) call that actually starts tracking
+// lives in site.js, gated by the same cookie-consent choice GA4 uses below,
+// so both trackers are consent-gated the same way. No noscript pixel either,
+// for the same reason: it can't be gated without JS, and GA4 ships none.
+const YANDEX_METRIKA = `<!-- Yandex.Metrika counter --><script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110889446','ym');</script><!-- /Yandex.Metrika counter -->`;
 
 // Consent Mode v2: analytics_storage defaults to denied and is only granted
 // once the cookie banner in site.js reads an accepted choice from
@@ -521,6 +525,18 @@ function coverFor(config, logicalPath, baseUrl) {
   return slug && coverCache.has(`${slug}.jpg`)
     ? `${baseUrl}/assets/covers/${slug}.jpg`
     : `${baseUrl}/assets/og-cover.jpg`;
+}
+
+// The .webp (not the .jpg used for og:image) is what the on-page <img> in
+// .article-figure actually requests, and is almost always that page's LCP
+// element — so it's the file worth preloading, when one exists.
+function coverWebpFor(config, logicalPath) {
+  if (!coverCache) {
+    try { coverCache = new Set(fs.readdirSync(path.join(config.publicDir, "assets", "covers"))); }
+    catch { coverCache = new Set(); }
+  }
+  const slug = logicalPath.split("/").filter(Boolean).pop();
+  return slug && coverCache.has(`${slug}.webp`) ? `/assets/covers/${slug}.webp` : null;
 }
 
 function htmlEscape(value) {
@@ -658,7 +674,17 @@ function renderBody(data, extension, config, context) {
     const isArticle = logicalPath.startsWith("/guides/");
     const social = buildSocialTags(html, pageUrl, isArticle, coverFor(config, logicalPath, baseUrl), locale);
     const fontSubset = locale === "ru" ? "oswald-500-cyrillic" : "oswald-500-latin";
-    const fontPreload = `<link rel="preload" as="font" href="/assets/fonts/${fontSubset}.woff2" type="font/woff2" crossorigin>`;
+    const bodyFontSubset = locale === "ru" ? "manrope-400-cyrillic" : "manrope-400-latin";
+    const fontPreload = `<link rel="preload" as="font" href="/assets/fonts/${fontSubset}.woff2" type="font/woff2" crossorigin><link rel="preload" as="font" href="/assets/fonts/${bodyFontSubset}.woff2" type="font/woff2" crossorigin>`;
+    const isCoverPage = logicalPath.startsWith("/guides/") || logicalPath.startsWith("/leagues/") || logicalPath.startsWith("/ligi/");
+    const coverWebp = isCoverPage ? coverWebpFor(config, logicalPath) : null;
+    let coverPreload = "";
+    if (coverWebp) {
+      coverPreload = `<link rel="preload" as="image" fetchpriority="high" href="${coverWebp}">`;
+      // Preloading an image still marked loading="lazy" is a wasted, contradictory
+      // hint, so the first (hero) article-figure image loses lazy-loading here.
+      html = html.replace(/(<figure class="article-figure"><img[^>]*?)\s*loading="lazy"([^>]*>)/, '$1 fetchpriority="high"$2');
+    }
     const criticalCss = readCriticalCss(config);
     const stylesheetHref = `/styles.css?v=${assetVersion(config, "styles.css")}`;
     const deferredStylesheet = `<link rel="preload" href="${stylesheetHref}" as="style"><link rel="stylesheet" href="${stylesheetHref}" media="print" onload="this.media='all'">` +
@@ -670,7 +696,7 @@ function renderBody(data, extension, config, context) {
     const hubItemList = (logicalPath === "/european-leagues" || logicalPath === "/ligi-evropy")
       ? leaguesItemList(locale, baseUrl) : "";
     html = html.replace(`<link rel="stylesheet" href="${stylesheetHref}">`, deferredStylesheet)
-      .replace("</head>", `${fontPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${hubItemList}${YANDEX_METRIKA}${GOOGLE_ANALYTICS}</head>`);
+      .replace("</head>", `${fontPreload}${coverPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${hubItemList}${YANDEX_METRIKA}${GOOGLE_ANALYTICS}</head>`);
   }
   return Buffer.from(html);
 }
@@ -815,7 +841,7 @@ function buildFeed(config, locale = "ru") {
   const base = baseUrlFor(locale, config);
   const meta = FEED_META[locale] || FEED_META.ru;
   const items = collectPages(config.publicDir, locale)
-    .filter(({ slug }) => slug.startsWith("/guides/"))
+    .filter(({ slug }) => slug.startsWith("/guides/") || slug.startsWith("/leagues/") || slug.startsWith("/ligi/"))
     .sort((a, b) => b.mtime - a.mtime)
     .map(({ slug, mtime, file }) => {
       let html = "";
