@@ -111,7 +111,11 @@ const PAGES = [
   { ru: "/ligi/kazahstan-pro-hokei-ligasy", en: "/leagues/kazakhstan-pro-hokei-ligasy" },
   { ru: "/ligi/yaponiya-asia-league", en: "/leagues/japan-asia-league" },
   { ru: "/ligi/ssha-ncaa-division-i", en: "/leagues/usa-ncaa-division-i" },
-  { ru: "/ligi/ssha-echl", en: "/leagues/usa-echl" }
+  { ru: "/ligi/ssha-echl", en: "/leagues/usa-echl" },
+  { ru: "/ligi/finlyandiya-yuniorskij-hokkej", en: "/leagues/finland-junior-hockey" },
+  { ru: "/ligi/chehiya-yuniorskij-hokkej", en: "/leagues/czechia-junior-hockey" },
+  { ru: "/ligi/shvejcariya-yuniorskij-hokkej", en: "/leagues/switzerland-junior-hockey" },
+  { ru: "/ligi/germaniya-yuniorskij-hokkej", en: "/leagues/germany-junior-hockey" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));

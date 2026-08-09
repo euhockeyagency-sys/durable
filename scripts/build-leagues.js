@@ -39,6 +39,18 @@ const esc = (s) => String(s)
   .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
   .replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 
+// Junior league names carry their own age band (U17/U18/U20/U21) inconsistently —
+// some spell it out in digits, some use national terms with no digit at all
+// (e.g. Czech "staršího dorostu" ~ U18, "juniorů" ~ U20). Check explicit
+// digits first, then known non-numeric terms, before falling back to U20.
+function juniorAgeLabel(name) {
+  const explicit = name.match(/\b[UJ](1[4-9]|2[0-1])\b/);
+  if (explicit) return `U${explicit[1]}`;
+  if (/dorostu|dorostenc/i.test(name)) return "U18";
+  if (/juniorů|juniorov|junior/i.test(name)) return "U20";
+  return "U20";
+}
+
 // Evaluate the source file in a sandbox that only provides `window`.
 const sandbox = { window: {} };
 new Function("window", fs.readFileSync(SRC, "utf8"))(sandbox.window);
@@ -83,7 +95,7 @@ function renderRows(locale, age = "senior") {
       `<td data-label="${esc(labels.country)}">${esc(l.flag)} ${esc(country)}</td>` +
       `<td data-label="${esc(labels.league)}">${leagueName}</td>` +
       `<td data-label="${esc(labels.level)}"><span class="tier tier-${l.tier}">${l.tier}</span></td>` +
-      `<td data-label="${esc(labels.age)}">${l.age === "junior" ? (/18/.test(l.name) ? "U18" : "U20") : "Senior"}</td>` +
+      `<td data-label="${esc(labels.age)}">${l.age === "junior" ? juniorAgeLabel(l.name) : "Senior"}</td>` +
       `<td data-label="${esc(labels.profile)}">${esc(l.note[locale])}</td>` +
       `<td data-label="${esc(labels.imports)}"><span class="open open-${esc(l.open)}">${esc(open)}</span> ${esc(l.imports[locale])}</td>` +
       `</tr>`;

@@ -189,6 +189,14 @@ const ARTICLES = [
   { slug: "hokkej-v-belgii", category: "Страны · Бельгия", title: "Хоккей в Бельгии: лиги, работа и трансферы" },
   { slug: "hockey-player-salaries-in-europe", category: "Reference", title: "Hockey player salaries in Europe", domain: "eurohockeyagency.com" },
   { slug: "zarplaty-hokkeistov-v-evrope", category: "Справочник", title: "Зарплаты хоккеистов в Европе" },
+  { slug: "finland-junior-hockey", category: "Junior leagues · Finland", title: "Finland U20/U18 SM-sarja", domain: "eurohockeyagency.com" },
+  { slug: "finlyandiya-yuniorskij-hokkej", category: "Юниорские лиги · Финляндия", title: "Финляндия U20/U18 SM-sarja" },
+  { slug: "czechia-junior-hockey", category: "Junior leagues · Czechia", title: "Czechia junior hockey", domain: "eurohockeyagency.com" },
+  { slug: "chehiya-yuniorskij-hokkej", category: "Юниорские лиги · Чехия", title: "Юниорский хоккей Чехии" },
+  { slug: "switzerland-junior-hockey", category: "Junior leagues · Switzerland", title: "Switzerland U21/U18-Elit", domain: "eurohockeyagency.com" },
+  { slug: "shvejcariya-yuniorskij-hokkej", category: "Юниорские лиги · Швейцария", title: "Швейцария U21/U18-Elit" },
+  { slug: "germany-junior-hockey", category: "Junior leagues · Germany", title: "Germany U20/U17 Division", domain: "eurohockeyagency.com" },
+  { slug: "germaniya-yuniorskij-hokkej", category: "Юниорские лиги · Германия", title: "Германия U20/U17 Division" },
 ];
 
 // Division pyramids: listed top (strongest) to bottom (entry level).

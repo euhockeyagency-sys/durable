@@ -37,6 +37,28 @@ window.EHA_LEAGUES = {
       "imports": "Good for entry and adapting"
     },
     {
+      "country": "Finland",
+      "flag": "🇫🇮",
+      "name": "U20 SM-sarja",
+      "url": "/leagues/finland-junior-hockey",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Top junior division, U20",
+      "imports": "A permanent transfer under 18 requires the guardian to relocate with the player"
+    },
+    {
+      "country": "Finland",
+      "flag": "🇫🇮",
+      "name": "U18 SM-sarja",
+      "url": "/leagues/finland-junior-hockey",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Top junior division, U18",
+      "imports": "A permanent transfer under 18 requires the guardian to relocate with the player"
+    },
+    {
       "country": "Sweden",
       "flag": "🇸🇪",
       "name": "SHL",
@@ -125,6 +147,28 @@ window.EHA_LEAGUES = {
       "imports": "Entry and adapting to the market"
     },
     {
+      "country": "Czechia",
+      "flag": "🇨🇿",
+      "name": "Extraliga juniorů",
+      "url": "/leagues/czechia-junior-hockey",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Top junior division, U20",
+      "imports": "No extra Czech-specific restriction found for an under-18 transfer"
+    },
+    {
+      "country": "Czechia",
+      "flag": "🇨🇿",
+      "name": "Extraliga staršího dorostu",
+      "url": "/leagues/czechia-junior-hockey",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Top junior division, U18",
+      "imports": "No extra Czech-specific restriction found for an under-18 transfer"
+    },
+    {
       "country": "Slovakia",
       "flag": "🇸🇰",
       "name": "Tipos extraliga",
@@ -178,6 +222,28 @@ window.EHA_LEAGUES = {
       "open": "high",
       "note": "Third level, North and South groups",
       "imports": "Many teams — openings appear most often here"
+    },
+    {
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "name": "U20 Division I",
+      "url": "/leagues/germany-junior-hockey",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Top junior division, U20",
+      "imports": "No transfer card needed under 18 — a simplified process"
+    },
+    {
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "name": "U17 Division I",
+      "url": "/leagues/germany-junior-hockey",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Top junior division, U17",
+      "imports": "No transfer card needed under 18 — a simplified process"
     },
     {
       "country": "Austria",
@@ -310,6 +376,28 @@ window.EHA_LEAGUES = {
       "open": "mid",
       "note": "Third level, semi-pro",
       "imports": "Entry is possible"
+    },
+    {
+      "country": "Switzerland",
+      "flag": "🇨🇭",
+      "name": "U21-Elit",
+      "url": "/leagues/switzerland-junior-hockey",
+      "tier": 1,
+      "age": "junior",
+      "open": "low",
+      "note": "Top junior division, U21",
+      "imports": "No transfer card needed under 18; a serious work-permit caution applies for non-EU/EFTA"
+    },
+    {
+      "country": "Switzerland",
+      "flag": "🇨🇭",
+      "name": "U18-Elit",
+      "url": "/leagues/switzerland-junior-hockey",
+      "tier": 1,
+      "age": "junior",
+      "open": "low",
+      "note": "Top junior division, U18",
+      "imports": "No transfer card needed under 18; a serious work-permit caution applies for non-EU/EFTA"
     },
     {
       "country": "France",

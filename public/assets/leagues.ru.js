@@ -37,6 +37,28 @@ window.EHA_LEAGUES = {
       "imports": "Подходит для входа и адаптации"
     },
     {
+      "country": "Финляндия",
+      "flag": "🇫🇮",
+      "name": "U20 SM-sarja",
+      "url": "/ligi/finlyandiya-yuniorskij-hokkej",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Верхний юниорский дивизион, до 20 лет",
+      "imports": "Постоянный трансфер до 18 лет требует переезда опекуна вместе с игроком"
+    },
+    {
+      "country": "Финляндия",
+      "flag": "🇫🇮",
+      "name": "U18 SM-sarja",
+      "url": "/ligi/finlyandiya-yuniorskij-hokkej",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Верхний юниорский дивизион, до 18 лет",
+      "imports": "Постоянный трансфер до 18 лет требует переезда опекуна вместе с игроком"
+    },
+    {
       "country": "Швеция",
       "flag": "🇸🇪",
       "name": "SHL",
@@ -125,6 +147,28 @@ window.EHA_LEAGUES = {
       "imports": "Вход и адаптация к рынку"
     },
     {
+      "country": "Чехия",
+      "flag": "🇨🇿",
+      "name": "Extraliga juniorů",
+      "url": "/ligi/chehiya-yuniorskij-hokkej",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Верхний юниорский дивизион, до 20 лет",
+      "imports": "Дополнительных чешских ограничений на трансфер до 18 лет не найдено"
+    },
+    {
+      "country": "Чехия",
+      "flag": "🇨🇿",
+      "name": "Extraliga staršího dorostu",
+      "url": "/ligi/chehiya-yuniorskij-hokkej",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Верхний юниорский дивизион, до 18 лет",
+      "imports": "Дополнительных чешских ограничений на трансфер до 18 лет не найдено"
+    },
+    {
       "country": "Словакия",
       "flag": "🇸🇰",
       "name": "Tipos extraliga",
@@ -178,6 +222,28 @@ window.EHA_LEAGUES = {
       "open": "high",
       "note": "Третий уровень, группы Север и Юг",
       "imports": "Много команд — чаще всего появляются вакансии"
+    },
+    {
+      "country": "Германия",
+      "flag": "🇩🇪",
+      "name": "U20 Division I",
+      "url": "/ligi/germaniya-yuniorskij-hokkej",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Верхний юниорский дивизион, до 20 лет",
+      "imports": "Трансферная карта до 18 лет не нужна — упрощённая процедура"
+    },
+    {
+      "country": "Германия",
+      "flag": "🇩🇪",
+      "name": "U17 Division I",
+      "url": "/ligi/germaniya-yuniorskij-hokkej",
+      "tier": 1,
+      "age": "junior",
+      "open": "mid",
+      "note": "Верхний юниорский дивизион, до 17 лет",
+      "imports": "Трансферная карта до 18 лет не нужна — упрощённая процедура"
     },
     {
       "country": "Австрия",
@@ -310,6 +376,28 @@ window.EHA_LEAGUES = {
       "open": "mid",
       "note": "Третий уровень, полупрофессиональный",
       "imports": "Возможен вход"
+    },
+    {
+      "country": "Швейцария",
+      "flag": "🇨🇭",
+      "name": "U21-Elit",
+      "url": "/ligi/shvejcariya-yuniorskij-hokkej",
+      "tier": 1,
+      "age": "junior",
+      "open": "low",
+      "note": "Верхний юниорский дивизион, до 21 года",
+      "imports": "До 18 лет трансферная карта не нужна; для не-ЕС/ЕАСТ есть серьёзные ограничения на работу"
+    },
+    {
+      "country": "Швейцария",
+      "flag": "🇨🇭",
+      "name": "U18-Elit",
+      "url": "/ligi/shvejcariya-yuniorskij-hokkej",
+      "tier": 1,
+      "age": "junior",
+      "open": "low",
+      "note": "Верхний юниорский дивизион, до 18 лет",
+      "imports": "До 18 лет трансферная карта не нужна; для не-ЕС/ЕАСТ есть серьёзные ограничения на работу"
     },
     {
       "country": "Франция",
