@@ -124,7 +124,9 @@ const PAGES = [
   { ru: "/guides/chehiya-tipsport-extraliga-vs-shvejcariya-national-league", en: "/guides/czechia-tipsport-extraliga-vs-switzerland-national-league" },
   { ru: "/guides/chehiya-maxa-liga-vs-slovakiya-tipos-shl", en: "/guides/czechia-maxa-liga-vs-slovakia-tipos-shl" },
   { ru: "/guides/shvetsiya-hockeyallsvenskan-vs-finlyandiya-mestis", en: "/guides/sweden-hockeyallsvenskan-vs-finland-mestis" },
-  { ru: "/guides/germaniya-del2-vs-chehiya-maxa-liga", en: "/guides/germany-del2-vs-czechia-maxa-liga" }
+  { ru: "/guides/germaniya-del2-vs-chehiya-maxa-liga", en: "/guides/germany-del2-vs-czechia-maxa-liga" },
+  { ru: "/novosti", en: "/news" },
+  { ru: "/novosti/ncaa-razreshila-igrokam-chl-sohranyat-dopusk-division-i", en: "/news/ncaa-allows-chl-players-to-keep-division-i-eligibility" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
