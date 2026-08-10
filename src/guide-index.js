@@ -61,6 +61,7 @@ const GUIDES = [
   ,{ en: "czechia-maxa-liga-vs-slovakia-tipos-shl", ru: "chehiya-maxa-liga-vs-slovakiya-tipos-shl", cat: "comparisons", title: { en: "Maxa liga vs TIPOS SHL", ru: "Maxa liga vs TIPOS SHL" } }
   ,{ en: "sweden-hockeyallsvenskan-vs-finland-mestis", ru: "shvetsiya-hockeyallsvenskan-vs-finlyandiya-mestis", cat: "comparisons", title: { en: "HockeyAllsvenskan vs Mestis", ru: "HockeyAllsvenskan vs Mestis" } }
   ,{ en: "germany-del2-vs-czechia-maxa-liga", ru: "germaniya-del2-vs-chehiya-maxa-liga", cat: "comparisons", title: { en: "DEL2 vs Maxa liga", ru: "DEL2 vs Maxa liga" } }
+  ,{ en: "hockey-academies-in-north-america", ru: "hokkejnye-akademii-severnoj-ameriki", cat: "process", title: { en: "Hockey academies in North America", ru: "Хоккейные академии Северной Америки" } }
 ];
 
 const CATEGORIES = [

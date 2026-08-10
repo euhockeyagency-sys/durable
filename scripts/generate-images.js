@@ -214,6 +214,8 @@ const ARTICLES = [
   { slug: "germaniya-del2-vs-chehiya-maxa-liga", category: "Сравнение лиг", title: "DEL2 vs Maxa liga" },
   { slug: "hockey-in-belarus", category: "Countries · Belarus", title: "Hockey in Belarus", domain: "eurohockeyagency.com" },
   { slug: "hokkej-v-belarusi", category: "Страны · Беларусь", title: "Хоккей в Беларуси" },
+  { slug: "hockey-academies-in-north-america", category: "Reference", title: "Hockey Academies in North America", domain: "eurohockeyagency.com" },
+  { slug: "hokkejnye-akademii-severnoj-ameriki", category: "Справочник", title: "Хоккейные академии Северной Америки" },
 ];
 
 // Division pyramids: listed top (strongest) to bottom (entry level).
