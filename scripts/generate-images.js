@@ -212,6 +212,8 @@ const ARTICLES = [
   { slug: "shvetsiya-hockeyallsvenskan-vs-finlyandiya-mestis", category: "Сравнение лиг", title: "HockeyAllsvenskan vs Mestis" },
   { slug: "germany-del2-vs-czechia-maxa-liga", category: "League comparison", title: "DEL2 vs Maxa liga", domain: "eurohockeyagency.com" },
   { slug: "germaniya-del2-vs-chehiya-maxa-liga", category: "Сравнение лиг", title: "DEL2 vs Maxa liga" },
+  { slug: "hockey-in-belarus", category: "Countries · Belarus", title: "Hockey in Belarus", domain: "eurohockeyagency.com" },
+  { slug: "hokkej-v-belarusi", category: "Страны · Беларусь", title: "Хоккей в Беларуси" },
 ];
 
 // Division pyramids: listed top (strongest) to bottom (entry level).

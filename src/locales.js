@@ -125,6 +125,7 @@ const PAGES = [
   { ru: "/guides/chehiya-maxa-liga-vs-slovakiya-tipos-shl", en: "/guides/czechia-maxa-liga-vs-slovakia-tipos-shl" },
   { ru: "/guides/shvetsiya-hockeyallsvenskan-vs-finlyandiya-mestis", en: "/guides/sweden-hockeyallsvenskan-vs-finland-mestis" },
   { ru: "/guides/germaniya-del2-vs-chehiya-maxa-liga", en: "/guides/germany-del2-vs-czechia-maxa-liga" },
+  { ru: "/guides/hokkej-v-belarusi", en: "/guides/hockey-in-belarus" },
   { ru: "/novosti", en: "/news" },
   { ru: "/novosti/ncaa-razreshila-igrokam-chl-sohranyat-dopusk-division-i", en: "/news/ncaa-allows-chl-players-to-keep-division-i-eligibility" }
 ];

@@ -9,6 +9,7 @@
 
 const GUIDES = [
   { en: "hockey-in-austria", ru: "hokkej-v-avstrii", cat: "countries", title: { en: "Hockey in Austria", ru: "Хоккей в Австрии" } },
+  { en: "hockey-in-belarus", ru: "hokkej-v-belarusi", cat: "countries", title: { en: "Hockey in Belarus", ru: "Хоккей в Беларуси" } },
   { en: "hockey-in-belgium", ru: "hokkej-v-belgii", cat: "countries", title: { en: "Hockey in Belgium", ru: "Хоккей в Бельгии" } },
   { en: "hockey-in-canada", ru: "hokkej-v-kanade", cat: "countries", title: { en: "Hockey in Canada", ru: "Хоккей в Канаде" } },
   { en: "hockey-in-croatia", ru: "hokkej-v-horvatii", cat: "countries", title: { en: "Hockey in Croatia", ru: "Хоккей в Хорватии" } },
