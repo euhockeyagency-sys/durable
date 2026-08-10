@@ -118,7 +118,9 @@ const PAGES = [
   { ru: "/ligi/finlyandiya-yuniorskij-hokkej", en: "/leagues/finland-junior-hockey" },
   { ru: "/ligi/chehiya-yuniorskij-hokkej", en: "/leagues/czechia-junior-hockey" },
   { ru: "/ligi/shvejcariya-yuniorskij-hokkej", en: "/leagues/switzerland-junior-hockey" },
-  { ru: "/ligi/germaniya-yuniorskij-hokkej", en: "/leagues/germany-junior-hockey" }
+  { ru: "/ligi/germaniya-yuniorskij-hokkej", en: "/leagues/germany-junior-hockey" },
+  { ru: "/ligi/kanada-yuniorskij-hokkej", en: "/leagues/canada-junior-hockey" },
+  { ru: "/ligi/ssha-ncdc", en: "/leagues/usa-ncdc" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));

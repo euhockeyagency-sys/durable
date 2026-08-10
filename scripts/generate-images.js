@@ -200,6 +200,10 @@ const ARTICLES = [
   { slug: "shvejcariya-yuniorskij-hokkej", category: "Юниорские лиги · Швейцария", title: "Швейцария U21/U18-Elit" },
   { slug: "germany-junior-hockey", category: "Junior leagues · Germany", title: "Germany U20/U17 Division", domain: "eurohockeyagency.com" },
   { slug: "germaniya-yuniorskij-hokkej", category: "Юниорские лиги · Германия", title: "Германия U20/U17 Division" },
+  { slug: "canada-junior-hockey", category: "Junior leagues · Canada", title: "Canada CHL (WHL/OHL/QMJHL)", domain: "eurohockeyagency.com" },
+  { slug: "kanada-yuniorskij-hokkej", category: "Юниорские лиги · Канада", title: "Канада CHL (WHL/OHL/QMJHL)" },
+  { slug: "usa-ncdc", category: "Junior leagues · USA", title: "USA NCDC", domain: "eurohockeyagency.com" },
+  { slug: "ssha-ncdc", category: "Юниорские лиги · США", title: "США NCDC" },
 ];
 
 // Division pyramids: listed top (strongest) to bottom (entry level).

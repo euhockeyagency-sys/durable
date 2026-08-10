@@ -31,7 +31,9 @@ const PRIORITY_JUNIOR_LINKS = [
   { en: "/leagues/finland-junior-hockey", ru: "/ligi/finlyandiya-yuniorskij-hokkej", title: { en: "Finland junior hockey", ru: "Финляндия — юниорский хоккей" } },
   { en: "/leagues/czechia-junior-hockey", ru: "/ligi/chehiya-yuniorskij-hokkej", title: { en: "Czechia junior hockey", ru: "Чехия — юниорский хоккей" } },
   { en: "/leagues/germany-junior-hockey", ru: "/ligi/germaniya-yuniorskij-hokkej", title: { en: "Germany junior hockey", ru: "Германия — юниорский хоккей" } },
-  { en: "/leagues/switzerland-junior-hockey", ru: "/ligi/shvejcariya-yuniorskij-hokkej", title: { en: "Switzerland junior hockey", ru: "Швейцария — юниорский хоккей" } }
+  { en: "/leagues/switzerland-junior-hockey", ru: "/ligi/shvejcariya-yuniorskij-hokkej", title: { en: "Switzerland junior hockey", ru: "Швейцария — юниорский хоккей" } },
+  { en: "/leagues/canada-junior-hockey", ru: "/ligi/kanada-yuniorskij-hokkej", title: { en: "Canada junior hockey (CHL)", ru: "Канада — юниорский хоккей (CHL)" } },
+  { en: "/leagues/usa-ncdc", ru: "/ligi/ssha-ncdc", title: { en: "USA junior hockey (NCDC)", ru: "США — юниорский хоккей (NCDC)" } }
 ];
 
 function leagueRelatedLinks(logicalPath, locale) {
