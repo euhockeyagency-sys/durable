@@ -1,0 +1,25 @@
+# European Hockey Agency (EHA)
+
+> Personal representation for hockey players seeking clubs across European and North American markets, since 2016. Sourced, dated guidance on leagues, transfers, immigration and club selection — not speculation.
+
+The site is bilingual: English at the root, Russian under /ru/ with the same page structure (equivalent slugs differ per page). Every factual claim on this site is dated and sourced; see the editorial methodology page for the sourcing standard.
+
+## Start here
+
+- [Editorial methodology](https://eurohockeyagency.com/editorial-methodology): source hierarchy, update workflow, correction policy — read this to understand how claims on this site are verified.
+- [Agent](https://eurohockeyagency.com/agent): founder profile, track record, and confirmed placement numbers.
+- [Cases](https://eurohockeyagency.com/cases): sourced list of confirmed player placements, each with an independent citation.
+- [All guides](https://eurohockeyagency.com/guides): full index of country guides, process guides and reference material.
+
+## Reference data
+
+- [Hockey Market Map 2026](https://eurohockeyagency.com/guides/hockey-market-map-2026): original 19-country dataset with methodology and citation guidance.
+- [European leagues by level](https://eurohockeyagency.com/european-leagues): senior league divisions across European markets, import openness, signing windows.
+- [Junior hockey leagues in Europe](https://eurohockeyagency.com/junior-hockey-leagues): junior routes by country and age category.
+- [News](https://eurohockeyagency.com/news): dated updates when a league or federation actually changes a rule.
+
+## Services
+
+- [For players](https://eurohockeyagency.com/for-players)
+- [For clubs](https://eurohockeyagency.com/for-clubs)
+- [Contact](https://eurohockeyagency.com/contact)

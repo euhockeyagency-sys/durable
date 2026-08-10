@@ -592,7 +592,7 @@ function buildSocialTags(html, pageUrl, isArticle, imageUrl, locale) {
 
 // The only files served from the shared public/ root (everything else lives in a
 // language directory). Keep in sync with the actual contents of public/.
-const SHARED_ROOT_ALLOW = /^\/(?:assets\/|favicon\.svg$|robots\.txt$|site\.js$|styles\.css$|google[0-9a-f]+\.html$|yandex_[0-9a-f]+\.html$)/i;
+const SHARED_ROOT_ALLOW = /^\/(?:assets\/|favicon\.svg$|robots\.txt$|llms\.txt$|site\.js$|styles\.css$|google[0-9a-f]+\.html$|yandex_[0-9a-f]+\.html$)/i;
 
 function servePublic(req, res, config) {
   let pathname;
