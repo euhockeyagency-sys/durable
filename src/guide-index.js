@@ -56,6 +56,10 @@ const GUIDES = [
   ,{ en: "what-to-ask-a-hockey-agent-before-a-trial", ru: "chto-sprosit-u-hokkejnogo-agenta-pered-prosmotrom", cat: "clubs", title: { en: "What to ask a hockey agent before a trial", ru: "Что спросить у хоккейного агента перед просмотром" } }
   ,{ en: "running-an-efficient-trial-checklist", ru: "kak-provesti-effektivnyj-prosmotr", cat: "clubs", title: { en: "Running an efficient trial: a checklist", ru: "Эффективный просмотр: чек-лист для клуба" } }
   ,{ en: "what-game-video-tells-a-club", ru: "chto-igrovoe-video-pokazyvaet-klubu", cat: "clubs", title: { en: "What game video tells a club", ru: "Что игровое видео показывает клубу" } }
+  ,{ en: "czechia-tipsport-extraliga-vs-switzerland-national-league", ru: "chehiya-tipsport-extraliga-vs-shvejcariya-national-league", cat: "comparisons", title: { en: "Tipsport Extraliga vs National League", ru: "Tipsport Extraliga vs National League" } }
+  ,{ en: "czechia-maxa-liga-vs-slovakia-tipos-shl", ru: "chehiya-maxa-liga-vs-slovakiya-tipos-shl", cat: "comparisons", title: { en: "Maxa liga vs TIPOS SHL", ru: "Maxa liga vs TIPOS SHL" } }
+  ,{ en: "sweden-hockeyallsvenskan-vs-finland-mestis", ru: "shvetsiya-hockeyallsvenskan-vs-finlyandiya-mestis", cat: "comparisons", title: { en: "HockeyAllsvenskan vs Mestis", ru: "HockeyAllsvenskan vs Mestis" } }
+  ,{ en: "germany-del2-vs-czechia-maxa-liga", ru: "germaniya-del2-vs-chehiya-maxa-liga", cat: "comparisons", title: { en: "DEL2 vs Maxa liga", ru: "DEL2 vs Maxa liga" } }
 ];
 
 const CATEGORIES = [
@@ -63,6 +67,7 @@ const CATEGORIES = [
   { id: "process", label: { en: "Getting signed", ru: "Как попасть в клуб" } },
   { id: "documents", label: { en: "Documents, visas & transfers", ru: "Документы, визы и трансферы" } }
   ,{ id: "clubs", label: { en: "For clubs", ru: "Клубам" } }
+  ,{ id: "comparisons", label: { en: "League comparisons", ru: "Сравнение лиг" } }
 ];
 
 const COPY = {

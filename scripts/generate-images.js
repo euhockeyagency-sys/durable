@@ -204,6 +204,14 @@ const ARTICLES = [
   { slug: "kanada-yuniorskij-hokkej", category: "Юниорские лиги · Канада", title: "Канада CHL (WHL/OHL/QMJHL)" },
   { slug: "usa-ncdc", category: "Junior leagues · USA", title: "USA NCDC", domain: "eurohockeyagency.com" },
   { slug: "ssha-ncdc", category: "Юниорские лиги · США", title: "США NCDC" },
+  { slug: "czechia-tipsport-extraliga-vs-switzerland-national-league", category: "League comparison", title: "Tipsport Extraliga vs National League", domain: "eurohockeyagency.com" },
+  { slug: "chehiya-tipsport-extraliga-vs-shvejcariya-national-league", category: "Сравнение лиг", title: "Tipsport Extraliga vs National League" },
+  { slug: "czechia-maxa-liga-vs-slovakia-tipos-shl", category: "League comparison", title: "Maxa liga vs TIPOS SHL", domain: "eurohockeyagency.com" },
+  { slug: "chehiya-maxa-liga-vs-slovakiya-tipos-shl", category: "Сравнение лиг", title: "Maxa liga vs TIPOS SHL" },
+  { slug: "sweden-hockeyallsvenskan-vs-finland-mestis", category: "League comparison", title: "HockeyAllsvenskan vs Mestis", domain: "eurohockeyagency.com" },
+  { slug: "shvetsiya-hockeyallsvenskan-vs-finlyandiya-mestis", category: "Сравнение лиг", title: "HockeyAllsvenskan vs Mestis" },
+  { slug: "germany-del2-vs-czechia-maxa-liga", category: "League comparison", title: "DEL2 vs Maxa liga", domain: "eurohockeyagency.com" },
+  { slug: "germaniya-del2-vs-chehiya-maxa-liga", category: "Сравнение лиг", title: "DEL2 vs Maxa liga" },
 ];
 
 // Division pyramids: listed top (strongest) to bottom (entry level).

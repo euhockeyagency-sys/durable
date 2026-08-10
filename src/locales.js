@@ -120,7 +120,11 @@ const PAGES = [
   { ru: "/ligi/shvejcariya-yuniorskij-hokkej", en: "/leagues/switzerland-junior-hockey" },
   { ru: "/ligi/germaniya-yuniorskij-hokkej", en: "/leagues/germany-junior-hockey" },
   { ru: "/ligi/kanada-yuniorskij-hokkej", en: "/leagues/canada-junior-hockey" },
-  { ru: "/ligi/ssha-ncdc", en: "/leagues/usa-ncdc" }
+  { ru: "/ligi/ssha-ncdc", en: "/leagues/usa-ncdc" },
+  { ru: "/guides/chehiya-tipsport-extraliga-vs-shvejcariya-national-league", en: "/guides/czechia-tipsport-extraliga-vs-switzerland-national-league" },
+  { ru: "/guides/chehiya-maxa-liga-vs-slovakiya-tipos-shl", en: "/guides/czechia-maxa-liga-vs-slovakia-tipos-shl" },
+  { ru: "/guides/shvetsiya-hockeyallsvenskan-vs-finlyandiya-mestis", en: "/guides/sweden-hockeyallsvenskan-vs-finland-mestis" },
+  { ru: "/guides/germaniya-del2-vs-chehiya-maxa-liga", en: "/guides/germany-del2-vs-czechia-maxa-liga" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
