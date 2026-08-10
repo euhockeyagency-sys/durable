@@ -22,16 +22,33 @@ const PRIORITY_LEAGUE_LINKS = [
   { en: "/leagues/sweden-hockeyallsvenskan", ru: "/ligi/shvetsiya-hockeyallsvenskan", title: { en: "Sweden HockeyAllsvenskan", ru: "Швеция — HockeyAllsvenskan" } }
 ];
 
+// Junior league pages used to fall into PRIORITY_LEAGUE_LINKS too (any
+// /leagues/ or /ligi/ path qualified), so each rendered a "related" block
+// full of unrelated senior leagues instead of the other 5 junior pages.
+const PRIORITY_JUNIOR_LINKS = [
+  { en: "/leagues/sweden-j18", ru: "/ligi/shvetsiya-j18", title: { en: "Sweden J18 Nationell", ru: "Швеция — J18 Nationell" } },
+  { en: "/leagues/sweden-j20", ru: "/ligi/shvetsiya-j20", title: { en: "Sweden J20 Nationell", ru: "Швеция — J20 Nationell" } },
+  { en: "/leagues/finland-junior-hockey", ru: "/ligi/finlyandiya-yuniorskij-hokkej", title: { en: "Finland junior hockey", ru: "Финляндия — юниорский хоккей" } },
+  { en: "/leagues/czechia-junior-hockey", ru: "/ligi/chehiya-yuniorskij-hokkej", title: { en: "Czechia junior hockey", ru: "Чехия — юниорский хоккей" } },
+  { en: "/leagues/germany-junior-hockey", ru: "/ligi/germaniya-yuniorskij-hokkej", title: { en: "Germany junior hockey", ru: "Германия — юниорский хоккей" } },
+  { en: "/leagues/switzerland-junior-hockey", ru: "/ligi/shvejcariya-yuniorskij-hokkej", title: { en: "Switzerland junior hockey", ru: "Швейцария — юниорский хоккей" } }
+];
+
 function leagueRelatedLinks(logicalPath, locale) {
   if (!logicalPath.startsWith("/leagues/") && !logicalPath.startsWith("/ligi/")) return "";
   const loc = locale === "ru" ? "ru" : "en";
   const prefix = loc === "ru" ? "/ru" : "";
-  const current = PRIORITY_LEAGUE_LINKS.find((link) => link[loc] === logicalPath);
-  const priority = current ? PRIORITY_LEAGUE_LINKS.filter((link) => link !== current) : PRIORITY_LEAGUE_LINKS;
+  const isJunior = PRIORITY_JUNIOR_LINKS.some((link) => link[loc] === logicalPath);
+  const list = isJunior ? PRIORITY_JUNIOR_LINKS : PRIORITY_LEAGUE_LINKS;
+  const current = list.find((link) => link[loc] === logicalPath);
+  const priority = current ? list.filter((link) => link !== current) : list;
   const links = priority
     .map((link) => `<li><a href="${prefix}${link[loc]}">${link.title[loc]}</a></li>`)
     .join("");
-  return `<section class="related-guides wrap"><h2>${loc === "ru" ? "Сравнить маршруты по лигам" : "Compare league routes"}</h2><ul class="related-list"><li><a href="${prefix}${loc === "ru" ? "/otkrytye-ligi-dlya-legionerov" : "/open-hockey-leagues-for-imports"}">${loc === "ru" ? "Самые открытые лиги для легионеров" : "Most open leagues for import players"}</a></li><li><a href="${prefix}/guides/${loc === "ru" ? "transfernye-okna-v-hokkee" : "hockey-transfer-windows"}">${loc === "ru" ? "Трансферные окна" : "Hockey transfer windows"}</a></li>${links}</ul></section>`;
+  const heading = isJunior
+    ? (loc === "ru" ? "Сравнить юниорские маршруты" : "Compare junior routes")
+    : (loc === "ru" ? "Сравнить маршруты по лигам" : "Compare league routes");
+  return `<section class="related-guides wrap"><h2>${heading}</h2><ul class="related-list"><li><a href="${prefix}${loc === "ru" ? "/otkrytye-ligi-dlya-legionerov" : "/open-hockey-leagues-for-imports"}">${loc === "ru" ? "Самые открытые лиги для легионеров" : "Most open leagues for import players"}</a></li><li><a href="${prefix}/guides/${loc === "ru" ? "transfernye-okna-v-hokkee" : "hockey-transfer-windows"}">${loc === "ru" ? "Трансферные окна" : "Hockey transfer windows"}</a></li>${links}</ul></section>`;
 }
 
 const CONTENT_TYPES = {
