@@ -2,3 +2,7 @@ User-agent: *
 Allow: /
 Sitemap: {{BASE_URL}}/sitemap.xml
 Sitemap: {{BASE_URL}}/ru/sitemap.xml
+Sitemap: {{BASE_URL}}/sv/sitemap.xml
+Sitemap: {{BASE_URL}}/fi/sitemap.xml
+Sitemap: {{BASE_URL}}/cs/sitemap.xml
+Sitemap: {{BASE_URL}}/de/sitemap.xml

@@ -230,6 +230,14 @@ function createApp({ config, services, now, randomUUID } = {}) {
   app.get("/feed.xml", localeFeed(buildFeed));
   app.get("/ru/feed.xml", localeFeed(buildFeed));
   app.get("/en/feed.xml", localeFeed(buildFeed));
+  // One-page-per-locale bonus guides (native-language landing pages) — same
+  // generic sitemap/feed machinery, applied to public/sv|fi|cs|de/. Each page
+  // declares its own feed link in <head> (renderBody), so both routes must
+  // exist or that link 404s.
+  for (const prefix of ["/sv", "/fi", "/cs", "/de"]) {
+    app.get(`${prefix}/sitemap.xml`, localeFeed(buildSitemap));
+    app.get(`${prefix}/feed.xml`, localeFeed(buildFeed));
+  }
 
   app.get("*path", (req, res) => servePublic(req, res, config));
   app.head("*path", (req, res) => servePublic(req, res, config));
@@ -653,6 +661,12 @@ function renderBody(data, extension, config, context) {
   const enPrefix = "";
   let html = data.toString("utf8")
     .replaceAll("{{BASE_URL}}", baseUrl)
+    // Cross-locale absolute links, used only by the one-page bonus-locale
+    // guides (sv/fi/cs/de) to point at the full EN/RU versions and at shared
+    // /assets/ — those pages' own {{BASE_URL}} is locale-prefixed (.../sv),
+    // so a plain {{BASE_URL}} would be wrong for a link into the EN/RU tree.
+    .replaceAll("{{BASE_URL_EN}}", baseUrlFor("en", config))
+    .replaceAll("{{BASE_URL_RU}}", baseUrlFor("ru", config))
     .replaceAll("{{EN}}", enPrefix)
     // Russian internal links are logical (no /ru/); prefixInternalLinks applies
     // the /ru/ prefix below, so the RU link-prefix token resolves to empty just
@@ -853,7 +867,11 @@ const FEED_META = {
   en: {
     title: "European Hockey Agency — resources for players",
     description: "How to find a club in Europe: leagues, resume, video, picking a level."
-  }
+  },
+  sv: { title: "European Hockey Agency — resurser för spelare", description: "Ishockey i Sverige: ligor, löner och tillstånd." },
+  fi: { title: "European Hockey Agency — resursseja pelaajille", description: "Jääkiekko Suomessa: sarjat, palkat ja luvat." },
+  cs: { title: "European Hockey Agency — zdroje pro hráče", description: "Hokej v Česku: soutěže, platy a víza." },
+  de: { title: "European Hockey Agency — Ressourcen für Spieler", description: "Eishockey in Deutschland: Ligen, Gehälter und Visa." }
 };
 
 function buildFeed(config, locale = "ru") {

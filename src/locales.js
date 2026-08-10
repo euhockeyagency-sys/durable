@@ -150,12 +150,21 @@ function hostname(host) {
   return String(host || "").split(":")[0].trim().toLowerCase();
 }
 
+// One-page-per-locale bonus guides (native-language landing pages for players
+// who search in their own language). Unlike PAGES, these are not bilingual
+// pairs — each locale has exactly one file and is not part of the EN/RU
+// language-switcher/hreflang machinery below, which is strictly binary.
+const EXTRA_LOCALE_PREFIXES = { sv: "/sv", fi: "/fi", cs: "/cs", de: "/de" };
+
 // Absolute base URL for a language. Always taken from configuration, never from
 // the request Host header, so an untrusted host can never be reflected back into
 // canonical/hreflang tags. Consolidated model: English at the primary root
 // (enUrl), Russian under /ru/ on the same domain (ruUrl = enUrl + "/ru").
 function baseUrlFor(locale, config) {
-  return locale === "en" ? config.enUrl : config.ruUrl;
+  if (locale === "en") return config.enUrl;
+  if (locale === "ru") return config.ruUrl;
+  const prefix = EXTRA_LOCALE_PREFIXES[locale];
+  return prefix ? config.enUrl + prefix : config.enUrl;
 }
 
 function joinBase(base, logicalPath) {
@@ -213,6 +222,17 @@ function resolveLocale(host, pathname, config) {
       return { redirect: { status: 301, location: joinBase(config.ruUrl, rest) } };
     }
     return { locale: "ru", root: "ru", logicalPath: rest, urlPrefix: ruPrefix };
+  }
+
+  // Standalone bonus-locale pages: one file per locale, no PAGES pairing, no
+  // internal-link prefixing (each page links out to specific EN/RU URLs, so
+  // the blanket rewrite that prefixInternalLinks does for /ru/ would be wrong
+  // here — hence no urlPrefix in the returned object).
+  for (const [loc, prefix] of Object.entries(EXTRA_LOCALE_PREFIXES)) {
+    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
+      const rest = pathname === prefix ? "/" : (pathname.slice(prefix.length) || "/");
+      return { locale: loc, root: loc, logicalPath: rest };
+    }
   }
 
   // Root of the primary domain is English. A Russian-only slug that arrives
