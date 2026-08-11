@@ -39,8 +39,9 @@ if(form){
   birth.addEventListener('input',updateParent);updateParent();
   const params=new URLSearchParams(location.search),utm={utm_source:'utmSource',utm_medium:'utmMedium',utm_campaign:'utmCampaign',utm_content:'utmContent',utm_term:'utmTerm'};
   Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=params.get(key)||''});q('[name="referrer"]',form).value=document.referrer||'';
-  const country=(params.get('country')||'').trim().slice(0,100),message=q('[name="message"]',form);
+  const country=(params.get('country')||'').trim().slice(0,100),note=(params.get('note')||'').trim().slice(0,300),message=q('[name="message"]',form);
   if(country&&message&&!message.value.trim())message.value=`${T.countryPrefix}: ${country}`;
+  else if(note&&message&&!message.value.trim())message.value=note;
   const clearErrors=()=>{qa('.field-error',form).forEach(el=>el.textContent='');qa('[aria-invalid="true"]',form).forEach(el=>el.removeAttribute('aria-invalid'));status.textContent='';status.className='form-status'};
   const showErrors=(errors={})=>{Object.entries(errors).forEach(([name,message])=>{const output=q(`[data-error-for="${name}"]`,form),input=q(`[name="${name}"]`,form);if(output)output.textContent=message;if(input)input.setAttribute('aria-invalid','true')});const first=q('[aria-invalid="true"]',form);first?.focus()};
   form.addEventListener('submit',async event=>{
