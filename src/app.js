@@ -731,6 +731,15 @@ function renderBody(data, extension, config, context) {
     html = html.replace(`<link rel="stylesheet" href="${stylesheetHref}">`, deferredStylesheet)
       .replace("</head>", `${fontPreload}${coverPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${hubItemList}${YANDEX_METRIKA}${GOOGLE_ANALYTICS}</head>`);
   }
+  // Accessibility: a keyboard/screen-reader "skip to content" link as the first
+  // focusable element, jumping past the header straight to <main>. Injected
+  // server-side so every page shares it; only added when there is a target.
+  if (extension === ".html" && html.includes("<main")) {
+    const skipText = locale === "ru" ? "Перейти к содержимому" : "Skip to content";
+    html = html
+      .replace(/<main(?![^>]*\sid=)/, '<main id="main"')
+      .replace("<body>", `<body>\n<a class="skip-link" href="#main">${skipText}</a>`);
+  }
   return Buffer.from(html);
 }
 
@@ -768,9 +777,18 @@ function sendBody(req, res, body, extension, status = 200) {
   res.status(status);
   res.set("Content-Type", CONTENT_TYPES[extension] || "application/octet-stream");
   const cacheableHtml = extension === ".html" && status === 200;
-  res.set("Cache-Control", cacheableHtml
-    ? "public, max-age=0, must-revalidate"
-    : extension === ".html" ? "no-cache, no-store, must-revalidate" : "public, max-age=604800");
+  let cacheControl;
+  if (extension === ".html") {
+    cacheControl = cacheableHtml ? "public, max-age=0, must-revalidate" : "no-cache, no-store, must-revalidate";
+  } else if (/\.(?:woff2?|ttf|otf|webp|jpe?g|png|gif|svg|ico|avif)$/i.test(req.path) || req.query.v !== undefined) {
+    // Content-stable assets (fonts and images, whose contents change only under a
+    // new filename) and ?v= cache-busted CSS/JS ship a new URL on every change,
+    // so they can be cached for a year and never revalidated.
+    cacheControl = "public, max-age=31536000, immutable";
+  } else {
+    cacheControl = "public, max-age=604800";
+  }
+  res.set("Cache-Control", cacheControl);
   if (cacheableHtml) {
     const etag = `"${createHash("sha256").update(body).digest("hex")}"`;
     res.set("ETag", etag);
