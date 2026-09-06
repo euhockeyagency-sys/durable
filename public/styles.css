@@ -217,6 +217,9 @@
 }
 
 :root{--ink:#030b14;--navy:#071624;--panel:#0b2033;--panel2:#0e2942;--blue:#1687ff;--blue2:#68b7ff;--ice:#dceeff;--white:#f7fbff;--muted:#9db0c3;--line:rgba(255,255,255,.13);--glow:rgba(22,135,255,.28)}
+/* Accessibility: skip-to-content link, hidden off-screen until keyboard focus */
+.skip-link{position:fixed;top:.5rem;left:.5rem;z-index:2000;padding:.7rem 1.1rem;border-radius:8px;background:var(--blue);color:var(--white);font-weight:700;text-decoration:none;transform:translateY(-150%);transition:transform .15s ease;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.skip-link:focus{transform:translateY(0);outline:3px solid var(--white);outline-offset:2px}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:94px}
