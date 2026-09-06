@@ -45,6 +45,7 @@ const GUIDES = [
   { en: "hockey-player-salaries-in-europe", ru: "zarplaty-hokkeistov-v-evrope", cat: "process", title: { en: "Hockey player salaries in Europe", ru: "Зарплаты хоккеистов в Европе" } },
   { en: "hockey-agent-in-germany", ru: "hokkejnyj-agent-v-germanii", cat: "process", title: { en: "Hockey agent in Germany", ru: "Хоккейный агент в Германии" } },
   { en: "hockey-agent-in-sweden", ru: "hokkejnyj-agent-v-shvecii", cat: "process", title: { en: "Hockey agent in Sweden", ru: "Хоккейный агент в Швеции" } },
+  { en: "hockey-agent-in-finland", ru: "hokkejnyj-agent-v-finlyandii", cat: "process", title: { en: "Hockey agent in Finland", ru: "Хоккейный агент в Финляндии" } },
   { en: "how-to-verify-a-hockey-club-offer", ru: "kak-proverit-predlozhenie-hokkejnogo-kluba", cat: "process", title: { en: "How to verify a hockey club offer", ru: "Как проверить предложение хоккейного клуба" } },
   { en: "hockey-market-map-2026", ru: "karta-hokkejnyh-rynkov-2026", cat: "process", title: { en: "Hockey Market Map 2026", ru: "Карта хоккейных рынков 2026" } },
   { en: "iihf-international-transfer", ru: "mezhdunarodnyj-transfer-iihf", cat: "documents", title: { en: "IIHF international transfer", ru: "Международный трансфер IIHF" } },

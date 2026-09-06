@@ -53,6 +53,7 @@ const PAGES = [
   { ru: "/guides/kak-najti-hokkejnyj-klub-v-evrope", en: "/guides/find-a-hockey-club-in-europe" },
   { ru: "/guides/hokkejnyj-agent-v-germanii", en: "/guides/hockey-agent-in-germany" },
   { ru: "/guides/hokkejnyj-agent-v-shvecii", en: "/guides/hockey-agent-in-sweden" },
+  { ru: "/guides/hokkejnyj-agent-v-finlyandii", en: "/guides/hockey-agent-in-finland" },
   { ru: "/guides/karta-hokkejnyh-rynkov-2026", en: "/guides/hockey-market-map-2026" },
   { ru: "/guides/transfernye-okna-v-hokkee", en: "/guides/hockey-transfer-windows" },
   { ru: "/guides/dokumenty-i-transfery-v-hokkee", en: "/guides/hockey-visas-and-transfers" },

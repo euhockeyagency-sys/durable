@@ -61,6 +61,8 @@ const ARTICLES = [
   { slug: "germany-oberliga", category: "Leagues · Germany", title: "Oberliga", domain: "eurohockeyagency.com" },
   { slug: "hockey-agent-in-germany", category: "Career", title: "Hockey agent in Germany", domain: "eurohockeyagency.com" },
   { slug: "hockey-agent-in-sweden", category: "Career", title: "Hockey agent in Sweden", domain: "eurohockeyagency.com" },
+  { slug: "hockey-agent-in-finland", category: "Career", title: "Hockey agent in Finland", domain: "eurohockeyagency.com" },
+  { slug: "hokkejnyj-agent-v-finlyandii", category: "Карьера", title: "Хоккейный агент в Финляндии" },
   { slug: "hockey-in-austria", category: "Countries · Austria", title: "Hockey in Austria", domain: "eurohockeyagency.com" },
   { slug: "hockey-in-canada", category: "Countries · Canada", title: "Hockey in Canada", domain: "eurohockeyagency.com" },
   { slug: "hockey-in-czechia", category: "Countries · Czechia", title: "Hockey in Czechia", domain: "eurohockeyagency.com" },
