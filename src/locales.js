@@ -128,7 +128,9 @@ const PAGES = [
   { ru: "/guides/hokkej-v-belarusi", en: "/guides/hockey-in-belarus" },
   { ru: "/guides/hokkejnye-akademii-severnoj-ameriki", en: "/guides/hockey-academies-in-north-america" },
   { ru: "/novosti", en: "/news" },
-  { ru: "/novosti/ncaa-razreshila-igrokam-chl-sohranyat-dopusk-division-i", en: "/news/ncaa-allows-chl-players-to-keep-division-i-eligibility" }
+  { ru: "/novosti/ncaa-razreshila-igrokam-chl-sohranyat-dopusk-division-i", en: "/news/ncaa-allows-chl-players-to-keep-division-i-eligibility" },
+  { ru: "/ligi/avstriya-yuniorskij-hokkej", en: "/leagues/austria-junior-hockey" },
+  { ru: "/ligi/slovakiya-yuniorskij-hokkej", en: "/leagues/slovakia-junior-hockey" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
