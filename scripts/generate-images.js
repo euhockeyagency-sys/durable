@@ -216,6 +216,10 @@ const ARTICLES = [
   { slug: "hokkej-v-belarusi", category: "Страны · Беларусь", title: "Хоккей в Беларуси" },
   { slug: "hockey-academies-in-north-america", category: "Reference", title: "Hockey Academies in North America", domain: "eurohockeyagency.com" },
   { slug: "hokkejnye-akademii-severnoj-ameriki", category: "Справочник", title: "Хоккейные академии Северной Америки" },
+  { slug: "austria-junior-hockey", category: "Junior leagues · Austria", title: "Austria U20i/U18i", domain: "eurohockeyagency.com" },
+  { slug: "avstriya-yuniorskij-hokkej", category: "Юниорские лиги · Австрия", title: "Австрия U20i/U18i" },
+  { slug: "slovakia-junior-hockey", category: "Junior leagues · Slovakia", title: "Slovakia Dorast/Juniori", domain: "eurohockeyagency.com" },
+  { slug: "slovakiya-yuniorskij-hokkej", category: "Юниорские лиги · Словакия", title: "Словакия Dorast/Juniori" },
 ];
 
 // Division pyramids: listed top (strongest) to bottom (entry level).
