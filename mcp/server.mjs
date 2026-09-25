@@ -190,7 +190,16 @@ async function runTestGate() {
     .join("\n");
   const missingDevDeps = /Cannot find module 'supertest'/.test(output);
   if (missingDevDeps) {
-    const otherFailures = output.split("\n").filter((line) => /^not ok /.test(line.trim()) && !/app\.test\.js/.test(line));
+    // A suite that fails only because it needs supertest can't load without dev
+    // dependencies; CI still runs it. Decide from the file's own source instead
+    // of a hard-coded name, so newly added supertest suites (bonus-locales.test.js
+    // did this) don't silently block every push.
+    const otherFailures = [];
+    for (const line of output.split("\n").map((entry) => entry.trim()).filter((entry) => /^not ok /.test(entry))) {
+      const file = line.match(/^not ok \d+ - (test\/\S+\.js)$/)?.[1];
+      const needsSupertest = file && /require\(["']supertest["']\)/.test(await fs.readFile(path.join(REPO, file), "utf8").catch(() => ""));
+      if (!needsSupertest) otherFailures.push(line);
+    }
     return { pass: otherFailures.length === 0, summary };
   }
   return { pass: result.ok, summary: summary || output.slice(-2000) };
