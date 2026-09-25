@@ -125,3 +125,24 @@ test("page table covers every published bilingual pair without duplicate paths",
     assert.ok(!page.en.startsWith("/en/"), `EN path must not carry a language prefix: ${page.en}`);
   }
 });
+
+// The server injects <link rel="alternate" hreflang="en|ru|x-default"> from the
+// PAGES table (src/app.js buildHreflang). A copy hardcoded in a page source
+// doubles every tag in the rendered HTML, and the hardcoded absolute URL
+// bypasses the configured domain. Extra languages (cs, de, fi, sv) are fine.
+test("EN/RU page sources do not hardcode the en/ru/x-default hreflang links", () => {
+  const offenders = [];
+  for (const lang of ["en", "ru"]) {
+    const walk = (dir) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (entry.name.endsWith(".html") && /<link rel="alternate" hreflang="(?:en|ru|x-default)"/.test(fs.readFileSync(full, "utf8"))) {
+          offenders.push(path.relative(path.join(__dirname, ".."), full));
+        }
+      }
+    };
+    walk(path.join(__dirname, "..", "public", lang));
+  }
+  assert.deepEqual(offenders, [], "remove hardcoded hreflang links; the server adds them");
+});
