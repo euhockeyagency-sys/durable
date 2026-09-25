@@ -111,10 +111,10 @@
     // `elite` (score >= 100) still changes sort order below, so it survives
     // as an internal-only flag rather than a fourth label.
     var elite = score >= 100;
-    var band, label;
-    if (score >= 82) { band = [1, 2]; label = strings.bandTop; }
-    else if (score >= 48) { band = [2, 3]; label = strings.bandMid; }
-    else { band = [3, 3]; label = strings.bandLow; }
+    var band, label, bandKey;
+    if (score >= 82) { band = [1, 2]; label = strings.bandTop; bandKey = "top"; }
+    else if (score >= 48) { band = [2, 3]; label = strings.bandMid; bandKey = "mid"; }
+    else { band = [3, 3]; label = strings.bandLow; bandKey = "low"; }
 
     var seekingJunior = playerAge <= JUNIOR_AGE_CEILING;
     var candidates = (leagues || []).filter(function (l) {
@@ -150,13 +150,27 @@
       (band[0] === band[1] ? band[0] : band[0] + "–" + band[1]) +
       (input.eu ? strings.summarySuffixEu : strings.summarySuffixNonEu);
 
-    return { score: score, elite: elite, band: band, label: label, summary: summary, candidates: candidates, tips: tips, playerAge: playerAge };
+    return { score: score, elite: elite, band: band, bandKey: bandKey, label: label, summary: summary, candidates: candidates, tips: tips, playerAge: playerAge };
   }
 
   function renderLeagueCard(l) {
     return '<div class="calc-league"><b>' + l.flag + " " + l.name + "</b>" +
       '<span class="tier tier-' + l.tier + '">' + l.tier + "</span>" +
       "<small>" + l.country + " · " + l.note + "</small></div>";
+  }
+
+  // Query string for the "send your profile" link. League names come from the
+  // reference data and are joined with "|" (no league name contains one).
+  function buildCtaQuery(input, r, note) {
+    var params = [
+      ["note", note],
+      ["pos", input.pos],
+      ["year", input.year],
+      ["calc_band", r.bandKey],
+      ["calc_score", r.score],
+      ["calc_leagues", r.candidates.slice(0, 3).map(function (l) { return l.name; }).join("|")]
+    ];
+    return params.map(function (p) { return p[0] + "=" + encodeURIComponent(p[1]); }).join("&");
   }
 
   function init(lang) {
@@ -203,13 +217,15 @@
         r.candidates.map(renderLeagueCard).join("") || '<p class="tool-note">' + strings.noLeagues + "</p>";
       document.getElementById("calc-tips").innerHTML = r.tips.map(function (t) { return "<li>" + t + "</li>"; }).join("");
 
-      // Bug G: carry the result into the contact form as a prefilled note,
-      // the same way country pages already pass `?country=` (see site.js).
+      // Bug G: carry the result into the contact form. `note` keeps the
+      // human-readable prefill for the message field; the structured
+      // calc_* / pos / year params let the form fill position and birth year
+      // and hand the agent the band, score and suggested leagues (see site.js).
       if (ctaEl) {
         var posLabel = document.querySelector('#c-pos option[value="' + input.pos + '"]').textContent;
         var note = strings.ctaNote({ label: r.label, score: r.score, pos: posLabel, year: input.year, eu: input.eu });
         var base = ctaEl.getAttribute("href").split("?")[0];
-        ctaEl.href = base + "?note=" + encodeURIComponent(note);
+        ctaEl.href = base + "?" + buildCtaQuery(input, r, note);
       }
 
       resultEl.hidden = false;
@@ -222,7 +238,7 @@
     });
   }
 
-  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate };
+  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate, buildCtaQuery: buildCtaQuery };
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;

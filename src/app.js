@@ -178,14 +178,16 @@ function createApp({ config, services, now, randomUUID } = {}) {
   // public site, and excluded from search indexing below.
   if (config.adminConfigured) {
     const adminPath = `/admin/${config.adminSecret}`;
-    app.get(adminPath, async (_req, res) => {
+    app.get(adminPath, async (req, res) => {
       res.set("X-Robots-Tag", "noindex");
+      const filters = parseAdminFilters(req.query);
       try {
-        const [applications, clubRequests] = await Promise.all([
-          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, current_club, phone, email, created_at"),
+        const [allApplications, clubRequests] = await Promise.all([
+          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, created_at"),
           fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, created_at")
         ]);
-        res.type("html").send(renderAdminPage(adminPath, applications, clubRequests));
+        const applications = filterAdminApplications(allApplications, filters);
+        res.type("html").send(renderAdminPage(adminPath, applications, clubRequests, { filters, total: allApplications.length }));
       } catch (error) {
         console.error("Admin page query failed", error.message);
         res.status(503).type("text").send("Could not load admin data.");
@@ -464,16 +466,63 @@ async function fetchAdminRows(supabase, table, columns) {
   return data || [];
 }
 
-function renderAdminPage(adminPath, applications, clubRequests) {
+const ADMIN_POSITIONS = ["forward", "defense", "goalie"];
+const ADMIN_AGE_GROUPS = ["minor", "adult"];
+const ADMIN_BAND_LABELS = { top: "top", mid: "2–3", low: "lower" };
+
+function parseAdminFilters(query = {}) {
+  const one = (value) => (typeof value === "string" ? value.trim() : "");
+  const status = one(query.status);
+  const position = one(query.position);
+  const age = one(query.age);
+  return {
+    q: one(query.q).slice(0, 80),
+    status: ADMIN_STATUSES.has(status) ? status : "",
+    position: ADMIN_POSITIONS.includes(position) ? position : "",
+    age: ADMIN_AGE_GROUPS.includes(age) ? age : ""
+  };
+}
+
+// Filtering happens in memory over the (already capped) list the page loads;
+// at the current volume that is simpler than pushing filters into Supabase.
+function filterAdminApplications(applications, filters) {
+  const needle = filters.q.toLowerCase();
+  return applications.filter((a) => {
+    if (filters.status && a.status !== filters.status) return false;
+    if (filters.position && a.position !== filters.position) return false;
+    if (filters.age && (filters.age === "minor") !== Boolean(a.is_minor)) return false;
+    if (!needle) return true;
+    return [a.player_name, a.current_club, a.reference_code, a.email, a.phone]
+      .some((field) => String(field || "").toLowerCase().includes(needle));
+  });
+}
+
+function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length } = {}) {
   const statusOptions = [...ADMIN_STATUSES]
     .map((status) => `<option value="${status}">${status}</option>`).join("");
   const statusForm = (table, id, currentStatus) => `<form method="post" action="${adminPath}/status">` +
     `<input type="hidden" name="table" value="${table}"><input type="hidden" name="id" value="${htmlEscape(id)}">` +
     `<select name="status">${statusOptions.replace(`value="${currentStatus}"`, `value="${currentStatus}" selected`)}</select>` +
     `<button type="submit">Save</button></form>`;
+  const selectFilter = (name, label, options) => `<label>${label} <select name="${name}"><option value="">any</option>` +
+    options.map((option) => `<option value="${option}"${filters[name] === option ? " selected" : ""}>${option}</option>`).join("") +
+    `</select></label>`;
+  const filterForm = `<form class="filters" method="get" action="${adminPath}">` +
+    `<label>Search <input name="q" value="${htmlEscape(filters.q)}" placeholder="name, club, ref, contact" maxlength="80"></label>` +
+    selectFilter("status", "Status", [...ADMIN_STATUSES]) +
+    selectFilter("position", "Position", ADMIN_POSITIONS) +
+    selectFilter("age", "Age", ADMIN_AGE_GROUPS) +
+    `<button type="submit">Filter</button> <a href="${adminPath}">Reset</a> <span>${applications.length} of ${total}</span></form>`;
+  // Calculator data is what the player's browser sent, not something verified.
+  const calculatorCell = (calculator) => calculator
+    ? `${htmlEscape(ADMIN_BAND_LABELS[calculator.band] || calculator.band)} · ${htmlEscape(calculator.score)}` +
+      (calculator.leagues?.length ? `<br><small>${calculator.leagues.map(htmlEscape).join(", ")}</small>` : "")
+    : "";
   const applicationRows = applications.map((a) => `<tr><td>${htmlEscape(a.reference_code)}</td>` +
-    `<td>${htmlEscape(a.player_name)}</td><td>${htmlEscape(a.current_club)}</td>` +
+    `<td>${htmlEscape(a.player_name)}<br><small>${htmlEscape(a.birth_year)}${a.is_minor ? " (minor)" : ""} · ${htmlEscape(a.position)}</small></td>` +
+    `<td>${htmlEscape(a.current_club)}</td>` +
     `<td>${htmlEscape(a.phone)}${a.email ? `<br>${htmlEscape(a.email)}` : ""}</td>` +
+    `<td>${calculatorCell(a.source?.calculator)}</td>` +
     `<td>${htmlEscape(a.created_at)}</td><td>${statusForm("applications", a.id, a.status)}</td></tr>`).join("");
   const clubRequestRows = clubRequests.map((c) => `<tr><td>${htmlEscape(c.reference_code)}</td>` +
     `<td>${htmlEscape(c.club_name)}</td><td>${htmlEscape(c.contact_name)}</td>` +
@@ -482,8 +531,8 @@ function renderAdminPage(adminPath, applications, clubRequests) {
   return `<!doctype html><html><head><meta charset="utf-8"><title>EHA admin</title>` +
     `<style>body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#0b1520}table{border-collapse:collapse;width:100%;margin-bottom:40px}` +
     `th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f2f4f6}` +
-    `select,button{font:inherit}</style></head><body>` +
-    `<h1>Applications</h1><table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
+    `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}small{color:#5a6673}</style></head><body>` +
+    `<h1>Applications</h1>${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Calculator (self-reported)</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
     `<h1>Club requests</h1><table><tr><th>Ref</th><th>Club</th><th>Contact</th><th>Contact info</th><th>Created</th><th>Status</th></tr>${clubRequestRows}</table>` +
     `</body></html>`;
 }
@@ -532,7 +581,7 @@ let assetVersions = null;
 function assetVersion(config, file) {
   if (!assetVersions) {
     assetVersions = {};
-    for (const name of ["styles.css", "site.js", "assets/leagues.ru.js", "assets/leagues.en.js"]) {
+    for (const name of ["styles.css", "site.js", "assets/level-calculator.js", "assets/leagues.ru.js", "assets/leagues.en.js"]) {
       try { assetVersions[name] = Math.round(fs.statSync(path.join(config.publicDir, name)).mtimeMs).toString(36); }
       catch { assetVersions[name] = "0"; }
     }
@@ -699,6 +748,7 @@ function renderBody(data, extension, config, context) {
     html = html
       .replaceAll('href="/styles.css"', `href="${stylesheetHref}"`)
       .replaceAll('src="/site.js"', `src="/site.js?v=${assetVersion(config, "site.js")}"`)
+      .replaceAll('src="/assets/level-calculator.js"', `src="/assets/level-calculator.js?v=${assetVersion(config, "assets/level-calculator.js")}"`)
       .replaceAll('src="/assets/leagues.ru.js"', `src="/assets/leagues.ru.js?v=${assetVersion(config, "assets/leagues.ru.js")}"`)
       .replaceAll('src="/assets/leagues.en.js"', `src="/assets/leagues.en.js?v=${assetVersion(config, "assets/leagues.en.js")}"`);
   }

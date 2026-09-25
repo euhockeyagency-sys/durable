@@ -9,6 +9,8 @@ const ALLOWED_FILES = {
   "image/png": { extensions: new Set([".png"]), signature: (b) => b.length >= 8 && b.subarray(0, 8).equals(Buffer.from("89504e470d0a1a0a", "hex")) }
 };
 
+const CALCULATOR_BANDS = new Set(["top", "mid", "low"]);
+
 const text = (value, max = 500) => String(value || "").trim().slice(0, max);
 const checked = (value) => ["true", "on", "1", "yes"].includes(String(value || "").toLowerCase());
 
@@ -27,6 +29,16 @@ function httpUrl(value, options = {}) {
 function asArray(value) {
   if (Array.isArray(value)) return value;
   return value === undefined || value === "" ? [] : [value];
+}
+
+// Level-calculator context passed through the form. It is self-reported client
+// data, so it is only kept when well-formed and is shown to the agent as such.
+function calculatorContext(body) {
+  const band = text(body.calcBand, 10);
+  const score = Number(body.calcScore);
+  if (!CALCULATOR_BANDS.has(band) || !Number.isInteger(score) || score < 0 || score > 200) return null;
+  const leagues = text(body.calcLeagues, 300).split("|").map((name) => name.trim().slice(0, 80)).filter(Boolean).slice(0, 3);
+  return { band, score, leagues };
 }
 
 function validateApplication(body, files, now = new Date(), requireTurnstile = true, locale = "ru") {
@@ -111,7 +123,8 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
       utm_campaign: text(body.utmCampaign, 160) || null,
       utm_content: text(body.utmContent, 160) || null,
       utm_term: text(body.utmTerm, 160) || null,
-      referrer: text(body.referrer, 500) || null
+      referrer: text(body.referrer, 500) || null,
+      calculator: calculatorContext(body)
     },
     turnstileToken: text(body["cf-turnstile-response"], 2048)
   };

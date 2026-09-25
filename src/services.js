@@ -103,8 +103,15 @@ function notificationText(a) {
     `Elite Prospects: ${a.elite_prospects_url}`,
     ...(a.video_urls || []).map((url, index) => `Видео ${index + 1}: ${url}`),
     a.is_minor ? `Родитель: ${a.parent_name}; ${a.parent_contact}` : null,
+    a.source?.calculator ? `Калькулятор (со слов игрока): ${calculatorSummary(a.source.calculator)}` : null,
     a.message ? `Комментарий: ${a.message}` : null
   ].filter(Boolean).join("\n");
+}
+
+function calculatorSummary(calculator) {
+  const band = { top: "высшие дивизионы", mid: "2–3 дивизионы", low: "низшие дивизионы" }[calculator.band] || calculator.band;
+  const leagues = calculator.leagues?.length ? `; лиги: ${calculator.leagues.join(", ")}` : "";
+  return `${band}, балл ${calculator.score}${leagues}`;
 }
 
 function clubRequestText(request) {
@@ -121,4 +128,4 @@ function clubRequestText(request) {
   ].join("\n");
 }
 
-module.exports = { createServices, notificationText, clubRequestText };
+module.exports = { createServices, notificationText, calculatorSummary, clubRequestText };

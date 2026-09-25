@@ -431,6 +431,56 @@ test("admin status update changes an application's status and rejects an unknown
     .expect(400);
 });
 
+test("stores well-formed calculator context and drops malformed context", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app), { calcBand: "mid", calcScore: "71", calcLeagues: "Alps Hockey League|ICE Hockey League|A|B|C" }).expect(201);
+  assert.deepEqual(services.rows.applications[0].source.calculator, { band: "mid", score: 71, leagues: ["Alps Hockey League", "ICE Hockey League", "A"] });
+  await validRequest(request(app), { calcBand: "elite", calcScore: "71" }).expect(201);
+  assert.equal(services.rows.applications[1].source.calculator, null);
+  await validRequest(request(app)).expect(201);
+  assert.equal(services.rows.applications[2].source.calculator, null);
+});
+
+test("admin page shows calculator context and filters by position, age and search", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config({ adminConfigured: true, adminSecret: "test-admin-secret-1234" }), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app), { playerName: "Forward Adult", calcBand: "top", calcScore: "90", calcLeagues: "Test <b>League</b>" }).expect(201);
+  await validRequest(request(app), {
+    playerName: "Goalie Minor", position: "goalie", birthYear: "2010", currentClub: "Minor Club",
+    parentName: "Parent", parentContact: "parent@example.com", parentConsent: "true"
+  }).expect(201);
+
+  const all = await request(app).get("/admin/test-admin-secret-1234").expect(200);
+  assert.match(all.text, /Forward Adult/);
+  assert.match(all.text, /Goalie Minor/);
+  assert.match(all.text, /top · 90/);
+  assert.match(all.text, /Test &lt;b&gt;League&lt;\/b&gt;/);
+  assert.doesNotMatch(all.text, /Test <b>League/);
+
+  const goalies = await request(app).get("/admin/test-admin-secret-1234?position=goalie").expect(200);
+  assert.match(goalies.text, /Goalie Minor/);
+  assert.doesNotMatch(goalies.text, /Forward Adult/);
+
+  const adults = await request(app).get("/admin/test-admin-secret-1234?age=adult").expect(200);
+  assert.match(adults.text, /Forward Adult/);
+  assert.doesNotMatch(adults.text, /Goalie Minor/);
+
+  const search = await request(app).get("/admin/test-admin-secret-1234?q=minor%20club").expect(200);
+  assert.match(search.text, /Goalie Minor/);
+  assert.doesNotMatch(search.text, /Forward Adult/);
+
+  // Unknown filter values are ignored rather than emptying the list or being echoed unescaped.
+  const junk = await request(app).get("/admin/test-admin-secret-1234?position=%22%3E%3Cscript%3E&q=%22%3E%3Cscript%3E").expect(200);
+  assert.doesNotMatch(junk.text, /<script>/);
+});
+
+test("the level calculator script URL is cache-busted", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app).get("/level-calculator").expect(200);
+  assert.match(response.text, /src="\/assets\/level-calculator\.js\?v=[a-z0-9]+"/);
+});
+
 test("club request rate limiter rejects the sixth attempt", async () => {
   const app = createApp({ config: config({ clubRequestConfigured: true }), services: serviceMock() });
   for (let attempt = 0; attempt < 5; attempt += 1) {

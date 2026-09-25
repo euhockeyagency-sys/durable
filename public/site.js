@@ -42,6 +42,11 @@ if(form){
   const country=(params.get('country')||'').trim().slice(0,100),note=(params.get('note')||'').trim().slice(0,300),message=q('[name="message"]',form);
   if(country&&message&&!message.value.trim())message.value=`${T.countryPrefix}: ${country}`;
   else if(note&&message&&!message.value.trim())message.value=note;
+  const calcBand=params.get('calc_band')||'',calcScore=params.get('calc_score')||'',calcLeagues=(params.get('calc_leagues')||'').slice(0,300);
+  if(['top','mid','low'].includes(calcBand)&&/^\d{1,3}$/.test(calcScore)){[['calcBand',calcBand],['calcScore',calcScore],['calcLeagues',calcLeagues]].forEach(([name,value])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=value});
+    const position=q('[name="position"]',form),pos=params.get('pos'),year=params.get('year');
+    if(position&&!position.value&&['forward','defense','goalie'].includes(pos))position.value=pos;
+    if(!birth.value&&/^\d{4}$/.test(year||'')&&year>=birth.min&&year<=birth.max){birth.value=year;updateParent()}}
   const clearErrors=()=>{qa('.field-error',form).forEach(el=>el.textContent='');qa('[aria-invalid="true"]',form).forEach(el=>el.removeAttribute('aria-invalid'));status.textContent='';status.className='form-status'};
   const showErrors=(errors={})=>{Object.entries(errors).forEach(([name,message])=>{const output=q(`[data-error-for="${name}"]`,form),input=q(`[name="${name}"]`,form);if(output)output.textContent=message;if(input)input.setAttribute('aria-invalid','true')});const first=q('[aria-invalid="true"]',form);first?.focus()};
   form.addEventListener('submit',async event=>{
