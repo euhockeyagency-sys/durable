@@ -13,6 +13,7 @@ const { leagueEditorial } = require("./league-editorial");
 const { leagueFacts } = require("./league-facts");
 const { guideIndex, relatedGuides } = require("./guide-index");
 const { leaguesItemList } = require("./league-list");
+const { createAdminAuth } = require("./admin-auth");
 
 const PRIORITY_LEAGUE_LINKS = [
   { en: "/leagues/czechia-maxa-liga", ru: "/ligi/chehiya-maxa-liga", title: { en: "Czechia Maxa liga", ru: "Чехия — Maxa liga" } },
@@ -173,13 +174,51 @@ function createApp({ config, services, now, randomUUID } = {}) {
     res.set("Allow", "POST").status(405).json({ ok: false, code: "method_not_allowed" });
   });
 
-  // Secret-path admin view, same trust model as the MCP content editor
-  // (mcp/server.mjs): the URL itself is the credential, never linked from the
-  // public site, and excluded from search indexing below.
+  // Password-protected admin view. Never linked from the public site and
+  // excluded from search indexing; the route is absent unless ADMIN_PASSWORD is
+  // set. Sessions are signed cookies (src/admin-auth.js).
   if (config.adminConfigured) {
-    const adminPath = `/admin/${config.adminSecret}`;
-    app.get(adminPath, async (req, res) => {
-      res.set("X-Robots-Tag", "noindex");
+    const adminPath = "/admin";
+    const auth = createAdminAuth({
+      password: config.adminPassword,
+      secureCookie: String(config.primaryUrl || "").startsWith("https://"),
+      now: now || (() => new Date()),
+      path: adminPath
+    });
+    const loginLimiter = createRateLimiter({
+      limit: 10,
+      windowMs: 15 * 60 * 1000,
+      now: () => (now ? now().getTime() : Date.now()),
+      onLimit: (_req, res) => res.status(429).type("html").send(renderAdminLoginPage(adminPath, "Too many attempts. Try again in 15 minutes."))
+    });
+    const requireAdmin = (req, res, next) => {
+      const session = auth.sessionFrom(req);
+      if (!session) return res.redirect(303, `${adminPath}/login`);
+      req.adminSession = session;
+      next();
+    };
+    app.use(adminPath, (_req, res, next) => {
+      res.set({ "X-Robots-Tag": "noindex", "Cache-Control": "no-store" });
+      next();
+    });
+    app.get(`${adminPath}/login`, (req, res) => {
+      if (auth.sessionFrom(req)) return res.redirect(303, adminPath);
+      res.type("html").send(renderAdminLoginPage(adminPath));
+    });
+    app.post(`${adminPath}/login`, loginLimiter, express.urlencoded({ extended: false, limit: "2kb" }), (req, res) => {
+      const password = typeof (req.body || {}).password === "string" ? req.body.password : "";
+      if (!password || !auth.checkPassword(password)) {
+        return res.status(401).type("html").send(renderAdminLoginPage(adminPath, "Wrong password."));
+      }
+      auth.issueSession(res);
+      res.redirect(303, adminPath);
+    });
+    app.post(`${adminPath}/logout`, requireAdmin, express.urlencoded({ extended: false, limit: "1kb" }), (req, res) => {
+      if (!auth.validCsrf(req.adminSession, (req.body || {}).csrf)) return res.status(403).type("text").send("Invalid request.");
+      auth.clearSession(res);
+      res.redirect(303, `${adminPath}/login`);
+    });
+    app.get(adminPath, requireAdmin, async (req, res) => {
       const filters = parseAdminFilters(req.query);
       try {
         const [allApplications, clubRequests] = await Promise.all([
@@ -187,15 +226,19 @@ function createApp({ config, services, now, randomUUID } = {}) {
           fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, created_at")
         ]);
         const applications = filterAdminApplications(allApplications, filters);
-        res.type("html").send(renderAdminPage(adminPath, applications, clubRequests, { filters, total: allApplications.length }));
+        res.type("html").send(renderAdminPage(adminPath, applications, clubRequests, {
+          filters,
+          total: allApplications.length,
+          csrf: auth.csrfToken(req.adminSession)
+        }));
       } catch (error) {
         console.error("Admin page query failed", error.message);
         res.status(503).type("text").send("Could not load admin data.");
       }
     });
-    app.post(`${adminPath}/status`, express.urlencoded({ extended: false, limit: "1kb" }), async (req, res) => {
-      res.set("X-Robots-Tag", "noindex");
-      const { table, id, status } = req.body || {};
+    app.post(`${adminPath}/status`, requireAdmin, express.urlencoded({ extended: false, limit: "1kb" }), async (req, res) => {
+      const { table, id, status, csrf } = req.body || {};
+      if (!auth.validCsrf(req.adminSession, csrf)) return res.status(403).type("text").send("Invalid request.");
       if (!ADMIN_TABLES.has(table) || !ADMIN_STATUSES.has(status) || !id) {
         return res.status(400).type("text").send("Invalid request.");
       }
@@ -287,7 +330,7 @@ function maskEmail(value) {
   return `${user.slice(0, 2)}***@${domain}`;
 }
 
-function createRateLimiter({ limit, windowMs, now }) {
+function createRateLimiter({ limit, windowMs, now, onLimit }) {
   const clients = new Map();
   return (req, res, next) => {
     const timestamp = now();
@@ -301,6 +344,7 @@ function createRateLimiter({ limit, windowMs, now }) {
     res.set("RateLimit-Reset", String(Math.ceil(state.resetAt / 1000)));
     if (state.count > limit) {
       res.set("Retry-After", String(Math.ceil((state.resetAt - timestamp) / 1000)));
+      if (onLimit) return onLimit(req, res);
       return res.status(429).json({ ok: false, code: "rate_limit_exceeded", message: "Слишком много попыток. Попробуйте через 15 минут." });
     }
     next();
@@ -497,11 +541,11 @@ function filterAdminApplications(applications, filters) {
   });
 }
 
-function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length } = {}) {
+function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length, csrf = "" } = {}) {
   const statusOptions = [...ADMIN_STATUSES]
     .map((status) => `<option value="${status}">${status}</option>`).join("");
   const statusForm = (table, id, currentStatus) => `<form method="post" action="${adminPath}/status">` +
-    `<input type="hidden" name="table" value="${table}"><input type="hidden" name="id" value="${htmlEscape(id)}">` +
+    `<input type="hidden" name="table" value="${table}"><input type="hidden" name="id" value="${htmlEscape(id)}"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}">` +
     `<select name="status">${statusOptions.replace(`value="${currentStatus}"`, `value="${currentStatus}" selected`)}</select>` +
     `<button type="submit">Save</button></form>`;
   const selectFilter = (name, label, options) => `<label>${label} <select name="${name}"><option value="">any</option>` +
@@ -531,10 +575,23 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
   return `<!doctype html><html><head><meta charset="utf-8"><title>EHA admin</title>` +
     `<style>body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#0b1520}table{border-collapse:collapse;width:100%;margin-bottom:40px}` +
     `th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f2f4f6}` +
-    `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}small{color:#5a6673}</style></head><body>` +
+    `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}small{color:#5a6673}.logout{float:right}</style></head><body>` +
+    `<form method="post" action="${adminPath}/logout" class="logout"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}"><button type="submit">Log out</button></form>` +
     `<h1>Applications</h1>${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Calculator (self-reported)</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
     `<h1>Club requests</h1><table><tr><th>Ref</th><th>Club</th><th>Contact</th><th>Contact info</th><th>Created</th><th>Status</th></tr>${clubRequestRows}</table>` +
     `</body></html>`;
+}
+
+function renderAdminLoginPage(adminPath, error = "") {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex">` +
+    `<meta name="viewport" content="width=device-width, initial-scale=1"><title>EHA admin</title>` +
+    `<style>body{font:16px/1.4 system-ui,sans-serif;margin:0;display:grid;place-items:center;min-height:100vh;color:#0b1520;background:#f2f4f6}` +
+    `form{background:#fff;padding:24px;border-radius:8px;width:min(340px,90vw);display:grid;gap:12px}` +
+    `input,button{font:inherit;padding:10px}[role=alert]{color:#b00020;margin:0}</style></head><body>` +
+    `<form method="post" action="${adminPath}/login"><h1 style="margin:0;font-size:20px">EHA admin</h1>` +
+    (error ? `<p role="alert">${htmlEscape(error)}</p>` : "") +
+    `<label>Password<br><input type="password" name="password" autocomplete="current-password" required autofocus style="width:100%;box-sizing:border-box"></label>` +
+    `<button type="submit">Log in</button></form></body></html>`;
 }
 
 function cryptoRandomUUID() {

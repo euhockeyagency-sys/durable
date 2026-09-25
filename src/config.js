@@ -73,11 +73,10 @@ function loadConfig(env = process.env) {
     // applications, so both notification channels AND storage must be ready
     // before the public form is enabled.
     clubRequestConfigured: telegramConfigured && emailConfigured && missingApplicationKeys.length === 0,
-    // The admin view's URL is its only credential (same trust model as the MCP
-    // content editor), so a short/missing secret disables the route entirely
-    // rather than serving it under a guessable path.
-    adminSecret: env.ADMIN_SECRET || "",
-    adminConfigured: Boolean(env.ADMIN_SECRET && env.ADMIN_SECRET.length >= 16) && missingApplicationKeys.length === 0
+    // The admin view is protected by a password login (src/admin-auth.js). A
+    // short or missing password disables the route entirely.
+    adminPassword: env.ADMIN_PASSWORD || "",
+    adminConfigured: Boolean(env.ADMIN_PASSWORD && env.ADMIN_PASSWORD.length >= 12) && missingApplicationKeys.length === 0
   };
 }
 

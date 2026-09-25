@@ -391,44 +391,121 @@ test("keeps a saved club request when a notification channel fails", async () =>
   assert.deepEqual(statuses, ["failed", "sent"]);
 });
 
-test("the admin route is absent without an admin secret", async () => {
+const ADMIN_PASSWORD = "test-admin-password-1234";
+const adminConfig = () => config({ adminConfigured: true, adminPassword: ADMIN_PASSWORD });
+
+async function adminLogin(app, password = ADMIN_PASSWORD) {
+  const response = await request(app).post("/admin/login").type("form").send({ password });
+  const cookie = (response.headers["set-cookie"] || []).map((entry) => entry.split(";")[0]).find((entry) => entry.startsWith("eha_admin="));
+  return { response, cookie };
+}
+
+function csrfFrom(html) {
+  return html.match(/name="csrf" value="([a-f0-9]+)"/)[1];
+}
+
+test("the admin routes are absent without an admin password", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
-  await request(app).get("/admin/anything").expect(404);
+  await request(app).get("/admin").expect(404);
+  await request(app).get("/admin/login").expect(404);
+});
+
+test("admin requires a login: anonymous requests are redirected and the old secret URL is gone", async () => {
+  const app = createApp({ config: adminConfig(), services: serviceMock() });
+  const anonymous = await request(app).get("/admin").expect(303);
+  assert.equal(anonymous.headers.location, "/admin/login");
+  await request(app).post("/admin/status").type("form").send({ table: "applications", id: "x", status: "new" }).expect(303);
+  await request(app).get("/admin/test-admin-secret-1234").expect(404);
+  const login = await request(app).get("/admin/login").expect(200);
+  assert.equal(login.headers["x-robots-tag"], "noindex");
+  assert.equal(login.headers["cache-control"], "no-store");
+  assert.match(login.text, /type="password"/);
+});
+
+test("wrong password is rejected without a session; correct password sets a hardened cookie", async () => {
+  const app = createApp({ config: adminConfig(), services: serviceMock() });
+  const bad = await adminLogin(app, "not-the-password");
+  assert.equal(bad.response.status, 401);
+  assert.equal(bad.cookie, undefined);
+  const empty = await request(app).post("/admin/login").type("form").send({}).expect(401);
+  assert.equal((empty.headers["set-cookie"] || []).length, 0);
+
+  const good = await adminLogin(app);
+  assert.equal(good.response.status, 303);
+  assert.equal(good.response.headers.location, "/admin");
+  const setCookie = good.response.headers["set-cookie"][0];
+  assert.match(setCookie, /HttpOnly/);
+  assert.match(setCookie, /SameSite=Strict/);
+  assert.match(setCookie, /Secure/);
+  assert.match(setCookie, /Path=\/admin/);
+  assert.doesNotMatch(setCookie, new RegExp(ADMIN_PASSWORD));
+});
+
+test("admin session rejects tampered and expired cookies and dies with a password change", async () => {
+  let clock = new Date("2026-07-18T12:00:00Z");
+  const app = createApp({ config: adminConfig(), services: serviceMock(), now: () => clock });
+  const { cookie } = await adminLogin(app);
+  await request(app).get("/admin").set("Cookie", cookie).expect(200);
+  await request(app).get("/admin").set("Cookie", `${cookie}0`).expect(303);
+  const [name, value] = cookie.split("=");
+  const forged = value.split(".").map((part, index) => (index === 0 ? String(Number(part) + 86400000) : part)).join(".");
+  await request(app).get("/admin").set("Cookie", `${name}=${forged}`).expect(303);
+
+  const rotated = createApp({ config: config({ adminConfigured: true, adminPassword: "another-password-5678" }), services: serviceMock(), now: () => clock });
+  await request(rotated).get("/admin").set("Cookie", cookie).expect(303);
+
+  clock = new Date("2026-07-19T12:00:01Z");
+  await request(app).get("/admin").set("Cookie", cookie).expect(303);
+});
+
+test("login attempts are rate limited", async () => {
+  const app = createApp({ config: adminConfig(), services: serviceMock() });
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    await request(app).post("/admin/login").type("form").send({ password: "wrong" }).expect(401);
+  }
+  const limited = await request(app).post("/admin/login").type("form").send({ password: ADMIN_PASSWORD }).expect(429);
+  assert.match(limited.text, /Too many attempts/);
+  assert.equal((limited.headers["set-cookie"] || []).length, 0);
 });
 
 test("admin page lists applications and club requests with noindex", async () => {
   const services = serviceMock();
-  const app = createApp({ config: config({ adminConfigured: true, adminSecret: "test-admin-secret-1234" }), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-07-18T12:00:00Z") });
   await validRequest(request(app)).expect(201);
   await validClubRequest(request(app)).expect(201);
-  const response = await request(app).get("/admin/test-admin-secret-1234").expect(200);
+  const { cookie } = await adminLogin(app);
+  const response = await request(app).get("/admin").set("Cookie", cookie).expect(200);
   assert.equal(response.headers["x-robots-tag"], "noindex");
+  assert.equal(response.headers["cache-control"], "no-store");
   assert.match(response.text, /Иван Иванов/);
   assert.match(response.text, /HC Test/);
 });
 
-test("the admin route 404s on the wrong secret", async () => {
-  const app = createApp({ config: config({ adminConfigured: true, adminSecret: "test-admin-secret-1234" }), services: serviceMock() });
-  await request(app).get("/admin/wrong-secret").expect(404);
-});
-
-test("admin status update changes an application's status and rejects an unknown status", async () => {
+test("admin status update needs a session and a valid CSRF token, and rejects an unknown status", async () => {
   const services = serviceMock();
-  const app = createApp({ config: config({ adminConfigured: true, adminSecret: "test-admin-secret-1234" }), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-07-18T12:00:00Z") });
   await validRequest(request(app)).expect(201);
   const applicationId = services.rows.applications[0].id;
-  await request(app)
-    .post("/admin/test-admin-secret-1234/status")
-    .type("form")
-    .send({ table: "applications", id: applicationId, status: "contacted" })
-    .expect(303);
-  assert.equal(services.rows.applications[0].status, "contacted");
+  const { cookie } = await adminLogin(app);
+  const csrf = csrfFrom((await request(app).get("/admin").set("Cookie", cookie)).text);
+  const post = (fields) => request(app).post("/admin/status").set("Cookie", cookie).type("form").send(fields);
 
-  await request(app)
-    .post("/admin/test-admin-secret-1234/status")
-    .type("form")
-    .send({ table: "applications", id: applicationId, status: "not-a-real-status" })
-    .expect(400);
+  await post({ table: "applications", id: applicationId, status: "contacted" }).expect(403);
+  await post({ table: "applications", id: applicationId, status: "contacted", csrf: "0".repeat(64) }).expect(403);
+  assert.equal(services.rows.applications[0].status, "new");
+
+  await post({ table: "applications", id: applicationId, status: "contacted", csrf }).expect(303);
+  assert.equal(services.rows.applications[0].status, "contacted");
+  await post({ table: "applications", id: applicationId, status: "not-a-real-status", csrf }).expect(400);
+});
+
+test("logout clears the session and requires the CSRF token", async () => {
+  const app = createApp({ config: adminConfig(), services: serviceMock() });
+  const { cookie } = await adminLogin(app);
+  const csrf = csrfFrom((await request(app).get("/admin").set("Cookie", cookie)).text);
+  await request(app).post("/admin/logout").set("Cookie", cookie).type("form").send({}).expect(403);
+  const out = await request(app).post("/admin/logout").set("Cookie", cookie).type("form").send({ csrf }).expect(303);
+  assert.match(out.headers["set-cookie"][0], /Max-Age=0/);
 });
 
 test("stores well-formed calculator context and drops malformed context", async () => {
@@ -444,34 +521,36 @@ test("stores well-formed calculator context and drops malformed context", async 
 
 test("admin page shows calculator context and filters by position, age and search", async () => {
   const services = serviceMock();
-  const app = createApp({ config: config({ adminConfigured: true, adminSecret: "test-admin-secret-1234" }), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  const { cookie } = await adminLogin(app);
+  const admin = (query = "") => request(app).get(`/admin${query}`).set("Cookie", cookie).expect(200);
   await validRequest(request(app), { playerName: "Forward Adult", calcBand: "top", calcScore: "90", calcLeagues: "Test <b>League</b>" }).expect(201);
   await validRequest(request(app), {
     playerName: "Goalie Minor", position: "goalie", birthYear: "2010", currentClub: "Minor Club",
     parentName: "Parent", parentContact: "parent@example.com", parentConsent: "true"
   }).expect(201);
 
-  const all = await request(app).get("/admin/test-admin-secret-1234").expect(200);
+  const all = await admin();
   assert.match(all.text, /Forward Adult/);
   assert.match(all.text, /Goalie Minor/);
   assert.match(all.text, /top · 90/);
   assert.match(all.text, /Test &lt;b&gt;League&lt;\/b&gt;/);
   assert.doesNotMatch(all.text, /Test <b>League/);
 
-  const goalies = await request(app).get("/admin/test-admin-secret-1234?position=goalie").expect(200);
+  const goalies = await admin("?position=goalie");
   assert.match(goalies.text, /Goalie Minor/);
   assert.doesNotMatch(goalies.text, /Forward Adult/);
 
-  const adults = await request(app).get("/admin/test-admin-secret-1234?age=adult").expect(200);
+  const adults = await admin("?age=adult");
   assert.match(adults.text, /Forward Adult/);
   assert.doesNotMatch(adults.text, /Goalie Minor/);
 
-  const search = await request(app).get("/admin/test-admin-secret-1234?q=minor%20club").expect(200);
+  const search = await admin("?q=minor%20club");
   assert.match(search.text, /Goalie Minor/);
   assert.doesNotMatch(search.text, /Forward Adult/);
 
   // Unknown filter values are ignored rather than emptying the list or being echoed unescaped.
-  const junk = await request(app).get("/admin/test-admin-secret-1234?position=%22%3E%3Cscript%3E&q=%22%3E%3Cscript%3E").expect(200);
+  const junk = await admin("?position=%22%3E%3Cscript%3E&q=%22%3E%3Cscript%3E");
   assert.doesNotMatch(junk.text, /<script>/);
 });
 
