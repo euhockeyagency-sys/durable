@@ -198,6 +198,14 @@
     var bandEl = document.getElementById("calc-band");
     var ctaEl = document.getElementById("calc-cta");
 
+    // First interaction with the calculator = the "started" step of the funnel.
+    var started = false;
+    form.addEventListener("focusin", function () {
+      if (started) return;
+      started = true;
+      if (root.ehaTrack) root.ehaTrack("calculator_start");
+    });
+
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       var input = {
@@ -234,7 +242,7 @@
       // gets keyboard/AT users there, not just scrolls sighted users to it.
       resultEl.scrollIntoView({ behavior: "smooth", block: "start" });
       bandEl.focus();
-      if (root.ym) root.ym(110889446, "reachGoal", "calculator_done");
+      if (root.ehaTrack) root.ehaTrack("calculator_done", { band: r.bandKey, score: r.score });
     });
   }
 

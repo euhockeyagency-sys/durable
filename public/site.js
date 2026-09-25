@@ -43,10 +43,13 @@ if(form){
   if(country&&message&&!message.value.trim())message.value=`${T.countryPrefix}: ${country}`;
   else if(note&&message&&!message.value.trim())message.value=note;
   const calcBand=params.get('calc_band')||'',calcScore=params.get('calc_score')||'',calcLeagues=(params.get('calc_leagues')||'').slice(0,300);
-  if(['top','mid','low'].includes(calcBand)&&/^\d{1,3}$/.test(calcScore)){[['calcBand',calcBand],['calcScore',calcScore],['calcLeagues',calcLeagues]].forEach(([name,value])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=value});
+  const fromCalc=['top','mid','low'].includes(calcBand)&&/^\d{1,3}$/.test(calcScore);
+  try{fromCalc?sessionStorage.setItem('eha-from-calc','1'):sessionStorage.removeItem('eha-from-calc')}catch(error){}
+  if(fromCalc){[['calcBand',calcBand],['calcScore',calcScore],['calcLeagues',calcLeagues]].forEach(([name,value])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=value});
     const position=q('[name="position"]',form),pos=params.get('pos'),year=params.get('year');
     if(position&&!position.value&&['forward','defense','goalie'].includes(pos))position.value=pos;
     if(!birth.value&&/^\d{4}$/.test(year||'')&&year>=birth.min&&year<=birth.max){birth.value=year;updateParent()}}
+  let formStarted=false;form.addEventListener('focusin',()=>{if(formStarted)return;formStarted=true;track('form_start',{from_calculator:fromCalc})});
   const clearErrors=()=>{qa('.field-error',form).forEach(el=>el.textContent='');qa('[aria-invalid="true"]',form).forEach(el=>el.removeAttribute('aria-invalid'));status.textContent='';status.className='form-status'};
   const showErrors=(errors={})=>{Object.entries(errors).forEach(([name,message])=>{const output=q(`[data-error-for="${name}"]`,form),input=q(`[name="${name}"]`,form);if(output)output.textContent=message;if(input)input.setAttribute('aria-invalid','true')});const first=q('[aria-invalid="true"]',form);first?.focus()};
   form.addEventListener('submit',async event=>{
@@ -81,6 +84,13 @@ if(clubForm){
   });
 }
 
+// Conversion funnel events (page view -> calculator_start -> calculator_done ->
+// form_start -> application_sent). Sent to Yandex Metrika (JS-event goals) and
+// GA4 (events). Both stay consent-gated: Metrika is only initialised after the
+// visitor accepts cookies, and GA4 runs in Consent Mode.
+const track=(name,params={})=>{try{if(typeof ym==='function')ym(110889446,'reachGoal',name,params);if(typeof gtag==='function')gtag('event',name,params)}catch(error){}};
+window.ehaTrack=track;
+
 // Turnstile tokens are single-use and expire after a few minutes. When the
 // browser restores a submitted form from the back/forward cache, the widget
 // still holds the token that was already redeemed, so the next submit is
@@ -88,4 +98,4 @@ if(clubForm){
 addEventListener('pageshow',event=>{if(event.persisted&&window.turnstile&&q('.cf-turnstile'))turnstile.reset()});
 
 const reference=q('[data-application-reference]');
-if(reference){const value=new URLSearchParams(location.search).get('ref')||'';if(/^EHA-\d{6}-[A-F0-9]{6}$/.test(value)){reference.textContent=value;const link=q('[data-success-whatsapp]');if(link)link.href=`https://wa.me/375297957818?text=${encodeURIComponent(T.waGreeting(value))}`}else reference.textContent=T.notFound}
+if(reference){const value=new URLSearchParams(location.search).get('ref')||'';if(/^EHA-\d{6}-[A-F0-9]{6}$/.test(value)){reference.textContent=value;try{const key=`eha-sent-${value}`;if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');track('application_sent',{from_calculator:sessionStorage.getItem('eha-from-calc')==='1'})}}catch(error){track('application_sent')}const link=q('[data-success-whatsapp]');if(link)link.href=`https://wa.me/375297957818?text=${encodeURIComponent(T.waGreeting(value))}`}else reference.textContent=T.notFound}
