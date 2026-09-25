@@ -222,19 +222,33 @@ function createApp({ config, services, now, randomUUID } = {}) {
       const filters = parseAdminFilters(req.query);
       try {
         const [allApplications, clubRequests] = await Promise.all([
-          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, created_at"),
+          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at"),
           fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, created_at")
         ]);
-        const applications = filterAdminApplications(allApplications, filters);
+        const today = adminToday(now);
+        const applications = filterAdminApplications(allApplications, filters, today);
         res.type("html").send(renderAdminPage(adminPath, applications, clubRequests, {
           filters,
           total: allApplications.length,
-          csrf: auth.csrfToken(req.adminSession)
+          csrf: auth.csrfToken(req.adminSession),
+          today
         }));
       } catch (error) {
         console.error("Admin page query failed", error.message);
         res.status(503).type("text").send("Could not load admin data.");
       }
+    });
+    app.post(`${adminPath}/followup`, requireAdmin, express.urlencoded({ extended: false, limit: "8kb" }), async (req, res) => {
+      const body = req.body || {};
+      if (!auth.validCsrf(req.adminSession, body.csrf)) return res.status(403).type("text").send("Invalid request.");
+      const followup = parseAdminFollowup(body);
+      if (!followup) return res.status(400).type("text").send("Invalid request.");
+      const { error } = await appServices.supabase.from("applications").update(followup.patch).eq("id", followup.id);
+      if (error) {
+        console.error("Admin follow-up update failed", error.message);
+        return res.status(503).type("text").send("Could not save follow-up.");
+      }
+      res.redirect(303, adminPath);
     });
     app.post(`${adminPath}/status`, requireAdmin, express.urlencoded({ extended: false, limit: "1kb" }), async (req, res) => {
       const { table, id, status, csrf } = req.body || {};
@@ -512,6 +526,7 @@ async function fetchAdminRows(supabase, table, columns) {
 
 const ADMIN_POSITIONS = ["forward", "defense", "goalie"];
 const ADMIN_AGE_GROUPS = ["minor", "adult"];
+const ADMIN_FOLLOWUPS = ["due", "upcoming", "none"];
 const ADMIN_BAND_LABELS = { top: "top", mid: "2–3", low: "lower" };
 
 function parseAdminFilters(query = {}) {
@@ -519,29 +534,55 @@ function parseAdminFilters(query = {}) {
   const status = one(query.status);
   const position = one(query.position);
   const age = one(query.age);
+  const followup = one(query.followup);
   return {
     q: one(query.q).slice(0, 80),
     status: ADMIN_STATUSES.has(status) ? status : "",
     position: ADMIN_POSITIONS.includes(position) ? position : "",
-    age: ADMIN_AGE_GROUPS.includes(age) ? age : ""
+    age: ADMIN_AGE_GROUPS.includes(age) ? age : "",
+    followup: ADMIN_FOLLOWUPS.includes(followup) ? followup : ""
   };
+}
+
+const adminToday = (now) => (now ? now() : new Date()).toISOString().slice(0, 10);
+
+// Validates the follow-up form. The date must be a real calendar day (or empty
+// to clear it); the note is trimmed and capped to the database limit.
+function parseAdminFollowup(body) {
+  const id = typeof body.id === "string" ? body.id : "";
+  const date = typeof body.next_contact_at === "string" ? body.next_contact_at.trim() : "";
+  const note = typeof body.internal_note === "string" ? body.internal_note.trim() : "";
+  if (!id || note.length > 4000) return null;
+  if (date) {
+    const parsed = new Date(`${date}T00:00:00Z`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) return null;
+  }
+  return { id, patch: { internal_note: note || null, next_contact_at: date || null } };
 }
 
 // Filtering happens in memory over the (already capped) list the page loads;
 // at the current volume that is simpler than pushing filters into Supabase.
-function filterAdminApplications(applications, filters) {
+function filterAdminApplications(applications, filters, today = adminToday()) {
   const needle = filters.q.toLowerCase();
-  return applications.filter((a) => {
+  const filtered = applications.filter((a) => {
     if (filters.status && a.status !== filters.status) return false;
     if (filters.position && a.position !== filters.position) return false;
     if (filters.age && (filters.age === "minor") !== Boolean(a.is_minor)) return false;
+    if (filters.followup === "due" && !(a.next_contact_at && a.next_contact_at <= today)) return false;
+    if (filters.followup === "upcoming" && !(a.next_contact_at && a.next_contact_at > today)) return false;
+    if (filters.followup === "none" && a.next_contact_at) return false;
     if (!needle) return true;
-    return [a.player_name, a.current_club, a.reference_code, a.email, a.phone]
+    return [a.player_name, a.current_club, a.reference_code, a.email, a.phone, a.internal_note]
       .some((field) => String(field || "").toLowerCase().includes(needle));
   });
+  // The most overdue contact first when working the follow-up queue.
+  if (filters.followup === "due" || filters.followup === "upcoming") {
+    filtered.sort((a, b) => String(a.next_contact_at).localeCompare(String(b.next_contact_at)));
+  }
+  return filtered;
 }
 
-function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length, csrf = "" } = {}) {
+function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length, csrf = "", today = adminToday() } = {}) {
   const statusOptions = [...ADMIN_STATUSES]
     .map((status) => `<option value="${status}">${status}</option>`).join("");
   const statusForm = (table, id, currentStatus) => `<form method="post" action="${adminPath}/status">` +
@@ -552,21 +593,32 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
     options.map((option) => `<option value="${option}"${filters[name] === option ? " selected" : ""}>${option}</option>`).join("") +
     `</select></label>`;
   const filterForm = `<form class="filters" method="get" action="${adminPath}">` +
-    `<label>Search <input name="q" value="${htmlEscape(filters.q)}" placeholder="name, club, ref, contact" maxlength="80"></label>` +
+    `<label>Search <input name="q" value="${htmlEscape(filters.q)}" placeholder="name, club, ref, contact, note" maxlength="80"></label>` +
     selectFilter("status", "Status", [...ADMIN_STATUSES]) +
     selectFilter("position", "Position", ADMIN_POSITIONS) +
     selectFilter("age", "Age", ADMIN_AGE_GROUPS) +
+    selectFilter("followup", "Follow-up", ADMIN_FOLLOWUPS) +
     `<button type="submit">Filter</button> <a href="${adminPath}">Reset</a> <span>${applications.length} of ${total}</span></form>`;
   // Calculator data is what the player's browser sent, not something verified.
   const calculatorCell = (calculator) => calculator
     ? `${htmlEscape(ADMIN_BAND_LABELS[calculator.band] || calculator.band)} · ${htmlEscape(calculator.score)}` +
       (calculator.leagues?.length ? `<br><small>${calculator.leagues.map(htmlEscape).join(", ")}</small>` : "")
     : "";
+  const followupForm = (a) => {
+    const overdue = a.next_contact_at && a.next_contact_at <= today && !["rejected", "archived"].includes(a.status);
+    return `<form method="post" action="${adminPath}/followup" class="followup">` +
+      `<input type="hidden" name="id" value="${htmlEscape(a.id)}"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}">` +
+      `<textarea name="internal_note" rows="3" maxlength="4000" aria-label="Internal note for ${htmlEscape(a.player_name)}">${htmlEscape(a.internal_note || "")}</textarea>` +
+      `<label>Next contact <input type="date" name="next_contact_at" value="${htmlEscape(a.next_contact_at || "")}"></label>` +
+      (overdue ? ` <strong class="due">due</strong>` : "") +
+      `<button type="submit">Save</button></form>`;
+  };
   const applicationRows = applications.map((a) => `<tr><td>${htmlEscape(a.reference_code)}</td>` +
     `<td>${htmlEscape(a.player_name)}<br><small>${htmlEscape(a.birth_year)}${a.is_minor ? " (minor)" : ""} · ${htmlEscape(a.position)}</small></td>` +
     `<td>${htmlEscape(a.current_club)}</td>` +
     `<td>${htmlEscape(a.phone)}${a.email ? `<br>${htmlEscape(a.email)}` : ""}</td>` +
     `<td>${calculatorCell(a.source?.calculator)}</td>` +
+    `<td>${followupForm(a)}</td>` +
     `<td>${htmlEscape(a.created_at)}</td><td>${statusForm("applications", a.id, a.status)}</td></tr>`).join("");
   const clubRequestRows = clubRequests.map((c) => `<tr><td>${htmlEscape(c.reference_code)}</td>` +
     `<td>${htmlEscape(c.club_name)}</td><td>${htmlEscape(c.contact_name)}</td>` +
@@ -575,9 +627,9 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
   return `<!doctype html><html><head><meta charset="utf-8"><title>EHA admin</title>` +
     `<style>body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#0b1520}table{border-collapse:collapse;width:100%;margin-bottom:40px}` +
     `th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f2f4f6}` +
-    `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}small{color:#5a6673}.logout{float:right}</style></head><body>` +
+    `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}small{color:#5a6673}.logout{float:right}.followup{display:grid;gap:6px;min-width:220px}.followup textarea{width:100%;box-sizing:border-box}.due{color:#b00020}</style></head><body>` +
     `<form method="post" action="${adminPath}/logout" class="logout"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}"><button type="submit">Log out</button></form>` +
-    `<h1>Applications</h1>${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Calculator (self-reported)</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
+    `<h1>Applications</h1>${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Calculator (self-reported)</th><th>Follow-up</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
     `<h1>Club requests</h1><table><tr><th>Ref</th><th>Club</th><th>Contact</th><th>Contact info</th><th>Created</th><th>Status</th></tr>${clubRequestRows}</table>` +
     `</body></html>`;
 }

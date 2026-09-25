@@ -554,6 +554,58 @@ test("admin page shows calculator context and filters by position, age and searc
   assert.doesNotMatch(junk.text, /<script>/);
 });
 
+test("admin follow-up: saves a note and next contact date, validates input, needs CSRF", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app)).expect(201);
+  const applicationId = services.rows.applications[0].id;
+  const { cookie } = await adminLogin(app);
+  const csrf = csrfFrom((await request(app).get("/admin").set("Cookie", cookie)).text);
+  const post = (fields) => request(app).post("/admin/followup").set("Cookie", cookie).type("form").send(fields);
+
+  await post({ id: applicationId, internal_note: "x", next_contact_at: "2026-08-01" }).expect(403);
+  assert.equal(services.rows.applications[0].internal_note, undefined);
+
+  await post({ id: applicationId, internal_note: "  Called, wants Slovakia <b>  ", next_contact_at: "2026-08-01", csrf }).expect(303);
+  assert.equal(services.rows.applications[0].internal_note, "Called, wants Slovakia <b>");
+  assert.equal(services.rows.applications[0].next_contact_at, "2026-08-01");
+
+  for (const bad of [{ next_contact_at: "2026-02-30" }, { next_contact_at: "tomorrow" }, { next_contact_at: "2026-8-1" }, { internal_note: "n".repeat(4001) }]) {
+    await post({ id: applicationId, csrf, ...bad }).expect(400);
+  }
+  await post({ csrf, internal_note: "no id" }).expect(400);
+  assert.equal(services.rows.applications[0].next_contact_at, "2026-08-01");
+
+  const page = await request(app).get("/admin").set("Cookie", cookie).expect(200);
+  assert.match(page.text, /Called, wants Slovakia &lt;b&gt;/);
+  assert.doesNotMatch(page.text, /Slovakia <b>/);
+  assert.match(page.text, /name="next_contact_at" value="2026-08-01"/);
+
+  await post({ id: applicationId, internal_note: "", next_contact_at: "", csrf }).expect(303);
+  assert.equal(services.rows.applications[0].internal_note, null);
+  assert.equal(services.rows.applications[0].next_contact_at, null);
+});
+
+test("admin follow-up filter: due, upcoming and none, most overdue first, note is searchable", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  for (const [name, date, note] of [["Player Late", "2026-07-01", "call agent about visa"], ["Player Today", "2026-07-18", ""], ["Player Later", "2026-09-01", ""], ["Player None", "", ""]]) {
+    await validRequest(request(app), { playerName: name }).expect(201);
+    Object.assign(services.rows.applications.at(-1), { next_contact_at: date || null, internal_note: note || null });
+  }
+  const { cookie } = await adminLogin(app);
+  const names = async (query) => {
+    const html = (await request(app).get(`/admin?${query}`).set("Cookie", cookie).expect(200)).text;
+    return [...html.matchAll(/Player (Later|Late|Today|None)/g)].map((m) => m[1]).filter((n, i, all) => all.indexOf(n) === i);
+  };
+  assert.deepEqual(await names("followup=due"), ["Late", "Today"]);
+  assert.deepEqual(await names("followup=upcoming"), ["Later"]);
+  assert.deepEqual(await names("followup=none"), ["None"]);
+  assert.deepEqual(await names("q=visa"), ["Late"]);
+  const overdue = (await request(app).get("/admin?followup=due").set("Cookie", cookie)).text;
+  assert.equal((overdue.match(/class="due"/g) || []).length, 2);
+});
+
 test("the level calculator script URL is cache-busted", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app).get("/level-calculator").expect(200);

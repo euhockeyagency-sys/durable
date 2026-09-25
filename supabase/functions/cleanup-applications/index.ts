@@ -26,11 +26,15 @@ Deno.serve(async (request) => {
   }
 
   const supabase = createClient(url, secretKey, { auth: { persistSession: false } });
+  // An application with a planned contact date (today or later) is being worked
+  // on, even if its status is still "new": keep it until that date has passed.
+  const today = new Date().toISOString().slice(0, 10);
   const { data: applications, error } = await supabase
     .from("applications")
     .select("id, application_files(storage_path)")
     .lt("retention_until", new Date().toISOString())
     .in("status", ["new", "rejected", "archived"])
+    .or(`next_contact_at.is.null,next_contact_at.lt.${today}`)
     .limit(100);
 
   if (error) return responseError("query_failed", error.message);
