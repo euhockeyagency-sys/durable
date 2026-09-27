@@ -606,6 +606,7 @@ footer small{display:block}
 .tools-block{padding:0 0 20px}
 .tools-block .article-grid{padding-bottom:0}
 .tools-block .section-intro{margin-bottom:28px}
+.evaluation-block .section-intro{margin-bottom:clamp(28px,4vw,48px)}
 
 /* --- country guide template + club request --- */
 .country-guide>section{position:relative;padding:58px 0;border-top:1px solid var(--line)}
