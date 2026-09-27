@@ -12,6 +12,7 @@
 const PAGES = [
   { ru: "/",                    en: "/" },
   { ru: "/services",            en: "/services" },
+  { ru: "/analiz-hokkeista",    en: "/player-assessment" },
   { ru: "/players",             en: "/for-players" },
   { ru: "/cases",               en: "/cases" },
   { ru: "/agent",               en: "/agent" },
