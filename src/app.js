@@ -788,7 +788,16 @@ function servePublic(req, res, config) {
   const context = { locale, logicalPath, urlPrefix };
 
   const tryNext = (index) => {
-    if (index >= candidates.length) return serveNotFound(req, res, config, locale, root);
+    if (index >= candidates.length) {
+      // Pages live at slash-less URLs; send /services/ to /services instead of
+      // a 404. "//host/" is left alone so the Location can't leave the site.
+      const trimmed = req.path.replace(/\/+$/, "");
+      if (trimmed && trimmed !== req.path && !trimmed.startsWith("//")) {
+        const query = req.originalUrl.includes("?") ? req.originalUrl.slice(req.originalUrl.indexOf("?")) : "";
+        return res.redirect(301, `${trimmed}${query}`);
+      }
+      return serveNotFound(req, res, config, locale, root);
+    }
     const filePath = candidates[index];
     if (!filePath.startsWith(publicRoot)) return res.status(403).type("text").send("Forbidden");
     fs.readFile(filePath, (error, data) => {

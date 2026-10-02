@@ -161,6 +161,25 @@ test("serves the primary domain without redirecting", async () => {
   await request(app).get("/ru/").set("Host", "eha.test").expect(200);
 });
 
+test("a trailing slash redirects to the slash-less page and keeps the query", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const cases = [
+    ["/services/", "/services"],
+    ["/leagues/sweden-hockeyettan/?utm_source=x", "/leagues/sweden-hockeyettan?utm_source=x"],
+    ["/ru/guides/", "/ru/guides"],
+    ["/sv/ishockey-i-sverige/", "/sv/ishockey-i-sverige"]
+  ];
+  for (const [from, to] of cases) {
+    const response = await request(app).get(from).set("Host", "eha.test").expect(301);
+    assert.equal(response.headers.location, to);
+    await request(app).get(to).set("Host", "eha.test").expect(200);
+  }
+  await request(app).get("/no-such-page/").set("Host", "eha.test").expect(301);
+  await request(app).get("/no-such-page").set("Host", "eha.test").expect(404);
+  const external = await request(app).get("//evil.example/").set("Host", "eha.test");
+  assert.notEqual(external.headers.location, "//evil.example");
+});
+
 test("HTML responses support revalidation with ETag", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const first = await request(app).get("/").set("Host", "eha.test").expect(200);
