@@ -91,6 +91,7 @@ const PAGES = [
   { ru: "/ligi/polsha-1-liga-mhl", en: "/leagues/poland-1-liga-mhl" },
   { ru: "/kluby/gks-katowice", en: "/clubs/gks-katowice" },
   { ru: "/kluby/gks-tychy", en: "/clubs/gks-tychy" },
+  { ru: "/kluby/jkh-gks-jastrzebie", en: "/clubs/jkh-gks-jastrzebie" },
   { ru: "/ligi/avstriya-ice-hockey-league", en: "/leagues/austria-ice-hockey-league" },
   { ru: "/ligi/alps-hockey-league", en: "/leagues/alps-hockey-league" },
   { ru: "/ligi/franciya-ligue-magnus", en: "/leagues/france-ligue-magnus" },
