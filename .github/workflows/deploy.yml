@@ -54,9 +54,15 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -t ed25519 5.22.215.5 >> ~/.ssh/known_hosts 2>/dev/null
+          timeout 10 ssh-keyscan -t ed25519 5.22.215.5 >> ~/.ssh/known_hosts 2>/dev/null
           # The key is locked to `cd /opt/eha && bash deploy.sh` on the server side.
-          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes root@5.22.215.5
+          timeout 360 ssh -i ~/.ssh/deploy_key \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            -o ConnectTimeout=15 \
+            -o ServerAliveInterval=30 \
+            -o ServerAliveCountMax=3 \
+            root@5.22.215.5
 
       - name: Verify the canonical site and www redirect
         run: |
