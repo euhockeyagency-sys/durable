@@ -83,6 +83,25 @@ jobs:
             | awk -F': ' 'tolower($1)=="x-eha-source"{print $2}' | tr -d '\r')
           test "$RU_SOURCE" = "ru/index.html"
 
+          PLAYER_SOURCE=$(curl -fsSI https://eurohockeyagency.com/player-assessment \
+            | awk -F': ' 'tolower($1)=="x-eha-source"{print $2}' | tr -d '\r')
+          test "$PLAYER_SOURCE" = "en/player-assessment.html"
+
+          RU_PLAYER_SOURCE=$(curl -fsSI https://eurohockeyagency.com/ru/analiz-hokkeista \
+            | awk -F': ' 'tolower($1)=="x-eha-source"{print $2}' | tr -d '\r')
+          test "$RU_PLAYER_SOURCE" = "ru/analiz-hokkeista.html"
+
+          SITEMAP=$(curl -fsS https://eurohockeyagency.com/sitemap.xml)
+          printf '%s' "$SITEMAP" | grep -q 'https://eurohockeyagency.com/player-assessment'
+
+          RU_SITEMAP=$(curl -fsS https://eurohockeyagency.com/ru/sitemap.xml)
+          printf '%s' "$RU_SITEMAP" | grep -q 'https://eurohockeyagency.com/ru/analiz-hokkeista'
+
+          TRAILING_REDIRECT=$(curl -sS --max-redirs 0 -o /dev/null \
+            -w '%{http_code}|%{redirect_url}' \
+            'https://eurohockeyagency.com/services/')
+          test "$TRAILING_REDIRECT" = '301|https://eurohockeyagency.com/services'
+
           LEGACY_REDIRECT=$(curl -sS --max-redirs 0 -o /dev/null \
             -w '%{http_code}|%{redirect_url}' \
             'https://eurohockeyagency.com/about-the-agent')
