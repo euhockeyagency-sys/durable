@@ -215,7 +215,8 @@ async function gitSave(message, paths = ["public"]) {
     await pexec("git", ["commit", "-m", message], { cwd: REPO });
     const gate = await runTestGate();
     if (!gate.pass) {
-      return "saved locally; tests failed, NOT pushed (fix and run_tests again — the next gitSave will push once green):\n" + gate.summary;
+      return "saved locally; tests failed, NOT pushed (fix and run_tests again — the next gitSave will push once green; "
+        + "a new page fails until register_page adds it to PAGES):\n" + gate.summary;
     }
     try {
       await pexec("git", ["fetch", "origin", "main"], { cwd: REPO });
@@ -294,12 +295,14 @@ async function runtimeStatus() {
     cwd = cwdResult.ok ? cwdResult.stdout : null;
     command = commandResult.ok ? commandResult.stdout : null;
   }
-  const [listener, commit, branch, status, untracked] = await Promise.all([
+  const [listener, commit, branch, status, untracked, unpushed] = await Promise.all([
     run("ss", ["-ltnp", "sport", "=", ":3000"]),
     run("git", ["rev-parse", "HEAD"]),
     run("git", ["branch", "--show-current"]),
     run("git", ["status", "--short", "--untracked-files=no"]),
-    run("git", ["ls-files", "--others", "--exclude-standard"])
+    run("git", ["ls-files", "--others", "--exclude-standard"]),
+    // Compared with the last fetched origin/main, so it can lag GitHub slightly.
+    run("git", ["log", "--oneline", "origin/main..HEAD"])
   ]);
   return {
     service: service.ok ? service.stdout.split("\n") : { error: service.stderr },
@@ -312,7 +315,8 @@ async function runtimeStatus() {
       branch: branch.ok ? branch.stdout : null,
       clean: status.ok ? status.stdout === "" : null,
       changes: status.ok && status.stdout ? status.stdout.split("\n") : [],
-      untracked: untracked.ok && untracked.stdout ? untracked.stdout.split("\n") : []
+      untracked: untracked.ok && untracked.stdout ? untracked.stdout.split("\n") : [],
+      unpushed: unpushed.ok && unpushed.stdout ? unpushed.stdout.split("\n") : []
     },
     repository: REPO,
     publicDirectory: PUBLIC
@@ -561,27 +565,14 @@ function makeServer() {
     inputSchema: {},
     annotations: READ_ONLY
   }, async () => {
-    const result = await run("npm", ["test"], { timeout: 180_000 });
-    const output = [result.stdout, result.stderr].filter(Boolean).join("\n");
-    const summary = output.split("\n")
-      .filter((line) => /^(# (tests|pass|fail|suites)|not ok )/.test(line.trim()))
-      .join("\n");
-    // The server installs production dependencies only (deploy.sh runs
-    // `npm ci --omit=dev`), so the HTTP-level suite cannot load here. Say so
-    // plainly instead of reporting a scary false failure: the routing checks
-    // that need it are run by CI on every push.
-    const missingDevDeps = /Cannot find module 'supertest'/.test(output);
-    if (missingDevDeps) {
-      const otherFailures = output.split("\n").filter((line) => /^not ok /.test(line.trim()) && !/app\.test\.js/.test(line));
-      const verdict = otherFailures.length ? "FAILURES FOUND (besides the skipped suite)" : "OK — no failures in the suites that can run here";
-      return text(
-        `${verdict}\n${summary}\n\n`
-        + "Note: test/app.test.js could not run on the server because dev dependencies are not installed there "
-        + "(production install). The locales/config suites above DID run — they cover the PAGES table, routing rules "
-        + "and hreflang. The full HTTP suite runs automatically in GitHub Actions on push, and a red run blocks deployment."
-      );
-    }
-    return text(`${result.ok ? "TESTS PASSED" : "TESTS FAILED"}\n${summary || output.slice(-2000)}`);
+    // Same verdict as the push gate: suites that need supertest can't load on
+    // the production install and are run by CI on every push instead.
+    const gate = await runTestGate();
+    return text(
+      `${gate.pass ? "OK — no failures in the suites that can run here" : "TESTS FAILED"}\n${gate.summary}\n\n`
+      + "Suites that need supertest (HTTP routing, crawler link guards) only run in GitHub Actions on push; "
+      + "a red run there blocks deployment."
+    );
   });
 
   return server;
