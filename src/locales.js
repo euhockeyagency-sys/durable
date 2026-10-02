@@ -89,7 +89,6 @@ const PAGES = [
   { ru: "/ligi/slovakiya-tipos-shl", en: "/leagues/slovakia-tipos-shl" },
   { ru: "/ligi/polsha-tauron-hokej-liga", en: "/leagues/poland-tauron-hokej-liga" },
   { ru: "/ligi/polsha-1-liga-mhl", en: "/leagues/poland-1-liga-mhl" },
-  { ru: "/kluby/gks-katowice", en: "/clubs/gks-katowice" },
   { ru: "/kluby/gks-tychy", en: "/clubs/gks-tychy" },
   { ru: "/kluby/jkh-gks-jastrzebie", en: "/clubs/jkh-gks-jastrzebie" },
   { ru: "/ligi/avstriya-ice-hockey-league", en: "/leagues/austria-ice-hockey-league" },
