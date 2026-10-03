@@ -34,10 +34,15 @@ else if(!consent){
 const article=q('.article-body');if(article){const bar=document.createElement('div');bar.className='reading-progress';document.body.append(bar);const progress=()=>{const start=article.offsetTop-innerHeight*.25,end=article.offsetTop+article.offsetHeight-innerHeight*.75;bar.style.width=Math.max(0,Math.min(1,(scrollY-start)/(end-start)))*100+'%'};progress();addEventListener('scroll',progress,{passive:true})}
 const form=q('#profile-form');
 if(form){
-  const status=q('#form-status'),birth=q('[name="birthYear"]',form),parent=q('#parent-fields'),button=q('button[type="submit"]',form),year=new Date().getFullYear();birth.min=year-60;birth.max=year-8;
-  const updateParent=()=>{const year=Number(birth.value),minor=Number.isInteger(year)&&year>=new Date().getFullYear()-18;parent.hidden=!minor;parent.setAttribute('aria-hidden',String(!minor));qa('input',parent).forEach(input=>input.required=minor)};
-  birth.addEventListener('input',updateParent);updateParent();
+  const status=q('#form-status'),birth=q('[name="birthYear"]',form),parent=q('#parent-fields'),button=q('button[type="submit"]',form),year=new Date().getFullYear(),applicants=qa('[name="applicantType"]',form),height=q('[name="heightCm"]',form),weight=q('[name="weightKg"]',form),stick=q('[name="stickHand"]',form),intentInput=q('[name="intent"]',form);birth.min=year-60;birth.max=year-8;
+  const applicantType=()=>q('[name="applicantType"]:checked',form)?.value||'player';
+  const isMinor=()=>{const y=Number(birth.value);return Number.isInteger(y)&&y>=new Date().getFullYear()-18};
+  const updateApplicant=()=>{const parentApplicant=applicantType()==='parent_guardian',minor=isMinor(),needsParent=minor||parentApplicant;parent.hidden=!needsParent;parent.setAttribute('aria-hidden',String(!needsParent));qa('input',parent).forEach(input=>input.required=needsParent);[height,weight,stick].forEach(input=>{if(input)input.required=!parentApplicant})};
+  birth.addEventListener('input',updateApplicant);applicants.forEach(input=>input.addEventListener('change',updateApplicant));
   const params=new URLSearchParams(location.search),utm={utm_source:'utmSource',utm_medium:'utmMedium',utm_campaign:'utmCampaign',utm_content:'utmContent',utm_term:'utmTerm'};
+  const requestedType=(params.get('type')||'').trim();if(['parent','parent_guardian'].includes(requestedType)){const radio=q('[name="applicantType"][value="parent_guardian"]',form);if(radio)radio.checked=true}
+  if(intentInput)intentInput.value=(params.get('intent')||'').trim().slice(0,60);
+  updateApplicant();
   Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=params.get(key)||''});q('[name="referrer"]',form).value=document.referrer||'';
   const country=(params.get('country')||'').trim().slice(0,100),note=(params.get('note')||'').trim().slice(0,300),message=q('[name="message"]',form);
   if(country&&message&&!message.value.trim())message.value=`${T.countryPrefix}: ${country}`;
@@ -48,8 +53,9 @@ if(form){
   if(fromCalc){[['calcBand',calcBand],['calcScore',calcScore],['calcLeagues',calcLeagues]].forEach(([name,value])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=value});
     const position=q('[name="position"]',form),pos=params.get('pos'),year=params.get('year');
     if(position&&!position.value&&['forward','defense','goalie'].includes(pos))position.value=pos;
-    if(!birth.value&&/^\d{4}$/.test(year||'')&&year>=birth.min&&year<=birth.max){birth.value=year;updateParent()}}
-  let formStarted=false;form.addEventListener('focusin',()=>{if(formStarted)return;formStarted=true;track('form_start',{from_calculator:fromCalc})});
+    if(!birth.value&&/^\d{4}$/.test(year||'')&&year>=birth.min&&year<=birth.max){birth.value=year;updateApplicant()}}
+  const funnelContext=()=>({from_calculator:fromCalc,applicant_type:applicantType(),player_minor:isMinor(),intent:intentInput?.value||'',entry_page:location.pathname});
+  let formStarted=false;form.addEventListener('focusin',()=>{if(formStarted)return;formStarted=true;track('form_start',funnelContext())});
   const clearErrors=()=>{qa('.field-error',form).forEach(el=>el.textContent='');qa('[aria-invalid="true"]',form).forEach(el=>el.removeAttribute('aria-invalid'));status.textContent='';status.className='form-status'};
   const showErrors=(errors={})=>{Object.entries(errors).forEach(([name,message])=>{const output=q(`[data-error-for="${name}"]`,form),input=q(`[name="${name}"]`,form);if(output)output.textContent=message;if(input)input.setAttribute('aria-invalid','true')});const first=q('[aria-invalid="true"]',form);first?.focus()};
   form.addEventListener('submit',async event=>{
@@ -58,6 +64,7 @@ if(form){
       const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}}),data=await response.json().catch(()=>({}));
       if(!response.ok){showErrors(data.errors);status.textContent=data.message||T.checkForm;status.classList.add('error');if(window.turnstile)turnstile.reset();return}
       const localePrefix=location.pathname.startsWith('/ru/')||location.pathname==='/ru'?'/ru':location.pathname.startsWith('/en/')||location.pathname==='/en'?'/en':'';
+      try{sessionStorage.setItem('eha-last-funnel',JSON.stringify(funnelContext()))}catch(error){}
       sessionStorage.removeItem('eha-application-draft');if(window.turnstile)turnstile.reset();location.assign(`${localePrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
     }catch(error){status.textContent=T.noConn;status.classList.add('error');if(window.turnstile)turnstile.reset()}
     finally{button.disabled=false;button.textContent=T.submit}
@@ -98,4 +105,4 @@ window.ehaTrack=track;
 addEventListener('pageshow',event=>{if(event.persisted&&window.turnstile&&q('.cf-turnstile'))turnstile.reset()});
 
 const reference=q('[data-application-reference]');
-if(reference){const value=new URLSearchParams(location.search).get('ref')||'';if(/^EHA-\d{6}-[A-F0-9]{6}$/.test(value)){reference.textContent=value;try{const key=`eha-sent-${value}`;if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');track('application_sent',{from_calculator:sessionStorage.getItem('eha-from-calc')==='1'})}}catch(error){track('application_sent')}const link=q('[data-success-whatsapp]');if(link)link.href=`https://wa.me/375297957818?text=${encodeURIComponent(T.waGreeting(value))}`}else reference.textContent=T.notFound}
+if(reference){const value=new URLSearchParams(location.search).get('ref')||'';if(/^EHA-\d{6}-[A-F0-9]{6}$/.test(value)){reference.textContent=value;try{const key=`eha-sent-${value}`;if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');let context={from_calculator:sessionStorage.getItem('eha-from-calc')==='1'};try{context={...context,...JSON.parse(sessionStorage.getItem('eha-last-funnel')||'{}')}}catch(error){}track('application_sent',context);sessionStorage.removeItem('eha-last-funnel')}}catch(error){track('application_sent')}const link=q('[data-success-whatsapp]');if(link)link.href=`https://wa.me/375297957818?text=${encodeURIComponent(T.waGreeting(value))}`}else reference.textContent=T.notFound}
