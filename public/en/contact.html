@@ -63,6 +63,14 @@
 </div>
 <form id="profile-form" action="/api/applications" method="post" enctype="multipart/form-data">
 <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+<fieldset class="applicant-type">
+<legend>Who is submitting this request?</legend>
+<div class="applicant-options">
+<label><input type="radio" name="applicantType" value="player" checked> Player</label>
+<label><input type="radio" name="applicantType" value="parent_guardian"> Parent / guardian</label>
+</div>
+<small>Parent/guardian requests use the same assessment process, but some player measurements can be added later.</small>
+</fieldset>
 <label>Full name<input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
