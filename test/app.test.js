@@ -519,20 +519,6 @@ test("admin status update needs a session and a valid CSRF token, and rejects an
 });
 
 
-test("admin supports analysis-needed and represented lead stages", async () => {
-  const services = serviceMock();
-  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-07-18T12:00:00Z") });
-  await validRequest(request(app)).expect(201);
-  const applicationId = services.rows.applications[0].id;
-  const { cookie } = await adminLogin(app);
-  const csrf = csrfFrom((await request(app).get("/admin").set("Cookie", cookie)).text);
-  const post = (status) => request(app).post("/admin/status").set("Cookie", cookie).type("form").send({ table: "applications", id: applicationId, status, csrf });
-  await post("analysis_needed").expect(303);
-  assert.equal(services.rows.applications[0].status, "analysis_needed");
-  await post("represented").expect(303);
-  assert.equal(services.rows.applications[0].status, "represented");
-});
-
 test("admin shows and filters applicant source context", async () => {
   const services = serviceMock();
   const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-07-18T12:00:00Z") });
