@@ -98,6 +98,9 @@ if(clubForm){
 // visitor accepts cookies, and GA4 runs in Consent Mode.
 const track=(name,params={})=>{try{if(typeof ym==='function')ym(110889446,'reachGoal',name,params);if(typeof gtag==='function')gtag('event',name,params)}catch(error){}};
 window.ehaTrack=track;
+const isParentHub=location.pathname.endsWith('/junior-hockey-for-parents')||location.pathname.endsWith('/yuniorskij-hokkej-roditelyam');
+if(isParentHub)track('parent_hub_view',{entry_page:location.pathname});
+document.addEventListener('click',event=>{const link=event.target.closest('a[href*="/contact?"]');if(!link)return;let url;try{url=new URL(link.href,location.href)}catch(error){return}const type=url.searchParams.get('type'),intent=url.searchParams.get('intent')||'';if(type==='parent'||type==='parent_guardian')track('parent_cta_click',{entry_page:location.pathname,intent,destination:url.pathname})});
 
 // Turnstile tokens are single-use and expire after a few minutes. When the
 // browser restores a submitted form from the back/forward cache, the widget
