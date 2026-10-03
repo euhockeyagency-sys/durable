@@ -516,7 +516,7 @@ async function deliverClubRequestNotifications(services, row, config = {}) {
 }
 
 const ADMIN_TABLES = new Set(["applications", "club_requests"]);
-const ADMIN_STATUSES = new Set(["new", "contacted", "qualified", "rejected", "archived"]);
+const ADMIN_STATUSES = new Set(["new", "contacted", "qualified", "analysis_needed", "represented", "rejected", "archived"]);
 
 async function fetchAdminRows(supabase, table, columns) {
   const { data, error } = await supabase.from(table).select(columns).order("created_at", { ascending: false }).limit(200);
@@ -527,6 +527,7 @@ async function fetchAdminRows(supabase, table, columns) {
 const ADMIN_POSITIONS = ["forward", "defense", "goalie"];
 const ADMIN_AGE_GROUPS = ["minor", "adult"];
 const ADMIN_FOLLOWUPS = ["due", "upcoming", "none"];
+const ADMIN_APPLICANTS = ["player", "parent_guardian"];
 const ADMIN_BAND_LABELS = { top: "top", mid: "2–3", low: "lower" };
 
 function parseAdminFilters(query = {}) {
@@ -535,12 +536,14 @@ function parseAdminFilters(query = {}) {
   const position = one(query.position);
   const age = one(query.age);
   const followup = one(query.followup);
+  const applicant = one(query.applicant);
   return {
     q: one(query.q).slice(0, 80),
     status: ADMIN_STATUSES.has(status) ? status : "",
     position: ADMIN_POSITIONS.includes(position) ? position : "",
     age: ADMIN_AGE_GROUPS.includes(age) ? age : "",
-    followup: ADMIN_FOLLOWUPS.includes(followup) ? followup : ""
+    followup: ADMIN_FOLLOWUPS.includes(followup) ? followup : "",
+    applicant: ADMIN_APPLICANTS.includes(applicant) ? applicant : ""
   };
 }
 
@@ -571,8 +574,9 @@ function filterAdminApplications(applications, filters, today = adminToday()) {
     if (filters.followup === "due" && !(a.next_contact_at && a.next_contact_at <= today)) return false;
     if (filters.followup === "upcoming" && !(a.next_contact_at && a.next_contact_at > today)) return false;
     if (filters.followup === "none" && a.next_contact_at) return false;
+    if (filters.applicant && a.source?.applicant_type !== filters.applicant) return false;
     if (!needle) return true;
-    return [a.player_name, a.current_club, a.reference_code, a.email, a.phone, a.internal_note]
+    return [a.player_name, a.current_club, a.reference_code, a.email, a.phone, a.internal_note, a.source?.intent, a.source?.source_page, a.source?.referrer]
       .some((field) => String(field || "").toLowerCase().includes(needle));
   });
   // The most overdue contact first when working the follow-up queue.
@@ -598,6 +602,7 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
     selectFilter("position", "Position", ADMIN_POSITIONS) +
     selectFilter("age", "Age", ADMIN_AGE_GROUPS) +
     selectFilter("followup", "Follow-up", ADMIN_FOLLOWUPS) +
+    selectFilter("applicant", "Applicant", ADMIN_APPLICANTS) +
     `<button type="submit">Filter</button> <a href="${adminPath}">Reset</a> <span>${applications.length} of ${total}</span></form>`;
   // Calculator data is what the player's browser sent, not something verified.
   const calculatorCell = (calculator) => calculator
@@ -613,10 +618,12 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
       (overdue ? ` <strong class="due">due</strong>` : "") +
       `<button type="submit">Save</button></form>`;
   };
+  const sourceCell = (source) => { const s = source || {}; const bits = []; if (s.applicant_type) bits.push(`<b>${htmlEscape(s.applicant_type)}</b>`); if (s.intent) bits.push(`intent: ${htmlEscape(s.intent)}`); if (s.source_page) bits.push(`page: ${htmlEscape(s.source_page)}`); if (s.utm_source) bits.push(`utm: ${htmlEscape(s.utm_source)}${s.utm_campaign ? ` / ${htmlEscape(s.utm_campaign)}` : ""}`); if (!s.source_page && s.referrer) bits.push(`ref: ${htmlEscape(s.referrer)}`); return bits.join("<br>"); };
   const applicationRows = applications.map((a) => `<tr><td>${htmlEscape(a.reference_code)}</td>` +
     `<td>${htmlEscape(a.player_name)}<br><small>${htmlEscape(a.birth_year)}${a.is_minor ? " (minor)" : ""} · ${htmlEscape(a.position)}</small></td>` +
     `<td>${htmlEscape(a.current_club)}</td>` +
     `<td>${htmlEscape(a.phone)}${a.email ? `<br>${htmlEscape(a.email)}` : ""}</td>` +
+    `<td>${sourceCell(a.source)}</td>` +
     `<td>${calculatorCell(a.source?.calculator)}</td>` +
     `<td>${followupForm(a)}</td>` +
     `<td>${htmlEscape(a.created_at)}</td><td>${statusForm("applications", a.id, a.status)}</td></tr>`).join("");
@@ -629,7 +636,7 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
     `th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f2f4f6}` +
     `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}small{color:#5a6673}.logout{float:right}.followup{display:grid;gap:6px;min-width:220px}.followup textarea{width:100%;box-sizing:border-box}.due{color:#b00020}</style></head><body>` +
     `<form method="post" action="${adminPath}/logout" class="logout"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}"><button type="submit">Log out</button></form>` +
-    `<h1>Applications</h1>${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Calculator (self-reported)</th><th>Follow-up</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
+    `<h1>Applications</h1>${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Source</th><th>Calculator (self-reported)</th><th>Follow-up</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
     `<h1>Club requests</h1><table><tr><th>Ref</th><th>Club</th><th>Contact</th><th>Contact info</th><th>Created</th><th>Status</th></tr>${clubRequestRows}</table>` +
     `</body></html>`;
 }
