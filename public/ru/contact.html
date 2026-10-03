@@ -63,6 +63,14 @@
 </div>
 <form id="profile-form" action="/api/applications" method="post" enctype="multipart/form-data">
 <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+<fieldset class="applicant-type">
+<legend>Кто отправляет заявку?</legend>
+<div class="applicant-options">
+<label><input type="radio" name="applicantType" value="player" checked> Игрок</label>
+<label><input type="radio" name="applicantType" value="parent_guardian"> Родитель / представитель</label>
+</div>
+<small>Для обращения родителя используется та же первичная оценка, но часть параметров игрока можно добавить позже.</small>
+</fieldset>
 <label>Имя и фамилия<input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
