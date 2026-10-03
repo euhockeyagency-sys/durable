@@ -517,7 +517,7 @@ async function deliverClubRequestNotifications(services, row, config = {}) {
 }
 
 const ADMIN_TABLES = new Set(["applications", "club_requests"]);
-const ADMIN_STATUSES = new Set(["new", "contacted", "qualified", "analysis_needed", "represented", "rejected", "archived"]);
+const ADMIN_STATUSES = new Set(["new", "contacted", "qualified", "rejected", "archived"]);
 
 async function fetchAdminRows(supabase, table, columns) {
   const { data, error } = await supabase.from(table).select(columns).order("created_at", { ascending: false }).limit(200);
@@ -606,11 +606,11 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
     selectFilter("applicant", "Applicant", ADMIN_APPLICANTS) +
     `<button type="submit">Filter</button> <a href="${adminPath}">Reset</a> <span>${applications.length} of ${total}</span></form>`;
   const parentLeads = allApplications.filter((a) => a.source?.applicant_type === "parent_guardian");
-  const qualified = allApplications.filter((a) => ["qualified", "represented"].includes(a.status));
-  const parentQualified = parentLeads.filter((a) => ["qualified", "represented"].includes(a.status));
-  const represented = allApplications.filter((a) => a.status === "represented");
+  const qualified = allApplications.filter((a) => a.status === "qualified");
+  const parentQualified = parentLeads.filter((a) => a.status === "qualified");
+  const rejected = allApplications.filter((a) => a.status === "rejected");
   const pct = (part, whole) => whole ? `${Math.round(part / whole * 100)}%` : "—";
-  const qualitySummary = `<div class="summary"><div><b>${allApplications.length}</b><span>loaded leads</span></div><div><b>${parentLeads.length}</b><span>parent leads</span></div><div><b>${qualified.length}</b><span>qualified + represented</span></div><div><b>${pct(qualified.length, allApplications.length)}</b><span>qualified rate</span></div><div><b>${pct(parentQualified.length, parentLeads.length)}</b><span>parent qualified rate</span></div><div><b>${represented.length}</b><span>represented</span></div></div>`;
+  const qualitySummary = `<div class="summary"><div><b>${allApplications.length}</b><span>loaded leads</span></div><div><b>${parentLeads.length}</b><span>parent leads</span></div><div><b>${qualified.length}</b><span>qualified</span></div><div><b>${pct(qualified.length, allApplications.length)}</b><span>qualified rate</span></div><div><b>${pct(parentQualified.length, parentLeads.length)}</b><span>parent qualified rate</span></div><div><b>${rejected.length}</b><span>rejected</span></div></div>`;
   // Calculator data is what the player's browser sent, not something verified.
   const calculatorCell = (calculator) => calculator
     ? `${htmlEscape(ADMIN_BAND_LABELS[calculator.band] || calculator.band)} · ${htmlEscape(calculator.score)}` +
