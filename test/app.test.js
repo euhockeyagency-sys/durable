@@ -518,6 +518,35 @@ test("admin status update needs a session and a valid CSRF token, and rejects an
   await post({ table: "applications", id: applicationId, status: "not-a-real-status", csrf }).expect(400);
 });
 
+
+test("admin supports analysis-needed and represented lead stages", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app)).expect(201);
+  const applicationId = services.rows.applications[0].id;
+  const { cookie } = await adminLogin(app);
+  const csrf = csrfFrom((await request(app).get("/admin").set("Cookie", cookie)).text);
+  const post = (status) => request(app).post("/admin/status").set("Cookie", cookie).type("form").send({ table: "applications", id: applicationId, status, csrf });
+  await post("analysis_needed").expect(303);
+  assert.equal(services.rows.applications[0].status, "analysis_needed");
+  await post("represented").expect(303);
+  assert.equal(services.rows.applications[0].status, "represented");
+});
+
+test("admin shows and filters applicant source context", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app), { playerName: "Parent Lead", applicantType: "parent_guardian", parentName: "Parent", parentContact: "parent@example.com", parentConsent: "true", sourcePage: "/junior-hockey-for-parents", intent: "assessment" }).expect(201);
+  await validRequest(request(app), { playerName: "Player Lead" }).expect(201);
+  const { cookie } = await adminLogin(app);
+  const parent = await request(app).get("/admin?applicant=parent_guardian").set("Cookie", cookie).expect(200);
+  assert.match(parent.text, /Parent Lead/);
+  assert.doesNotMatch(parent.text, /Player Lead/);
+  assert.match(parent.text, //junior-hockey-for-parents/);
+  assert.match(parent.text, /intent: assessment/);
+  assert.match(parent.text, /parent qualified rate/);
+});
+
 test("logout clears the session and requires the CSRF token", async () => {
   const app = createApp({ config: adminConfig(), services: serviceMock() });
   const { cookie } = await adminLogin(app);
