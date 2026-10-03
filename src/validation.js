@@ -3,6 +3,7 @@ const { messages, normalizeLocale } = require("./messages");
 
 const POSITION_VALUES = new Set(["forward", "defense", "goalie"]);
 const STICK_VALUES = new Set(["left", "right"]);
+const APPLICANT_TYPES = new Set(["player", "parent_guardian"]);
 const ALLOWED_FILES = {
   "application/pdf": { extensions: new Set([".pdf"]), signature: (b) => b.subarray(0, 5).toString() === "%PDF-" },
   "image/jpeg": { extensions: new Set([".jpg", ".jpeg"]), signature: (b) => b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff },
@@ -55,6 +56,9 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   const email = text(body.email, 160).toLowerCase();
   const position = text(body.position, 20);
   const stickHand = text(body.stickHand, 20);
+  const applicantTypeRaw = text(body.applicantType, 30);
+  const applicantType = APPLICANT_TYPES.has(applicantTypeRaw) ? applicantTypeRaw : "player";
+  const intent = text(body.intent, 60) || null;
   const eliteProspectsUrl = httpUrl(text(body.eliteProspectsUrl, 500), { hostname: "eliteprospects.com" });
   const videoInputs = asArray(body.videoUrls).map((value) => text(value, 500)).filter(Boolean);
   const videoUrls = videoInputs.map((value) => httpUrl(value));
@@ -65,9 +69,12 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   if (!POSITION_VALUES.has(position)) errors.position = m.position;
   if (!citizenship) errors.citizenship = m.citizenship;
   if (!currentClub) errors.currentClub = m.currentClub;
-  if (!Number.isFinite(heightCm) || heightCm < 120 || heightCm > 230) errors.heightCm = m.heightCm;
-  if (!Number.isFinite(weightKg) || weightKg < 35 || weightKg > 180) errors.weightKg = m.weightKg;
-  if (!STICK_VALUES.has(stickHand)) errors.stickHand = m.stickHand;
+  if (applicantType === "player" && (!Number.isFinite(heightCm) || heightCm < 120 || heightCm > 230)) errors.heightCm = m.heightCm;
+  if (applicantType === "parent_guardian" && body.heightCm && (!Number.isFinite(heightCm) || heightCm < 120 || heightCm > 230)) errors.heightCm = m.heightCm;
+  if (applicantType === "player" && (!Number.isFinite(weightKg) || weightKg < 35 || weightKg > 180)) errors.weightKg = m.weightKg;
+  if (applicantType === "parent_guardian" && body.weightKg && (!Number.isFinite(weightKg) || weightKg < 35 || weightKg > 180)) errors.weightKg = m.weightKg;
+  if (applicantType === "player" && !STICK_VALUES.has(stickHand)) errors.stickHand = m.stickHand;
+  if (applicantType === "parent_guardian" && stickHand && !STICK_VALUES.has(stickHand)) errors.stickHand = m.stickHand;
   if (!phone) errors.phone = m.phone;
   // Required since applications are answered by email: without an address there
   // is no way to reply to the player.
@@ -81,9 +88,10 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
 
   const parentName = text(body.parentName, 120);
   const parentContact = text(body.parentContact, 160);
-  if (isMinor && !parentName) errors.parentName = m.parentName;
-  if (isMinor && !parentContact) errors.parentContact = m.parentContact;
-  if (isMinor && !checked(body.parentConsent)) errors.parentConsent = m.parentConsent;
+  const needsParentDetails = isMinor || applicantType === "parent_guardian";
+  if (needsParentDetails && !parentName) errors.parentName = m.parentName;
+  if (needsParentDetails && !parentContact) errors.parentContact = m.parentContact;
+  if (needsParentDetails && !checked(body.parentConsent)) errors.parentConsent = m.parentConsent;
 
   if (files.length > 3) errors.files = m.filesMax;
   if (files.reduce((sum, file) => sum + file.size, 0) > 10 * 1024 * 1024) errors.files = m.filesSize;
@@ -103,21 +111,23 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
     citizenship,
     currentClub,
     position,
-    heightCm,
-    weightKg,
-    stickHand,
+    heightCm: Number.isFinite(heightCm) ? heightCm : null,
+    weightKg: Number.isFinite(weightKg) ? weightKg : null,
+    stickHand: STICK_VALUES.has(stickHand) ? stickHand : null,
     availableFrom: body.availableFrom || null,
     phone,
     email: email || null,
     eliteProspectsUrl,
     videoUrls: videoUrls.filter(Boolean),
     message: text(body.message, 3000) || null,
-    parentName: isMinor ? parentName : null,
-    parentContact: isMinor ? parentContact : null,
+    parentName: needsParentDetails ? parentName : null,
+    parentContact: needsParentDetails ? parentContact : null,
     dataConsent: checked(body.dataConsent),
-    parentConsent: isMinor ? checked(body.parentConsent) : false,
+    parentConsent: needsParentDetails ? checked(body.parentConsent) : false,
     source: {
       locale: normalizeLocale(locale),
+      applicant_type: applicantType,
+      intent,
       utm_source: text(body.utmSource, 120) || null,
       utm_medium: text(body.utmMedium, 120) || null,
       utm_campaign: text(body.utmCampaign, 160) || null,
