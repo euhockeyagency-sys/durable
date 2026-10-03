@@ -128,6 +128,7 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
       locale: normalizeLocale(locale),
       applicant_type: applicantType,
       intent,
+      source_page: text(body.sourcePage, 300) || null,
       utm_source: text(body.utmSource, 120) || null,
       utm_medium: text(body.utmMedium, 120) || null,
       utm_campaign: text(body.utmCampaign, 160) || null,
