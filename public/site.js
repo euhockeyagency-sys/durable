@@ -45,8 +45,9 @@ if(form){
   if(parentEntry){const kicker=q('#contact-kicker'),title=q('#contact-title'),lead=q('#contact-lead');if(kicker)kicker.textContent=LANG==='en'?'Parent / guardian enquiry':'Обращение родителя / представителя';if(title)title.innerHTML=LANG==='en'?'Request a<br><em>junior assessment</em>':'Запросите<br><em>оценку юниорского маршрута</em>';if(lead)lead.textContent=LANG==='en'?'Send the player’s core details and your goal. EHA will review the sporting profile first and explain the next step and what still needs official confirmation.':'Пришлите основные данные игрока и цель семьи. EHA сначала оценит спортивный профиль, затем объяснит следующий шаг и что ещё нужно подтвердить официально.'}
   updateApplicant();
   Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=params.get(key)||''});q('[name="referrer"]',form).value=document.referrer||'';const sourcePageInput=q('[name="sourcePage"]',form);if(sourcePageInput){let sourcePage=(params.get('source_page')||'').trim();if(!sourcePage&&document.referrer){try{const ref=new URL(document.referrer);if(ref.origin===location.origin)sourcePage=ref.pathname}catch(error){}}sourcePageInput.value=sourcePage.slice(0,300)}
-  const country=(params.get('country')||'').trim().slice(0,100),note=(params.get('note')||'').trim().slice(0,300),message=q('[name="message"]',form);
-  if(country&&message&&!message.value.trim())message.value=`${T.countryPrefix}: ${country}`;
+  const country=(params.get('country')||'').trim().slice(0,100),league=(params.get('league')||'').trim().slice(0,100),note=(params.get('note')||'').trim().slice(0,300),message=q('[name="message"]',form);
+  const context=[country?`${T.countryPrefix}: ${country}`:'',league?`${LANG==='en'?'Target league':'Интересующая лига'}: ${league}`:''].filter(Boolean).join('\n');
+  if(context&&message&&!message.value.trim())message.value=context;
   else if(note&&message&&!message.value.trim())message.value=note;
   const calcBand=params.get('calc_band')||'',calcScore=params.get('calc_score')||'',calcLeagues=(params.get('calc_leagues')||'').slice(0,300);
   const fromCalc=['top','mid','low'].includes(calcBand)&&/^\d{1,3}$/.test(calcScore);
