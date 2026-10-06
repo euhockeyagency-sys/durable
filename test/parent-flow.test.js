@@ -1,6 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { validateApplication } = require("../src/validation");
+const { notificationText } = require("../src/services");
 
 function body(overrides = {}) {
   return {
