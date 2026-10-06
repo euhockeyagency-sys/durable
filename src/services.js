@@ -95,6 +95,8 @@ function notificationText(a) {
   const locale = a.source?.locale === "en" ? "английская (com)" : "русская (ru)";
   return [
     `Новая заявка ${a.reference_code} · версия сайта: ${locale}`,
+    a.source?.intent ? `Тип заявки: ${a.source.intent}` : null,
+    a.source?.source_page ? `Источник: ${a.source.source_page}` : null,
     `Игрок: ${a.player_name}, ${a.birth_year}`,
     `Позиция: ${position}; ${a.height_cm} см / ${a.weight_kg} кг`,
     `Гражданство: ${a.citizenship}`,
