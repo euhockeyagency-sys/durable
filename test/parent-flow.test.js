@@ -60,3 +60,27 @@ test("minor status is independent and still requires guardian details and consen
   assert.ok(result.errors.parentContact);
   assert.ok(result.errors.parentConsent);
 });
+
+test("application notifications expose route intent and source page", () => {
+  const message = notificationText({
+    reference_code: "EHA-261006-ABC123",
+    player_name: "Test Player",
+    birth_year: 2000,
+    position: "defense",
+    height_cm: 185,
+    weight_kg: 85,
+    citizenship: "Canada",
+    current_club: "HC Test",
+    phone: "+1 555 0100",
+    email: "player@example.com",
+    elite_prospects_url: "https://www.eliteprospects.com/player/123/test",
+    video_urls: [],
+    source: {
+      locale: "en",
+      intent: "europe_route",
+      source_page: "/guides/find-a-hockey-club-in-europe"
+    }
+  });
+  assert.match(message, /Тип заявки: europe_route/);
+  assert.match(message, /Источник: \/guides\/find-a-hockey-club-in-europe/);
+});
