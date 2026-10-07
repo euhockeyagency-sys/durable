@@ -37,7 +37,7 @@
 <a href="{{EN}}/for-players">For players</a><a href="{{EN}}/for-clubs">For clubs</a>
 <a href="{{EN}}/cases">Cases</a>
 <a href="{{EN}}/agent">Agent</a>
-<a href="{{EN}}/guides">Resources</a><a href="{{EN}}/news">News</a>
+<a href="{{EN}}/guides">Resources</a><a href="{{EN}}/junior-hockey-for-parents">Parents</a>
 <a class="lang-switch" href="{{ALT_URL}}" hreflang="ru" lang="ru" aria-label="Русская версия">RU</a>
 <a class="nav-cta active" href="{{EN}}/contact">Submit profile</a>
 </nav>
@@ -45,11 +45,11 @@
 <main>
 <section class="contact-grid wrap">
 <div>
-<p class="kicker">First assessment</p>
-<h1>Submit<br>
+<p class="kicker" id="contact-kicker">First assessment</p>
+<h1 id="contact-title">Submit<br>
 <em>a player profile</em>
 </h1>
-<p class="lead">The more complete your details, the more accurately we can assess the countries, leagues and next step that fit.</p>
+<p class="lead" id="contact-lead">The more complete your details, the more accurately we can assess the countries, leagues and next step that fit.</p>
 <div class="direct">
 <a href="https://wa.me/375297957818">
 <b>WhatsApp</b>
@@ -63,6 +63,14 @@
 </div>
 <form id="profile-form" action="/api/applications" method="post" enctype="multipart/form-data">
 <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+<fieldset class="applicant-type">
+<legend>Who is submitting this request?</legend>
+<div class="applicant-options">
+<label><input type="radio" name="applicantType" value="player" checked> Player</label>
+<label><input type="radio" name="applicantType" value="parent_guardian"> Parent / guardian</label>
+</div>
+<small>Parent/guardian requests use the same assessment process, but some player measurements can be added later.</small>
+</fieldset>
 <label>Full name<input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
@@ -98,7 +106,7 @@
 <option value="left">Left</option>
 <option value="right">Right</option>
 </select><span class="field-error" data-error-for="stickHand"></span></label>
-<label>Elite Prospects — optional<input type="url" name="eliteProspectsUrl" id="eliteProspectsUrl" placeholder="If you do not have a profile, leave this field blank">
+<label>Elite Prospects — optional<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="If you do not have a profile, leave this field blank">
 <span class="field-error" data-error-for="eliteProspectsUrl"></span>
 </label>
 <fieldset>
@@ -118,17 +126,17 @@
 </label>
 </div>
 <section class="parent-fields" id="parent-fields" hidden aria-hidden="true">
-<p class="form-section-title">For a player under 18</p>
+<p class="form-section-title" id="parent-section-title">For a player under 18</p>
 <label>Parent or guardian name<input name="parentName" autocomplete="name" maxlength="120">
 <span class="field-error" data-error-for="parentName"></span></label>
 <label>Parent's phone or email<input name="parentContact" maxlength="160">
 <span class="field-error" data-error-for="parentContact"></span></label>
-<label class="consent"><input type="checkbox" name="parentConsent" value="true">I am the parent or legal guardian and consent to the processing of the player's data.</label>
+<label class="consent"><input type="checkbox" name="parentConsent" value="true"><span id="parent-consent-copy">I am the parent or legal guardian and consent to the processing of the player's data.</span></label>
 <span class="field-error" data-error-for="parentConsent"></span>
 </section>
-<label>Resume, photos or highlight video
+<label>Resume or photos
 <input type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
-<small>You can add a resume, photos and a short highlight video. Up to 3 files, each up to 5 MB, with a 10 MB total limit. For larger videos, use the YouTube, Vimeo or Google Drive link fields above. Do not send passport, medical or other sensitive documents.</small>
+<small>You can add a resume and photos. Up to 3 files, each up to 5 MB, with a 10 MB total limit. Submit all video as YouTube, Vimeo or Google Drive links in the fields above. Do not send passport, medical or other sensitive documents.</small>
 <span class="field-error" data-error-for="files"></span>
 </label>
 <label>Additional information<textarea name="message" rows="5" maxlength="3000" placeholder="Career goal, achievements and important details">
@@ -139,7 +147,7 @@
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
 <label class="honeypot" aria-hidden="true">Your website<input name="website" tabindex="-1" autocomplete="off"></label>
-<input type="hidden" name="locale" value="en"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer"><input type="hidden" name="calcBand"><input type="hidden" name="calcScore"><input type="hidden" name="calcLeagues">
+<input type="hidden" name="locale" value="en"><input type="hidden" name="intent"><input type="hidden" name="sourcePage"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer"><input type="hidden" name="calcBand"><input type="hidden" name="calcScore"><input type="hidden" name="calcLeagues">
 <button class="btn primary" type="submit">Send application</button>
 <p class="form-note">By submitting you confirm the details are accurate. The first assessment is free and carries no obligation.</p>
 </form>

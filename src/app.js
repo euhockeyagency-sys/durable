@@ -230,6 +230,7 @@ function createApp({ config, services, now, randomUUID } = {}) {
         res.type("html").send(renderAdminPage(adminPath, applications, clubRequests, {
           filters,
           total: allApplications.length,
+          allApplications,
           csrf: auth.csrfToken(req.adminSession),
           today
         }));
@@ -527,6 +528,7 @@ async function fetchAdminRows(supabase, table, columns) {
 const ADMIN_POSITIONS = ["forward", "defense", "goalie"];
 const ADMIN_AGE_GROUPS = ["minor", "adult"];
 const ADMIN_FOLLOWUPS = ["due", "upcoming", "none"];
+const ADMIN_APPLICANTS = ["player", "parent_guardian"];
 const ADMIN_BAND_LABELS = { top: "top", mid: "2–3", low: "lower" };
 
 function parseAdminFilters(query = {}) {
@@ -535,12 +537,14 @@ function parseAdminFilters(query = {}) {
   const position = one(query.position);
   const age = one(query.age);
   const followup = one(query.followup);
+  const applicant = one(query.applicant);
   return {
     q: one(query.q).slice(0, 80),
     status: ADMIN_STATUSES.has(status) ? status : "",
     position: ADMIN_POSITIONS.includes(position) ? position : "",
     age: ADMIN_AGE_GROUPS.includes(age) ? age : "",
-    followup: ADMIN_FOLLOWUPS.includes(followup) ? followup : ""
+    followup: ADMIN_FOLLOWUPS.includes(followup) ? followup : "",
+    applicant: ADMIN_APPLICANTS.includes(applicant) ? applicant : ""
   };
 }
 
@@ -571,8 +575,9 @@ function filterAdminApplications(applications, filters, today = adminToday()) {
     if (filters.followup === "due" && !(a.next_contact_at && a.next_contact_at <= today)) return false;
     if (filters.followup === "upcoming" && !(a.next_contact_at && a.next_contact_at > today)) return false;
     if (filters.followup === "none" && a.next_contact_at) return false;
+    if (filters.applicant && a.source?.applicant_type !== filters.applicant) return false;
     if (!needle) return true;
-    return [a.player_name, a.current_club, a.reference_code, a.email, a.phone, a.internal_note]
+    return [a.player_name, a.current_club, a.reference_code, a.email, a.phone, a.internal_note, a.source?.intent, a.source?.source_page, a.source?.referrer]
       .some((field) => String(field || "").toLowerCase().includes(needle));
   });
   // The most overdue contact first when working the follow-up queue.
@@ -582,7 +587,7 @@ function filterAdminApplications(applications, filters, today = adminToday()) {
   return filtered;
 }
 
-function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length, csrf = "", today = adminToday() } = {}) {
+function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length, allApplications = applications, csrf = "", today = adminToday() } = {}) {
   const statusOptions = [...ADMIN_STATUSES]
     .map((status) => `<option value="${status}">${status}</option>`).join("");
   const statusForm = (table, id, currentStatus) => `<form method="post" action="${adminPath}/status">` +
@@ -593,12 +598,19 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
     options.map((option) => `<option value="${option}"${filters[name] === option ? " selected" : ""}>${option}</option>`).join("") +
     `</select></label>`;
   const filterForm = `<form class="filters" method="get" action="${adminPath}">` +
-    `<label>Search <input name="q" value="${htmlEscape(filters.q)}" placeholder="name, club, ref, contact, note" maxlength="80"></label>` +
+    `<label>Search <input name="q" value="${htmlEscape(filters.q)}" placeholder="name, club, ref, contact, note, source" maxlength="80"></label>` +
     selectFilter("status", "Status", [...ADMIN_STATUSES]) +
     selectFilter("position", "Position", ADMIN_POSITIONS) +
     selectFilter("age", "Age", ADMIN_AGE_GROUPS) +
     selectFilter("followup", "Follow-up", ADMIN_FOLLOWUPS) +
+    selectFilter("applicant", "Applicant", ADMIN_APPLICANTS) +
     `<button type="submit">Filter</button> <a href="${adminPath}">Reset</a> <span>${applications.length} of ${total}</span></form>`;
+  const parentLeads = allApplications.filter((a) => a.source?.applicant_type === "parent_guardian");
+  const qualified = allApplications.filter((a) => a.status === "qualified");
+  const parentQualified = parentLeads.filter((a) => a.status === "qualified");
+  const rejected = allApplications.filter((a) => a.status === "rejected");
+  const pct = (part, whole) => whole ? `${Math.round(part / whole * 100)}%` : "—";
+  const qualitySummary = `<div class="summary"><div><b>${allApplications.length}</b><span>loaded leads</span></div><div><b>${parentLeads.length}</b><span>parent leads</span></div><div><b>${qualified.length}</b><span>qualified</span></div><div><b>${pct(qualified.length, allApplications.length)}</b><span>qualified rate</span></div><div><b>${pct(parentQualified.length, parentLeads.length)}</b><span>parent qualified rate</span></div><div><b>${rejected.length}</b><span>rejected</span></div></div>`;
   // Calculator data is what the player's browser sent, not something verified.
   const calculatorCell = (calculator) => calculator
     ? `${htmlEscape(ADMIN_BAND_LABELS[calculator.band] || calculator.band)} · ${htmlEscape(calculator.score)}` +
@@ -613,10 +625,12 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
       (overdue ? ` <strong class="due">due</strong>` : "") +
       `<button type="submit">Save</button></form>`;
   };
+  const sourceCell = (source) => { const s = source || {}; const bits = []; if (s.applicant_type) bits.push(`<b>${htmlEscape(s.applicant_type)}</b>`); if (s.intent) bits.push(`intent: ${htmlEscape(s.intent)}`); if (s.source_page) bits.push(`page: ${htmlEscape(s.source_page)}`); if (s.utm_source) bits.push(`utm: ${htmlEscape(s.utm_source)}${s.utm_campaign ? ` / ${htmlEscape(s.utm_campaign)}` : ""}`); if (!s.source_page && s.referrer) bits.push(`ref: ${htmlEscape(s.referrer)}`); return bits.join("<br>"); };
   const applicationRows = applications.map((a) => `<tr><td>${htmlEscape(a.reference_code)}</td>` +
     `<td>${htmlEscape(a.player_name)}<br><small>${htmlEscape(a.birth_year)}${a.is_minor ? " (minor)" : ""} · ${htmlEscape(a.position)}</small></td>` +
     `<td>${htmlEscape(a.current_club)}</td>` +
     `<td>${htmlEscape(a.phone)}${a.email ? `<br>${htmlEscape(a.email)}` : ""}</td>` +
+    `<td>${sourceCell(a.source)}</td>` +
     `<td>${calculatorCell(a.source?.calculator)}</td>` +
     `<td>${followupForm(a)}</td>` +
     `<td>${htmlEscape(a.created_at)}</td><td>${statusForm("applications", a.id, a.status)}</td></tr>`).join("");
@@ -627,9 +641,9 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
   return `<!doctype html><html><head><meta charset="utf-8"><title>EHA admin</title>` +
     `<style>body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#0b1520}table{border-collapse:collapse;width:100%;margin-bottom:40px}` +
     `th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f2f4f6}` +
-    `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}small{color:#5a6673}.logout{float:right}.followup{display:grid;gap:6px;min-width:220px}.followup textarea{width:100%;box-sizing:border-box}.due{color:#b00020}</style></head><body>` +
+    `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}.summary{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:8px;margin:0 0 18px}.summary>div{border:1px solid #ccd3d9;padding:10px;background:#f8fafb}.summary b{display:block;font-size:22px}.summary span{color:#5a6673;font-size:12px}small{color:#5a6673}.logout{float:right}.followup{display:grid;gap:6px;min-width:220px}.followup textarea{width:100%;box-sizing:border-box}.due{color:#b00020}@media(max-width:900px){.summary{grid-template-columns:repeat(2,1fr)}}</style></head><body>` +
     `<form method="post" action="${adminPath}/logout" class="logout"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}"><button type="submit">Log out</button></form>` +
-    `<h1>Applications</h1>${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Calculator (self-reported)</th><th>Follow-up</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
+    `<h1>Applications</h1>${qualitySummary}${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Source</th><th>Calculator (self-reported)</th><th>Follow-up</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
     `<h1>Club requests</h1><table><tr><th>Ref</th><th>Club</th><th>Contact</th><th>Contact info</th><th>Created</th><th>Status</th></tr>${clubRequestRows}</table>` +
     `</body></html>`;
 }

@@ -12,7 +12,12 @@ set -euo pipefail
 
 main() {
   cd "${REPO_DIR:-/opt/eha}"
-  git fetch origin main
+  echo "sync: fetching origin/main"
+  export GIT_SSH_COMMAND="${GIT_SSH_COMMAND:-ssh -o BatchMode=yes -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=2}"
+  if ! timeout 60 git fetch origin main; then
+    echo "sync: git fetch origin/main timed out or failed" >&2
+    exit 1
+  fi
 
   if git merge --ff-only origin/main; then
     return 0

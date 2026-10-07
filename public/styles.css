@@ -429,6 +429,13 @@ label small,fieldset>small{color:var(--muted);font-size:12px;line-height:1.6;tex
 .form-status.error{color:#ffadad}
 .form-section-title{font:600 22px Oswald;text-transform:uppercase;margin:0 0 24px}
 .parent-fields{border:1px solid var(--line);padding:24px;margin:8px 0 24px;background:rgba(3,11,20,.28)}
+.applicant-type{border:1px solid var(--line);padding:20px;margin:0 0 24px;background:rgba(22,135,255,.05)}
+.applicant-type legend{font:700 13px Manrope;text-transform:uppercase;letter-spacing:.08em;color:#c9d9e7;padding:0 8px}
+.applicant-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 10px}
+.applicant-options label{display:flex;align-items:center;gap:10px;border:1px solid var(--line);padding:13px 14px;margin:0;background:rgba(3,11,20,.35);cursor:pointer}
+.applicant-options input{width:auto;margin:0}
+.applicant-type small{color:var(--muted);line-height:1.5}
+@media(max-width:640px){.applicant-options{grid-template-columns:1fr}}
 .honeypot{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}
 .cf-turnstile{margin:8px 0 20px}
 button:disabled{opacity:.65;cursor:wait}

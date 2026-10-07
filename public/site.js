@@ -1,7 +1,7 @@
 const LANG=document.documentElement.lang==='en'?'en':'ru';
 const T={
-  ru:{waAria:'Написать в WhatsApp',submitting:'Отправляем…',saving:'Сохраняем заявку и файлы…',clubSending:'Отправляем запрос клуба…',clubSuccess:v=>`Запрос отправлен. Номер: ${v}`,checkForm:'Проверьте форму и попробуйте ещё раз.',noConn:'Нет связи с сервером. Данные не отправлены. Попробуйте снова или используйте прямой контакт.',submit:'Отправить заявку',clubSubmit:'Отправить запрос',countryPrefix:'Интересующая страна',leaguePrefix:'Интересующая лига',notFound:'номер не найден',waGreeting:v=>`Здравствуйте! Моя заявка с сайта: ${v}`,cookieText:'Мы используем cookies для аналитики, чтобы понимать, какие материалы полезны, и делать сайт лучше.',cookieAccept:'Принять',cookieDecline:'Отклонить'},
-  en:{waAria:'Message us on WhatsApp',submitting:'Sending…',saving:'Saving your application and files…',clubSending:'Sending the club request…',clubSuccess:v=>`Request sent. Reference: ${v}`,checkForm:'Check the form and try again.',noConn:'No connection to the server. Nothing was sent. Try again or use direct contact.',submit:'Send application',clubSubmit:'Send request',countryPrefix:'Target country',leaguePrefix:'Target league',notFound:'reference not found',waGreeting:v=>`Hi! My application reference: ${v}`,cookieText:'We use cookies for analytics, to understand which guides are useful and make the site better.',cookieAccept:'Accept',cookieDecline:'Decline'}
+  ru:{waAria:'Написать в WhatsApp',submitting:'Отправляем…',saving:'Сохраняем заявку и файлы…',clubSending:'Отправляем запрос клуба…',clubSuccess:v=>`Запрос отправлен. Номер: ${v}`,checkForm:'Проверьте форму и попробуйте ещё раз.',noConn:'Нет связи с сервером. Данные не отправлены. Попробуйте снова или используйте прямой контакт.',unconfirmed:'Не удалось подтвердить результат отправки. Не отправляйте форму повторно — свяжитесь с нами, чтобы проверить заявку.',submit:'Отправить заявку',clubSubmit:'Отправить запрос',countryPrefix:'Интересующая страна',notFound:'номер не найден',waGreeting:v=>`Здравствуйте! Моя заявка с сайта: ${v}`,cookieText:'Мы используем cookies для аналитики, чтобы понимать, какие материалы полезны, и делать сайт лучше.',cookieAccept:'Принять',cookieDecline:'Отклонить'},
+  en:{waAria:'Message us on WhatsApp',submitting:'Sending…',saving:'Saving your application and files…',clubSending:'Sending the club request…',clubSuccess:v=>`Request sent. Reference: ${v}`,checkForm:'Check the form and try again.',noConn:'No connection to the server. Nothing was sent. Try again or use direct contact.',unconfirmed:'We could not confirm the submission result. Do not submit again — contact us to check the application.',submit:'Send application',clubSubmit:'Send request',countryPrefix:'Target country',notFound:'reference not found',waGreeting:v=>`Hi! My application reference: ${v}`,cookieText:'We use cookies for analytics, to understand which guides are useful and make the site better.',cookieAccept:'Accept',cookieDecline:'Decline'}
 }[LANG];
 const q=(s,c=document)=>c.querySelector(s),qa=(s,c=document)=>[...c.querySelectorAll(s)],header=q('.header'),menu=q('.menu'),nav=q('.header nav'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const setHeader=()=>header?.classList.toggle('scrolled',scrollY>18);setHeader();addEventListener('scroll',setHeader,{passive:true});
@@ -34,14 +34,22 @@ else if(!consent){
 const article=q('.article-body');if(article){const bar=document.createElement('div');bar.className='reading-progress';document.body.append(bar);const progress=()=>{const start=article.offsetTop-innerHeight*.25,end=article.offsetTop+article.offsetHeight-innerHeight*.75;bar.style.width=Math.max(0,Math.min(1,(scrollY-start)/(end-start)))*100+'%'};progress();addEventListener('scroll',progress,{passive:true})}
 const form=q('#profile-form');
 if(form){
-  const status=q('#form-status'),birth=q('[name="birthYear"]',form),parent=q('#parent-fields'),button=q('button[type="submit"]',form),year=new Date().getFullYear();birth.min=year-60;birth.max=year-8;
-  const updateParent=()=>{const year=Number(birth.value),minor=Number.isInteger(year)&&year>=new Date().getFullYear()-18;parent.hidden=!minor;parent.setAttribute('aria-hidden',String(!minor));qa('input',parent).forEach(input=>input.required=minor)};
-  birth.addEventListener('input',updateParent);updateParent();
+  const status=q('#form-status'),birth=q('[name="birthYear"]',form),parent=q('#parent-fields'),button=q('button[type="submit"]',form),year=new Date().getFullYear(),applicants=qa('[name="applicantType"]',form),height=q('[name="heightCm"]',form),weight=q('[name="weightKg"]',form),stick=q('[name="stickHand"]',form),intentInput=q('[name="intent"]',form);birth.min=year-60;birth.max=year-8;
+  const applicantType=()=>q('[name="applicantType"]:checked',form)?.value||'player';
+  const isMinor=()=>{const y=Number(birth.value);return Number.isInteger(y)&&y>=new Date().getFullYear()-18};
+  const updateApplicant=()=>{const parentApplicant=applicantType()==='parent_guardian',minor=isMinor(),needsParent=minor||parentApplicant,title=q('#parent-section-title',form),consentCopy=q('#parent-consent-copy',form);parent.hidden=!needsParent;parent.setAttribute('aria-hidden',String(!needsParent));qa('input',parent).forEach(input=>input.required=needsParent);[height,weight,stick].forEach(input=>{if(input)input.required=!parentApplicant});if(title)title.textContent=minor?(LANG==='en'?'For a player under 18':'Для игрока младше 18 лет'):(LANG==='en'?'Parent / guardian contact':'Контакт родителя / представителя');if(consentCopy)consentCopy.textContent=minor?(LANG==='en'?'I am the parent or legal guardian and consent to the processing of the player\'s data.':'Я являюсь родителем или законным представителем и согласен на обработку данных игрока.'):(LANG==='en'?'I confirm I have the adult player\'s permission to submit this profile and contact information.':'Подтверждаю, что взрослый игрок разрешил мне отправить его профиль и контактные данные.')};
+  birth.addEventListener('input',updateApplicant);applicants.forEach(input=>input.addEventListener('change',updateApplicant));
   const params=new URLSearchParams(location.search),utm={utm_source:'utmSource',utm_medium:'utmMedium',utm_campaign:'utmCampaign',utm_content:'utmContent',utm_term:'utmTerm'};
-  Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=params.get(key)||''});q('[name="referrer"]',form).value=document.referrer||'';
+  const requestedType=(params.get('type')||'').trim(),requestedIntent=(params.get('intent')||'').trim(),parentEntry=['parent','parent_guardian'].includes(requestedType),analysisEntry=requestedIntent==='player-analysis',europeRouteEntry=requestedIntent==='europe_route';if(parentEntry){const radio=q('[name="applicantType"][value="parent_guardian"]',form);if(radio)radio.checked=true}
+  if(intentInput)intentInput.value=requestedIntent.slice(0,60);
+  if(parentEntry){const kicker=q('#contact-kicker'),title=q('#contact-title'),lead=q('#contact-lead');if(kicker)kicker.textContent=LANG==='en'?'Parent / guardian enquiry':'Обращение родителя / представителя';if(title)title.innerHTML=LANG==='en'?'Request a<br><em>junior assessment</em>':'Запросите<br><em>оценку юниорского маршрута</em>';if(lead)lead.textContent=LANG==='en'?'Send the player’s core details and your goal. EHA will review the sporting profile first and explain the next step and what still needs official confirmation.':'Пришлите основные данные игрока и цель семьи. EHA сначала оценит спортивный профиль, затем объяснит следующий шаг и что ещё нужно подтвердить официально.'}
+  else if(analysisEntry){const kicker=q('#contact-kicker'),title=q('#contact-title'),lead=q('#contact-lead');if(kicker)kicker.textContent=LANG==='en'?'Full player analysis':'Полный анализ игрока';if(title)title.innerHTML=LANG==='en'?'Request a<br><em>player analysis</em>':'Запросите<br><em>анализ игрока</em>';if(lead)lead.textContent=LANG==='en'?'Send the player profile and recent full-game video. EHA will first confirm whether the material is sufficient and agree the scope before any paid work starts.':'Пришлите профиль игрока и свежее видео полного матча. EHA сначала подтвердит, достаточно ли материалов, и согласует объём до начала платной работы.'}
+  else if(europeRouteEntry){const kicker=q('#contact-kicker'),title=q('#contact-title'),lead=q('#contact-lead');if(kicker)kicker.textContent=LANG==='en'?'European hockey route':'Маршрут в европейский хоккей';if(title)title.innerHTML=LANG==='en'?'Assess your route<br><em>to European hockey</em>':'Оцените свой путь<br><em>в европейский хоккей</em>';if(lead)lead.textContent=LANG==='en'?'Send your player profile, recent statistics and video. EHA will assess realistic league levels and explain the next steps without guaranteeing a club decision.':'Пришлите профиль игрока, свежую статистику и видео. EHA оценит реалистичные уровни лиг и объяснит следующие шаги без гарантии решения клуба.'}
+  updateApplicant();
+  Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=params.get(key)||''});q('[name="referrer"]',form).value=document.referrer||'';const sourcePageInput=q('[name="sourcePage"]',form);if(sourcePageInput){let sourcePage=(params.get('source_page')||'').trim();if(!sourcePage&&document.referrer){try{const ref=new URL(document.referrer);if(ref.origin===location.origin)sourcePage=ref.pathname}catch(error){}}sourcePageInput.value=sourcePage.slice(0,300)}
   const country=(params.get('country')||'').trim().slice(0,100),league=(params.get('league')||'').trim().slice(0,100),note=(params.get('note')||'').trim().slice(0,300),message=q('[name="message"]',form);
-  if(country&&message&&!message.value.trim())message.value=`${T.countryPrefix}: ${country}`;
-  else if(league&&message&&!message.value.trim())message.value=`${T.leaguePrefix}: ${league}`;
+  const context=[country?`${T.countryPrefix}: ${country}`:'',league?`${LANG==='en'?'Target league':'Интересующая лига'}: ${league}`:''].filter(Boolean).join('\n');
+  if(context&&message&&!message.value.trim())message.value=context;
   else if(note&&message&&!message.value.trim())message.value=note;
   const calcBand=params.get('calc_band')||'',calcScore=params.get('calc_score')||'',calcLeagues=(params.get('calc_leagues')||'').slice(0,300);
   const fromCalc=['top','mid','low'].includes(calcBand)&&/^\d{1,3}$/.test(calcScore);
@@ -49,8 +57,9 @@ if(form){
   if(fromCalc){[['calcBand',calcBand],['calcScore',calcScore],['calcLeagues',calcLeagues]].forEach(([name,value])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=value});
     const position=q('[name="position"]',form),pos=params.get('pos'),year=params.get('year');
     if(position&&!position.value&&['forward','defense','goalie'].includes(pos))position.value=pos;
-    if(!birth.value&&/^\d{4}$/.test(year||'')&&year>=birth.min&&year<=birth.max){birth.value=year;updateParent()}}
-  let formStarted=false;form.addEventListener('focusin',()=>{if(formStarted)return;formStarted=true;track('form_start',{from_calculator:fromCalc})});
+    if(!birth.value&&/^\d{4}$/.test(year||'')&&year>=birth.min&&year<=birth.max){birth.value=year;updateApplicant()}}
+  const funnelContext=()=>({from_calculator:fromCalc,applicant_type:applicantType(),player_minor:isMinor(),intent:intentInput?.value||'',entry_page:location.pathname});
+  let formStarted=false;form.addEventListener('focusin',()=>{if(formStarted)return;formStarted=true;track('form_start',funnelContext())});
   const clearErrors=()=>{qa('.field-error',form).forEach(el=>el.textContent='');qa('[aria-invalid="true"]',form).forEach(el=>el.removeAttribute('aria-invalid'));status.textContent='';status.className='form-status'};
   const showErrors=(errors={})=>{Object.entries(errors).forEach(([name,message])=>{const output=q(`[data-error-for="${name}"]`,form),input=q(`[name="${name}"]`,form);if(output)output.textContent=message;if(input)input.setAttribute('aria-invalid','true')});const first=q('[aria-invalid="true"]',form);first?.focus()};
   form.addEventListener('submit',async event=>{
@@ -59,8 +68,11 @@ if(form){
       const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}}),data=await response.json().catch(()=>({}));
       if(!response.ok){showErrors(data.errors);status.textContent=data.message||T.checkForm;status.classList.add('error');if(window.turnstile)turnstile.reset();return}
       const localePrefix=location.pathname.startsWith('/ru/')||location.pathname==='/ru'?'/ru':location.pathname.startsWith('/en/')||location.pathname==='/en'?'/en':'';
-      sessionStorage.removeItem('eha-application-draft');if(window.turnstile)turnstile.reset();location.assign(`${localePrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
-    }catch(error){status.textContent=T.noConn;status.classList.add('error');if(window.turnstile)turnstile.reset()}
+      if(!data.ok||!/^EHA-\d{6}-[A-F0-9]{6}$/.test(data.reference||''))throw new Error('unconfirmed_submission');
+      try{sessionStorage.setItem('eha-last-funnel',JSON.stringify(funnelContext()))}catch(error){}
+      try{sessionStorage.removeItem('eha-application-draft')}catch(error){}
+      if(window.turnstile)turnstile.reset();location.assign(`${localePrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
+    }catch(error){status.textContent=T.unconfirmed;status.classList.add('error');if(window.turnstile)turnstile.reset()}
     finally{button.disabled=false;button.textContent=T.submit}
   });
 }
@@ -91,6 +103,9 @@ if(clubForm){
 // visitor accepts cookies, and GA4 runs in Consent Mode.
 const track=(name,params={})=>{try{if(typeof ym==='function')ym(110889446,'reachGoal',name,params);if(typeof gtag==='function')gtag('event',name,params)}catch(error){}};
 window.ehaTrack=track;
+const isParentHub=location.pathname.endsWith('/junior-hockey-for-parents')||location.pathname.endsWith('/yuniorskij-hokkej-roditelyam');
+if(isParentHub)track('parent_hub_view',{entry_page:location.pathname});
+document.addEventListener('click',event=>{const link=event.target.closest('a[href*="/contact?"]');if(!link)return;let url;try{url=new URL(link.href,location.href)}catch(error){return}const type=url.searchParams.get('type'),intent=url.searchParams.get('intent')||'';if(type==='parent'||type==='parent_guardian')track('parent_cta_click',{entry_page:location.pathname,intent,destination:url.pathname})});
 
 // Turnstile tokens are single-use and expire after a few minutes. When the
 // browser restores a submitted form from the back/forward cache, the widget
@@ -99,4 +114,4 @@ window.ehaTrack=track;
 addEventListener('pageshow',event=>{if(event.persisted&&window.turnstile&&q('.cf-turnstile'))turnstile.reset()});
 
 const reference=q('[data-application-reference]');
-if(reference){const value=new URLSearchParams(location.search).get('ref')||'';if(/^EHA-\d{6}-[A-F0-9]{6}$/.test(value)){reference.textContent=value;try{const key=`eha-sent-${value}`;if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');track('application_sent',{from_calculator:sessionStorage.getItem('eha-from-calc')==='1'})}}catch(error){track('application_sent')}const link=q('[data-success-whatsapp]');if(link)link.href=`https://wa.me/375297957818?text=${encodeURIComponent(T.waGreeting(value))}`}else reference.textContent=T.notFound}
+if(reference){const value=new URLSearchParams(location.search).get('ref')||'';if(/^EHA-\d{6}-[A-F0-9]{6}$/.test(value)){reference.textContent=value;try{const key=`eha-sent-${value}`;if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');let context={from_calculator:sessionStorage.getItem('eha-from-calc')==='1'};try{context={...context,...JSON.parse(sessionStorage.getItem('eha-last-funnel')||'{}')}}catch(error){}track('application_sent',context);sessionStorage.removeItem('eha-last-funnel')}}catch(error){track('application_sent')}const link=q('[data-success-whatsapp]');if(link)link.href=`https://wa.me/375297957818?text=${encodeURIComponent(T.waGreeting(value))}`}else reference.textContent=T.notFound}

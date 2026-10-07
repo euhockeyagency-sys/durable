@@ -31,7 +31,9 @@ jobs:
       - name: Install Supabase CLI
         uses: supabase/setup-cli@v1
         with:
-          version: latest
+          # Pin the release so setup-cli does not need GitHub's "latest release" API,
+          # which can fail under unauthenticated rate limits during deploys.
+          version: 2.119.0
 
       - name: Apply Supabase migrations
         env:
@@ -54,9 +56,15 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -t ed25519 5.22.215.5 >> ~/.ssh/known_hosts 2>/dev/null
+          timeout 10 ssh-keyscan -t ed25519 5.22.215.5 >> ~/.ssh/known_hosts 2>/dev/null
           # The key is locked to `cd /opt/eha && bash deploy.sh` on the server side.
-          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes root@5.22.215.5
+          timeout 360 ssh -i ~/.ssh/deploy_key \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            -o ConnectTimeout=15 \
+            -o ServerAliveInterval=30 \
+            -o ServerAliveCountMax=3 \
+            root@5.22.215.5
 
       - name: Verify the canonical site and www redirect
         run: |
@@ -76,6 +84,25 @@ jobs:
           RU_SOURCE=$(curl -fsSI https://eurohockeyagency.com/ru/ \
             | awk -F': ' 'tolower($1)=="x-eha-source"{print $2}' | tr -d '\r')
           test "$RU_SOURCE" = "ru/index.html"
+
+          PLAYER_SOURCE=$(curl -fsSI https://eurohockeyagency.com/player-assessment \
+            | awk -F': ' 'tolower($1)=="x-eha-source"{print $2}' | tr -d '\r')
+          test "$PLAYER_SOURCE" = "en/player-assessment.html"
+
+          RU_PLAYER_SOURCE=$(curl -fsSI https://eurohockeyagency.com/ru/analiz-hokkeista \
+            | awk -F': ' 'tolower($1)=="x-eha-source"{print $2}' | tr -d '\r')
+          test "$RU_PLAYER_SOURCE" = "ru/analiz-hokkeista.html"
+
+          SITEMAP=$(curl -fsS https://eurohockeyagency.com/sitemap.xml)
+          printf '%s' "$SITEMAP" | grep -q 'https://eurohockeyagency.com/player-assessment'
+
+          RU_SITEMAP=$(curl -fsS https://eurohockeyagency.com/ru/sitemap.xml)
+          printf '%s' "$RU_SITEMAP" | grep -q 'https://eurohockeyagency.com/ru/analiz-hokkeista'
+
+          TRAILING_REDIRECT=$(curl -sS --max-redirs 0 -o /dev/null \
+            -w '%{http_code}|%{redirect_url}' \
+            'https://eurohockeyagency.com/services/')
+          test "$TRAILING_REDIRECT" = '301|https://eurohockeyagency.com/services'
 
           LEGACY_REDIRECT=$(curl -sS --max-redirs 0 -o /dev/null \
             -w '%{http_code}|%{redirect_url}' \

@@ -37,7 +37,7 @@
 <a href="/players">Игрокам</a><a href="/for-clubs">Клубам</a>
 <a href="/cases">Кейсы</a>
 <a href="/agent">Агент</a>
-<a href="/guides">Материалы</a><a href="/novosti">Новости</a>
+<a href="/guides">Материалы</a><a href="/yuniorskij-hokkej-roditelyam">Родителям</a>
 <a class="lang-switch" href="{{ALT_URL}}" hreflang="en" lang="en" aria-label="English version">EN</a>
 <a class="nav-cta active" href="/contact">Отправить профиль</a>
 </nav>
@@ -45,11 +45,11 @@
 <main>
 <section class="contact-grid wrap">
 <div>
-<p class="kicker">Первичная оценка</p>
-<h1>Отправьте<br>
+<p class="kicker" id="contact-kicker">Первичная оценка</p>
+<h1 id="contact-title">Отправьте<br>
 <em>профиль игрока</em>
 </h1>
-<p class="lead">Чем полнее данные, тем точнее можно оценить подходящие страны, лиги и следующий шаг.</p>
+<p class="lead" id="contact-lead">Чем полнее данные, тем точнее можно оценить подходящие страны, лиги и следующий шаг.</p>
 <div class="direct">
 <a href="https://wa.me/375297957818">
 <b>WhatsApp</b>
@@ -63,6 +63,14 @@
 </div>
 <form id="profile-form" action="/api/applications" method="post" enctype="multipart/form-data">
 <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+<fieldset class="applicant-type">
+<legend>Кто отправляет заявку?</legend>
+<div class="applicant-options">
+<label><input type="radio" name="applicantType" value="player" checked> Игрок</label>
+<label><input type="radio" name="applicantType" value="parent_guardian"> Родитель / представитель</label>
+</div>
+<small>Для обращения родителя используется та же первичная оценка, но часть параметров игрока можно добавить позже.</small>
+</fieldset>
 <label>Имя и фамилия<input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
@@ -98,7 +106,7 @@
 <option value="left">Левый</option>
 <option value="right">Правый</option>
 </select><span class="field-error" data-error-for="stickHand"></span></label>
-<label>Elite Prospects — необязательно<input type="url" name="eliteProspectsUrl" id="eliteProspectsUrl" placeholder="Если профиля нет, оставьте поле пустым">
+<label>Elite Prospects — необязательно<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="Если профиля нет, оставьте поле пустым">
 <span class="field-error" data-error-for="eliteProspectsUrl"></span>
 </label>
 <fieldset>
@@ -118,17 +126,17 @@
 </label>
 </div>
 <section class="parent-fields" id="parent-fields" hidden aria-hidden="true">
-<p class="form-section-title">Для игрока младше 18 лет</p>
+<p class="form-section-title" id="parent-section-title">Для игрока младше 18 лет</p>
 <label>Имя родителя или представителя<input name="parentName" autocomplete="name" maxlength="120">
 <span class="field-error" data-error-for="parentName"></span></label>
 <label>Телефон или email родителя<input name="parentContact" maxlength="160">
 <span class="field-error" data-error-for="parentContact"></span></label>
-<label class="consent"><input type="checkbox" name="parentConsent" value="true">Я являюсь родителем или законным представителем и согласен на обработку данных игрока.</label>
+<label class="consent"><input type="checkbox" name="parentConsent" value="true"><span id="parent-consent-copy">Я являюсь родителем или законным представителем и согласен на обработку данных игрока.</span></label>
 <span class="field-error" data-error-for="parentConsent"></span>
 </section>
-<label>Резюме, фотографии или видео хайлайтов
+<label>Резюме или фотографии
 <input type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
-<small>Можно добавить резюме, фотографии и короткое видео с хайлайтами. До 3 файлов, каждый до 5 МБ, общий размер до 10 МБ. Для больших видео используйте ссылки YouTube, Vimeo или Google Drive выше. Не отправляйте паспорт, медицинские или другие чувствительные документы.</small>
+<small>Можно добавить резюме и фотографии. До 3 файлов, каждый до 5 МБ, общий размер до 10 МБ. Все видео отправляйте ссылками YouTube, Vimeo или Google Drive в полях выше. Не отправляйте паспорт, медицинские или другие чувствительные документы.</small>
 <span class="field-error" data-error-for="files"></span>
 </label>
 <label>Дополнительная информация<textarea name="message" rows="5" maxlength="3000" placeholder="Карьерная цель, достижения и важные детали">
@@ -139,7 +147,7 @@
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
 <label class="honeypot" aria-hidden="true">Ваш сайт<input name="website" tabindex="-1" autocomplete="off"></label>
-<input type="hidden" name="locale" value="ru"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer"><input type="hidden" name="calcBand"><input type="hidden" name="calcScore"><input type="hidden" name="calcLeagues">
+<input type="hidden" name="locale" value="ru"><input type="hidden" name="intent"><input type="hidden" name="sourcePage"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer"><input type="hidden" name="calcBand"><input type="hidden" name="calcScore"><input type="hidden" name="calcLeagues">
 <button class="btn primary" type="submit">Отправить заявку</button>
 <p class="form-note">После сохранения вы получите номер заявки. Если форма недоступна, напишите в WhatsApp. Ответ в течение 48 часов.</p>
 </form>
