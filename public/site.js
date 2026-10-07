@@ -68,9 +68,11 @@ if(form){
       const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}}),data=await response.json().catch(()=>({}));
       if(!response.ok){showErrors(data.errors);status.textContent=data.message||T.checkForm;status.classList.add('error');if(window.turnstile)turnstile.reset();return}
       const localePrefix=location.pathname.startsWith('/ru/')||location.pathname==='/ru'?'/ru':location.pathname.startsWith('/en/')||location.pathname==='/en'?'/en':'';
+      if(!data.ok||!/^EHA-\d{6}-[A-F0-9]{6}$/.test(data.reference||''))throw new Error('unconfirmed_submission');
       try{sessionStorage.setItem('eha-last-funnel',JSON.stringify(funnelContext()))}catch(error){}
-      sessionStorage.removeItem('eha-application-draft');if(window.turnstile)turnstile.reset();location.assign(`${localePrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
-    }catch(error){status.textContent=T.noConn;status.classList.add('error');if(window.turnstile)turnstile.reset()}
+      try{sessionStorage.removeItem('eha-application-draft')}catch(error){}
+      if(window.turnstile)turnstile.reset();location.assign(`${localePrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);
+    }catch(error){status.textContent=T.unconfirmed;status.classList.add('error');if(window.turnstile)turnstile.reset()}
     finally{button.disabled=false;button.textContent=T.submit}
   });
 }
