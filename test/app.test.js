@@ -650,6 +650,21 @@ test("stores a valid adult application and notification audits", async () => {
   assert.deepEqual(services.rows.application_notifications.map((row) => row.status).sort(), ["sent", "sent"]);
 });
 
+test("accepts an application with no Elite Prospects profile", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  await validRequest(request(app), { eliteProspectsUrl: "" }).expect(201);
+  assert.equal(services.rows.applications[0].elite_prospects_url, null);
+});
+
+test("rejects a malformed Elite Prospects link but allows leaving it blank", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+  const response = await validRequest(request(app), { eliteProspectsUrl: "not a url" }).expect(400);
+  assert.ok(response.body.errors.eliteProspectsUrl);
+  assert.equal(services.rows.applications.length, 0);
+});
+
 test("returns English validation errors when locale=en, Russian by default", async () => {
   const services = serviceMock();
   const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });

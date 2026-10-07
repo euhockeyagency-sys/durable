@@ -100,7 +100,7 @@ function notificationText(a) {
     `Гражданство: ${a.citizenship}`,
     `Клуб: ${a.current_club}`,
     `Контакт: ${a.phone}${a.email ? `; ${a.email}` : ""}`,
-    `Elite Prospects: ${a.elite_prospects_url}`,
+    a.elite_prospects_url ? `Elite Prospects: ${a.elite_prospects_url}` : null,
     ...(a.video_urls || []).map((url, index) => `Видео ${index + 1}: ${url}`),
     a.is_minor ? `Родитель: ${a.parent_name}; ${a.parent_contact}` : null,
     a.source?.calculator ? `Калькулятор (со слов игрока): ${calculatorSummary(a.source.calculator)}` : null,

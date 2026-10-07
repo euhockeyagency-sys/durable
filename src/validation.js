@@ -55,7 +55,8 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   const email = text(body.email, 160).toLowerCase();
   const position = text(body.position, 20);
   const stickHand = text(body.stickHand, 20);
-  const eliteProspectsUrl = httpUrl(text(body.eliteProspectsUrl, 500), { hostname: "eliteprospects.com" });
+  const eliteProspectsUrlInput = text(body.eliteProspectsUrl, 500);
+  const eliteProspectsUrl = eliteProspectsUrlInput ? httpUrl(eliteProspectsUrlInput, { hostname: "eliteprospects.com" }) : null;
   const videoInputs = asArray(body.videoUrls).map((value) => text(value, 500)).filter(Boolean);
   const videoUrls = videoInputs.map((value) => httpUrl(value));
   const isMinor = Number.isInteger(birthYear) && birthYear >= currentYear - 18;
@@ -72,7 +73,7 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   // Required since applications are answered by email: without an address there
   // is no way to reply to the player.
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = m.email;
-  if (!eliteProspectsUrl) errors.eliteProspectsUrl = m.eliteProspectsUrl;
+  if (eliteProspectsUrlInput && !eliteProspectsUrl) errors.eliteProspectsUrl = m.eliteProspectsUrl;
   if (videoInputs.length > 3) errors.videoUrls = m.videoUrlsMax;
   if (videoUrls.some((url) => !url)) errors.videoUrls = m.videoUrlsInvalid;
   if (body.availableFrom && !/^\d{4}-\d{2}-\d{2}$/.test(body.availableFrom)) errors.availableFrom = m.availableFrom;
