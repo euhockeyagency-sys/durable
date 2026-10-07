@@ -54,6 +54,25 @@ test("parent applicant can send an adult player's first enquiry without measurem
   assert.equal(result.value.source.source_page, "/junior-hockey-for-parents");
 });
 
+test("Elite Prospects is optional when the field is empty", () => {
+  const result = validateApplication(body({ eliteProspectsUrl: "" }), [], new Date("2026-10-04T12:00:00Z"), false, "en");
+  assert.equal(result.ok, true);
+  assert.equal(result.value.eliteProspectsUrl, null);
+});
+
+test("a supplied Elite Prospects URL must use the Elite Prospects domain", () => {
+  const result = validateApplication(body({ eliteProspectsUrl: "https://example.com/player/123" }), [], new Date("2026-10-04T12:00:00Z"), false, "en");
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.eliteProspectsUrl);
+});
+
+test("application form validates the success payload and guards browser draft storage", () => {
+  const source = fs.readFileSync(path.join(__dirname, "..", "public", "site.js"), "utf8");
+  assert.ok(source.includes("if(!data.ok||!/^EHA-\\d{6}-[A-F0-9]{6}$/.test(data.reference||''))"));
+  assert.ok(source.includes("try{sessionStorage.removeItem('eha-application-draft')}catch(error){}"));
+  assert.ok(source.includes("status.textContent=T.unconfirmed"));
+});
+
 test("minor status is independent and still requires guardian details and consent", () => {
   const result = validateApplication(body({ birthYear: "2010", applicantType: "player" }), [], new Date("2026-10-04T12:00:00Z"), false, "en");
   assert.equal(result.ok, false);
