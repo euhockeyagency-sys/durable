@@ -105,3 +105,46 @@ test("application notifications expose route intent and source page", () => {
   assert.match(message, /Тип заявки: europe_route/);
   assert.match(message, /Источник: \/guides\/find-a-hockey-club-in-europe/);
 });
+
+test("application notifications omit missing measurements and Elite Prospects", () => {
+  const message = notificationText({
+    reference_code: "EHA-261007-ABC124",
+    player_name: "Adult Player",
+    birth_year: 2000,
+    position: "forward",
+    height_cm: null,
+    weight_kg: null,
+    citizenship: "Canada",
+    current_club: "HC Test",
+    phone: "+1 555 0101",
+    email: "adult@example.com",
+    elite_prospects_url: null,
+    video_urls: [],
+    is_minor: false,
+    source: { locale: "en", applicant_type: "player" }
+  });
+  assert.match(message, /Позиция: Нападающий/);
+  assert.doesNotMatch(message, /null|undefined|Elite Prospects:/);
+});
+
+test("application notifications include a parent contact for an adult player when a parent applied", () => {
+  const message = notificationText({
+    reference_code: "EHA-261007-ABC125",
+    player_name: "Adult Player",
+    birth_year: 2000,
+    position: "goalie",
+    height_cm: null,
+    weight_kg: null,
+    citizenship: "Canada",
+    current_club: "HC Test",
+    phone: "+1 555 0102",
+    email: "family@example.com",
+    elite_prospects_url: null,
+    video_urls: [],
+    is_minor: false,
+    parent_name: "Parent Name",
+    parent_contact: "parent@example.com",
+    source: { locale: "en", applicant_type: "parent_guardian" }
+  });
+  assert.match(message, /Родитель: Parent Name; parent@example\.com/);
+});
