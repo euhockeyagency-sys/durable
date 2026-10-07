@@ -80,7 +80,7 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   // Required since applications are answered by email: without an address there
   // is no way to reply to the player.
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = m.email;
-  if (!eliteProspectsUrl) errors.eliteProspectsUrl = m.eliteProspectsUrl;
+  if (eliteProspectsInput && !eliteProspectsUrl) errors.eliteProspectsUrl = m.eliteProspectsUrl;
   if (videoInputs.length > 3) errors.videoUrls = m.videoUrlsMax;
   if (videoUrls.some((url) => !url)) errors.videoUrls = m.videoUrlsInvalid;
   if (body.availableFrom && !/^\d{4}-\d{2}-\d{2}$/.test(body.availableFrom)) errors.availableFrom = m.availableFrom;
