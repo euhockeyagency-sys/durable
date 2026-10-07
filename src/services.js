@@ -93,18 +93,23 @@ function createServices(config) {
 function notificationText(a) {
   const position = { forward: "Нападающий", defense: "Защитник", goalie: "Вратарь" }[a.position] || a.position;
   const locale = a.source?.locale === "en" ? "английская (com)" : "русская (ru)";
+  const measurements = [
+    a.height_cm !== null && a.height_cm !== undefined && a.height_cm !== "" ? `${a.height_cm} см` : null,
+    a.weight_kg !== null && a.weight_kg !== undefined && a.weight_kg !== "" ? `${a.weight_kg} кг` : null
+  ].filter(Boolean).join(" / ");
+  const parent = [a.parent_name, a.parent_contact].filter(Boolean).join("; ");
   return [
     `Новая заявка ${a.reference_code} · версия сайта: ${locale}`,
     a.source?.intent ? `Тип заявки: ${a.source.intent}` : null,
     a.source?.source_page ? `Источник: ${a.source.source_page}` : null,
     `Игрок: ${a.player_name}, ${a.birth_year}`,
-    `Позиция: ${position}; ${a.height_cm} см / ${a.weight_kg} кг`,
+    `Позиция: ${position}${measurements ? `; ${measurements}` : ""}`,
     `Гражданство: ${a.citizenship}`,
     `Клуб: ${a.current_club}`,
     `Контакт: ${a.phone}${a.email ? `; ${a.email}` : ""}`,
-    `Elite Prospects: ${a.elite_prospects_url}`,
+    a.elite_prospects_url ? `Elite Prospects: ${a.elite_prospects_url}` : null,
     ...(a.video_urls || []).map((url, index) => `Видео ${index + 1}: ${url}`),
-    a.is_minor ? `Родитель: ${a.parent_name}; ${a.parent_contact}` : null,
+    parent && (a.is_minor || a.source?.applicant_type === "parent_guardian") ? `Родитель: ${parent}` : null,
     a.source?.calculator ? `Калькулятор (со слов игрока): ${calculatorSummary(a.source.calculator)}` : null,
     a.message ? `Комментарий: ${a.message}` : null
   ].filter(Boolean).join("\n");
