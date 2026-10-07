@@ -59,7 +59,8 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   const applicantTypeRaw = text(body.applicantType, 30);
   const applicantType = APPLICANT_TYPES.has(applicantTypeRaw) ? applicantTypeRaw : "player";
   const intent = text(body.intent, 60) || null;
-  const eliteProspectsUrl = httpUrl(text(body.eliteProspectsUrl, 500), { hostname: "eliteprospects.com" });
+  const eliteProspectsInput = text(body.eliteProspectsUrl, 500);
+  const eliteProspectsUrl = eliteProspectsInput ? httpUrl(eliteProspectsInput, { hostname: "eliteprospects.com" }) : null;
   const videoInputs = asArray(body.videoUrls).map((value) => text(value, 500)).filter(Boolean);
   const videoUrls = videoInputs.map((value) => httpUrl(value));
   const isMinor = Number.isInteger(birthYear) && birthYear >= currentYear - 18;
