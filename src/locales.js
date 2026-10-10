@@ -25,6 +25,7 @@ const PAGES = [
   { ru: "/otkrytye-ligi-dlya-legionerov", en: "/open-hockey-leagues-for-imports" },
   { ru: "/yuniorskie-ligi-evropy", en: "/junior-hockey-leagues" },
   { ru: "/yuniorskij-hokkej-roditelyam", en: "/junior-hockey-for-parents" },
+  { ru: "/sravnenie-yuniorskih-marshrutov", en: "/junior-pathway-compare" },
   { ru: "/ligi/shvetsiya-j20", en: "/leagues/sweden-j20" },
   { ru: "/ligi/shvetsiya-j18", en: "/leagues/sweden-j18" },
   { ru: "/guides/hokkej-v-polshe", en: "/guides/hockey-in-poland" },
