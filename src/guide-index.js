@@ -76,6 +76,8 @@ const GUIDES = [
   ,{ en: "hockey-offer-scams-and-sample-offer", ru: "moshennichestvo-v-hokkee-i-obrazec-oferty", cat: "parents", title: { en: "Offer scams and a sample offer", ru: "Мошенничество и образец оферты" } }
   ,{ en: "junior-hockey-age-pathway-ncaa-chl", ru: "put-yunogo-hokkeista-po-vozrastam-ncaa-chl", cat: "parents", title: { en: "Age pathway, NCAA and CHL rules", ru: "Возрастной путь, правила NCAA и CHL" } }
   ,{ en: "junior-hockey-school-and-education-abroad", ru: "shkola-i-obrazovanie-yunogo-hokkeista-za-rubezhom", cat: "parents", title: { en: "School and education abroad", ru: "Школа и образование за рубежом" } }
+  ,{ en: "junior-hockey-calendar-by-month", ru: "kalendar-yunogo-hokkeista-po-mesyacam", cat: "parents", title: { en: "Calendar by month", ru: "Календарь по месяцам" } }
+  ,{ en: "documents-and-iihf-transfer-for-a-minor-hockey-player", ru: "dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf", cat: "parents", title: { en: "Documents and IIHF transfer for a minor", ru: "Документы и трансфер IIHF для несовершеннолетнего" } }
 ];
 
 const CATEGORIES = [

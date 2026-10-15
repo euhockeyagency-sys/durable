@@ -146,6 +146,8 @@ const PAGES = [
   { ru: "/guides/moshennichestvo-v-hokkee-i-obrazec-oferty", en: "/guides/hockey-offer-scams-and-sample-offer" },
   { ru: "/guides/put-yunogo-hokkeista-po-vozrastam-ncaa-chl", en: "/guides/junior-hockey-age-pathway-ncaa-chl" },
   { ru: "/guides/shkola-i-obrazovanie-yunogo-hokkeista-za-rubezhom", en: "/guides/junior-hockey-school-and-education-abroad" },
+  { ru: "/guides/kalendar-yunogo-hokkeista-po-mesyacam", en: "/guides/junior-hockey-calendar-by-month" },
+  { ru: "/guides/dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf", en: "/guides/documents-and-iihf-transfer-for-a-minor-hockey-player" },
   { ru: "/novosti", en: "/news" },
   { ru: "/novosti/ncaa-razreshila-igrokam-chl-sohranyat-dopusk-division-i", en: "/news/ncaa-allows-chl-players-to-keep-division-i-eligibility" },
   { ru: "/ligi/avstriya-yuniorskij-hokkej", en: "/leagues/austria-junior-hockey" },

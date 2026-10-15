@@ -85,3 +85,5 @@ Steps 2 to 4 can overlap in time, but a page must not say that one clears anothe
 4. Give Canada's custodian rule as written in IRCC Guide 5269 with its date, and the Your Europe wording for EU travel.
 5. Mark the planning order as EHA's sequence and not as an official procedure.
 6. Do not give the IIHF fee, Finland's processing time or any country's consent form not named above.
+
+`guides/documents-and-iihf-transfer-for-a-minor-hockey-player` (RU `dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf`), 15 October 2026, was built from this record. It gives no IIHF fee, no Finnish processing time and marks the planning order as EHA's sequence.

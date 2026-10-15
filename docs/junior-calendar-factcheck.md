@@ -71,3 +71,5 @@ A calendar can mislead more than it helps, because dates differ by country, leag
 3. The Finnish joint application dates may be stated with attribution to Opintopolku and the 2027 intake. Do not state a Swedish national gymnasium deadline; the NIU dates are SIF's. In both cases point families to the source for the current year.
 4. Keep a "check before you rely on this" line on every month, as dates are reset each season.
 5. Link to the transfer-windows guide for the three-clocks explanation rather than repeating it, and to `junior-hockey-school-and-education-abroad` for school access.
+
+`guides/junior-hockey-calendar-by-month` (RU `kalendar-yunogo-hokkeista-po-mesyacam`), 15 October 2026, was built from this record. It gives no tryout months, no Swedish national gymnasium deadline, and labels every date with the body that sets it.
