@@ -144,6 +144,7 @@ const PAGES = [
   { ru: "/guides/bezopasnost-rebenka-i-prinimayushchaya-semya", en: "/guides/child-safety-and-host-families-in-hockey" },
   { ru: "/guides/adaptaciya-yunogo-hokkeista-za-rubezhom", en: "/guides/homesickness-and-adaptation-for-young-hockey-players" },
   { ru: "/guides/moshennichestvo-v-hokkee-i-obrazec-oferty", en: "/guides/hockey-offer-scams-and-sample-offer" },
+  { ru: "/guides/put-yunogo-hokkeista-po-vozrastam-ncaa-chl", en: "/guides/junior-hockey-age-pathway-ncaa-chl" },
   { ru: "/novosti", en: "/news" },
   { ru: "/novosti/ncaa-razreshila-igrokam-chl-sohranyat-dopusk-division-i", en: "/news/ncaa-allows-chl-players-to-keep-division-i-eligibility" },
   { ru: "/ligi/avstriya-yuniorskij-hokkej", en: "/leagues/austria-junior-hockey" },

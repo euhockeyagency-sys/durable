@@ -74,6 +74,7 @@ const GUIDES = [
   ,{ en: "child-safety-and-host-families-in-hockey", ru: "bezopasnost-rebenka-i-prinimayushchaya-semya", cat: "parents", title: { en: "Child safety and host families", ru: "Безопасность ребёнка и принимающая семья" } }
   ,{ en: "homesickness-and-adaptation-for-young-hockey-players", ru: "adaptaciya-yunogo-hokkeista-za-rubezhom", cat: "parents", title: { en: "Homesickness and adaptation abroad", ru: "Адаптация и тоска по дому" } }
   ,{ en: "hockey-offer-scams-and-sample-offer", ru: "moshennichestvo-v-hokkee-i-obrazec-oferty", cat: "parents", title: { en: "Offer scams and a sample offer", ru: "Мошенничество и образец оферты" } }
+  ,{ en: "junior-hockey-age-pathway-ncaa-chl", ru: "put-yunogo-hokkeista-po-vozrastam-ncaa-chl", cat: "parents", title: { en: "Age pathway, NCAA and CHL rules", ru: "Возрастной путь, правила NCAA и CHL" } }
 ];
 
 const CATEGORIES = [

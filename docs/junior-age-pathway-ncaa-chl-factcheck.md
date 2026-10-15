@@ -65,3 +65,7 @@ All **SEARCH** (chl.ca returned HTTP 403 to direct fetch; the facts below come f
 3. Mark every CHL 2026 draft detail as needing a live check on chl.ca until a direct read is possible.
 4. Do not publish dollar amounts for NCAA registration fees without a fresh read of the Eligibility Center.
 5. Do not make claims about European players' amateurism treatment, foreign-player eligibility for USHL or NTDP, or a European age ladder beyond the existing per-country table.
+
+## Pages built from this record
+
+`guides/junior-hockey-age-pathway-ncaa-chl` (RU `put-yunogo-hokkeista-po-vozrastam-ncaa-chl`), 15 October 2026. It uses sections 1 to 6 only, attributes every third-party and search-level point, leaves out registration fees, and lists section 7 as what EHA cannot confirm.
