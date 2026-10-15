@@ -614,6 +614,7 @@ footer small{display:block}
 .cost-form{display:grid;gap:18px;background:var(--panel);padding:32px;border-radius:12px}
 .cost-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .cost-offer{display:grid;gap:14px;margin:0;padding:20px;border:1px solid var(--line);border-radius:10px;min-width:0}
+.cost-offer .tool-note{margin:0}
 .cost-offer legend{padding:0 8px;font:700 14px Oswald;letter-spacing:.08em;text-transform:uppercase;color:var(--white)}
 .cost-form label{display:grid;gap:8px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted)}
 .cost-form select,.cost-form input{width:100%;border:1px solid var(--line);background:#071522;color:#fff;padding:13px;font:inherit;border-radius:8px}
