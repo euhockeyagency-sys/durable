@@ -75,6 +75,7 @@ const GUIDES = [
   ,{ en: "homesickness-and-adaptation-for-young-hockey-players", ru: "adaptaciya-yunogo-hokkeista-za-rubezhom", cat: "parents", title: { en: "Homesickness and adaptation abroad", ru: "Адаптация и тоска по дому" } }
   ,{ en: "hockey-offer-scams-and-sample-offer", ru: "moshennichestvo-v-hokkee-i-obrazec-oferty", cat: "parents", title: { en: "Offer scams and a sample offer", ru: "Мошенничество и образец оферты" } }
   ,{ en: "junior-hockey-age-pathway-ncaa-chl", ru: "put-yunogo-hokkeista-po-vozrastam-ncaa-chl", cat: "parents", title: { en: "Age pathway, NCAA and CHL rules", ru: "Возрастной путь, правила NCAA и CHL" } }
+  ,{ en: "junior-hockey-school-and-education-abroad", ru: "shkola-i-obrazovanie-yunogo-hokkeista-za-rubezhom", cat: "parents", title: { en: "School and education abroad", ru: "Школа и образование за рубежом" } }
 ];
 
 const CATEGORIES = [

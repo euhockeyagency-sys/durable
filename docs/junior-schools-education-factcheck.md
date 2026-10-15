@@ -87,3 +87,5 @@ Czech embassy and consulate pages (several posts, no Ministry of Interior page r
 4. Czechia: state only that a long-term visa for study is the route for secondary-school students per consular pages and that consent and Czech-language enrolment documents are required, flagged as varying by consulate. Switzerland: no minor-specific claims.
 5. Online school: present Sweden's explicit rule and the Finnish and US notes as they are; do not recommend it.
 6. NCAA: state the core-course and GPA numbers for Division I and II, the 10/7 exemption for solely international credentials, the document list and the "system you are completing" rule, all attributed to the NCAA page. Do not describe how any specific country's school track is credited until the country PDF is read.
+
+`guides/junior-hockey-school-and-education-abroad` (RU `shkola-i-obrazovanie-yunogo-hokkeista-za-rubezhom`), 15 October 2026, was built from this record. It gives no Finnish fee amount, draws no conclusion about NIU or LIP, and does not describe how the NCAA credits any country.
