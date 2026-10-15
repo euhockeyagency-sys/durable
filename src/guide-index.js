@@ -70,7 +70,10 @@ const GUIDES = [
   ,{ en: "czechia-maxa-liga-vs-slovakia-tipos-shl", ru: "chehiya-maxa-liga-vs-slovakiya-tipos-shl", cat: "comparisons", title: { en: "Maxa liga vs TIPOS SHL", ru: "Maxa liga vs TIPOS SHL" } }
   ,{ en: "sweden-hockeyallsvenskan-vs-finland-mestis", ru: "shvetsiya-hockeyallsvenskan-vs-finlyandiya-mestis", cat: "comparisons", title: { en: "HockeyAllsvenskan vs Mestis", ru: "HockeyAllsvenskan vs Mestis" } }
   ,{ en: "germany-del2-vs-czechia-maxa-liga", ru: "germaniya-del2-vs-chehiya-maxa-liga", cat: "comparisons", title: { en: "DEL2 vs Maxa liga", ru: "DEL2 vs Maxa liga" } }
-  ,{ en: "hockey-academies-in-north-america", ru: "hokkejnye-akademii-severnoj-ameriki", cat: "process", title: { en: "Hockey academies in North America", ru: "Хоккейные академии Северной Америки" } }
+  ,{ en: "hockey-academies-in-north-america", ru: "hokkejnye-akademii-severnoj-ameriki", cat: "parents", title: { en: "Hockey academies in North America", ru: "Хоккейные академии Северной Америки" } }
+  ,{ en: "child-safety-and-host-families-in-hockey", ru: "bezopasnost-rebenka-i-prinimayushchaya-semya", cat: "parents", title: { en: "Child safety and host families", ru: "Безопасность ребёнка и принимающая семья" } }
+  ,{ en: "homesickness-and-adaptation-for-young-hockey-players", ru: "adaptaciya-yunogo-hokkeista-za-rubezhom", cat: "parents", title: { en: "Homesickness and adaptation abroad", ru: "Адаптация и тоска по дому" } }
+  ,{ en: "hockey-offer-scams-and-sample-offer", ru: "moshennichestvo-v-hokkee-i-obrazec-oferty", cat: "parents", title: { en: "Offer scams and a sample offer", ru: "Мошенничество и образец оферты" } }
 ];
 
 const CATEGORIES = [
@@ -79,6 +82,7 @@ const CATEGORIES = [
   { id: "documents", label: { en: "Documents, visas & transfers", ru: "Документы, визы и трансферы" } }
   ,{ id: "clubs", label: { en: "For clubs", ru: "Клубам" } }
   ,{ id: "comparisons", label: { en: "League comparisons", ru: "Сравнение лиг" } }
+  ,{ id: "parents", label: { en: "For parents of juniors", ru: "Родителям юниоров" } }
 ];
 
 const COPY = {

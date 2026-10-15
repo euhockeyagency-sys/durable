@@ -646,6 +646,14 @@ test("the level calculator script URL is cache-busted", async () => {
   assert.match(response.text, /src="\/assets\/level-calculator\.js\?v=[a-z0-9]+"/);
 });
 
+test("the cost calculator script URL is cache-busted in both languages", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  for (const route of ["/junior-season-cost-calculator", "/ru/kalkulyator-stoimosti-sezona"]) {
+    const response = await request(app).get(route).set("Host", "eha.test").expect(200);
+    assert.match(response.text, /src="\/assets\/cost-calculator\.js\?v=[a-z0-9]+"/);
+  }
+});
+
 test("club request rate limiter rejects the sixth attempt", async () => {
   const app = createApp({ config: config({ clubRequestConfigured: true }), services: serviceMock() });
   for (let attempt = 0; attempt < 5; attempt += 1) {

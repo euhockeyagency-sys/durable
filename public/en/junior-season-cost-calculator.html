@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Junior season cost calculator: compare two written offers | EHA</title>
+<meta name="description" content="Add up a junior hockey season from the written offer: school, hockey fee, housing, insurance, equipment and travel. Compare two offers and start from published North America figures.">
+<link rel="canonical" href="{{BASE_URL}}/junior-season-cost-calculator">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Junior season cost calculator: compare two written offers">
+<meta property="og:description" content="Add up a junior hockey season from the written offer: school, hockey fee, housing, insurance, equipment and travel. Compare two offers and start from published North America figures.">
+<meta property="og:url" content="{{BASE_URL}}/junior-season-cost-calculator">
+<meta property="og:site_name" content="European Hockey Agency">
+<meta property="og:locale" content="en_US">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/site.js"></script>
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Resources","item":"{{BASE_URL}}/guides"},{"@type":"ListItem","position":3,"name":"Junior season cost calculator: compare two written offers","item":"{{BASE_URL}}/junior-season-cost-calculator"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why are there no European prices?","acceptedAnswer":{"@type":"Answer","text":"No verified, sourced figures for European junior seasons exist in EHA's fact-checks, and the route comparison deliberately shows no amounts. Rather than guess, the calculator asks you to enter the figures from your offer."}},{"@type":"Question","name":"Do the North America figures include hockey costs?","acceptedAnswer":{"@type":"Answer","text":"Only Shattuck-St Mary's (a separate hockey fee) and OHA (a hockey and travel line) itemise hockey. For other schools the published figure does not say whether hockey costs are extra, so ask directly."}},{"@type":"Question","name":"Can I compare a US and a Canadian offer?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose the currency for each offer and enter an exchange rate yourself. The calculator does not look up or assume a rate."}}]}</script>
+</head>
+<body>
+<header class="header">
+<a class="brand" href="{{EN}}/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<a class="mobile-lang-switch" href="{{ALT_URL}}" hreflang="ru" lang="ru" aria-label="Русская версия">RU</a>
+<button class="menu" type="button" aria-label="Open menu">Menu</button>
+<nav>
+<a href="{{EN}}/services">Services</a>
+<a href="{{EN}}/for-players">For players</a>
+<a href="{{EN}}/for-clubs">For clubs</a>
+<a href="{{EN}}/cases">Cases</a>
+<a href="{{EN}}/agent">Agent</a>
+<a href="{{EN}}/guides">Resources</a>
+<a href="{{EN}}/news">News</a>
+<a class="lang-switch" href="{{ALT_URL}}" hreflang="ru">RU</a>
+<a class="nav-cta" href="{{EN}}/contact">Submit profile</a>
+</nav>
+</header>
+<main>
+<nav class="breadcrumbs wrap">
+<a href="{{EN}}/guides">Resources</a> / Season cost calculator</nav>
+<section class="article-hero wrap">
+<p class="kicker">Tool</p>
+<h1>Junior season cost calculator: compare two written offers</h1>
+<p class="lead">Type in the figures from a club or school offer, or start from a published North America academy price, and see the full season cost side by side. Free, no sign-up, nothing is sent anywhere.</p>
+</section>
+<section class="wrap">
+<form class="cost-form" id="cost-form">
+<div class="cost-grid">
+<fieldset class="cost-offer">
+<legend>Offer A</legend>
+<label>Start from a published figure
+<select id="a-preset">
+<option value="">— enter my own figures (from the written offer) —</option>
+</select>
+</label>
+<p class="tool-note" id="a-note" hidden></p>
+<label>Currency
+<select id="a-cur">
+<option value="USD">USD</option>
+<option value="CAD">CAD</option>
+<option value="EUR">EUR</option>
+<option value="GBP">GBP</option>
+<option value="SEK">SEK</option>
+<option value="CHF">CHF</option>
+<option value="CZK">CZK</option>
+<option value="PLN">PLN</option>
+</select>
+</label>
+<label>School, tuition and boarding
+<input type="number" id="a-school" min="0" step="any" inputmode="decimal">
+</label>
+<label>Hockey programme fee
+<input type="number" id="a-hockey" min="0" step="any" inputmode="decimal">
+</label>
+<label>Other school fees and deposit
+<input type="number" id="a-fees" min="0" step="any" inputmode="decimal">
+</label>
+<label>Housing and meals not covered above
+<input type="number" id="a-housing" min="0" step="any" inputmode="decimal">
+</label>
+<label>Insurance
+<input type="number" id="a-insurance" min="0" step="any" inputmode="decimal">
+</label>
+<label>Equipment
+<input type="number" id="a-equipment" min="0" step="any" inputmode="decimal">
+</label>
+<label>Return trips per season
+<input type="number" id="a-trips" min="0" step="any" inputmode="decimal">
+</label>
+<label>Price of one return trip
+<input type="number" id="a-ticket" min="0" step="any" inputmode="decimal">
+</label>
+<label>Anything else (registration, transfer, guardian, activities)
+<input type="number" id="a-other" min="0" step="any" inputmode="decimal">
+</label>
+</fieldset>
+<fieldset class="cost-offer">
+<legend>Offer B (optional)</legend>
+<label>Start from a published figure
+<select id="b-preset">
+<option value="">— enter my own figures (from the written offer) —</option>
+</select>
+</label>
+<p class="tool-note" id="b-note" hidden></p>
+<label>Currency
+<select id="b-cur">
+<option value="USD">USD</option>
+<option value="CAD">CAD</option>
+<option value="EUR">EUR</option>
+<option value="GBP">GBP</option>
+<option value="SEK">SEK</option>
+<option value="CHF">CHF</option>
+<option value="CZK">CZK</option>
+<option value="PLN">PLN</option>
+</select>
+</label>
+<label>School, tuition and boarding
+<input type="number" id="b-school" min="0" step="any" inputmode="decimal">
+</label>
+<label>Hockey programme fee
+<input type="number" id="b-hockey" min="0" step="any" inputmode="decimal">
+</label>
+<label>Other school fees and deposit
+<input type="number" id="b-fees" min="0" step="any" inputmode="decimal">
+</label>
+<label>Housing and meals not covered above
+<input type="number" id="b-housing" min="0" step="any" inputmode="decimal">
+</label>
+<label>Insurance
+<input type="number" id="b-insurance" min="0" step="any" inputmode="decimal">
+</label>
+<label>Equipment
+<input type="number" id="b-equipment" min="0" step="any" inputmode="decimal">
+</label>
+<label>Return trips per season
+<input type="number" id="b-trips" min="0" step="any" inputmode="decimal">
+</label>
+<label>Price of one return trip
+<input type="number" id="b-ticket" min="0" step="any" inputmode="decimal">
+</label>
+<label>Anything else (registration, transfer, guardian, activities)
+<input type="number" id="b-other" min="0" step="any" inputmode="decimal">
+</label>
+</fieldset>
+</div>
+<label class="cost-rate">Exchange rate (only if the offers are in different currencies)
+<input type="number" id="rate" min="0" step="any" inputmode="decimal">
+<small>How many units of Offer B's currency equal 1 unit of Offer A's currency. The calculator never supplies a rate itself.</small>
+</label>
+<button class="btn primary" type="submit">Add it up</button>
+</form>
+<div class="calc-result" id="cost-result" hidden role="status" aria-live="polite">
+<p class="kicker">Your totals</p>
+<h2 id="cost-heading" tabindex="-1"></h2>
+<div id="cost-body"></div>
+<a class="btn primary" id="cost-cta" href="{{EN}}/contact">Send us the offer for an initial review</a>
+</div>
+</section>
+<section class="split wrap">
+<div>
+<p class="kicker">Read before you rely on it</p>
+<h2>What the calculator does and does not do</h2>
+</div>
+<div class="body-copy">
+<p>It adds the amounts you enter, line by line, and for two offers shows the difference. It does not know any European prices: the fact-checks behind this site did not find verified European season costs, so for a club in Sweden, Finland, Czechia or elsewhere you enter the figures from the written offer.</p>
+<p>The built-in North America figures are published prices from each school's own page, recorded on 10 August 2026 with their academic year. They are individual, dated data points, not an average or a ranking, and they are not a quote. Tuition changes every year; re-check the school's current page. Financial aid is not subtracted.</p>
+<p>Ask the club or school to confirm every line in writing, including what happens to money already paid if the player leaves or is not registered. See the <a href="{{EN}}/guides/how-to-verify-a-hockey-club-offer">offer checklist</a>, the <a href="{{EN}}/guides/hockey-academies-in-north-america">North America academies guide</a> and the <a href="{{EN}}/junior-pathway-compare">route comparison</a>.</p>
+</div>
+</section>
+<section class="wrap">
+<h2>FAQ</h2>
+<div class="faq">
+<details>
+<summary>Why are there no European prices?</summary>
+<p>No verified, sourced figures for European junior seasons exist in EHA's fact-checks, and the route comparison deliberately shows no amounts. Rather than guess, the calculator asks you to enter the figures from your offer.</p>
+</details>
+<details>
+<summary>Do the North America figures include hockey costs?</summary>
+<p>Only Shattuck-St Mary's (a separate hockey fee) and OHA (a hockey and travel line) itemise hockey. For other schools the published figure does not say whether hockey costs are extra, so ask directly.</p>
+</details>
+<details>
+<summary>Can I compare a US and a Canadian offer?</summary>
+<p>Yes. Choose the currency for each offer and enter an exchange rate yourself. The calculator does not look up or assume a rate.</p>
+</details>
+</div>
+</section>
+<script src="/assets/cost-calculator.js"></script>
+</main>
+<footer id="footer">
+<div class="footer-brand">
+<a class="brand" href="{{EN}}/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<p>Personal representation of hockey players across European markets.</p>
+</div>
+<div>
+<h4>Navigation</h4>
+<nav class="footer-links">
+<a href="{{EN}}/guides">Resources</a>
+<a href="{{EN}}/news">News</a>
+<a href="{{EN}}/editorial-methodology">Editorial methodology</a>
+<a href="{{EN}}/contact">Contact</a>
+</nav>
+</div>
+<small>© 2026 European Hockey Agency.</small>
+</footer>
+</body>
+</html>

@@ -704,7 +704,7 @@ let assetVersions = null;
 function assetVersion(config, file) {
   if (!assetVersions) {
     assetVersions = {};
-    for (const name of ["styles.css", "site.js", "assets/level-calculator.js", "assets/leagues.ru.js", "assets/leagues.en.js"]) {
+    for (const name of ["styles.css", "site.js", "assets/level-calculator.js", "assets/cost-calculator.js", "assets/leagues.ru.js", "assets/leagues.en.js"]) {
       try { assetVersions[name] = Math.round(fs.statSync(path.join(config.publicDir, name)).mtimeMs).toString(36); }
       catch { assetVersions[name] = "0"; }
     }
@@ -881,6 +881,7 @@ function renderBody(data, extension, config, context) {
       .replaceAll('href="/styles.css"', `href="${stylesheetHref}"`)
       .replaceAll('src="/site.js"', `src="/site.js?v=${assetVersion(config, "site.js")}"`)
       .replaceAll('src="/assets/level-calculator.js"', `src="/assets/level-calculator.js?v=${assetVersion(config, "assets/level-calculator.js")}"`)
+      .replaceAll('src="/assets/cost-calculator.js"', `src="/assets/cost-calculator.js?v=${assetVersion(config, "assets/cost-calculator.js")}"`)
       .replaceAll('src="/assets/leagues.ru.js"', `src="/assets/leagues.ru.js?v=${assetVersion(config, "assets/leagues.ru.js")}"`)
       .replaceAll('src="/assets/leagues.en.js"', `src="/assets/leagues.en.js?v=${assetVersion(config, "assets/leagues.en.js")}"`);
   }

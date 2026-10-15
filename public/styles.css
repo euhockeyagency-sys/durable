@@ -610,6 +610,32 @@ footer small{display:block}
 .calc-leagues{grid-template-columns:1fr}
 }
 
+/* --- калькулятор стоимости сезона --- */
+.cost-form{display:grid;gap:18px;background:var(--panel);padding:32px;border-radius:12px}
+.cost-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cost-offer{display:grid;gap:14px;margin:0;padding:20px;border:1px solid var(--line);border-radius:10px;min-width:0}
+.cost-offer legend{padding:0 8px;font:700 14px Oswald;letter-spacing:.08em;text-transform:uppercase;color:var(--white)}
+.cost-form label{display:grid;gap:8px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted)}
+.cost-form select,.cost-form input{width:100%;border:1px solid var(--line);background:#071522;color:#fff;padding:13px;font:inherit;border-radius:8px}
+.cost-form select:focus,.cost-form input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(22,135,255,.18)}
+.cost-form small{text-transform:none;letter-spacing:0;font-weight:400;color:#8ea2b4;font-size:12px}
+.cost-form button{justify-self:start;min-width:240px}
+.cost-rate{max-width:420px}
+.cost-table{width:100%;border-collapse:collapse;font-size:15px}
+.cost-table th,.cost-table td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(115,184,255,.14)}
+.cost-table thead th{font:700 12px Oswald;letter-spacing:.08em;text-transform:uppercase;color:var(--white)}
+.cost-table tbody th{font-weight:400;color:#c3d0dc}
+.cost-table .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cost-table .cost-total th,.cost-table .cost-total td{border-top:2px solid var(--line);color:var(--white)}
+.cost-result-wrap,.calc-result .table-wrap{overflow-x:auto;margin:6px 0 16px}
+.offer-sample{margin:18px 0;padding:22px 26px;border:1px dashed var(--line);border-radius:10px;background:rgba(255,255,255,.03);color:#c3d0dc}
+.offer-sample ol{margin:8px 0 8px 22px}
+@media(max-width:850px){
+.cost-form{padding:22px}
+.cost-grid{grid-template-columns:1fr}
+.cost-form button{min-width:0;width:100%}
+}
+
 .tools-block{padding:0 0 20px}
 .tools-block .article-grid{padding-bottom:0}
 .tools-block .section-intro{margin-bottom:28px}

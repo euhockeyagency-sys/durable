@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькулятор стоимости юниорского сезона: сравните два письменных предложения | EHA</title>
+<meta name="description" content="Сложите стоимость юниорского сезона из письменного предложения: школа, хоккейный взнос, жильё, страховка, экипировка и поездки. Сравните два предложения или начните с опубликованных цифр по Северной Америке.">
+<link rel="canonical" href="{{BASE_URL}}/kalkulyator-stoimosti-sezona">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Калькулятор стоимости юниорского сезона: сравните два письменных предложения">
+<meta property="og:description" content="Сложите стоимость юниорского сезона из письменного предложения: школа, хоккейный взнос, жильё, страховка, экипировка и поездки. Сравните два предложения или начните с опубликованных цифр по Северной Америке.">
+<meta property="og:url" content="{{BASE_URL}}/kalkulyator-stoimosti-sezona">
+<meta property="og:site_name" content="European Hockey Agency">
+<meta property="og:locale" content="ru_RU">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/site.js"></script>
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Материалы","item":"{{BASE_URL}}/guides"},{"@type":"ListItem","position":3,"name":"Калькулятор стоимости юниорского сезона: сравните два письменных предложения","item":"{{BASE_URL}}/kalkulyator-stoimosti-sezona"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Почему нет европейских цен?","acceptedAnswer":{"@type":"Answer","text":"В фактчеках EHA нет проверенных данных с источниками по европейским юниорским сезонам, а сравнение маршрутов намеренно не показывает суммы. Вместо догадок калькулятор просит вас ввести цифры из вашего предложения."}},{"@type":"Question","name":"Включают ли цифры по Северной Америке хоккейные расходы?","acceptedAnswer":{"@type":"Answer","text":"Отдельной строкой хоккей выделяют только Shattuck-St Mary's и OHA. У остальных школ опубликованная цифра не говорит, входят ли хоккейные расходы, поэтому спросите напрямую."}},{"@type":"Question","name":"Можно ли сравнить предложение из США и Канады?","acceptedAnswer":{"@type":"Answer","text":"Да. Выберите валюту для каждого предложения и введите курс сами. Калькулятор курс не ищет и не предполагает."}}]}</script>
+</head>
+<body>
+<header class="header">
+<a class="brand" href="/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<a class="mobile-lang-switch" href="{{ALT_URL}}" hreflang="en" lang="en" aria-label="English version">EN</a>
+<button class="menu" type="button" aria-label="Открыть меню">Меню</button>
+<nav>
+<a href="/services">Услуги</a>
+<a href="/players">Игрокам</a>
+<a href="/for-clubs">Клубам</a>
+<a href="/cases">Кейсы</a>
+<a href="/agent">Агент</a>
+<a href="/guides">Материалы</a>
+<a href="/novosti">Новости</a>
+<a class="lang-switch" href="{{ALT_URL}}" hreflang="en">EN</a>
+<a class="nav-cta" href="/contact">Отправить профиль</a>
+</nav>
+</header>
+<main>
+<nav class="breadcrumbs wrap">
+<a href="/guides">Материалы</a> / Калькулятор стоимости сезона</nav>
+<section class="article-hero wrap">
+<p class="kicker">Инструмент</p>
+<h1>Калькулятор стоимости юниорского сезона: сравните два письменных предложения</h1>
+<p class="lead">Введите суммы из предложения клуба или школы либо начните с опубликованной цены академии Северной Америки и посмотрите полную стоимость сезона рядом. Бесплатно, без регистрации, ничего никуда не отправляется.</p>
+</section>
+<section class="wrap">
+<form class="cost-form" id="cost-form">
+<div class="cost-grid">
+<fieldset class="cost-offer">
+<legend>Предложение A</legend>
+<label>Начать с опубликованной цифры
+<select id="a-preset">
+<option value="">— ввести свои суммы (из письменной оферты) —</option>
+</select>
+</label>
+<p class="tool-note" id="a-note" hidden></p>
+<label>Валюта
+<select id="a-cur">
+<option value="USD">USD</option>
+<option value="CAD">CAD</option>
+<option value="EUR">EUR</option>
+<option value="GBP">GBP</option>
+<option value="SEK">SEK</option>
+<option value="CHF">CHF</option>
+<option value="CZK">CZK</option>
+<option value="PLN">PLN</option>
+</select>
+</label>
+<label>Школа: обучение и проживание
+<input type="number" id="a-school" min="0" step="any" inputmode="decimal">
+</label>
+<label>Взнос за хоккейную программу
+<input type="number" id="a-hockey" min="0" step="any" inputmode="decimal">
+</label>
+<label>Прочие сборы школы и депозит
+<input type="number" id="a-fees" min="0" step="any" inputmode="decimal">
+</label>
+<label>Жильё и питание сверх указанного выше
+<input type="number" id="a-housing" min="0" step="any" inputmode="decimal">
+</label>
+<label>Страховка
+<input type="number" id="a-insurance" min="0" step="any" inputmode="decimal">
+</label>
+<label>Экипировка
+<input type="number" id="a-equipment" min="0" step="any" inputmode="decimal">
+</label>
+<label>Поездок туда-обратно за сезон
+<input type="number" id="a-trips" min="0" step="any" inputmode="decimal">
+</label>
+<label>Стоимость одной поездки туда-обратно
+<input type="number" id="a-ticket" min="0" step="any" inputmode="decimal">
+</label>
+<label>Прочее (регистрация, трансфер, опекун, активности)
+<input type="number" id="a-other" min="0" step="any" inputmode="decimal">
+</label>
+</fieldset>
+<fieldset class="cost-offer">
+<legend>Предложение B (необязательно)</legend>
+<label>Начать с опубликованной цифры
+<select id="b-preset">
+<option value="">— ввести свои суммы (из письменной оферты) —</option>
+</select>
+</label>
+<p class="tool-note" id="b-note" hidden></p>
+<label>Валюта
+<select id="b-cur">
+<option value="USD">USD</option>
+<option value="CAD">CAD</option>
+<option value="EUR">EUR</option>
+<option value="GBP">GBP</option>
+<option value="SEK">SEK</option>
+<option value="CHF">CHF</option>
+<option value="CZK">CZK</option>
+<option value="PLN">PLN</option>
+</select>
+</label>
+<label>Школа: обучение и проживание
+<input type="number" id="b-school" min="0" step="any" inputmode="decimal">
+</label>
+<label>Взнос за хоккейную программу
+<input type="number" id="b-hockey" min="0" step="any" inputmode="decimal">
+</label>
+<label>Прочие сборы школы и депозит
+<input type="number" id="b-fees" min="0" step="any" inputmode="decimal">
+</label>
+<label>Жильё и питание сверх указанного выше
+<input type="number" id="b-housing" min="0" step="any" inputmode="decimal">
+</label>
+<label>Страховка
+<input type="number" id="b-insurance" min="0" step="any" inputmode="decimal">
+</label>
+<label>Экипировка
+<input type="number" id="b-equipment" min="0" step="any" inputmode="decimal">
+</label>
+<label>Поездок туда-обратно за сезон
+<input type="number" id="b-trips" min="0" step="any" inputmode="decimal">
+</label>
+<label>Стоимость одной поездки туда-обратно
+<input type="number" id="b-ticket" min="0" step="any" inputmode="decimal">
+</label>
+<label>Прочее (регистрация, трансфер, опекун, активности)
+<input type="number" id="b-other" min="0" step="any" inputmode="decimal">
+</label>
+</fieldset>
+</div>
+<label class="cost-rate">Курс (только если предложения в разных валютах)
+<input type="number" id="rate" min="0" step="any" inputmode="decimal">
+<small>Сколько единиц валюты предложения B равны 1 единице валюты предложения A. Калькулятор сам курс не подставляет.</small>
+</label>
+<button class="btn primary" type="submit">Посчитать</button>
+</form>
+<div class="calc-result" id="cost-result" hidden role="status" aria-live="polite">
+<p class="kicker">Ваши итоги</p>
+<h2 id="cost-heading" tabindex="-1"></h2>
+<div id="cost-body"></div>
+<a class="btn primary" id="cost-cta" href="/contact">Отправить предложение на первичную оценку</a>
+</div>
+</section>
+<section class="split wrap">
+<div>
+<p class="kicker">Прочитайте, прежде чем опираться</p>
+<h2>Что делает калькулятор и чего не делает</h2>
+</div>
+<div class="body-copy">
+<p>Он складывает введённые вами суммы по строкам, а для двух предложений показывает разницу. Европейских цен он не знает: в фактчеках, на которых построен сайт, не нашлось проверенных данных по стоимости европейского юниорского сезона, поэтому для клуба в Швеции, Финляндии, Чехии или другой стране вы вводите цифры из письменного предложения.</p>
+<p>Встроенные цифры по Северной Америке — опубликованные цены со страниц самих школ, записанные 10 августа 2026 с указанием учебного года. Это отдельные датированные данные, а не среднее значение или рейтинг, и не расчёт для вас. Стоимость обучения меняется каждый год; перепроверяйте на актуальной странице школы. Финансовая помощь не вычитается.</p>
+<p>Попросите клуб или школу подтвердить каждую строку письменно, включая судьбу уже внесённых денег, если игрок уедет или не будет зарегистрирован. См. <a href="/guides/kak-proverit-predlozhenie-hokkejnogo-kluba">чек-лист предложения</a>, <a href="/guides/hokkejnye-akademii-severnoj-ameriki">гайд по академиям Северной Америки</a> и <a href="/sravnenie-yuniorskih-marshrutov">сравнение маршрутов</a>.</p>
+</div>
+</section>
+<section class="wrap">
+<h2>Вопросы и ответы</h2>
+<div class="faq">
+<details>
+<summary>Почему нет европейских цен?</summary>
+<p>В фактчеках EHA нет проверенных данных с источниками по европейским юниорским сезонам, а сравнение маршрутов намеренно не показывает суммы. Вместо догадок калькулятор просит вас ввести цифры из вашего предложения.</p>
+</details>
+<details>
+<summary>Включают ли цифры по Северной Америке хоккейные расходы?</summary>
+<p>Отдельной строкой хоккей выделяют только Shattuck-St Mary's и OHA. У остальных школ опубликованная цифра не говорит, входят ли хоккейные расходы, поэтому спросите напрямую.</p>
+</details>
+<details>
+<summary>Можно ли сравнить предложение из США и Канады?</summary>
+<p>Да. Выберите валюту для каждого предложения и введите курс сами. Калькулятор курс не ищет и не предполагает.</p>
+</details>
+</div>
+</section>
+<script src="/assets/cost-calculator.js"></script>
+</main>
+<footer id="footer">
+<div class="footer-brand">
+<a class="brand" href="/">
+<span>EHA</span>
+<b>EUROPEAN<br>HOCKEY AGENCY</b>
+</a>
+<p>Персональное представительство хоккеистов на европейских рынках. </p>
+</div>
+<div>
+<h4>Навигация</h4>
+<nav class="footer-links">
+<a href="/guides">Материалы</a>
+<a href="/novosti">Новости</a>
+<a href="/metodologiya">Методология</a>
+<a href="/contact">Контакт</a>
+</nav>
+</div>
+<small>© 2026 European Hockey Agency.</small>
+</footer>
+</body>
+</html>
