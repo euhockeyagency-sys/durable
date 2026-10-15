@@ -22,8 +22,8 @@ A calendar can mislead more than it helps, because dates differ by country, leag
 | February | IIHF general international-transfer window closes 15 February (opens 1 July). It does not apply to under-18 transfers | IIHF International Transfer Regulations, Art. I.5 | RECORD (several files) |
 | February | Austria: domestic licensing window ends 15 February and applies regardless of age | ÖEHV Meldebestimmungen §7(1) | RECORD (`austria-junior-factcheck.md`) |
 | February | Austria: the Linz hockey academy admits "after the semester break", roughly early February, by application, video and motivation letter, not an on-ice tryout | Eishockey-Akademie Oberösterreich | RECORD |
-| February | Finland: spring 2027 joint application to upper secondary school (lukio and vocational) opens 16 February 2027, 08:00 | Opintopolku | SEARCH |
-| March | Finland: the joint application closes 16 March 2027, 15:00 | Opintopolku | SEARCH |
+| February | Finland: spring 2027 joint application to upper secondary school (lukio and vocational) opens 16 February 2027, 08:00 | Opintopolku (Opetushallitus) | DIRECT |
+| March | Finland: the joint application closes 16 March 2027, 15:00 | Opintopolku (Opetushallitus) | DIRECT |
 | March | USA, NTDP: invitation-only evaluation camp in March | NTDP | SEARCH |
 | April | Switzerland: main domestic registration period opens 15 April | SIHF | RECORD (`switzerland-junior-factcheck.md`) |
 | April | USA, NCAA: final amateurism certification requests open 1 April for fall enrollees | College Hockey Inc. FAQ | THIRD-PARTY |
@@ -32,12 +32,12 @@ A calendar can mislead more than it helps, because dates differ by country, leag
 | June | Sweden: general foreign-club window opens 1 June | SIF | RECORD |
 | June | Germany: first domestic window opens 1 June; Austria: licensing window opens 1 June | DEB; ÖEHV | RECORD |
 | June | Canada, CHL Import Draft: held 30 June 2026 (2 July in 2025), so it falls between late June and early July and the date is set each year | CHL | SEARCH (2026); RECORD (2025) |
-| June | Finland: spring 2027 joint application results published no earlier than 17 June 2027 | Opintopolku | SEARCH |
+| June | Finland: spring 2027 joint application results published no earlier than 17 June 2027 | Opintopolku (Opetushallitus) | DIRECT |
 | July | IIHF general window opens 1 July | IIHF | RECORD |
-| July | Finland: last day to accept a study place 1 July 2027 | Opintopolku | SEARCH |
+| July | Finland: last day to accept a study place 1 July 2027 | Opintopolku (Opetushallitus) | DIRECT |
 | July | Sweden: final municipal gymnasium decisions around 1 July (one municipality's timeline) | municipal page | SEARCH |
 | August | USA, NCAA: official (expense-paid, up to 48 hours) visits begin 1 August of grade 11 | College Hockey Inc. FAQ | THIRD-PARTY |
-| August | Finland: waiting-list places can be offered until 13 August 2027 | Opintopolku | SEARCH |
+| August | Finland: waiting-list places can be offered until 13 August 2027 | Opintopolku (Opetushallitus) | DIRECT |
 | September | Switzerland: main registration period ends 15 September | SIHF | RECORD |
 | September | Germany: first domestic window ends 15 September | DEB | RECORD |
 | September | Sweden, NIU: application opens 6 September | SIF | DIRECT |
@@ -52,13 +52,13 @@ A calendar can mislead more than it helps, because dates differ by country, leag
 
 - **Tryout and camp dates.** The Austrian and Slovak records found no federation-published tryout or trial window. Clubs set their own camps and tryouts. The only federation-dated mechanisms are registration and transfer windows. A calendar must not imply a standard tryout month for any country.
 - **Under-18 transfers.** The IIHF general window of 1 July to 15 February is waived for under-18 transfers (RECORD, five files). Domestic windows may still apply: Austria's licensing rule has no under-18 carve-out, and Germany's Art. 55 is flagged for a second check. A page may state the IIHF waiver, but must say domestic windows are separate.
-- **School application dates beyond Sweden's NIU and, with caveats, Finland and Sweden's general gymnasium window.** Czech, Slovak, German, Swiss and Austrian school application calendars were not researched.
+- **School application dates beyond Sweden's NIU, Finland's joint application and, with caveats, Sweden's general gymnasium window.** Czech, Slovak, German, Swiss and Austrian school application calendars were not researched.
 - **NHL Entry Draft dates.** Search summaries gave 26 and 27 June 2026, but only through a news source and Wikipedia; not verified on NHL.com and not needed for family planning.
 - **Intake years.** The NIU dates in section "Dates by month" are for the intake that applies in 2026 (application 6 September to 1 December 2026) and the SIF page also mentions programmes starting in the 2027-28 school year. A page must say which year the dates belong to.
 
 ## Gaps and conflicts to carry onto a page
 
-1. Finland's joint application dates (16 February to 16 March 2027, results from 17 June, acceptance by 1 July, waiting list to 13 August) come from a search summary of Opintopolku, which cannot be read directly because its content loads by script. Treat as unconfirmed and tell families to check Opintopolku.
+1. Finland's spring 2027 joint application dates were read directly on 15 October 2026 from Opintopolku's page "Yhteishaun tärkeitä päivämääriä" (the portal is maintained by the Finnish National Agency for Education): application 16 February 2027 at 08:00 to 16 March 2027 at 15:00; results no earlier than 17 June 2027; accept the place by 1 July 2027; waiting-list places can be offered until 13 August 2027. The page lists lukio and vocational programmes among those open in the spring joint application and says continuous applications for places left open follow each school's own dates. It does not say anything about foreign applicants, residence permits or sport-emphasis aptitude tests, so those remain outside this record; see `junior-schools-education-factcheck.md` for the fee and permit rules.
 2. Swedish gymnasium application dates are examples from a few municipalities, not a national deadline. The page may describe the January to February pattern but must not state a national last day.
 3. The Swedish NIU dates are DIRECT from SIF's page but that page does not mention foreign students. Whether a foreign minor may apply, and under what permit, is a separate question covered in `junior-schools-education-factcheck.md`.
 4. The CHL Import Draft date changes each year. State the pattern only, with 2025 and 2026 dates as examples, and attribute 2026 to a search summary pending a direct read on chl.ca.
@@ -68,6 +68,6 @@ A calendar can mislead more than it helps, because dates differ by country, leag
 
 1. Present the calendar as "dates published by different bodies", with the body named in each row, and show for each row whose date it is, which season it belongs to and how it was confirmed.
 2. Do not present an invented "tryout season". Say that no federation in the researched countries publishes one.
-3. Do not state a Finnish or Swedish application date as certain; point families to Opintopolku and the municipality or SIF.
+3. The Finnish joint application dates may be stated with attribution to Opintopolku and the 2027 intake. Do not state a Swedish national gymnasium deadline; the NIU dates are SIF's. In both cases point families to the source for the current year.
 4. Keep a "check before you rely on this" line on every month, as dates are reset each season.
 5. Link to the transfer-windows guide for the three-clocks explanation rather than repeating it, and to `junior-hockey-school-and-education-abroad` for school access.
