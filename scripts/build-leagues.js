@@ -61,6 +61,7 @@ const source = sandbox.window.EHA_LEAGUES_SRC;
 function localizeData(locale) {
   return {
     updated: source.updated[locale],
+    reviewPolicy: source.reviewPolicy || null,
     windowNote: source.windowNote[locale],
     leagues: source.leagues.map((l) => ({
       country: l.country[locale],
@@ -71,7 +72,8 @@ function localizeData(locale) {
       age: l.age || "senior",
       open: l.open,
       note: l.note[locale],
-      imports: l.imports[locale]
+      imports: l.imports[locale],
+      review: l.review || null
     }))
   };
 }
@@ -91,13 +93,20 @@ function renderRows(locale, age = "senior") {
     const leagueName = l.url && l.url[locale]
       ? `<a href="${LOCALES[locale].baseToken}${esc(l.url[locale])}"><b>${esc(l.name)}</b></a>`
       : `<b>${esc(l.name)}</b>`;
+    const review = l.review;
+    const sourceLabel = locale === "ru"
+      ? (review && review.status === "partial" ? "Официальный источник (частичная проверка)" : "Источник названия / контекста; лимит не подтверждён")
+      : (review && review.status === "partial" ? "Official source (partial check)" : "Name/context source; quota unverified");
+    const verification = review && Array.isArray(review.sources) && review.sources.length
+      ? ` <a href="${esc(review.sources[0])}" target="_blank" rel="noopener">${esc(sourceLabel)} ↗</a> <small>${esc(review.reviewedAt || "")}</small>`
+      : "";
     return `<tr data-country="${esc(country)}" data-tier="${l.tier}" data-age="${esc(l.age || "senior")}" data-open="${esc(l.open)}">` +
       `<td data-label="${esc(labels.country)}">${esc(l.flag)} ${esc(country)}</td>` +
       `<td data-label="${esc(labels.league)}">${leagueName}</td>` +
       `<td data-label="${esc(labels.level)}"><span class="tier tier-${l.tier}">${l.tier}</span></td>` +
       `<td data-label="${esc(labels.age)}">${l.age === "junior" ? juniorAgeLabel(l.name) : "Senior"}</td>` +
       `<td data-label="${esc(labels.profile)}">${esc(l.note[locale])}</td>` +
-      `<td data-label="${esc(labels.imports)}"><span class="open open-${esc(l.open)}">${esc(open)}</span> ${esc(l.imports[locale])}</td>` +
+      `<td data-label="${esc(labels.imports)}"><span class="open open-${esc(l.open)}">${esc(open)}</span> ${esc(l.imports[locale])}${verification}</td>` +
       `</tr>`;
   }).join("\n");
 }
