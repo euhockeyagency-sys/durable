@@ -144,9 +144,13 @@ function relatedGuides(logicalPath, locale) {
   // guide as well, so every new club guide receives three automatic inbound
   // related links without misclassifying that player-preparation article in
   // the hub.
+  // The two-article blog track is read by the same families as the parent
+  // guides, so it shares one related-links pool with them.
   const siblings = (self.cat === "clubs" || self.en === "hockey-video-for-clubs")
     ? GUIDES.filter((g) => g.cat === "clubs" || g.en === "hockey-video-for-clubs")
-    : GUIDES.filter((g) => g.cat === self.cat);
+    : (self.cat === "blog" || self.cat === "parents")
+      ? GUIDES.filter((g) => g.cat === "blog" || g.cat === "parents")
+      : GUIDES.filter((g) => g.cat === self.cat);
   const index = siblings.indexOf(self);
   const picks = [];
   for (let step = 1; step <= RELATED_COUNT && picks.length < siblings.length - 1; step += 1) {
