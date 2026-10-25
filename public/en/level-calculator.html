@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hockey Level Calculator: Which League Is Realistic | EHA</title>
-<meta name="description" content="Answer 6 questions and get a realistic band of European hockey divisions and a list of leagues that fit your profile. Free, no sign-up.">
+<meta name="description" content="Get an initial hockey league planning estimate and reference leagues to research. Check club interest, eligibility and current rules separately. Free, no sign-up.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="European Hockey Agency">
 <meta property="og:locale" content="en_US">
 <meta property="og:title" content="Hockey Level Calculator | EHA">
-<meta property="og:description" content="Estimate a realistic European league level using age, position, current competition, statistics and passport status.">
+<meta property="og:description" content="Get an initial hockey league planning estimate and reference leagues to research. Check club interest, eligibility and current rules separately. Free, no sign-up.">
 <meta property="og:url" content="{{BASE_URL}}/level-calculator">
 <meta property="og:image" content="{{BASE_URL}}/assets/scouting-analysis-fixed.webp">
 <meta property="og:image:alt" content="European hockey level calculator for players">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Hockey Level Calculator | EHA">
-<meta name="twitter:description" content="Six questions to estimate a realistic European hockey league level.">
+<meta name="twitter:description" content="Get an initial hockey league planning estimate and reference leagues to research. Check club interest, eligibility and current rules separately. Free, no sign-up.">
 <meta name="twitter:image" content="{{BASE_URL}}/assets/scouting-analysis-fixed.webp">
 <link rel="canonical" href="{{BASE_URL}}/level-calculator">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/site.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Level calculator","item":"{{BASE_URL}}/level-calculator"}]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I know which European league I can reach?","acceptedAnswer":{"@type":"Answer","text":"The estimate comes from the level of your current league, your production relative to position, your age and whether you hold an EU passport. Your current level is the main factor: clubs compare players by it first."}},{"@type":"Question","name":"Does the calculator guarantee a contract?","acceptedAnswer":{"@type":"Answer","text":"No. It's a planning estimate, not a promise. The club always decides, and a person who sees your video and stats gives the final read on your profile."}},{"@type":"Question","name":"How much does an EU passport matter?","acceptedAnswer":{"@type":"Answer","text":"A lot: without one you take a limited import spot and must clearly outperform a local competitor. An EU passport does not raise your level, but it sharply widens the list of available clubs."}}]}</script></head>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How should I use the calculator result?","acceptedAnswer":{"@type":"Answer","text":"Use it as an initial shortlist for research. The model uses your current league category, scoring relative to position, age and seasons played. It does not assess video, verify your statistics or measure the strength of every league."}},{"@type":"Question","name":"Does the calculator guarantee a contract?","acceptedAnswer":{"@type":"Answer","text":"No. The result does not confirm vacancies, interest from clubs or eligibility. A personal review of your video and statistics, followed by checks with the relevant club and federation, is needed."}},{"@type":"Question","name":"Does an EU passport remove import limits?","acceptedAnswer":{"@type":"Answer","text":"Not automatically. Import classification depends on the competition rules and the player's individual status. Permission to work, registration and international transfer requirements are separate checks. The calculator's passport filter is a broad model assumption, not an eligibility decision."}}]}</script></head>
 <body>
 <header class="header">
 <a class="brand" href="{{EN}}/">
@@ -47,7 +47,7 @@
 <section class="article-hero wrap">
 <p class="kicker">Tool</p>
 <h1>Level calculator: which league is realistic</h1>
-<p class="lead">Six questions and you'll see a realistic band of European divisions and the specific leagues that genuinely consider a profile like yours. Free, no sign-up.</p>
+<p class="lead">Answer the questions to get an initial planning estimate and reference leagues to research. The calculator does not check vacancies, club interest or your eligibility. Free, no sign-up.</p>
 </section>
 
 <section class="wrap">
@@ -95,14 +95,14 @@
 <h2 id="calc-band" tabindex="-1"></h2>
 <p class="calc-summary" id="calc-summary"></p>
 
-<h3 class="calc-subtitle">Leagues that consider a profile like this</h3>
+<h3 class="calc-subtitle">Reference leagues to research</h3>
 <div class="calc-leagues" id="calc-leagues"></div>
 
 <h3 class="calc-subtitle">What to strengthen in your profile</h3>
 <ul class="ticks" id="calc-tips"></ul>
 
-<p class="tool-note"><strong>Important:</strong> this is a planning estimate, not a promise of a contract. The club always decides, and an accurate read comes from a person who sees your video and stats. We do that read for free.</p>
-<a class="btn primary" id="calc-cta" href="{{EN}}/contact">Send your profile for a free assessment</a>
+<p class="tool-note"><strong>Important:</strong> this is an automated planning estimate, not a scouting assessment or a promise of a contract. We have not confirmed openings or interest from the listed clubs. Send your video and statistics for an initial profile review; eligibility and any further service terms must be checked separately.</p>
+<a class="btn primary" id="calc-cta" href="{{EN}}/contact">Send your profile for an initial review</a>
 </div>
 </section>
 
@@ -111,8 +111,12 @@
 <p class="kicker">How it's calculated</p>
 <h2>No "magic"<br>and no inflated promises</h2>
 </div>
-<p class="body-copy">The main factor is the level of the league you play in now: that's what clubs compare players by first. Then come production relative to position, age (under 20 they look at potential, after 25 at a finished level) and passport: EU citizenship doesn't make a player better, but it removes import limits and widens the list of clubs. The full reference of divisions is in the <a href="{{EN}}/european-leagues">European leagues database</a>.</p>
+<p class="body-copy">The model starts with your current league category, then adjusts for scoring relative to position, age and seasons played. For goaltenders, points do not enter the calculation. The passport answer changes the reference list using broad accessibility tags; it does not verify current league rules. EU citizenship does not automatically remove import limits. Work permission, registration and international transfer requirements need a separate check for the country, league and player. Domestic division numbers are not a common ranking across countries. Explore the <a href="{{EN}}/european-leagues">European leagues database</a> and verify the current season rules before selecting clubs.</p>
 </section>
+
+<section class="wrap"><h2>Calculator questions</h2><h3>How should I use the calculator result?</h3><p>Use it as an initial shortlist for research. The model uses your current league category, scoring relative to position, age and seasons played. It does not assess video, verify your statistics or measure the strength of every league.</p>
+<h3>Does the calculator guarantee a contract?</h3><p>No. The result does not confirm vacancies, interest from clubs or eligibility. A personal review of your video and statistics, followed by checks with the relevant club and federation, is needed.</p>
+<h3>Does an EU passport remove import limits?</h3><p>Not automatically. Import classification depends on the competition rules and the player's individual status. Permission to work, registration and international transfer requirements are separate checks. The calculator's passport filter is a broad model assumption, not an eligibility decision.</p></section>
 
 <section class="cta">
 <div>
