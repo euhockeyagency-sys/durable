@@ -152,7 +152,8 @@ const PAGES = [
   { ru: "/novosti/ncaa-razreshila-igrokam-chl-sohranyat-dopusk-division-i", en: "/news/ncaa-allows-chl-players-to-keep-division-i-eligibility" },
   { ru: "/ligi/avstriya-yuniorskij-hokkej", en: "/leagues/austria-junior-hockey" },
   { ru: "/ligi/slovakiya-yuniorskij-hokkej", en: "/leagues/slovakia-junior-hockey" },
-  { ru: "/guides/pochemu-horoshaya-statistika-ne-daet-predlozhenie-kluba", en: "/guides/why-good-hockey-stats-do-not-bring-club-offers" }
+  { ru: "/guides/pochemu-horoshaya-statistika-ne-daet-predlozhenie-kluba", en: "/guides/why-good-hockey-stats-do-not-bring-club-offers" },
+  { ru: "/guides/u18-silnaya-liga-ili-igrovoe-vremya", en: "/guides/u18-stronger-league-or-more-ice-time" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
