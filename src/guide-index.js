@@ -8,6 +8,7 @@
 // locale-prefixed rather than relying on the rewrite pass.
 
 const GUIDES = [
+  { en: "why-good-hockey-stats-do-not-bring-club-offers", ru: "pochemu-horoshaya-statistika-ne-daet-predlozhenie-kluba", cat: "blog", title: { en: "Good statistics but no club offers", ru: "Хорошая статистика, но нет предложений клуба" } },
   { en: "hockey-in-austria", ru: "hokkej-v-avstrii", cat: "countries", title: { en: "Hockey in Austria", ru: "Хоккей в Австрии" } },
   { en: "hockey-in-belarus", ru: "hokkej-v-belarusi", cat: "countries", title: { en: "Hockey in Belarus", ru: "Хоккей в Беларуси" } },
   { en: "hockey-in-belgium", ru: "hokkej-v-belgii", cat: "countries", title: { en: "Hockey in Belgium", ru: "Хоккей в Бельгии" } },
@@ -81,6 +82,7 @@ const GUIDES = [
 ];
 
 const CATEGORIES = [
+  { id: "blog", label: { en: "Agent blog", ru: "Блог агента" } },
   { id: "countries", label: { en: "By country", ru: "По странам" } },
   { id: "process", label: { en: "Getting signed", ru: "Как попасть в клуб" } },
   { id: "documents", label: { en: "Documents, visas & transfers", ru: "Документы, визы и трансферы" } }
