@@ -155,7 +155,8 @@ const PAGES = [
   { ru: "/guides/pochemu-horoshaya-statistika-ne-daet-predlozhenie-kluba", en: "/guides/why-good-hockey-stats-do-not-bring-club-offers" },
   { ru: "/guides/u18-silnaya-liga-ili-igrovoe-vremya", en: "/guides/u18-stronger-league-or-more-ice-time" },
   { ru: "/guides/yuniorskie-ligi-ssha", en: "/guides/junior-hockey-usa" },
-  { ru: "/ligi/ssha-nahl", en: "/leagues/usa-nahl" }
+  { ru: "/ligi/ssha-nahl", en: "/leagues/usa-nahl" },
+  { ru: "/ligi/ssha-usphl-premier", en: "/leagues/usa-usphl-premier" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
