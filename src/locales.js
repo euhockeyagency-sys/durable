@@ -157,7 +157,8 @@ const PAGES = [
   { ru: "/guides/yuniorskie-ligi-ssha", en: "/guides/junior-hockey-usa" },
   { ru: "/ligi/ssha-nahl", en: "/leagues/usa-nahl" },
   { ru: "/ligi/ssha-usphl-premier", en: "/leagues/usa-usphl-premier" },
-  { ru: "/ligi/ssha-ushl", en: "/leagues/usa-ushl" }
+  { ru: "/ligi/ssha-ushl", en: "/leagues/usa-ushl" },
+  { ru: "/guides/lager-tender-i-mesto-v-sostave", en: "/guides/hockey-camp-tender-and-roster-place" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
