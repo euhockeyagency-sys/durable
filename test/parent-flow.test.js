@@ -148,3 +148,29 @@ test("application notifications include a parent contact for an adult player whe
   });
   assert.match(message, /Родитель: Parent Name; parent@example\.com/);
 });
+test("application source keeps first landing distinct and rejects URLs with query data", () => {
+  const valid=validateApplication(body({sourcePage:"/contact",landingPage:"/guides/hockey-in-usa",initialReferrerHost:"google.com"}),[],new Date("2026-10-30"),false,"en");
+  assert.equal(valid.ok,true);
+  assert.equal(valid.value.source.landing_page,"/guides/hockey-in-usa");
+  assert.equal(valid.value.source.source_page,"/contact");
+  assert.equal(valid.value.source.initial_referrer_host,"google.com");
+  for(const landingPage of ["https://example.com/","//example.com/","/contact?email=private","/page#private"]){
+    const result=validateApplication(body({landingPage}),[],new Date("2026-10-30"),false,"en");
+    assert.equal(result.ok,true);
+    assert.equal(result.value.source.landing_page,null);
+  }
+});
+test("session attribution preserves campaign across pages and tolerates blocked storage", () => {
+  const vm=require("node:vm");
+  const code=fs.readFileSync(path.join(__dirname,"../public/site.js"),"utf8");
+  const helper=code.slice(code.indexOf("function readAttribution("),code.indexOf("let attribution={};"));
+  const context={URL,URLSearchParams};vm.createContext(context);vm.runInContext(helper,context);
+  let stored;const storage={getItem:()=>stored,setItem:(key,value)=>{stored=value}};
+  context.readAttribution(storage,"/guides/entry",new URLSearchParams("utm_source=instagram"),"https://instagram.com/");
+  const next=context.readAttribution(storage,"/contact",new URLSearchParams(),"");
+  assert.equal(next.landingPage,"/guides/entry");
+  assert.equal(next.previousPage,"/guides/entry");
+  assert.equal(next.utm_source,"instagram");
+  assert.equal(next.referrerHost,"instagram.com");
+  assert.doesNotThrow(()=>context.readAttribution({getItem(){throw Error("blocked")},setItem(){throw Error("blocked")}},"/contact",new URLSearchParams(),""));
+});
