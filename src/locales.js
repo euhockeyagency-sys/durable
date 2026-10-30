@@ -158,7 +158,8 @@ const PAGES = [
   { ru: "/ligi/ssha-nahl", en: "/leagues/usa-nahl" },
   { ru: "/ligi/ssha-usphl-premier", en: "/leagues/usa-usphl-premier" },
   { ru: "/ligi/ssha-ushl", en: "/leagues/usa-ushl" },
-  { ru: "/guides/lager-tender-i-mesto-v-sostave", en: "/guides/hockey-camp-tender-and-roster-place" }
+  { ru: "/guides/lager-tender-i-mesto-v-sostave", en: "/guides/hockey-camp-tender-and-roster-place" },
+  { ru: "/guides/kak-sravnit-dva-predlozheniya-komand", en: "/guides/compare-two-hockey-team-offers" }
 ];
 
 const RU_TO_EN = new Map(PAGES.map((p) => [p.ru, p.en]));
