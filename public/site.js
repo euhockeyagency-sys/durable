@@ -27,11 +27,26 @@ else if(!consent){
     if(!choice)return;
     localStorage.setItem(CONSENT_KEY,choice==='accept'?'granted':'denied');
     updateConsent(choice==='accept');
-    if(choice==='accept')initYandex();
+    if(choice==='accept'){initYandex();try{attribution=readAttribution(sessionStorage,location.pathname,new URLSearchParams(location.search),document.referrer)}catch(error){}}
     banner.remove();
   });
 }
 const article=q('.article-body');if(article){const bar=document.createElement('div');bar.className='reading-progress';document.body.append(bar);const progress=()=>{const start=article.offsetTop-innerHeight*.25,end=article.offsetTop+article.offsetHeight-innerHeight*.75;bar.style.width=Math.max(0,Math.min(1,(scrollY-start)/(end-start)))*100+'%'};progress();addEventListener('scroll',progress,{passive:true})}
+// Session attribution is collected only after analytics consent. Store paths,
+// never URL queries/fragments, and keep the landing page distinct from sourcePage.
+function readAttribution(storage, pathname, params, referrer) {
+  let value={};try{value=JSON.parse(storage.getItem('eha-attribution')||'{}')||{}}catch(error){}
+  const cleanPath=v=>typeof v==='string'&&/^\/(?!\/)[^?#\\]*$/.test(v)?v.slice(0,300):'';
+  const prior=cleanPath(value.lastPage),landing=cleanPath(value.landingPage)||cleanPath(pathname);
+  const utm={};['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(key=>{utm[key]=String(value[key]||params.get(key)||'').slice(0,160)});
+  let referrerHost=String(value.referrerHost||'').slice(0,200);if(!referrerHost){try{referrerHost=new URL(referrer).hostname}catch(error){}}
+  const result={...utm,landingPage:landing,previousPage:prior,referrerHost,lastPage:cleanPath(pathname)};
+  try{storage.setItem('eha-attribution',JSON.stringify(result))}catch(error){}
+  return result;
+}
+let attribution={};
+try{if(localStorage.getItem(CONSENT_KEY)==='granted')attribution=readAttribution(sessionStorage,location.pathname,new URLSearchParams(location.search),document.referrer)}catch(error){}
+
 const form=q('#profile-form');
 if(form){
   const status=q('#form-status'),birth=q('[name="birthYear"]',form),parent=q('#parent-fields'),button=q('button[type="submit"]',form),year=new Date().getFullYear(),applicants=qa('[name="applicantType"]',form),height=q('[name="heightCm"]',form),weight=q('[name="weightKg"]',form),stick=q('[name="stickHand"]',form),intentInput=q('[name="intent"]',form);birth.min=year-60;birth.max=year-8;
@@ -46,7 +61,8 @@ if(form){
   else if(analysisEntry){const kicker=q('#contact-kicker'),title=q('#contact-title'),lead=q('#contact-lead');if(kicker)kicker.textContent=LANG==='en'?'Full player analysis':'Полный анализ игрока';if(title)title.innerHTML=LANG==='en'?'Request a<br><em>player analysis</em>':'Запросите<br><em>анализ игрока</em>';if(lead)lead.textContent=LANG==='en'?'Send the player profile and recent full-game video. EHA will first confirm whether the material is sufficient and agree the scope before any paid work starts.':'Пришлите профиль игрока и свежее видео полного матча. EHA сначала подтвердит, достаточно ли материалов, и согласует объём до начала платной работы.'}
   else if(europeRouteEntry){const kicker=q('#contact-kicker'),title=q('#contact-title'),lead=q('#contact-lead');if(kicker)kicker.textContent=LANG==='en'?'European hockey route':'Маршрут в европейский хоккей';if(title)title.innerHTML=LANG==='en'?'Assess your route<br><em>to European hockey</em>':'Оцените свой путь<br><em>в европейский хоккей</em>';if(lead)lead.textContent=LANG==='en'?'Send your player profile, recent statistics and video. EHA will assess realistic league levels and explain the next steps without guaranteeing a club decision.':'Пришлите профиль игрока, свежую статистику и видео. EHA оценит реалистичные уровни лиг и объяснит следующие шаги без гарантии решения клуба.'}
   updateApplicant();
-  Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=params.get(key)||''});q('[name="referrer"]',form).value=document.referrer||'';const sourcePageInput=q('[name="sourcePage"]',form);if(sourcePageInput){let sourcePage=(params.get('source_page')||'').trim();if(!sourcePage&&document.referrer){try{const ref=new URL(document.referrer);if(ref.origin===location.origin)sourcePage=ref.pathname}catch(error){}}sourcePageInput.value=sourcePage.slice(0,300)}
+  Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=params.get(key)||attribution[key]||''});q('[name="referrer"]',form).value=document.referrer||'';const sourcePageInput=q('[name="sourcePage"]',form);if(sourcePageInput){let sourcePage=(params.get('source_page')||'').trim();if(!sourcePage&&document.referrer){try{const ref=new URL(document.referrer);if(ref.origin===location.origin)sourcePage=ref.pathname}catch(error){}}if(!sourcePage&&attribution.previousPage&&attribution.previousPage!==location.pathname)sourcePage=attribution.previousPage;sourcePageInput.value=sourcePage.slice(0,300)}
+  [['landingPage',attribution.landingPage],['initialReferrerHost',attribution.referrerHost]].forEach(([name,value])=>{if(!value)return;const input=document.createElement('input');input.type='hidden';input.name=name;input.value=value;form.append(input)});
   const country=(params.get('country')||'').trim().slice(0,100),league=(params.get('league')||'').trim().slice(0,100),note=(params.get('note')||'').trim().slice(0,300),message=q('[name="message"]',form);
   const context=[country?`${T.countryPrefix}: ${country}`:'',league?`${LANG==='en'?'Target league':'Интересующая лига'}: ${league}`:''].filter(Boolean).join('\n');
   if(context&&message&&!message.value.trim())message.value=context;
@@ -64,6 +80,10 @@ if(form){
   const showErrors=(errors={})=>{Object.entries(errors).forEach(([name,message])=>{const output=q(`[data-error-for="${name}"]`,form),input=q(`[name="${name}"]`,form);if(output)output.textContent=message;if(input)input.setAttribute('aria-invalid','true')});const first=q('[aria-invalid="true"]',form);first?.focus()};
   form.addEventListener('submit',async event=>{
     event.preventDefault();clearErrors();button.disabled=true;button.textContent=T.submitting;status.textContent=T.saving;
+    // Consent may have been accepted after form initialisation.
+    [['landingPage',attribution.landingPage],['initialReferrerHost',attribution.referrerHost]].forEach(([name,value])=>{if(!value)return;let input=q(`[name="${name}"]`,form);if(!input){input=document.createElement('input');input.type='hidden';input.name=name;form.append(input)}input.value=value});
+    Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input&&!input.value)input.value=attribution[key]||''});
+
     try{
       const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}}),data=await response.json().catch(()=>({}));
       if(!response.ok){showErrors(data.errors);status.textContent=data.message||T.checkForm;status.classList.add('error');if(window.turnstile)turnstile.reset();return}
