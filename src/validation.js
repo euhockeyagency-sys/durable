@@ -130,6 +130,8 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
       applicant_type: applicantType,
       intent,
       source_page: text(body.sourcePage, 300) || null,
+      landing_page: /^\/(?!\/)[^?#\\]*$/.test(text(body.landingPage, 300)) ? text(body.landingPage, 300) : null,
+      initial_referrer_host: /^[a-z0-9.-]+$/i.test(text(body.initialReferrerHost, 200)) ? text(body.initialReferrerHost, 200) : null,
       utm_source: text(body.utmSource, 120) || null,
       utm_medium: text(body.utmMedium, 120) || null,
       utm_campaign: text(body.utmCampaign, 160) || null,
