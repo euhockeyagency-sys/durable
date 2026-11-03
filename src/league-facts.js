@@ -291,6 +291,9 @@ const localized = (value, locale) => (value && typeof value === "object" ? value
 
 function leagueFacts(logicalPath, locale) {
   const key = locale === "ru" ? RU_TO_EN_PATH.get(logicalPath) : logicalPath;
+  // ICEHL club information is maintained in the EN/RU page templates.
+  // Do not append the legacy season table alongside the current verified list.
+  if (key === "/leagues/austria-ice-hockey-league") return "";
   const facts = FACTS[key];
   if (!facts) return "";
   const t = COPY[locale] || COPY.en;
