@@ -64,7 +64,9 @@ if(form){
   Object.entries(utm).forEach(([key,name])=>{const input=q(`[name="${name}"]`,form);if(input)input.value=params.get(key)||attribution[key]||''});q('[name="referrer"]',form).value=document.referrer||'';const sourcePageInput=q('[name="sourcePage"]',form);if(sourcePageInput){let sourcePage=(params.get('source_page')||'').trim();if(!sourcePage&&document.referrer){try{const ref=new URL(document.referrer);if(ref.origin===location.origin)sourcePage=ref.pathname}catch(error){}}if(!sourcePage&&attribution.previousPage&&attribution.previousPage!==location.pathname)sourcePage=attribution.previousPage;sourcePageInput.value=sourcePage.slice(0,300)}
   [['landingPage',attribution.landingPage],['initialReferrerHost',attribution.referrerHost]].forEach(([name,value])=>{if(!value)return;const input=document.createElement('input');input.type='hidden';input.name=name;input.value=value;form.append(input)});
   const country=(params.get('country')||'').trim().slice(0,100),league=(params.get('league')||'').trim().slice(0,100),note=(params.get('note')||'').trim().slice(0,300),message=q('[name="message"]',form);
-  const context=[country?`${T.countryPrefix}: ${country}`:'',league?`${LANG==='en'?'Target league':'Интересующая лига'}: ${league}`:''].filter(Boolean).join('\n');
+  const displayCountry=LANG==='ru'&&country.toLowerCase()==='austria'?'Австрия':country;
+  const displayLeague=LANG==='ru'&&league.toLowerCase()==='austria junior'?'Юниорский хоккей Австрии':league;
+  const context=[displayCountry?`${T.countryPrefix}: ${displayCountry}`:'',displayLeague?`${LANG==='en'?'Target league':'Интересующая лига'}: ${displayLeague}`:''].filter(Boolean).join('\n');
   if(context&&message&&!message.value.trim())message.value=context;
   else if(note&&message&&!message.value.trim())message.value=note;
   const calcBand=params.get('calc_band')||'',calcScore=params.get('calc_score')||'',calcLeagues=(params.get('calc_leagues')||'').slice(0,300);
