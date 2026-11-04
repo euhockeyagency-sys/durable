@@ -146,3 +146,14 @@ test("EN/RU page sources do not hardcode the en/ru/x-default hreflang links", ()
   }
   assert.deepEqual(offenders, [], "remove hardcoded hreflang links; the server adds them");
 });
+
+test("league reference links point at registered bilingual league pages", () => {
+  const window = {};
+  const source = fs.readFileSync(path.join(__dirname, "..", "public", "assets", "leagues.src.js"), "utf8");
+  new Function("window", source)(window);
+  const invalid = window.EHA_LEAGUES_SRC.leagues
+    .filter((league) => league.url)
+    .filter((league) => !PAGES.some((page) => page.ru === league.url.ru && page.en === league.url.en))
+    .map((league) => `${league.country.en}: ${league.name}`);
+  assert.deepEqual(invalid, []);
+});

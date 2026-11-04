@@ -666,6 +666,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇦🇹",
       "name": "ICE Hockey League",
+      "url": {
+        "ru": "/ligi/avstriya-ice-hockey-league",
+        "en": "/leagues/austria-ice-hockey-league"
+      },
       "tier": 1,
       "open": "mid",
       "note": {
@@ -691,6 +695,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇦🇹",
       "name": "Alps Hockey League",
+      "url": {
+        "ru": "/ligi/alps-hockey-league",
+        "en": "/leagues/alps-hockey-league"
+      },
       "tier": 2,
       "open": "high",
       "note": {
@@ -838,6 +846,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇳🇴",
       "name": "1. divisjon",
+      "url": {
+        "ru": "/ligi/norvegiya-hockeyliga1",
+        "en": "/leagues/norway-hockeyliga1"
+      },
       "tier": 2,
       "open": "high",
       "note": {
@@ -863,6 +875,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇩🇰",
       "name": "Metal Ligaen",
+      "url": {
+        "ru": "/ligi/daniya-metal-ligaen",
+        "en": "/leagues/denmark-metal-ligaen"
+      },
       "tier": 1,
       "open": "mid",
       "note": {
@@ -888,6 +904,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇩🇰",
       "name": "1. division",
+      "url": {
+        "ru": "/ligi/daniya-1-division",
+        "en": "/leagues/denmark-1-division"
+      },
       "tier": 2,
       "open": "high",
       "note": {
@@ -913,6 +933,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇨🇭",
       "name": "National League",
+      "url": {
+        "ru": "/ligi/shvejcariya-national-league",
+        "en": "/leagues/switzerland-national-league"
+      },
       "tier": 1,
       "open": "low",
       "note": {
@@ -938,6 +962,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇨🇭",
       "name": "Swiss League",
+      "url": {
+        "ru": "/ligi/shvejcariya-sky-swiss-league",
+        "en": "/leagues/switzerland-sky-swiss-league"
+      },
       "tier": 2,
       "open": "low",
       "note": {
@@ -1055,6 +1083,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇫🇷",
       "name": "Ligue Magnus",
+      "url": {
+        "ru": "/ligi/franciya-ligue-magnus",
+        "en": "/leagues/france-ligue-magnus"
+      },
       "tier": 1,
       "open": "mid",
       "note": {
@@ -1080,6 +1112,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇫🇷",
       "name": "Division 1",
+      "url": {
+        "ru": "/ligi/franciya-division-1",
+        "en": "/leagues/france-division-1"
+      },
       "tier": 2,
       "open": "high",
       "note": {
@@ -1130,6 +1166,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇭🇺",
       "name": "Erste Liga",
+      "url": {
+        "ru": "/ligi/vengriya-erste-liga",
+        "en": "/leagues/hungary-erste-liga"
+      },
       "tier": 1,
       "open": "high",
       "note": {
@@ -1155,6 +1195,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇬🇧",
       "name": "EIHL",
+      "url": {
+        "ru": "/ligi/velikobritaniya-eihl",
+        "en": "/leagues/uk-eihl"
+      },
       "tier": 1,
       "open": "mid",
       "note": {
@@ -1180,6 +1224,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇬🇧",
       "name": "NIHL National",
+      "url": {
+        "ru": "/ligi/velikobritaniya-planet-ice-national-league",
+        "en": "/leagues/uk-planet-ice-national-league"
+      },
       "tier": 2,
       "open": "high",
       "note": {
@@ -1205,6 +1253,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇮🇹",
       "name": "IHL Serie A",
+      "url": {
+        "ru": "/ligi/italiya-ihl-serie-a",
+        "en": "/leagues/italy-ihl-serie-a"
+      },
       "tier": 1,
       "open": "high",
       "note": {
@@ -1230,6 +1282,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇱🇻",
       "name": "Optibet hokeja līga",
+      "url": {
+        "ru": "/ligi/latviya-optibet-hokeja-liga",
+        "en": "/leagues/latvia-optibet-hokeja-liga"
+      },
       "tier": 1,
       "open": "high",
       "note": {
@@ -1373,6 +1429,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇷🇴",
       "name": "Liga Naţională",
+      "url": {
+        "ru": "/ligi/rumyniya-campionatul-national",
+        "en": "/leagues/romania-campionatul-national"
+      },
       "tier": 1,
       "open": "high",
       "note": {
