@@ -162,6 +162,40 @@ module.exports = {
       ],
       "evidence": "2026-11-06: код локализации и версия script URL подтверждены чтением файлов; /ru/contact HTTP 200 и соответствует файлу. При выполнении этапа браузером проверены русские подписи и обычный/родительский режим.",
       "limits": "Другие страны и названия лиг этим небольшим изменением не локализованы."
+    },
+    {
+      "id": "SALARY-SOURCES-EN-RU-20261106",
+      "status": "published_verified",
+      "date": "2026-11-06",
+      "files": [
+        "public/en/guides/hockey-player-salaries-in-europe.html",
+        "public/ru/guides/zarplaty-hokkeistov-v-evrope.html"
+      ],
+      "urls": [
+        "/guides/hockey-player-salaries-in-europe",
+        "/ru/guides/zarplaty-hokkeistov-v-evrope"
+      ],
+      "changes": [
+        "Убраны диапазоны другого агентства без ясной базы gross/net и оплачиваемого периода; сохранены основные Title, Description, URL, canonical и внутренние связи.",
+        "Добавлены первичный договор HockeyAllsvenskan (§4, документ 6 мая 2020) и официальный пример Hockeyettan 2026/27 (интервью 28 октября, один клуб, не средняя по лиге).",
+        "Исторические суммы SHL оставлены как исторические; повторно прочитаны SICO SHL/HA, NHLPA, Yle и hockeyarena.se.",
+        "Добавлены FAQ Hockeyettan и DEL2 и соответствующие вопросы JSON-LD; теперь по 7 FAQ EN/RU.",
+        "Убраны видимые редакционные даты в hero; дата проверки источников 6 ноября указана отдельно. Schema dateModified отражает эту правку."
+      ],
+      "evidence": [
+        "Повторное чтение через read_project_file: обе сохранённые страницы точно совпадают с отправленными версиями.",
+        "verify_site: EN/RU HTTP 200, localMatchesProduction=true, productionHeaderMatchesFile=true.",
+        "Firecrawl rawHtml maxAge=0: один H1, правильный self canonical, взаимные en/ru/x-default hreflang, валидный JSON Article/FAQPage/BreadcrumbList, 7 вопросов FAQ.",
+        "12 внутренних ссылок на лиги и справочник EN/RU проверены verify_site: HTTP 200.",
+        "Browser: EN/RU при viewport 390x844, document scrollWidth=375, innerWidth=390; изображения статьи загружены. Родительские кнопки обеих страниц открывают contact с выбранным parent_guardian."
+      ],
+      "limits": [
+        "Официальные текущие средние/сетки ICEHL, DEL2, Hockeyettan, AlpsHL этим обзором не установлены; отсутствие найденной сетки не доказывает отсутствие правила.",
+        "Отправка и серверное сохранение заявки не проверялись. Hidden-поля не использованы как доказательство сквозной передачи.",
+        "Core Web Vitals и все страницы сайта не проверялись; проверка мобильного overflow выполнена на ширине 390 px.",
+        "Оценка органического эффекта требует периода после публикации."
+      ],
+      "next_step": "Доработать существующий справочник европейских лиг EN/RU: выбор по возрасту, уровню и цели. Новую статью «После U20» пока не создавать без проверки дублей."
     }
   ],
   "historical": [
@@ -221,8 +255,9 @@ module.exports = {
   "proposed_next": [
     {
       "order": 1,
-      "status": "proposed_not_approved_for_edit",
-      "task": "Свежий аудит и доработка существующей страницы зарплат EN/RU: источники, соответствие запросам, первые ответы и связь с услугами EHA."
+      "status": "published_verified",
+      "task": "Свежий аудит и доработка существующей страницы зарплат EN/RU: источники, соответствие запросам, первые ответы и связь с услугами EHA.",
+      "completion_ref": "SALARY-SOURCES-EN-RU-20261106"
     },
     {
       "order": 2,
