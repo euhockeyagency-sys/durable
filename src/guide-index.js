@@ -8,6 +8,8 @@
 // locale-prefixed rather than relying on the rewrite pass.
 
 const GUIDES = [
+  { en: "compare-two-hockey-team-offers", ru: "kak-sravnit-dva-predlozheniya-komand", cat: "parents", title: { en: "Compare two hockey team offers", ru: "Как сравнить два предложения команд" } },
+  { en: "after-u20-senior-hockey-in-europe", ru: "posle-u20-vzroslyj-hokkej-v-evrope", cat: "process", title: { en: "After U20: moving into senior hockey in Europe", ru: "После U20: переход во взрослый хоккей в Европе" } },
   { en: "hockey-camp-tender-and-roster-place", ru: "lager-tender-i-mesto-v-sostave", cat: "parents", title: { en: "Camp, tender and roster: before paying", ru: "Лагерь, tender и состав: до оплаты" } },
   { en: "junior-hockey-usa", ru: "yuniorskie-ligi-ssha", cat: "parents", title: { en: "US junior hockey leagues compared", ru: "Сравнение юниорских лиг США" } },
   { en: "u18-stronger-league-or-more-ice-time", ru: "u18-silnaya-liga-ili-igrovoe-vremya", cat: "blog", title: { en: "U18: stronger league or more ice time?", ru: "U18: сильная лига или больше игрового времени?" } },
