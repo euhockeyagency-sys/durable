@@ -303,12 +303,13 @@ test("club tables cover multiple leagues, with an arena column only when data ex
   // Russian mirror resolves and localises the city.
   const swissRu = await request(app).get("/ru/ligi/shvejcariya-national-league").set("Host", "eha.test").expect(200);
   assert.match(swissRu.text, /Цюрих/);
-  // Multinational league (ICEHL) adds a Country column; localised in RU.
+  // Multinational league (ICEHL) adds a Country column; localised in RU. Its
+  // hand-maintained table uses scope attributes on header cells.
   const icehl = await request(app).get("/leagues/austria-ice-hockey-league").set("Host", "eha.test").expect(200);
-  assert.match(icehl.text, /<th>Country<\/th>/);
+  assert.match(icehl.text, /<th[^>]*>Country<\/th>/);
   assert.match(icehl.text, /Ljubljana/);
   const icehlRu = await request(app).get("/ru/ligi/avstriya-ice-hockey-league").set("Host", "eha.test").expect(200);
-  assert.match(icehlRu.text, /<th>Страна<\/th>/);
+  assert.match(icehlRu.text, /<th[^>]*>Страна<\/th>/);
   assert.match(icehlRu.text, /Словения/);
   // Ligue Magnus has arenas but no capacities: Arena column shown, Capacity not.
   const magnus = await request(app).get("/leagues/france-ligue-magnus").set("Host", "eha.test").expect(200);
@@ -827,6 +828,33 @@ test("application forms collect the fields required to assess age and eligibilit
     assert.doesNotMatch(html, /name="birthYear" value="2000"/);
     assert.doesNotMatch(html, /video\/(?:mp4|quicktime|webm)/);
   }
+});
+
+test("application form is split into two steps that still work as one page without JavaScript", () => {
+  const step1 = ["applicantType", "playerName", "birthYear", "citizenship", "currentClub", "position", "phone", "email"];
+  const step2 = ["heightCm", "weightKg", "stickHand", "eliteProspectsUrl", "videoUrls", "parentName", "parentContact", "parentConsent", "files", "message", "dataConsent"];
+  for (const locale of ["en", "ru"]) {
+    const html = fs.readFileSync(path.join(__dirname, "..", "public", locale, "contact.html"), "utf8");
+    const form = html.slice(html.indexOf('<form id="profile-form"'), html.indexOf("</form>"));
+    const first = form.slice(form.indexOf('data-step="1"'), form.indexOf('data-step="2"'));
+    const second = form.slice(form.indexOf('data-step="2"'), form.indexOf('class="honeypot"'));
+    for (const name of step1) assert.ok(first.includes(`name="${name}"`) && !second.includes(`name="${name}"`), `${locale}: ${name} belongs to step 1`);
+    for (const name of step2) assert.ok(second.includes(`name="${name}"`) && !first.includes(`name="${name}"`), `${locale}: ${name} belongs to step 2`);
+    assert.ok(second.includes('class="cf-turnstile"'));
+    // Step controls stay hidden until site.js enables them; the submit button does not.
+    assert.match(form, /<button[^>]*type="button"[^>]*data-step-next hidden>/);
+    assert.match(form, /<button[^>]*type="button"[^>]*data-step-back hidden>/);
+    assert.match(form, /id="form-progress"[^>]*hidden>/);
+    assert.match(form, /<button class="btn primary" type="submit" data-step-submit>/);
+    assert.equal((form.match(/type="submit"/g) || []).length, 1);
+    assert.match(form, /48/);
+  }
+  const source = fs.readFileSync(path.join(__dirname, "..", "public", "site.js"), "utf8");
+  assert.ok(source.includes("track('form_step2',funnelContext())"));
+  assert.ok(source.includes("form.noValidate=true"));
+  // The draft never includes files, consents or the Turnstile token.
+  const draftFields = source.match(/draftFields=\[([^\]]+)\]/)[1];
+  for (const name of ["files", "dataConsent", "parentConsent", "website", "cf-turnstile-response"]) assert.ok(!draftFields.includes(`'${name}'`), name);
 });
 
 test("limits the sixth attempt from one address", async () => {
