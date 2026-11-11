@@ -63,6 +63,10 @@
 </div>
 <form id="profile-form" action="/api/applications" method="post" enctype="multipart/form-data">
 <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+<p class="form-progress" id="form-progress" data-current="1" hidden><span data-progress-text>Шаг 1 из 2</span><span class="form-progress-bar" aria-hidden="true"><i></i><i></i></span></p>
+<div class="form-step" data-step="1">
+<p class="form-step-title" tabindex="-1">1. Игрок и контакт</p>
+<p class="form-required-note"><span class="req" aria-hidden="true">*</span> — обязательное поле</p>
 <fieldset class="applicant-type">
 <legend>Кто отправляет заявку?</legend>
 <div class="applicant-options">
@@ -71,21 +75,21 @@
 </div>
 <small>Для обращения родителя используется та же первичная оценка, но часть параметров игрока можно добавить позже.</small>
 </fieldset>
-<label>Имя и фамилия<input name="playerName" autocomplete="name" maxlength="120" required>
+<label><span class="label-text">Имя и фамилия <span class="req" aria-hidden="true">*</span></span><input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
 <div class="two">
-<label>Год рождения<input name="birthYear" type="number" inputmode="numeric" min="1966" max="2018" required>
+<label><span class="label-text">Год рождения <span class="req" aria-hidden="true">*</span></span><input name="birthYear" type="number" inputmode="numeric" min="1966" max="2018" required>
 <span class="field-error" data-error-for="birthYear"></span>
 </label>
-<label>Гражданство<input name="citizenship" autocomplete="country-name" maxlength="100" required>
+<label><span class="label-text">Гражданство <span class="req" aria-hidden="true">*</span></span><input name="citizenship" autocomplete="country-name" maxlength="100" required>
 <span class="field-error" data-error-for="citizenship"></span>
 </label>
 </div>
-<label>Текущий клуб или «без клуба»<input name="currentClub" maxlength="160" required>
+<label><span class="label-text">Текущий клуб или «без клуба» <span class="req" aria-hidden="true">*</span></span><input name="currentClub" maxlength="160" required>
 <span class="field-error" data-error-for="currentClub"></span>
 </label>
-<label>Позиция<select name="position" required>
+<label><span class="label-text">Позиция <span class="req" aria-hidden="true">*</span></span><select name="position" required>
 <option value="">Выберите</option>
 <option value="forward">Нападающий</option>
 <option value="defense">Защитник</option>
@@ -94,19 +98,32 @@
 <span class="field-error" data-error-for="position"></span>
 </label>
 <div class="two">
-<label>Рост, см<input name="heightCm" type="number" inputmode="decimal" min="120" max="230" step="0.1" required>
+<label><span class="label-text">WhatsApp или телефон <span class="req" aria-hidden="true">*</span></span><input type="tel" name="phone" autocomplete="tel" maxlength="60" required>
+<span class="field-error" data-error-for="phone"></span>
+</label>
+<label><span class="label-text">Email <span class="req" aria-hidden="true">*</span></span><input type="email" name="email" autocomplete="email" maxlength="160" required>
+<span class="field-error" data-error-for="email"></span>
+</label>
+</div>
+<button class="btn primary" type="button" data-step-next hidden>Далее — шаг 2 из 2</button>
+<p class="form-note" data-step-hint hidden>Занимает около минуты. На следующем шаге — параметры, видео и файлы.</p>
+</div>
+<div class="form-step" data-step="2">
+<p class="form-step-title" tabindex="-1">2. Данные профиля</p>
+<div class="two">
+<label><span class="label-text">Рост, см <span class="req req-player" aria-hidden="true">*</span></span><input name="heightCm" type="number" inputmode="decimal" min="120" max="230" step="0.1" required>
 <span class="field-error" data-error-for="heightCm"></span>
 </label>
-<label>Вес, кг<input name="weightKg" type="number" inputmode="decimal" min="35" max="180" step="0.1" required>
+<label><span class="label-text">Вес, кг <span class="req req-player" aria-hidden="true">*</span></span><input name="weightKg" type="number" inputmode="decimal" min="35" max="180" step="0.1" required>
 <span class="field-error" data-error-for="weightKg"></span>
 </label>
 </div>
-<label>Хват<select name="stickHand" required>
+<label><span class="label-text">Хват <span class="req req-player" aria-hidden="true">*</span></span><select name="stickHand" required>
 <option value="">Выберите</option>
 <option value="left">Левый</option>
 <option value="right">Правый</option>
 </select><span class="field-error" data-error-for="stickHand"></span></label>
-<label>Elite Prospects — необязательно<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="Если профиля нет, оставьте поле пустым">
+<label>Ссылка на Elite Prospects — необязательно<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="Если профиля нет, оставьте поле пустым">
 <span class="field-error" data-error-for="eliteProspectsUrl"></span>
 </label>
 <fieldset>
@@ -117,19 +134,11 @@
 <input type="url" name="videoUrls" aria-label="Третья ссылка на видео" placeholder="Дополнительная ссылка">
 <span class="field-error" data-error-for="videoUrls"></span>
 </fieldset>
-<div class="two">
-<label>WhatsApp или телефон<input type="tel" name="phone" autocomplete="tel" maxlength="60" required>
-<span class="field-error" data-error-for="phone"></span>
-</label>
-<label>Email<input type="email" name="email" autocomplete="email" maxlength="160" required>
-<span class="field-error" data-error-for="email"></span>
-</label>
-</div>
 <section class="parent-fields" id="parent-fields" hidden aria-hidden="true">
 <p class="form-section-title" id="parent-section-title">Для игрока младше 18 лет</p>
-<label>Имя родителя или представителя<input name="parentName" autocomplete="name" maxlength="120">
+<label><span class="label-text">Имя родителя или представителя <span class="req" aria-hidden="true">*</span></span><input name="parentName" autocomplete="name" maxlength="120">
 <span class="field-error" data-error-for="parentName"></span></label>
-<label>Телефон или email родителя<input name="parentContact" maxlength="160">
+<label><span class="label-text">Телефон или email родителя <span class="req" aria-hidden="true">*</span></span><input name="parentContact" maxlength="160">
 <span class="field-error" data-error-for="parentContact"></span></label>
 <label class="consent"><input type="checkbox" name="parentConsent" value="true"><span id="parent-consent-copy">Я являюсь родителем или законным представителем и согласен на обработку данных игрока.</span></label>
 <span class="field-error" data-error-for="parentConsent"></span>
@@ -146,10 +155,12 @@
 <span class="field-error" data-error-for="dataConsent"></span>
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
+</div>
 <label class="honeypot" aria-hidden="true">Ваш сайт<input name="website" tabindex="-1" autocomplete="off"></label>
 <input type="hidden" name="locale" value="ru"><input type="hidden" name="intent"><input type="hidden" name="sourcePage"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer"><input type="hidden" name="calcBand"><input type="hidden" name="calcScore"><input type="hidden" name="calcLeagues">
-<button class="btn primary" type="submit">Отправить заявку</button>
-<p class="form-note">После сохранения вы получите номер заявки. Если форма недоступна, напишите в WhatsApp. Ответ в течение 48 часов.</p>
+<button class="btn primary" type="submit" data-step-submit>Отправить заявку</button>
+<p class="form-note">Ответим в течение 48 часов. Первая оценка бесплатна и ни к чему не обязывает. После сохранения вы получите номер заявки; если форма недоступна, напишите в WhatsApp.</p>
+<button class="btn ghost form-back" type="button" data-step-back hidden>← Назад к шагу 1</button>
 </form>
 </section>
 <section class="split wrap">

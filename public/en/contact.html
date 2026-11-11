@@ -63,6 +63,10 @@
 </div>
 <form id="profile-form" action="/api/applications" method="post" enctype="multipart/form-data">
 <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+<p class="form-progress" id="form-progress" data-current="1" hidden><span data-progress-text>Step 1 of 2</span><span class="form-progress-bar" aria-hidden="true"><i></i><i></i></span></p>
+<div class="form-step" data-step="1">
+<p class="form-step-title" tabindex="-1">1. Player and contact</p>
+<p class="form-required-note"><span class="req" aria-hidden="true">*</span> — required field</p>
 <fieldset class="applicant-type">
 <legend>Who is submitting this request?</legend>
 <div class="applicant-options">
@@ -71,21 +75,21 @@
 </div>
 <small>Parent/guardian requests use the same assessment process, but some player measurements can be added later.</small>
 </fieldset>
-<label>Full name<input name="playerName" autocomplete="name" maxlength="120" required>
+<label><span class="label-text">Full name <span class="req" aria-hidden="true">*</span></span><input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
 <div class="two">
-<label>Year of birth<input name="birthYear" type="number" inputmode="numeric" min="1966" max="2018" required>
+<label><span class="label-text">Year of birth <span class="req" aria-hidden="true">*</span></span><input name="birthYear" type="number" inputmode="numeric" min="1966" max="2018" required>
 <span class="field-error" data-error-for="birthYear"></span>
 </label>
-<label>Citizenship<input name="citizenship" autocomplete="country-name" maxlength="100" required>
+<label><span class="label-text">Citizenship <span class="req" aria-hidden="true">*</span></span><input name="citizenship" autocomplete="country-name" maxlength="100" required>
 <span class="field-error" data-error-for="citizenship"></span>
 </label>
 </div>
-<label>Current club or “no club”<input name="currentClub" maxlength="160" required>
+<label><span class="label-text">Current club or “no club” <span class="req" aria-hidden="true">*</span></span><input name="currentClub" maxlength="160" required>
 <span class="field-error" data-error-for="currentClub"></span>
 </label>
-<label>Position<select name="position" required>
+<label><span class="label-text">Position <span class="req" aria-hidden="true">*</span></span><select name="position" required>
 <option value="">Select</option>
 <option value="forward">Forward</option>
 <option value="defense">Defence</option>
@@ -94,19 +98,32 @@
 <span class="field-error" data-error-for="position"></span>
 </label>
 <div class="two">
-<label>Height, cm<input name="heightCm" type="number" inputmode="decimal" min="120" max="230" step="0.1" required>
+<label><span class="label-text">WhatsApp or phone <span class="req" aria-hidden="true">*</span></span><input type="tel" name="phone" autocomplete="tel" maxlength="60" required>
+<span class="field-error" data-error-for="phone"></span>
+</label>
+<label><span class="label-text">Email <span class="req" aria-hidden="true">*</span></span><input type="email" name="email" autocomplete="email" maxlength="160" required>
+<span class="field-error" data-error-for="email"></span>
+</label>
+</div>
+<button class="btn primary" type="button" data-step-next hidden>Continue — step 2 of 2</button>
+<p class="form-note" data-step-hint hidden>Takes about a minute. On the next step you add measurements, video and files.</p>
+</div>
+<div class="form-step" data-step="2">
+<p class="form-step-title" tabindex="-1">2. Profile details</p>
+<div class="two">
+<label><span class="label-text">Height, cm <span class="req req-player" aria-hidden="true">*</span></span><input name="heightCm" type="number" inputmode="decimal" min="120" max="230" step="0.1" required>
 <span class="field-error" data-error-for="heightCm"></span>
 </label>
-<label>Weight, kg<input name="weightKg" type="number" inputmode="decimal" min="35" max="180" step="0.1" required>
+<label><span class="label-text">Weight, kg <span class="req req-player" aria-hidden="true">*</span></span><input name="weightKg" type="number" inputmode="decimal" min="35" max="180" step="0.1" required>
 <span class="field-error" data-error-for="weightKg"></span>
 </label>
 </div>
-<label>Shot<select name="stickHand" required>
+<label><span class="label-text">Shot <span class="req req-player" aria-hidden="true">*</span></span><select name="stickHand" required>
 <option value="">Select</option>
 <option value="left">Left</option>
 <option value="right">Right</option>
 </select><span class="field-error" data-error-for="stickHand"></span></label>
-<label>Elite Prospects — optional<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="If you do not have a profile, leave this field blank">
+<label>Elite Prospects link — optional<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="If you do not have a profile, leave this field blank">
 <span class="field-error" data-error-for="eliteProspectsUrl"></span>
 </label>
 <fieldset>
@@ -117,19 +134,11 @@
 <input type="url" name="videoUrls" aria-label="Third video link" placeholder="Additional link">
 <span class="field-error" data-error-for="videoUrls"></span>
 </fieldset>
-<div class="two">
-<label>WhatsApp or phone<input type="tel" name="phone" autocomplete="tel" maxlength="60" required>
-<span class="field-error" data-error-for="phone"></span>
-</label>
-<label>Email<input type="email" name="email" autocomplete="email" maxlength="160" required>
-<span class="field-error" data-error-for="email"></span>
-</label>
-</div>
 <section class="parent-fields" id="parent-fields" hidden aria-hidden="true">
 <p class="form-section-title" id="parent-section-title">For a player under 18</p>
-<label>Parent or guardian name<input name="parentName" autocomplete="name" maxlength="120">
+<label><span class="label-text">Parent or guardian name <span class="req" aria-hidden="true">*</span></span><input name="parentName" autocomplete="name" maxlength="120">
 <span class="field-error" data-error-for="parentName"></span></label>
-<label>Parent's phone or email<input name="parentContact" maxlength="160">
+<label><span class="label-text">Parent's phone or email <span class="req" aria-hidden="true">*</span></span><input name="parentContact" maxlength="160">
 <span class="field-error" data-error-for="parentContact"></span></label>
 <label class="consent"><input type="checkbox" name="parentConsent" value="true"><span id="parent-consent-copy">I am the parent or legal guardian and consent to the processing of the player's data.</span></label>
 <span class="field-error" data-error-for="parentConsent"></span>
@@ -146,10 +155,12 @@
 <span class="field-error" data-error-for="dataConsent"></span>
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
+</div>
 <label class="honeypot" aria-hidden="true">Your website<input name="website" tabindex="-1" autocomplete="off"></label>
 <input type="hidden" name="locale" value="en"><input type="hidden" name="intent"><input type="hidden" name="sourcePage"><input type="hidden" name="utmSource"><input type="hidden" name="utmMedium"><input type="hidden" name="utmCampaign"><input type="hidden" name="utmContent"><input type="hidden" name="utmTerm"><input type="hidden" name="referrer"><input type="hidden" name="calcBand"><input type="hidden" name="calcScore"><input type="hidden" name="calcLeagues">
-<button class="btn primary" type="submit">Send application</button>
-<p class="form-note">By submitting you confirm the details are accurate. The first assessment is free and carries no obligation.</p>
+<button class="btn primary" type="submit" data-step-submit>Send application</button>
+<p class="form-note">We reply within 48 hours. The first assessment is free and carries no obligation. By submitting you confirm the details are accurate.</p>
+<button class="btn ghost form-back" type="button" data-step-back hidden>← Back to step 1</button>
 </form>
 </section>
 </main>

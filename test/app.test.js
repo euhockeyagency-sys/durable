@@ -829,6 +829,33 @@ test("application forms collect the fields required to assess age and eligibilit
   }
 });
 
+test("application form is split into two steps that still work as one page without JavaScript", () => {
+  const step1 = ["applicantType", "playerName", "birthYear", "citizenship", "currentClub", "position", "phone", "email"];
+  const step2 = ["heightCm", "weightKg", "stickHand", "eliteProspectsUrl", "videoUrls", "parentName", "parentContact", "parentConsent", "files", "message", "dataConsent"];
+  for (const locale of ["en", "ru"]) {
+    const html = fs.readFileSync(path.join(__dirname, "..", "public", locale, "contact.html"), "utf8");
+    const form = html.slice(html.indexOf('<form id="profile-form"'), html.indexOf("</form>"));
+    const first = form.slice(form.indexOf('data-step="1"'), form.indexOf('data-step="2"'));
+    const second = form.slice(form.indexOf('data-step="2"'), form.indexOf('class="honeypot"'));
+    for (const name of step1) assert.ok(first.includes(`name="${name}"`) && !second.includes(`name="${name}"`), `${locale}: ${name} belongs to step 1`);
+    for (const name of step2) assert.ok(second.includes(`name="${name}"`) && !first.includes(`name="${name}"`), `${locale}: ${name} belongs to step 2`);
+    assert.ok(second.includes('class="cf-turnstile"'));
+    // Step controls stay hidden until site.js enables them; the submit button does not.
+    assert.match(form, /<button[^>]*type="button"[^>]*data-step-next hidden>/);
+    assert.match(form, /<button[^>]*type="button"[^>]*data-step-back hidden>/);
+    assert.match(form, /id="form-progress"[^>]*hidden>/);
+    assert.match(form, /<button class="btn primary" type="submit" data-step-submit>/);
+    assert.equal((form.match(/type="submit"/g) || []).length, 1);
+    assert.match(form, /48/);
+  }
+  const source = fs.readFileSync(path.join(__dirname, "..", "public", "site.js"), "utf8");
+  assert.ok(source.includes("track('form_step2',funnelContext())"));
+  assert.ok(source.includes("form.noValidate=true"));
+  // The draft never includes files, consents or the Turnstile token.
+  const draftFields = source.match(/draftFields=\[([^\]]+)\]/)[1];
+  for (const name of ["files", "dataConsent", "parentConsent", "website", "cf-turnstile-response"]) assert.ok(!draftFields.includes(`'${name}'`), name);
+});
+
 test("limits the sixth attempt from one address", async () => {
   const app = createApp({ config: config(), services: serviceMock(), now: () => new Date("2026-07-18T12:00:00Z") });
   for (let attempt = 0; attempt < 5; attempt += 1) await request(app).post("/api/applications").expect(400);
