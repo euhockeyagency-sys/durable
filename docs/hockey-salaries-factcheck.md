@@ -43,3 +43,11 @@ terms beyond one Yle example. Added only what a primary document states.
 Not added: third-party Liiga ranges (playhockeyineurope.com 75,000–300,000 EUR;
 expert-zoom.com articles) — unofficial or unverifiable, not presented as fact.
 Title/meta of the EN and RU pages were retargeted to "SHL, Liiga, ICEHL, DEL2".
+
+## 2026-11-14 — country guides: "Чемпионат X по хоккею" answer paragraphs
+
+Titles/H1 of six RU guides (Czechia, Italy, Spain, Hungary, France, Netherlands)
+retargeted to "Чемпионат X по хоккею" (Search Console demand), and a one-paragraph
+answer added at the top of each RU+EN guide. No new facts: every statement is
+copied from the same page's already-verified sections (league names, levels, team
+counts, dates). Not a salary change; logged here for the audit trail only.
