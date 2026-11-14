@@ -25,6 +25,36 @@ module.exports = {
   ],
   "completed": [
 {
+  "id": "FI-JUNIOR-MOBILE-QA-20261114",
+  "status": "published_verified",
+  "date": "2026-11-14",
+  "files": [
+    "public/en/leagues/finland-junior-hockey.html",
+    "public/ru/ligi/finlyandiya-yuniorskij-hokkej.html",
+    "public/ru/contact.html"
+  ],
+  "urls": [
+    "/leagues/finland-junior-hockey",
+    "/ru/ligi/finlyandiya-yuniorskij-hokkej",
+    "/ru/contact"
+  ],
+  "changes": [
+    "Завершена мобильная проверка гайдов EN/RU на ширинах 320 и 390 px.",
+    "Найдена и исправлена растягивающая grid проблема в русской родительской форме при 320 px: локальный CSS max-width:600px задаёт min-width:0 детям contact-grid и адаптивный размер/перенос contact-title. Другие страницы и desktop CSS не менялись."
+  ],
+  "evidence": [
+    "Kernel Chromium: EN/RU таблицы на 390 px шириной 331 px, на 320 px — 261 px, совпадают с контейнерами; выходящих за экран CTA не найдено.",
+    "Мобильные меню EN/RU открываются и закрываются. Переходы из новых родительских CTA EN/RU выбирают parent_guardian; родительские поля видимы.",
+    "RU contact до исправления scrollWidth=347 при innerWidth=320; после исправления 305 при 320 и 375 при 390, выходящих за экран полей нет. Снимок экрана после исправления проверен визуально.",
+    "Повторное чтение RU contact: точное совпадение с отправленным HTML. verify_site /ru/contact: HTTP 200, localMatchesProduction=true, productionHeaderMatchesFile=true."
+  ],
+  "limits": [
+    "Проверка выполнена в Chromium с viewport телефона, не на физическом iPhone/Safari.",
+    "Реальная отправка/сохранение заявки, Core Web Vitals и итог GitHub Actions не проверены."
+  ],
+  "next_step": "Выбирать следующий контентный этап по свежим Search Console запросам; эффект правок Финляндии оценивать после публикации 14 ноября."
+},
+{
   "id": "FI-JUNIOR-FAMILY-ROUTE-20261114",
   "status": "published_verified",
   "date": "2026-11-14",
