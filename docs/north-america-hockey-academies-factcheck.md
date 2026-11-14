@@ -57,3 +57,17 @@ USA Hockey's NTDP is a fourth, distinct thing again: a free, elite, invitation-o
 ## Publication note
 
 Every dollar figure used on the public page must carry its academic year and source school inline (not just in a footnote), since these figures will read very differently to a family a year or two after publication if presented without a date. Do not compute or imply an "average" cost across schools — present the six US figures and two Canadian figures as individual, named, dated data points, not as a statistic. Do not state a cost or the "free" claim for NTDP without either sourcing it properly on the page as unconfirmed or leaving it as a structural description only. Do not use the uncredited "93 NHL draft picks" style aggregator figures.
+
+## 2026-11-15 — Boston Hockey Academy and American Hockey Academy / CATS
+
+Triggered by Search Console: "boston hockey academy cost", "american hockey
+academy tuition", "mountain kings academy tuition" (no figure on the page).
+
+| Programme | Figure added | Source | Verification |
+| --- | --- | --- | --- |
+| Boston Hockey Academy | USD 61,500 intl boarding / 58,500 US boarding / 41,500 commuter, tuition + housing, excl. meals and showcase airfare | Boston Globe, article dated August 2023 | Fetched 2026-11-15. Media report, historical; labelled as such on the page. No 2026/27 price on the programme's own pages. |
+| American Hockey Academy (school partner) | CATS Academy Boston 2026/27: USD 41,200 High School Diploma tuition; 34,000 full-time dormitory boarding; 500 registration fee; 2,500 deposit | catsacademyboston.com/admissions/fees/ | Fetched 2026-11-15. School rates only; no hockey-programme fee is published. |
+| Mountain Kings Academy | none | mountainkingshockey.com academy page | Still no published price; row unchanged. |
+
+Rejected: hockeybudget.com estimates (modelled, no family reports).
+Also fixed a literal "undefined" in the RU verification-date paragraph.
