@@ -25,6 +25,31 @@ module.exports = {
   ],
   "completed": [
 {
+  "id": "CONTACT-WHATSAPP-BUTTON-20261114",
+  "status": "published_verified",
+  "date": "2026-11-14",
+  "files": [
+    "public/en/contact.html",
+    "public/ru/contact.html"
+  ],
+  "urls": [
+    "/contact",
+    "/ru/contact"
+  ],
+  "changes": [
+    "В видимом блоке контактов убран текст номера телефона. EN кнопка Message on WhatsApp, RU Написать в WhatsApp; существующая wa.me ссылка сохранена."
+  ],
+  "evidence": [
+    "Оба сохранённых HTML совпадают с подготовленной правкой.",
+    "verify_site EN/RU HTTP 200, localMatchesProduction=true, productionHeaderMatchesFile=true.",
+    "Firecrawl maxAge=0 rawHtml: в тексте страницы нет номера, локализованные подписи кнопок есть, wa.me ссылка сохранена."
+  ],
+  "limits": [
+    "WhatsApp и отправка сообщений не запускались. Номер остаётся частью адреса wa.me, необходимого для работы ссылки."
+  ],
+  "next_step": "Продолжить согласованный выбор SEO-пакета; правка кнопки завершена."
+},
+{
   "id": "FI-JUNIOR-MOBILE-QA-20261114",
   "status": "published_verified",
   "date": "2026-11-14",
