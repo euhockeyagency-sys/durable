@@ -24,7 +24,13 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script defer src="/site.js?v=20261104-austria-labels">
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Контакты","item":"{{BASE_URL}}/contact"}]}</script></head>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Контакты","item":"{{BASE_URL}}/contact"}]}</script><style>
+@media (max-width:600px){
+  .contact-grid > *{min-width:0}
+  .contact-grid #contact-title{font-size:clamp(40px,12vw,58px);overflow-wrap:anywhere}
+}
+</style>
+</head>
 <body>
 <header class="header">
 <a class="brand" href="/">
