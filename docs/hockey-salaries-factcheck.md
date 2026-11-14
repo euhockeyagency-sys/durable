@@ -26,3 +26,20 @@ genuinely new entries (HockeyEttan, Erste Liga) after verification below.
 - No attempt was made to find a second independent source for HockeyEttan, Erste
   Liga or the new DEL2 range. If a club/agent disputes a figure, prefer the
   official league/union source over this page.
+
+## 2026-11-14 review — Liiga
+
+Triggered by Search Console: many "liiga salary" impressions, page had no Liiga
+terms beyond one Yle example. Added only what a primary document states.
+
+| Item | Figure / term | Source | Verification |
+| --- | --- | --- | --- |
+| Liiga — agreement | Dated 15 June 2026, valid for season 2026–27; no minimum salary or pay scale published | SM-liiga Oy / Suomen Jääkiekkoilijat ry convention PDF (sjry.fi) | Fetched 2026-11-14. Pay sits in the Player Contract and its "Player Fee" appendix (Appendix 1), not in the public text. Signature block in the copy is blank — page says so. |
+| Injury compensation | 85% of season salary, on a maximum of EUR 143,620 for 2026 | §3.4.2 | Verbatim quote confirmed on second fetch. |
+| Holiday pay | Salary in contract = total incl. holiday pay; 9% monthly (11.5% after 1 year) | §3.5.6 | Verbatim quote confirmed. |
+| Pension premium | 4.5% of salary during the season | §3.4.3 | Verbatim quote confirmed. |
+| May salaries | Clubs playing in May pay salaries until the last game | §4 | Quote confirmed. |
+
+Not added: third-party Liiga ranges (playhockeyineurope.com 75,000–300,000 EUR;
+expert-zoom.com articles) — unofficial or unverifiable, not presented as fact.
+Title/meta of the EN and RU pages were retargeted to "SHL, Liiga, ICEHL, DEL2".
