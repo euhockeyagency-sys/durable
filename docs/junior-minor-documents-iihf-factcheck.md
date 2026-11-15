@@ -87,3 +87,7 @@ Steps 2 to 4 can overlap in time, but a page must not say that one clears anothe
 6. Do not give the IIHF fee, Finland's processing time or any country's consent form not named above.
 
 `guides/documents-and-iihf-transfer-for-a-minor-hockey-player` (RU `dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf`), 15 October 2026, was built from this record. It gives no IIHF fee, no Finnish processing time and marks the planning order as EHA's sequence.
+
+## 2026-11-15 — "In short" block on the IIHF international transfer pair
+
+`guides/iihf-international-transfer` (RU `mezhdunarodnyj-transfer-iihf`): title, meta and H1 retargeted at "IIHF transfer regulations" / «что такое трансфер в хоккее»; an "In short" block added after the lead. Every statement in it comes from section 1 above (IIHF International Transfer Regulations, effective 6 October 2025): new MNA files the request (I.3.1), 7-day deadline (I.3.2), automatic approval if no answer (I.3.3), approval date (I.3.4), grounds for refusal (I.3.5). No fee amounts and no Online Transfer System Guidelines content are stated. The regulations were not re-downloaded on this date; the 2026-10-15 reading is the basis.
