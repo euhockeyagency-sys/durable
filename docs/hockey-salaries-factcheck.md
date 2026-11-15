@@ -55,3 +55,11 @@ counts, dates). Not a salary change; logged here for the audit trail only.
 ## 2026-11-15 — Germany: championship wording
 
 RU guide `hokkej-v-germanii`: title/H1 now "Чемпионат Германии по хоккею 2026/27 …". RU and EN Germany guides, and the DE page `eishockey-in-deutschland` (title, meta, H1, first H2: "Welche Eishockey-Ligen gibt es in Deutschland? Das Ligasystem"), were retargeted at search queries. The new short answer in the RU/EN guides uses only facts already on the same page (DEL top level; DEL2 14 clubs, 52 games; Oberliga 26 teams, 12 North and 14 South) from the 5 October 2026 check. No new facts and no new salary figures; the sources were not re-opened on this date.
+
+## 2026-11-15 — third-party estimates table (unofficial)
+
+Owner approved restoring third-party ranges as a separately labelled table on the salary guide (EN `hockey-player-salaries-in-europe`, RU `zarplaty-hokkeistov-v-evrope`, section `third-party-salary-estimates`).
+
+Source: playhockeyineurope.com, "How Much Do Hockey Players Make In Europe?", page dated 7 September 2026, read 15 November 2026. Ranges copied as listed, in EUR: ICEHL 40,000–150,000+; Alps Hockey League 18,000–45,000; DEL 90,000–350,000; DEL2 25,000–90,000; Oberliga 15,000–40,000 (imports); SHL 80,000–300,000+; Allsvenskan 18,000–48,000; Sweden Division 1 12,000–25,000 (high end, imports only); Liiga 75,000–300,000; Czech Extraliga 50,000–250,000+; Polish Hockey League 15,000–60,000+; Erste Liga (Hungary and Romania) 15,000–50,000; Metal Ligaen 20,000–39,000.
+
+Limits stated on the page: the source calls them approximate ranges from its network and player-reported figures; it does not say gross or net, annual or per season, or what is included. The Allsvenskan and Division 1 lines were mapped by EHA to HockeyAllsvenskan and Hockeyettan (the source uses its own names). Second source: icehockeyjobs.com listed ICEHL at USD 27,376–109,504 (August 2023 conversion), shown on the page as evidence that unofficial sources disagree. No official league or union scale was found for any of these leagues, so none is claimed. EHA's own ranges are not published; they need the owner's data from real offers.
