@@ -303,13 +303,13 @@ test("club tables cover multiple leagues, with an arena column only when data ex
   // Russian mirror resolves and localises the city.
   const swissRu = await request(app).get("/ru/ligi/shvejcariya-national-league").set("Host", "eha.test").expect(200);
   assert.match(swissRu.text, /Цюрих/);
-  // Multinational league (ICEHL) adds a Country column; localised in RU.
+  // ICEHL club information lives in the page templates; the legacy season table is deliberately not appended.
   const icehl = await request(app).get("/leagues/austria-ice-hockey-league").set("Host", "eha.test").expect(200);
-  assert.match(icehl.text, /<th>Country<\/th>/);
   assert.match(icehl.text, /Ljubljana/);
+  assert.doesNotMatch(icehl.text, /class="league-clubs"/);
   const icehlRu = await request(app).get("/ru/ligi/avstriya-ice-hockey-league").set("Host", "eha.test").expect(200);
-  assert.match(icehlRu.text, /<th>Страна<\/th>/);
   assert.match(icehlRu.text, /Словения/);
+  assert.doesNotMatch(icehlRu.text, /class="league-clubs"/);
   // Ligue Magnus has arenas but no capacities: Arena column shown, Capacity not.
   const magnus = await request(app).get("/leagues/france-ligue-magnus").set("Host", "eha.test").expect(200);
   assert.match(magnus.text, /<th>Arena<\/th>/);

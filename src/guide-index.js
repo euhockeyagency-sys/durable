@@ -44,6 +44,8 @@ const GUIDES = [
   { en: "find-a-hockey-club-in-europe", ru: "kak-najti-hokkejnyj-klub-v-evrope", cat: "process", title: { en: "Find a hockey club in Europe", ru: "Как найти хоккейный клуб в Европе" } },
   { en: "how-to-choose-a-hockey-league", ru: "kak-vybrat-ligu", cat: "process", title: { en: "How to assess a realistic league level", ru: "Как оценить реалистичный уровень лиги" } },
   { en: "hockey-resume-for-european-clubs", ru: "hokkejnoe-rezyume", cat: "process", title: { en: "Hockey resume for a European club", ru: "Хоккейное резюме для европейского клуба" } },
+  { en: "compare-two-hockey-team-offers", ru: "kak-sravnit-dva-predlozheniya-komand", cat: "process", title: { en: "Two team offers: how to choose", ru: "Два предложения команд: как выбрать" } },
+  { en: "after-u20-senior-hockey-in-europe", ru: "posle-u20-vzroslyj-hokkej-v-evrope", cat: "process", title: { en: "After U20: moving into senior hockey", ru: "После U20: переход во взрослый хоккей" } },
   { en: "hockey-video-for-clubs", ru: "video-dlya-kluba", cat: "process", title: { en: "Highlights or a full game?", ru: "Хайлайты или полная игра?" } },
   { en: "how-a-hockey-agent-works", ru: "kak-rabotaet-hokkejnyj-agent", cat: "process", title: { en: "How a hockey agent works", ru: "Как работает хоккейный агент" } },
   { en: "hockey-player-salaries-in-europe", ru: "zarplaty-hokkeistov-v-evrope", cat: "process", title: { en: "Hockey player salaries in Europe", ru: "Зарплаты хоккеистов в Европе" } },
