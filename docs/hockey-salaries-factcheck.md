@@ -51,3 +51,7 @@ retargeted to "Чемпионат X по хоккею" (Search Console demand), 
 answer added at the top of each RU+EN guide. No new facts: every statement is
 copied from the same page's already-verified sections (league names, levels, team
 counts, dates). Not a salary change; logged here for the audit trail only.
+
+## 2026-11-15 — Germany: championship wording
+
+RU guide `hokkej-v-germanii`: title/H1 now "Чемпионат Германии по хоккею 2026/27 …". RU and EN Germany guides, and the DE page `eishockey-in-deutschland` (title, meta, H1, first H2: "Welche Eishockey-Ligen gibt es in Deutschland? Das Ligasystem"), were retargeted at search queries. The new short answer in the RU/EN guides uses only facts already on the same page (DEL top level; DEL2 14 clubs, 52 games; Oberliga 26 teams, 12 North and 14 South) from the 5 October 2026 check. No new facts and no new salary figures; the sources were not re-opened on this date.
