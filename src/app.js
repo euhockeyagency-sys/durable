@@ -686,6 +686,12 @@ function securityHeaders(_req, res, next) {
   next();
 }
 
+// Theme boot: sets <html data-theme> before first paint so the page never
+// flashes the wrong palette. A saved choice (header toggle in site.js) wins;
+// otherwise the visitor's system preference decides. Runs inline and first in
+// <head> additions, ahead of the critical CSS that reads the attribute.
+const THEME_BOOT = `<meta name="color-scheme" content="dark light"><script>(function(){var t;try{t=localStorage.getItem("eha-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}document.documentElement.setAttribute("data-theme",t)})()</script>`;
+
 // Loader only — the ym(...,'init',...) call that actually starts tracking
 // lives in site.js, gated by the same cookie-consent choice GA4 uses below,
 // so both trackers are consent-gated the same way. No noscript pixel either,
@@ -912,7 +918,7 @@ function renderBody(data, extension, config, context) {
     const hubItemList = (logicalPath === "/european-leagues" || logicalPath === "/ligi-evropy")
       ? leaguesItemList(locale, baseUrl) : "";
     html = html.replace(`<link rel="stylesheet" href="${stylesheetHref}">`, deferredStylesheet)
-      .replace("</head>", `${fontPreload}${coverPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${hubItemList}${YANDEX_METRIKA}${GOOGLE_ANALYTICS}</head>`);
+      .replace("</head>", `${THEME_BOOT}${fontPreload}${coverPreload}<style data-critical-css>${criticalCss}</style>${social}${buildHreflang(logicalPath, locale, config)}${feed}${hubItemList}${YANDEX_METRIKA}${GOOGLE_ANALYTICS}</head>`);
   }
   // Accessibility: a keyboard/screen-reader "skip to content" link as the first
   // focusable element, jumping past the header straight to <main>. Injected

@@ -6,7 +6,54 @@ const T={
 const q=(s,c=document)=>c.querySelector(s),qa=(s,c=document)=>[...c.querySelectorAll(s)],header=q('.header'),menu=q('.menu'),nav=q('.header nav'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const setHeader=()=>header?.classList.toggle('scrolled',scrollY>18);setHeader();addEventListener('scroll',setHeader,{passive:true});
 menu?.setAttribute('aria-expanded','false');menu?.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',open);});qa('.header nav a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu?.setAttribute('aria-expanded','false')}));
-const reveal=qa('.split>*,.process article,.feature>* ,.markets>.kicker,.markets>h2,.market-grid article,.page-hero>*,.service-grid article,.audiences article,.checklist>*,.faq>*,.principles article,.contact-grid>*,.article-grid a,.article-hero>*,.article-body>*,.related>*');reveal.forEach((el,i)=>{el.classList.add('reveal');el.style.setProperty('--delay',`${i%4*75}ms`)});if(reduce)reveal.forEach(el=>el.classList.add('in-view'));else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -45px'});reveal.forEach(el=>io.observe(el));const show=()=>{let left=0;reveal.forEach(el=>{if(el.classList.contains('in-view'))return;if(el.getBoundingClientRect().top<innerHeight*.95){el.classList.add('in-view');io.unobserve(el)}else left++});return left};show();addEventListener('scroll',show,{passive:true});addEventListener('resize',show,{passive:true});setTimeout(()=>reveal.forEach(el=>el.classList.add('in-view')),6000)}
+const reveal=qa('.split>*,.process article,.feature>* ,.markets>.kicker,.markets>h2,.market-grid article,.page-hero>*,.service-grid article,.audiences article,.checklist>*,.faq>*,.principles article,.contact-grid>*,.article-grid a,.article-hero>*,.article-body>*,.related>*,.proof>div,.section-intro>*,.case-row a,.cases-link,.case-grid article,.country-card,.fact-grid article,.evidence-legend>div,.criteria-columns>div,.cta>*');reveal.forEach((el,i)=>{el.classList.add('reveal');el.style.setProperty('--delay',`${i%4*75}ms`)});if(reduce)reveal.forEach(el=>el.classList.add('in-view'));else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -45px'});reveal.forEach(el=>io.observe(el));const show=()=>{let left=0;reveal.forEach(el=>{if(el.classList.contains('in-view'))return;if(el.getBoundingClientRect().top<innerHeight*.95){el.classList.add('in-view');io.unobserve(el)}else left++});return left};show();addEventListener('scroll',show,{passive:true});addEventListener('resize',show,{passive:true});setTimeout(()=>reveal.forEach(el=>el.classList.add('in-view')),6000)}
+// Design system: theme toggle, header auto-hide, self-drawing hairlines, hero traces.
+// The first-paint theme is set by the inline boot script in <head> (src/app.js);
+// this only handles the visitor's later choice, stored under THEME_KEY.
+const root=document.documentElement,THEME_KEY='eha-theme';
+if(header){
+  const label=()=>{const light=root.dataset.theme==='light';return LANG==='ru'?(light?'Включить тёмную тему':'Включить светлую тему'):(light?'Switch to dark theme':'Switch to light theme')};
+  const tb=document.createElement('button');tb.type='button';tb.className='theme-toggle';
+  tb.innerHTML='<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><mask id="theme-cut"><rect width="24" height="24" fill="#fff"/><circle class="t-cut" cx="24" cy="10" r="7" fill="#000"/></mask><circle class="t-core" cx="12" cy="12" r="4.6" fill="currentColor" mask="url(#theme-cut)"/><path class="t-rays" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M12 2.2v2.3M12 19.5v2.3M2.2 12h2.3M19.5 12h2.3M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M5.1 18.9l1.6-1.6M17.3 6.7l1.6-1.6"/></svg>';
+  const sync=()=>{tb.setAttribute('aria-label',label());tb.title=label()};sync();
+  tb.addEventListener('click',()=>{
+    const next=root.dataset.theme==='light'?'dark':'light',apply=()=>{root.dataset.theme=next;try{localStorage.setItem(THEME_KEY,next)}catch(error){}sync()};
+    if(reduce||!document.startViewTransition){root.classList.add('theme-fade');apply();setTimeout(()=>root.classList.remove('theme-fade'),600);return}
+    const r=tb.getBoundingClientRect();root.style.setProperty('--tx',`${r.left+r.width/2}px`);root.style.setProperty('--ty',`${r.top+r.height/2}px`);
+    root.classList.add('theme-vt');document.startViewTransition(apply).finished.finally(()=>root.classList.remove('theme-vt'));
+  });
+  header.append(tb);
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change',event=>{let saved=null;try{saved=localStorage.getItem(THEME_KEY)}catch(error){}if(saved!=='light'&&saved!=='dark'){root.dataset.theme=event.matches?'light':'dark';sync()}});
+  let lastY=scrollY;addEventListener('scroll',()=>{const y=scrollY;header.classList.toggle('is-hidden',y>lastY&&y>420);lastY=y},{passive:true});
+}
+const draw=qa('.split,.page-hero,.related-head,.process,footer small,.country-guide>section:not(.sources-block):not(.country-action):not(.club-country-cta)');draw.forEach(el=>el.classList.add('draw'));
+if(reduce||!('IntersectionObserver' in window))draw.forEach(el=>el.classList.add('drawn'));
+else{const dio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('drawn');dio.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});draw.forEach(el=>dio.observe(el))}
+// Hero traces: thin puck paths drawn on a canvas over the photo. Desktop only,
+// off for reduced motion, and paused whenever the hero is out of view.
+const heroEl=q('.hero');
+if(heroEl&&!reduce&&matchMedia('(min-width: 851px)').matches){
+  const cv=document.createElement('canvas');cv.className='hero-fx';cv.setAttribute('aria-hidden','true');heroEl.prepend(cv);
+  const cx=cv.getContext('2d');let w=0,h=0,running=false,raf=0,traces=[];
+  const size=()=>{const d=Math.min(devicePixelRatio||1,2);w=cv.clientWidth;h=cv.clientHeight;cv.width=w*d;cv.height=h*d;cx.setTransform(d,0,0,d,0,0)};
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  const make=()=>{const y0=h*rnd(.3,.85),y1=h*rnd(.2,.8);return{p:[w*rnd(.36,.5),y0,w*rnd(.52,.66),y0-h*rnd(.05,.35),w*rnd(.7,.86),y1+h*rnd(.05,.3),w*1.02,y1],t:0,v:rnd(.0035,.0065),life:1}};
+  const at=(p,t)=>{const u=1-t;return[u*u*u*p[0]+3*u*u*t*p[2]+3*u*t*t*p[4]+t*t*t*p[6],u*u*u*p[1]+3*u*u*t*p[3]+3*u*t*t*p[5]+t*t*t*p[7]]};
+  const frame=()=>{
+    cx.clearRect(0,0,w,h);
+    traces.forEach(o=>{
+      if(o.t<1)o.t=Math.min(1,o.t+o.v);else o.life-=.012;
+      cx.beginPath();for(let i=0;i<=48;i++){const[x,y]=at(o.p,o.t*i/48);i?cx.lineTo(x,y):cx.moveTo(x,y)}
+      cx.strokeStyle=`rgba(241,241,239,${.3*Math.max(o.life,0)})`;cx.lineWidth=1;cx.stroke();
+      if(o.t<1){const[x,y]=at(o.p,o.t);cx.beginPath();cx.arc(x,y,2.5,0,6.3);cx.fillStyle='rgba(241,241,239,.9)';cx.fill()}
+    });
+    traces=traces.filter(o=>o.life>0);
+    if(traces.length<3&&Math.random()<.02)traces.push(make());
+    if(running)raf=requestAnimationFrame(frame);
+  };
+  size();addEventListener('resize',size,{passive:true});
+  new IntersectionObserver(es=>{const on=es[0].isIntersecting;if(on&&!running){running=true;raf=requestAnimationFrame(frame)}else if(!on){running=false;cancelAnimationFrame(raf)}}).observe(heroEl);
+}
 qa('[data-count]').forEach(el=>{const end=+el.dataset.count,suffix=el.dataset.suffix||'';el.textContent='0'+suffix;const run=()=>{if(reduce){el.textContent=end+suffix;return}const start=performance.now(),tick=t=>{const p=Math.min((t-start)/950,1),n=Math.round(end*(1-Math.pow(1-p,3)));el.textContent=n+suffix;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)};const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){run();io.disconnect()}},{threshold:.7});io.observe(el)});
 const wa=document.createElement('a');wa.className='whatsapp-float';wa.href='https://wa.me/375297957818';wa.target='_blank';wa.rel='noopener';wa.setAttribute('aria-label',T.waAria);wa.textContent='WA';document.body.append(wa);
 

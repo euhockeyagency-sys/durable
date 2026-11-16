@@ -196,6 +196,19 @@ test("rendered pages preload the locale-specific Oswald subset", async () => {
   assert.match(ru.text, /preload" as="font" href="\/assets\/fonts\/oswald-500-cyrillic\.woff2/);
 });
 
+test("rendered HTML sets the theme before first paint and ships both palettes", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const response = await request(app).get("/").set("Host", "eha.test");
+  const boot = response.text.indexOf('localStorage.getItem("eha-theme")');
+  const critical = response.text.indexOf("<style data-critical-css>");
+  assert.ok(boot > 0 && boot < critical, "theme boot script must run before the critical CSS");
+  assert.match(response.text, /<meta name="color-scheme" content="dark light">/);
+  assert.match(response.text, /:root\[data-theme="light"\]\{--bg:/);
+  const css = fs.readFileSync(path.join(__dirname, "..", "public", "styles.css"), "utf8");
+  assert.match(css, /:root\[data-theme="light"\],/);
+  assert.match(css, /\.theme-toggle\{/);
+});
+
 test("rendered HTML inlines critical CSS and defers the full stylesheet", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app).get("/").set("Host", "eha.test").expect(200);
