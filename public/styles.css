@@ -230,7 +230,7 @@
 :root[data-theme="light"] body:has(main>.hero:first-child) .header:not(.scrolled):not(:has(nav.open)){
   --bg:#0d0e10;--bg-rgb:13,14,16;--surface:#141618;--surface-2:#1b1d20;--field:#101113;--field-focus:#15171a;
   --text:#f1f1ef;--text-2:#c6c8cc;--muted:#959aa1;--muted-2:#7c8188;--fg-rgb:241,241,239;
-  --accent:#1687ff;--accent-rgb:22,135,255;--accent-hover:#3d9bff;--accent-text:#6cb4ff;--on-accent:#fff;
+  --accent:#1687ff;--accent-rgb:22,135,255;--accent-hover:#3195ff;--accent-text:#73b8ff;--on-accent:#fff;
   --ok:#63c995;--ok-text:#8fdcb4;--warn:#e0b45f;--warn-text:#efcb85;--danger:#e56f6f;--danger-text:#ffa4a4;--violet:#c78bff;--violet-text:#dfbdff;
   --line:rgba(var(--fg-rgb),.14);--line-2:rgba(var(--fg-rgb),.08);--line-strong:rgba(var(--fg-rgb),.42);
 }
@@ -238,7 +238,7 @@
 :root:not([data-theme="light"]) .cta{
   --bg:#f0f0ee;--bg-rgb:240,240,238;--surface:#f7f7f5;--surface-2:#fff;--field:#fff;--field-focus:#fff;
   --text:#0f1012;--text-2:#34373c;--muted:#5f636a;--muted-2:#696d74;--fg-rgb:15,16,18;
-  --accent:#0b6fe0;--accent-rgb:11,111,224;--accent-hover:#095cbd;--accent-text:#0a5cc0;--on-accent:#fff;
+  --accent:#1687ff;--accent-rgb:22,135,255;--accent-hover:#3195ff;--accent-text:#0a5cc0;--on-accent:#fff;
   --ok:#1f8a55;--ok-text:#17693f;--warn:#a87812;--warn-text:#7a5606;--danger:#c0392b;--danger-text:#a3271c;--violet:#7d3fc0;--violet-text:#5f2a9a;
   --line:rgba(var(--fg-rgb),.14);--line-2:rgba(var(--fg-rgb),.08);--line-strong:rgba(var(--fg-rgb),.42);
 }
