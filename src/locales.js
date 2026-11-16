@@ -147,6 +147,7 @@ const PAGES = [
   { ru: "/guides/moshennichestvo-v-hokkee-i-obrazec-oferty", en: "/guides/hockey-offer-scams-and-sample-offer" },
   { ru: "/guides/put-yunogo-hokkeista-po-vozrastam-ncaa-chl", en: "/guides/junior-hockey-age-pathway-ncaa-chl" },
   { ru: "/guides/shkola-i-obrazovanie-yunogo-hokkeista-za-rubezhom", en: "/guides/junior-hockey-school-and-education-abroad" },
+  { ru: "/guides/yuniorskij-hokkej-evropa-ili-severnaya-amerika", en: "/guides/junior-hockey-europe-vs-north-america" },
   { ru: "/guides/kalendar-yunogo-hokkeista-po-mesyacam", en: "/guides/junior-hockey-calendar-by-month" },
   { ru: "/guides/dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf", en: "/guides/documents-and-iihf-transfer-for-a-minor-hockey-player" },
   { ru: "/novosti", en: "/news" },

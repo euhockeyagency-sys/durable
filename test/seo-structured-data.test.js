@@ -86,3 +86,29 @@ test("URLs Search Console reported as 404 now 301 to the intended page, keeping 
   await request(app).get("/ru/contact").set("Host", "eha.test").expect(200);
   await request(app).get("/ru/cases").set("Host", "eha.test").expect(200);
 });
+
+test("pages do not repeat the same FAQ question or an identical section", () => {
+  const bad = [];
+  for (const file of files) {
+    const html = fs.readFileSync(file, "utf8");
+    const qs = [...html.matchAll(/<summary>([\s\S]*?)<\/summary>/g)].map((m) => plain(m[1]));
+    const dupQ = qs.filter((q, i) => qs.indexOf(q) !== i);
+    const secs = [...html.matchAll(/<section[^>]*>[\s\S]*?<\/section>/g)].map((m) => m[0]).filter((s) => s.length > 200);
+    const dupS = secs.filter((s, i) => secs.indexOf(s) !== i);
+    if (dupQ.length || dupS.length) bad.push(path.relative(PUBLIC, file));
+  }
+  assert.deepEqual(bad, []);
+});
+
+test("Europe vs North America parent guide renders in both languages with alternates", async () => {
+  const { createApp } = require("../src/app");
+  const request = require("supertest");
+  const base = "https://eha.test";
+  const app = createApp({ config: { port: 0, publicDir: PUBLIC, siteUrl: base, primaryUrl: base, primaryHost: "eha.test", enUrl: base, ruUrl: `${base}/ru`, ruPrefix: "/ru", legacyRuHost: "eha-legacy.test", contactEmail: "p@eha.test", privacyPolicyVersion: "t", turnstileSiteKey: "k", trustProxy: false, applicationConfigured: true, missingApplicationKeys: [], turnstileConfigured: true, telegramConfigured: true, emailConfigured: true }, services: {} });
+  const en = await request(app).get("/guides/junior-hockey-europe-vs-north-america").set("Host", "eha.test").expect(200);
+  assert.match(en.text, /hreflang="ru" href="https:\/\/eha\.test\/ru\/guides\/yuniorskij-hokkej-evropa-ili-severnaya-amerika"/);
+  assert.match(en.text, /<link rel="canonical" href="https:\/\/eha\.test\/guides\/junior-hockey-europe-vs-north-america">/);
+  const ru = await request(app).get("/ru/guides/yuniorskij-hokkej-evropa-ili-severnaya-amerika").set("Host", "eha.test").expect(200);
+  assert.match(ru.text, /href="\/ru\/yuniorskij-hokkej-roditelyam"/);
+  assert.doesNotMatch(ru.text, /\/ru\/ru\//);
+});
