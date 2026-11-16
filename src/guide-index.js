@@ -49,6 +49,7 @@ const GUIDES = [
   { en: "hockey-video-for-clubs", ru: "video-dlya-kluba", cat: "process", title: { en: "Highlights or a full game?", ru: "Хайлайты или полная игра?" } },
   { en: "how-a-hockey-agent-works", ru: "kak-rabotaet-hokkejnyj-agent", cat: "process", title: { en: "How a hockey agent works", ru: "Как работает хоккейный агент" } },
   { en: "hockey-player-salaries-in-europe", ru: "zarplaty-hokkeistov-v-evrope", cat: "process", title: { en: "Hockey player salaries in Europe", ru: "Зарплаты хоккеистов в Европе" } },
+  { en: "icehl-and-alps-hockey-league-salaries", ru: "zarplaty-icehl-i-alps-hockey-league", cat: "process", title: { en: "ICEHL and Alps Hockey League salaries", ru: "Зарплаты в ICEHL и Alps Hockey League" } },
   { en: "hockey-agent-in-germany", ru: "hokkejnyj-agent-v-germanii", cat: "process", title: { en: "Hockey agent in Germany", ru: "Хоккейный агент в Германии" } },
   { en: "hockey-agent-in-sweden", ru: "hokkejnyj-agent-v-shvecii", cat: "process", title: { en: "Hockey agent in Sweden", ru: "Хоккейный агент в Швеции" } },
   { en: "hockey-agent-in-finland", ru: "hokkejnyj-agent-v-finlyandii", cat: "process", title: { en: "Hockey agent in Finland", ru: "Хоккейный агент в Финляндии" } },

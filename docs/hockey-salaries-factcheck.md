@@ -63,3 +63,11 @@ Owner approved restoring third-party ranges as a separately labelled table on th
 Source: playhockeyineurope.com, "How Much Do Hockey Players Make In Europe?", page dated 7 September 2026, read 15 November 2026. Ranges copied as listed, in EUR: ICEHL 40,000–150,000+; Alps Hockey League 18,000–45,000; DEL 90,000–350,000; DEL2 25,000–90,000; Oberliga 15,000–40,000 (imports); SHL 80,000–300,000+; Allsvenskan 18,000–48,000; Sweden Division 1 12,000–25,000 (high end, imports only); Liiga 75,000–300,000; Czech Extraliga 50,000–250,000+; Polish Hockey League 15,000–60,000+; Erste Liga (Hungary and Romania) 15,000–50,000; Metal Ligaen 20,000–39,000.
 
 Limits stated on the page: the source calls them approximate ranges from its network and player-reported figures; it does not say gross or net, annual or per season, or what is included. The Allsvenskan and Division 1 lines were mapped by EHA to HockeyAllsvenskan and Hockeyettan (the source uses its own names). Second source: icehockeyjobs.com listed ICEHL at USD 27,376–109,504 (August 2023 conversion), shown on the page as evidence that unofficial sources disagree. No official league or union scale was found for any of these leagues, so none is claimed. EHA's own ranges are not published; they need the owner's data from real offers.
+
+## 2026-11-16 — ICEHL and Alps Hockey League: EHA approximate ranges
+
+New guide: EN `icehl-and-alps-hockey-league-salaries`, RU `zarplaty-icehl-i-alps-hockey-league`.
+
+Owner-supplied figures (chat, 16 November 2026), described by the owner as approximate salaries: ICEHL 35,000–150,000+ EUR per season; Alps Hockey League 15,000–45,000 EUR per season. They are published as "approximate EHA estimate", not as contract data. Gross or net was not specified, so the page tells the reader to confirm it with the club. No official league or union scale exists for either league; none is claimed.
+
+Other facts on the page are reused, not re-verified on this date: club and game counts (ICEHL 14 clubs, 52 games; Alps Hockey League 13 clubs, 36 games) from the league pages checked 3 November 2026; the playhockeyineurope.com comparison from the 15 November 2026 entry above. Editorial statements without a source (what drives a salary, typical contract extras, housing and meals as part of an Alps Hockey League package) are EHA guidance wording, not verified facts.

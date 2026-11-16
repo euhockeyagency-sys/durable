@@ -119,6 +119,7 @@ const PAGES = [
   { ru: "/guides/hokkej-v-horvatii", en: "/guides/hockey-in-croatia" },
   { ru: "/guides/hokkej-v-belgii", en: "/guides/hockey-in-belgium" },
   { ru: "/guides/zarplaty-hokkeistov-v-evrope", en: "/guides/hockey-player-salaries-in-europe" },
+  { ru: "/guides/zarplaty-icehl-i-alps-hockey-league", en: "/guides/icehl-and-alps-hockey-league-salaries" },
   { ru: "/ligi/italiya-ihl-serie-a", en: "/leagues/italy-ihl-serie-a" },
   { ru: "/ligi/italiya-italian-hockey-league", en: "/leagues/italy-italian-hockey-league" },
   { ru: "/ligi/latviya-1-liga", en: "/leagues/latvia-1-liga" },
