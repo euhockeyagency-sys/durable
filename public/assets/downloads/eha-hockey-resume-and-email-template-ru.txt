@@ -1,0 +1,76 @@
+European Hockey Agency — бесплатные шаблоны хоккейного резюме и письма
+Клубы в Европе ожидают английский, поэтому шаблоны на английском. Замените каждое поле в [скобках] своими проверенными данными. Не придумывайте достижения, рекомендации и интерес клубов.
+Не отправляйте при первом контакте копии паспорта, домашний адрес и номера документов.
+
+=== 1. RESUME ===
+
+HOCKEY RESUME — [Full name]
+
+Birth year: [YYYY]
+Position: [C / LW / RW / D / G]    Shoots / catches: [L / R]
+Height: [___ cm]    Weight: [___ kg]
+Citizenship: [every citizenship you hold]
+Current team: [Team], [League], [Country]
+
+Statistics (source: [Elite Prospects / league website], as of [date])
+Season    Team            League          GP   G   A   PTS   PIM
+[2025-26] [Team]          [League]        [ ]  [ ] [ ] [ ]   [ ]
+[2024-25] [Team]          [League]        [ ]  [ ] [ ] [ ]   [ ]
+[2023-24] [Team]          [League]        [ ]  [ ] [ ] [ ]   [ ]
+Goalies: replace G / A / PTS with GAA and SV%.
+
+Elite Prospects: [link, if you have a profile]
+Highlights: [link]
+Full game: [link] — [opponent, date], jersey [number, colour]
+
+Languages: [language — level]
+Goal: [e.g. a roster place in a professional or semi-professional league for 2027-28]
+Contract status: [free agent / under contract until ____]
+Available from: [date]
+
+Contact: [player or authorised representative — name, email, phone or WhatsApp]
+Players under 18: [parent or legal guardian — name, email, phone]
+
+=== 2. COVER EMAIL ===
+
+Subject: [Position], born [year], [current league] — profile for [season]
+
+Dear [name, or "Hockey Operations"],
+
+My name is [full name]. I am a [position] born in [year], shooting [left / right], [height] cm and [weight] kg. I currently play for [team] in [league].
+
+Last season I played [GP] games and recorded [G] goals and [A] assists (source: [Elite Prospects / league website]). I am looking for an opportunity for the [season] season and I am available from [date].
+
+Highlights: [link]
+Full game: [link]
+Elite Prospects: [link]
+My one-page resume is attached as a PDF.
+
+If my profile could fit your roster, I would be glad to send more video or answer any questions.
+
+Kind regards,
+[Full name]
+[Email] | [Phone or WhatsApp]
+[Players under 18: parent or guardian — name and contact]
+
+=== 3. SUBJECT LINE OPTIONS ===
+
+[Position], born [year] — [current league] — available for [season]
+[Full name] | [Position] | [League] | highlights and full game
+Import [position] available from [date] — resume and video
+
+=== 4. FOLLOW-UP (one, after one to two weeks) ===
+
+Subject: Re: [original subject]
+
+Dear [name],
+
+I am following up on my message of [date] about the [season] season. [Optional, only if true: since then I have played [GP] more games / added a new full-game video.]
+
+Updated video: [link]
+
+If you are not looking for a [position] at the moment, a short reply would help me plan. Thank you for your time.
+
+Kind regards,
+[Full name]
+[Email] | [Phone or WhatsApp]
