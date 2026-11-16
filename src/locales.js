@@ -188,6 +188,8 @@ function hostname(host) {
 // pairs — each locale has exactly one file and is not part of the EN/RU
 // language-switcher/hreflang machinery below, which is strictly binary.
 const EXTRA_LOCALE_PREFIXES = { sv: "/sv", fi: "/fi", cs: "/cs", de: "/de" };
+// Each bonus locale has one page; its bare prefix and /guides lead there.
+const EXTRA_LOCALE_PAGES = { sv: "/ishockey-i-sverige", fi: "/jaakiekko-suomessa", cs: "/hokej-v-cesku", de: "/eishockey-in-deutschland" };
 
 // Absolute base URL for a language. Always taken from configuration, never from
 // the request Host header, so an untrusted host can never be reflected back into
@@ -254,6 +256,15 @@ function resolveLocale(host, pathname, config) {
       }
       return { redirect: { status: 301, location: joinBase(config.ruUrl, rest) } };
     }
+    // /ru/en/... (an English URL glued onto the Russian prefix) and English-only
+    // slugs under /ru/ were reported as 404s by Search Console: send each to the
+    // page it was meant to be — the English page, or the Russian counterpart.
+    if (rest === "/en" || rest.startsWith("/en/")) {
+      return { redirect: { status: 301, location: joinBase(config.enUrl, rest.slice(3) || "/") } };
+    }
+    if (EN_ONLY.has(rest) && !RU_ONLY.has(rest)) {
+      return { redirect: { status: 301, location: joinBase(config.ruUrl, EN_TO_RU.get(rest)) } };
+    }
     return { locale: "ru", root: "ru", logicalPath: rest, urlPrefix: ruPrefix };
   }
 
@@ -264,6 +275,9 @@ function resolveLocale(host, pathname, config) {
   for (const [loc, prefix] of Object.entries(EXTRA_LOCALE_PREFIXES)) {
     if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
       const rest = pathname === prefix ? "/" : (pathname.slice(prefix.length) || "/");
+      if (rest === "/" || rest === "/guides" || rest === "/guides/") {
+        return { redirect: { status: 301, location: `${config.enUrl}${prefix}${EXTRA_LOCALE_PAGES[loc]}` } };
+      }
       return { locale: loc, root: loc, logicalPath: rest };
     }
   }

@@ -87,7 +87,7 @@
 <label>Взрослых сезонов отыграно
 <input type="number" id="c-seasons" min="0" max="25" placeholder="2" required>
 </label>
-<button class="btn primary" type="submit">Рассчитать уровень</button>
+<label>Ваша цель <select id="c-goal"> <option value="pro">Следующий профессиональный контракт</option> <option value="development">Развитие и игровое время юниора</option> <option value="study">Хоккей вместе с учёбой</option> </select> </label> <button class="btn primary" type="submit">Рассчитать уровень</button>
 </form>
 
 <div class="calc-result" id="calc-result" hidden role="status" aria-live="polite">
@@ -98,7 +98,7 @@
 <h3 class="calc-subtitle">Лиги для дальнейшего изучения</h3>
 <div class="calc-leagues" id="calc-leagues"></div>
 
-<h3 class="calc-subtitle">Что усилить в профиле</h3>
+<div><h3 class="calc-subtitle">Гиды по странам этих лиг</h3> <p class="calc-countries" id="calc-countries"></p></div> <h3 class="calc-subtitle">Что усилить в профиле</h3>
 <ul class="ticks" id="calc-tips"></ul>
 
 <p class="tool-note"><strong>Важно:</strong> это автоматический ориентир для планирования, а не скаутская оценка или обещание контракта. Наличие мест и интерес клубов из списка не подтверждены. Отправьте видео и статистику для первичного рассмотрения профиля; допуск и условия дальнейших услуг проверяются отдельно.</p>

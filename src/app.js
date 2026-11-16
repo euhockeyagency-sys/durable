@@ -80,6 +80,8 @@ const LEGACY_PATHS = new Map([
   ["/about-me", "/agent"],
   ["/clients", "/cases"],
   ["/contact-us", "/contact"],
+  ["/contacts", "/contact"],
+  ["/parents", "/junior-hockey-for-parents"],
   ["/hockey-agent-europe", "/"],
   ["/hockey-agent-in-europe", "/"],
   ["/blog", "/guides"],
@@ -791,7 +793,11 @@ function servePublic(req, res, config) {
   if (pathname.includes("\0")) return res.status(400).type("text").send("Bad request");
 
   const resolved = resolveLocale(req.headers.host, pathname, config);
-  if (resolved.redirect) return res.redirect(resolved.redirect.status, resolved.redirect.location);
+  if (resolved.redirect) {
+    // Keep ?utm_… and other query parameters across the 301.
+    const qi = req.originalUrl.indexOf("?");
+    return res.redirect(resolved.redirect.status, resolved.redirect.location + (qi >= 0 ? req.originalUrl.slice(qi) : ""));
+  }
   const { locale, root, logicalPath, urlPrefix = "" } = resolved;
 
   const requested = logicalPath === "/" ? "/index.html"
@@ -896,7 +902,7 @@ function renderBody(data, extension, config, context) {
     const pageUrl = joinUrl(baseUrl, logicalPath);
     const isArticle = logicalPath.startsWith("/guides/");
     const social = buildSocialTags(html, pageUrl, isArticle, coverFor(config, logicalPath, baseUrl), locale);
-    const fontSubset = locale === "ru" ? "oswald-500-cyrillic" : "oswald-500-latin";
+    const fontSubset = locale === "ru" ? "oswald-700-cyrillic" : "oswald-700-latin"; // h1–h3 render in Oswald 700
     const bodyFontSubset = locale === "ru" ? "manrope-400-cyrillic" : "manrope-400-latin";
     const fontPreload = `<link rel="preload" as="font" href="/assets/fonts/${fontSubset}.woff2" type="font/woff2" crossorigin><link rel="preload" as="font" href="/assets/fonts/${bodyFontSubset}.woff2" type="font/woff2" crossorigin>`;
     const isCoverPage = logicalPath.startsWith("/guides/") || logicalPath.startsWith("/leagues/") || logicalPath.startsWith("/ligi/");
@@ -910,8 +916,12 @@ function renderBody(data, extension, config, context) {
     }
     const criticalCss = readCriticalCss(config);
     const stylesheetHref = `/styles.css?v=${assetVersion(config, "styles.css")}`;
-    const deferredStylesheet = `<link rel="preload" href="${stylesheetHref}" as="style"><link rel="stylesheet" href="${stylesheetHref}" media="print" onload="this.media='all'">` +
-      `<noscript><link rel="stylesheet" href="${stylesheetHref}"></noscript>`;
+    // The full stylesheet is render-blocking on purpose. Loading it async
+    // (media="print" + onload) painted inner pages with only the critical
+    // header/hero rules and then re-laid them out: lab CLS 0.45–0.98 on
+    // /for-players and /level-calculator (Nov 2026). The inline critical CSS
+    // stays for the theme variables and the first-screen rules.
+    const deferredStylesheet = `<link rel="stylesheet" href="${stylesheetHref}">`;
     const feedTitle = locale === "en" ? "EHA — resources for players" : "EHA — материалы для хоккеистов";
     const feed = `<link rel="alternate" type="application/rss+xml" title="${feedTitle}" href="${baseUrl}/feed.xml">`;
     // The leagues hub lists its member pages as an ItemList, mirroring the

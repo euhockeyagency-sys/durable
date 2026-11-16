@@ -87,7 +87,7 @@
 <label>Pro seasons played
 <input type="number" id="c-seasons" min="0" max="25" placeholder="2" required>
 </label>
-<button class="btn primary" type="submit">Calculate level</button>
+<label>Your goal <select id="c-goal"> <option value="pro">Next professional contract</option> <option value="development">Junior development and ice time</option> <option value="study">Play while studying</option> </select> </label> <button class="btn primary" type="submit">Calculate level</button>
 </form>
 
 <div class="calc-result" id="calc-result" hidden role="status" aria-live="polite">
@@ -98,7 +98,7 @@
 <h3 class="calc-subtitle">Reference leagues to research</h3>
 <div class="calc-leagues" id="calc-leagues"></div>
 
-<h3 class="calc-subtitle">What to strengthen in your profile</h3>
+<div><h3 class="calc-subtitle">Country guides for these leagues</h3> <p class="calc-countries" id="calc-countries"></p></div> <h3 class="calc-subtitle">What to strengthen in your profile</h3>
 <ul class="ticks" id="calc-tips"></ul>
 
 <p class="tool-note"><strong>Important:</strong> this is an automated planning estimate, not a scouting assessment or a promise of a contract. We have not confirmed openings or interest from the listed clubs. Send your video and statistics for an initial profile review; eligibility and any further service terms must be checked separately.</p>

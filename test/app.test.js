@@ -192,8 +192,8 @@ test("rendered pages preload the locale-specific Oswald subset", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const en = await request(app).get("/").set("Host", "eha.test").expect(200);
   const ru = await request(app).get("/ru/").set("Host", "eha.test").expect(200);
-  assert.match(en.text, /preload" as="font" href="\/assets\/fonts\/oswald-500-latin\.woff2/);
-  assert.match(ru.text, /preload" as="font" href="\/assets\/fonts\/oswald-500-cyrillic\.woff2/);
+  assert.match(en.text, /preload" as="font" href="\/assets\/fonts\/oswald-700-latin\.woff2/);
+  assert.match(ru.text, /preload" as="font" href="\/assets\/fonts\/oswald-700-cyrillic\.woff2/);
 });
 
 test("rendered HTML sets the theme before first paint and ships both palettes", async () => {
@@ -211,12 +211,12 @@ test("rendered HTML sets the theme before first paint and ships both palettes", 
   assert.match(css, /\.theme-toggle\{/);
 });
 
-test("rendered HTML inlines critical CSS and defers the full stylesheet", async () => {
+test("rendered HTML inlines critical CSS and loads the full stylesheet without a layout-shifting async swap", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const response = await request(app).get("/").set("Host", "eha.test").expect(200);
   assert.match(response.text, /<style data-critical-css>/);
-  assert.match(response.text, /rel="preload" href="\/styles\.css\?v=[a-z0-9]+" as="style"/);
-  assert.match(response.text, /media="print" onload="this\.media='all'"/);
+  assert.match(response.text, /<link rel="stylesheet" href="\/styles\.css\?v=[a-z0-9]+">/);
+  assert.doesNotMatch(response.text, /media="print" onload=/);
 });
 
 test("the sitemap carries lastmod but no changefreq or priority noise", async () => {

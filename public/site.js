@@ -53,7 +53,7 @@ if(heroEl&&!reduce&&matchMedia('(min-width: 851px)').matches){
   size();addEventListener('resize',size,{passive:true});
   new IntersectionObserver(es=>{const on=es[0].isIntersecting;if(on&&!running){running=true;raf=requestAnimationFrame(frame)}else if(!on){running=false;cancelAnimationFrame(raf)}}).observe(heroEl);
 }
-qa('[data-count]').forEach(el=>{const end=+el.dataset.count,suffix=el.dataset.suffix||'';el.textContent='0'+suffix;const run=()=>{if(reduce){el.textContent=end+suffix;return}const start=performance.now(),tick=t=>{const p=Math.min((t-start)/950,1),n=Math.round(end*(1-Math.pow(1-p,3)));el.textContent=n+suffix;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)};const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){run();io.disconnect()}},{threshold:.7});io.observe(el)});
+qa('[data-count]').forEach(el=>{const end=+el.dataset.count,suffix=el.dataset.suffix||'';const run=()=>{if(reduce){el.textContent=end+suffix;return}el.textContent='0'+suffix;const start=performance.now(),tick=t=>{const p=Math.min((t-start)/950,1),n=Math.round(end*(1-Math.pow(1-p,3)));el.textContent=n+suffix;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)};if(el.getBoundingClientRect().top<innerHeight)return;const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){run();io.disconnect()}},{threshold:.7});io.observe(el)});
 const wa=document.createElement('a');wa.className='whatsapp-float';wa.href='https://wa.me/375297957818';wa.target='_blank';wa.rel='noopener';wa.setAttribute('aria-label',T.waAria);wa.textContent='WA';document.body.append(wa);
 
 // Consent Mode default (set server-side in <head>, before gtag.js loads) is
@@ -171,6 +171,8 @@ if(clubForm){
 // visitor accepts cookies, and GA4 runs in Consent Mode.
 const track=(name,params={})=>{try{if(typeof ym==='function')ym(110889446,'reachGoal',name,params);if(typeof gtag==='function')gtag('event',name,params)}catch(error){}};
 window.ehaTrack=track;
+// WhatsApp clicks (floating button and any wa.me link). Only the page path is sent, never the number or message text.
+document.addEventListener('click',event=>{const link=event.target.closest&&event.target.closest('a[href*="wa.me/"]');if(link)track('whatsapp_click',{entry_page:location.pathname,placement:link.classList.contains('whatsapp-float')?'float':'inline'})});
 const isParentHub=location.pathname.endsWith('/junior-hockey-for-parents')||location.pathname.endsWith('/yuniorskij-hokkej-roditelyam');
 if(isParentHub)track('parent_hub_view',{entry_page:location.pathname});
 document.addEventListener('click',event=>{const link=event.target.closest('a[href*="/contact?"]');if(!link)return;let url;try{url=new URL(link.href,location.href)}catch(error){return}const type=url.searchParams.get('type'),intent=url.searchParams.get('intent')||'';if(type==='parent'||type==='parent_guardian')track('parent_cta_click',{entry_page:location.pathname,intent,destination:url.pathname})});
