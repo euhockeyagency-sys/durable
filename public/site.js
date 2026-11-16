@@ -44,8 +44,8 @@ if(heroEl&&!reduce&&matchMedia('(min-width: 851px)').matches){
     traces.forEach(o=>{
       if(o.t<1)o.t=Math.min(1,o.t+o.v);else o.life-=.012;
       cx.beginPath();for(let i=0;i<=48;i++){const[x,y]=at(o.p,o.t*i/48);i?cx.lineTo(x,y):cx.moveTo(x,y)}
-      cx.strokeStyle=`rgba(241,241,239,${.3*Math.max(o.life,0)})`;cx.lineWidth=1;cx.stroke();
-      if(o.t<1){const[x,y]=at(o.p,o.t);cx.beginPath();cx.arc(x,y,2.5,0,6.3);cx.fillStyle='rgba(241,241,239,.9)';cx.fill()}
+      cx.strokeStyle=`rgba(247,251,255,${.3*Math.max(o.life,0)})`;cx.lineWidth=1;cx.stroke();
+      if(o.t<1){const[x,y]=at(o.p,o.t);cx.beginPath();cx.arc(x,y,2.5,0,6.3);cx.fillStyle='rgba(247,251,255,.9)';cx.fill()}
     });
     traces=traces.filter(o=>o.life>0);
     if(traces.length<3&&Math.random()<.02)traces.push(make());
