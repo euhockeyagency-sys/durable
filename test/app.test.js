@@ -203,6 +203,8 @@ test("rendered HTML sets the theme before first paint and ships both palettes", 
   const critical = response.text.indexOf("<style data-critical-css>");
   assert.ok(boot > 0 && boot < critical, "theme boot script must run before the critical CSS");
   assert.match(response.text, /<meta name="color-scheme" content="dark light">/);
+  assert.match(response.text, /setAttribute\("data-theme",t==="light"\?"light":"dark"\)/, "dark is the default; light only when saved");
+  assert.doesNotMatch(response.text, /prefers-color-scheme/, "the system preference must not pick the theme");
   assert.match(response.text, /:root\[data-theme="light"\]\{--bg:/);
   const css = fs.readFileSync(path.join(__dirname, "..", "public", "styles.css"), "utf8");
   assert.match(css, /:root\[data-theme="light"\],/);

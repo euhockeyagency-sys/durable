@@ -23,7 +23,6 @@ if(header){
     root.classList.add('theme-vt');document.startViewTransition(apply).finished.finally(()=>root.classList.remove('theme-vt'));
   });
   header.append(tb);
-  matchMedia('(prefers-color-scheme: light)').addEventListener('change',event=>{let saved=null;try{saved=localStorage.getItem(THEME_KEY)}catch(error){}if(saved!=='light'&&saved!=='dark'){root.dataset.theme=event.matches?'light':'dark';sync()}});
   let lastY=scrollY;addEventListener('scroll',()=>{const y=scrollY;header.classList.toggle('is-hidden',y>lastY&&y>420);lastY=y},{passive:true});
 }
 const draw=qa('.split,.page-hero,.related-head,.process,footer small,.country-guide>section:not(.sources-block):not(.country-action):not(.club-country-cta)');draw.forEach(el=>el.classList.add('draw'));

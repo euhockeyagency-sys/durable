@@ -687,10 +687,11 @@ function securityHeaders(_req, res, next) {
 }
 
 // Theme boot: sets <html data-theme> before first paint so the page never
-// flashes the wrong palette. A saved choice (header toggle in site.js) wins;
-// otherwise the visitor's system preference decides. Runs inline and first in
-// <head> additions, ahead of the critical CSS that reads the attribute.
-const THEME_BOOT = `<meta name="color-scheme" content="dark light"><script>(function(){var t;try{t=localStorage.getItem("eha-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}document.documentElement.setAttribute("data-theme",t)})()</script>`;
+// flashes the wrong palette. The site always opens in the dark navy theme;
+// light is used only when the visitor picked it with the header toggle in
+// site.js (owner's decision, 16 Nov 2026: the system preference is ignored).
+// Runs inline and first in <head> additions, ahead of the critical CSS.
+const THEME_BOOT = `<meta name="color-scheme" content="dark light"><script>(function(){var t;try{t=localStorage.getItem("eha-theme")}catch(e){}document.documentElement.setAttribute("data-theme",t==="light"?"light":"dark")})()</script>`;
 
 // Loader only — the ym(...,'init',...) call that actually starts tracking
 // lives in site.js, gated by the same cookie-consent choice GA4 uses below,
