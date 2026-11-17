@@ -15,6 +15,7 @@ const { guideIndex, relatedGuides } = require("./guide-index");
 const { leaguesItemList } = require("./league-list");
 const { createAdminAuth } = require("./admin-auth");
 const { MARKER: CLUB_NEEDS_MARKER, renderClubNeeds, clubNeedsLocaleFor } = require("./club-needs");
+const { stripExpired } = require("./expiring-content");
 
 const PRIORITY_LEAGUE_LINKS = [
   { en: "/leagues/czechia-maxa-liga", ru: "/ligi/chehiya-maxa-liga", title: { en: "Czechia Maxa liga", ru: "Чехия — Maxa liga" } },
@@ -876,6 +877,8 @@ function renderBody(data, extension, config, context) {
   // past validUntil), so an expired request disappears without a redeploy.
   const clubNeedsLocale = extension === ".html" ? clubNeedsLocaleFor(logicalPath, locale) : null;
   if (clubNeedsLocale) html = html.replace(CLUB_NEEDS_MARKER, renderClubNeeds(clubNeedsLocale, now ? now() : new Date()));
+  // Verified rules carry data-valid-until; expired ones are removed here.
+  if (extension === ".html") html = stripExpired(html, (now ? now() : new Date()).toISOString().slice(0, 10));
   if (extension === ".html" && urlPrefix) {
     html = prefixInternalLinks(html, urlPrefix);
   }
