@@ -1127,4 +1127,19 @@ h2{font-size:clamp(34px,10vw,48px)}
 .club-need-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0}
 /* About the agent: four principles in a 2×2 grid on wide screens */
 @media(min-width:851px){.principles.principles-4{grid-template-columns:repeat(2,1fr)}}
+/* Profile form: Elite Prospects import, stats rows, success feedback */
+.ep-block{display:grid;gap:8px}
+.ep-block #ep-lookup{justify-self:start}
+.ep-status{min-height:1em;color:var(--muted)}
+.ep-status.error{color:#ff8a8a}
+.stats-fieldset{display:grid;gap:8px}
+.stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.stats-row [hidden],.ep-block [hidden]{display:none!important}
+.stats-row [name="statsCompetition"],.stats-row [name="statsTeam"],.stats-row [name="statsLeague"]{grid-column:span 2}
+.inline-pair{display:grid;grid-template-columns:80px 1fr;gap:6px}
+.application-feedback{padding-top:24px;padding-bottom:56px}
+.application-feedback h2{font-size:clamp(22px,3vw,30px);margin:8px 0 14px}
+.application-feedback ul{margin:0 0 16px;padding-left:20px}
+.application-feedback li{margin-bottom:8px}
+@media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr}}
 /* === EHA DS:END === */

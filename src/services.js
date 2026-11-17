@@ -33,25 +33,25 @@ function createServices(config) {
       }
       return { success: Boolean(result.success), errorCodes: result["error-codes"] || [] };
     },
-    async sendEmail(application) {
+    async sendEmail(application, text) {
       if (!resend) throw new Error("Resend is not configured");
       const result = await resend.emails.send({
         from: config.resendFrom,
         to: [config.notificationEmail],
         replyTo: application.email || undefined,
         subject: `Новая заявка ${application.reference_code}: ${application.player_name}`,
-        text: notificationText(application)
+        text: text || notificationText(application)
       }, { idempotencyKey: `application-${application.id}-email` });
       if (result.error) throw new Error(result.error.message || "Resend delivery failed");
       return result.data?.id || null;
     },
-    async sendTelegram(application) {
+    async sendTelegram(application, text) {
       const response = await fetch(`https://api.telegram.org/bot${config.telegramBotToken}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: config.telegramChatId,
-          text: notificationText(application),
+          text: text || notificationText(application),
           disable_web_page_preview: true
         }),
         signal: AbortSignal.timeout(10_000)
@@ -59,6 +59,31 @@ function createServices(config) {
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.description || `Telegram returned ${response.status}`);
       return String(result.result?.message_id || "") || null;
+    },
+    // WhatsApp Business Cloud API (official). Business-initiated messages need
+    // an approved template; the card is shortened to template parameters and
+    // the full card stays in the admin panel. Off unless all WHATSAPP_* are set.
+    async sendWhatsApp(application) {
+      if (!config.whatsappConfigured) throw new Error("WhatsApp is not configured");
+      const category = application.assessment_override?.category || application.assessment?.category || "manual_review";
+      const response = await fetch(`https://graph.facebook.com/${config.whatsappApiVersion}/${config.whatsappPhoneNumberId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.whatsappToken}` },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: config.whatsappTo,
+          type: "template",
+          template: {
+            name: config.whatsappTemplate,
+            language: { code: config.whatsappTemplateLanguage },
+            components: [{ type: "body", parameters: [application.reference_code, application.player_name, category].map((t) => ({ type: "text", text: String(t).slice(0, 60) })) }]
+          }
+        }),
+        signal: AbortSignal.timeout(10_000)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error?.message || `WhatsApp returned ${response.status}`);
+      return result.messages?.[0]?.id || null;
     },
     async sendClubRequestEmail(clubRequest) {
       if (!resend) throw new Error("Resend is not configured");

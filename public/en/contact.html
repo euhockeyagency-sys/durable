@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="/styles.css">
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script defer src="/site.js">
-</script>
+</script><script defer src="/assets/intake-form.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Contact","item":"{{BASE_URL}}/contact"}]}</script></head>
 <body>
 <header class="header">
@@ -70,7 +70,7 @@
 <label><input type="radio" name="applicantType" value="parent_guardian"> Parent / guardian</label>
 </div>
 <small>Parent/guardian requests use the same assessment process, but some player measurements can be added later.</small>
-</fieldset>
+</fieldset><div class="ep-block"><label>Elite Prospects — optional<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="https://www.eliteprospects.com/player/…" maxlength="300"> <span class="field-error" data-error-for="eliteProspectsUrl"></span></label><button class="btn ghost" type="button" id="ep-lookup" hidden>Fill in from Elite Prospects</button><small id="ep-status" class="ep-status" role="status" aria-live="polite"></small><input type="hidden" name="epImport"><label class="consent" id="ep-confirm" hidden><input type="checkbox" name="dataConfirmed" value="true">I checked the prefilled data and corrected anything that was wrong.</label><span class="field-error" data-error-for="dataConfirmed"></span></div>
 <label>Full name<input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
@@ -78,7 +78,7 @@
 <label>Year of birth<input name="birthYear" type="number" inputmode="numeric" min="1966" max="2018" required>
 <span class="field-error" data-error-for="birthYear"></span>
 </label>
-<label>Citizenship<input name="citizenship" autocomplete="country-name" maxlength="100" required>
+<label>Citizenship (several: separate with commas)<input name="citizenship" autocomplete="country-name" maxlength="100" required>
 <span class="field-error" data-error-for="citizenship"></span>
 </label>
 </div>
@@ -101,14 +101,12 @@
 <span class="field-error" data-error-for="weightKg"></span>
 </label>
 </div>
-<label>Shot<select name="stickHand" required>
+<label id="stick-hand-label">Shot<select name="stickHand" required>
 <option value="">Select</option>
 <option value="left">Left</option>
 <option value="right">Right</option>
-</select><span class="field-error" data-error-for="stickHand"></span></label>
-<label>Elite Prospects — optional<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="If you do not have a profile, leave this field blank">
-<span class="field-error" data-error-for="eliteProspectsUrl"></span>
-</label>
+</select><span class="field-error" data-error-for="stickHand"></span></label><div class="two"><label>Date of birth — optional<input type="date" name="birthDate"><span class="field-error" data-error-for="birthDate"></span></label><label>Current level<select name="currentLevel"><option value="">Select</option><option value="top">Top division</option><option value="t2">Second division</option><option value="t3">Third division or lower</option><option value="junior">Junior league</option><option value="amateur">Amateur</option></select><span class="field-error" data-error-for="currentLevel"></span></label></div><label>Current league<input name="currentLeague" maxlength="120" placeholder="For example: Hockeyettan, U20 Elit"></label><fieldset class="stats-fieldset"><legend>Statistics — last seasons, optional</legend><small>One row per season and competition: regular season and playoffs separately. Season format 2025/26.</small><div class="stats-row"><input name="statsSeason" placeholder="2025/26" aria-label="Season" maxlength="9" inputmode="numeric"><input name="statsTeam" placeholder="Team" aria-label="Team" maxlength="160"><input name="statsLeague" placeholder="League" aria-label="League" maxlength="120"><select name="statsCompetition" aria-label="Competition type"><option value="regular">Regular season</option><option value="playoffs">Playoffs</option></select><input name="statsGp" type="number" min="0" max="120" placeholder="GP" aria-label="Games played"><input data-skater name="statsG" type="number" min="0" max="200" placeholder="G" aria-label="Goals"><input data-skater name="statsA" type="number" min="0" max="200" placeholder="A" aria-label="Assists"><input data-goalie hidden name="statsGaa" type="number" min="0" max="20" step="0.01" placeholder="GAA" aria-label="Goals against average"><input data-goalie hidden name="statsSvp" type="number" min="0" max="1" step="0.001" placeholder="SV% (0.915)" aria-label="Save percentage"></div><div class="stats-row"><input name="statsSeason" placeholder="2025/26" aria-label="Season" maxlength="9" inputmode="numeric"><input name="statsTeam" placeholder="Team" aria-label="Team" maxlength="160"><input name="statsLeague" placeholder="League" aria-label="League" maxlength="120"><select name="statsCompetition" aria-label="Competition type"><option value="regular">Regular season</option><option value="playoffs">Playoffs</option></select><input name="statsGp" type="number" min="0" max="120" placeholder="GP" aria-label="Games played"><input data-skater name="statsG" type="number" min="0" max="200" placeholder="G" aria-label="Goals"><input data-skater name="statsA" type="number" min="0" max="200" placeholder="A" aria-label="Assists"><input data-goalie hidden name="statsGaa" type="number" min="0" max="20" step="0.01" placeholder="GAA" aria-label="Goals against average"><input data-goalie hidden name="statsSvp" type="number" min="0" max="1" step="0.001" placeholder="SV% (0.915)" aria-label="Save percentage"></div><div class="stats-row"><input name="statsSeason" placeholder="2025/26" aria-label="Season" maxlength="9" inputmode="numeric"><input name="statsTeam" placeholder="Team" aria-label="Team" maxlength="160"><input name="statsLeague" placeholder="League" aria-label="League" maxlength="120"><select name="statsCompetition" aria-label="Competition type"><option value="regular">Regular season</option><option value="playoffs">Playoffs</option></select><input name="statsGp" type="number" min="0" max="120" placeholder="GP" aria-label="Games played"><input data-skater name="statsG" type="number" min="0" max="200" placeholder="G" aria-label="Goals"><input data-skater name="statsA" type="number" min="0" max="200" placeholder="A" aria-label="Assists"><input data-goalie hidden name="statsGaa" type="number" min="0" max="20" step="0.01" placeholder="GAA" aria-label="Goals against average"><input data-goalie hidden name="statsSvp" type="number" min="0" max="1" step="0.001" placeholder="SV% (0.915)" aria-label="Save percentage"></div><div class="stats-row"><input name="statsSeason" placeholder="2025/26" aria-label="Season" maxlength="9" inputmode="numeric"><input name="statsTeam" placeholder="Team" aria-label="Team" maxlength="160"><input name="statsLeague" placeholder="League" aria-label="League" maxlength="120"><select name="statsCompetition" aria-label="Competition type"><option value="regular">Regular season</option><option value="playoffs">Playoffs</option></select><input name="statsGp" type="number" min="0" max="120" placeholder="GP" aria-label="Games played"><input data-skater name="statsG" type="number" min="0" max="200" placeholder="G" aria-label="Goals"><input data-skater name="statsA" type="number" min="0" max="200" placeholder="A" aria-label="Assists"><input data-goalie hidden name="statsGaa" type="number" min="0" max="20" step="0.01" placeholder="GAA" aria-label="Goals against average"><input data-goalie hidden name="statsSvp" type="number" min="0" max="1" step="0.001" placeholder="SV% (0.915)" aria-label="Save percentage"></div><span class="field-error" data-error-for="stats"></span></fieldset>
+
 <fieldset>
 <legend>Video — as links, up to three</legend>
 <small>Upload your video to YouTube, Vimeo or Google Drive and paste the link — the form does not accept video files.</small>
@@ -116,7 +114,7 @@
 <input type="url" name="videoUrls" aria-label="Second video link" placeholder="Additional link">
 <input type="url" name="videoUrls" aria-label="Third video link" placeholder="Additional link">
 <span class="field-error" data-error-for="videoUrls"></span>
-</fieldset>
+</fieldset><div class="two"><label>Video type<select name="videoType"><option value="">Select</option><option value="full_game">Full game</option><option value="shifts">Complete shifts</option><option value="highlights">Highlights</option><option value="mixed">Mixed</option></select></label><label>Jersey number and colour<span class="inline-pair"><input name="jerseyNumber" maxlength="4" inputmode="numeric" placeholder="#" aria-label="Jersey number"><input name="jerseyColor" maxlength="40" placeholder="e.g. white" aria-label="Jersey colour"></span></label></div><label>Timecodes — optional<textarea name="timecodes" rows="2" maxlength="600" placeholder="For example: 1st period 03:15 — zone exit"></textarea></label>
 <div class="two">
 <label>WhatsApp or phone<input type="tel" name="phone" autocomplete="tel" maxlength="60" required>
 <span class="field-error" data-error-for="phone"></span>
@@ -134,7 +132,7 @@
 <label class="consent"><input type="checkbox" name="parentConsent" value="true"><span id="parent-consent-copy">I am the parent or legal guardian and consent to the processing of the player's data.</span></label>
 <span class="field-error" data-error-for="parentConsent"></span>
 </section>
-<label>Resume or photos
+<label>Your photo — optional<input type="file" name="photo" accept="image/jpeg,image/png,.jpg,.jpeg,.png"><small>JPG or PNG, counts towards the 3-file limit. Used for your player card.</small><span class="field-error" data-error-for="photo"></span></label><label>Goal for next season<textarea name="goals" rows="2" maxlength="600" placeholder="For example: senior hockey in Europe, a junior league, college in the USA"></textarea></label><div class="two"><label>Preferred countries<input name="preferredCountries" maxlength="200" placeholder="For example: Sweden, Germany"></label><label>Budget — only if you look for a paid programme<input name="budget" maxlength="120"></label></div><label>Your strengths, in your own words<textarea name="strengthsSelf" rows="2" maxlength="1000"></textarea></label><label>Resume or photos
 <input type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
 <small>You can add a resume and photos. Up to 3 files, each up to 5 MB, with a 10 MB total limit. Submit all video as YouTube, Vimeo or Google Drive links in the fields above. Do not send passport, medical or other sensitive documents.</small>
 <span class="field-error" data-error-for="files"></span>
@@ -142,7 +140,7 @@
 <label>Additional information<textarea name="message" rows="5" maxlength="3000" placeholder="Career goal, achievements and important details">
 </textarea>
 </label>
-<label class="consent"><input type="checkbox" name="dataConsent" value="true" required>I agree to the <a href="{{EN}}/privacy" target="_blank" rel="noopener">privacy policy</a> and the processing of my data for a profile assessment.</label>
+<label class="consent"><input type="checkbox" name="publicPhotoConsent" value="true">Optional: EHA may use my photo publicly (for example on the cases page).</label><label class="consent"><input type="checkbox" name="publicCaseConsent" value="true">Optional: EHA may publish my move as a case once it is confirmed.</label><p class="form-note">Citizenship is only used to choose suitable markets; it is not a passport, visa or work-permit check, and we do not ask for document scans at this stage.</p><label class="consent"><input type="checkbox" name="dataConsent" value="true" required>I agree to the <a href="{{EN}}/privacy" target="_blank" rel="noopener">privacy policy</a> and the processing of my data for a profile assessment.</label>
 <span class="field-error" data-error-for="dataConsent"></span>
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>

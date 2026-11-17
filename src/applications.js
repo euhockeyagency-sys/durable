@@ -2,6 +2,40 @@ const crypto = require("node:crypto");
 const path = require("node:path");
 const { validateApplication } = require("./validation");
 const { messages, normalizeLocale } = require("./messages");
+const { parseProfileExtras } = require("./intake/profile");
+const { assessApplication } = require("./intake/assessment");
+const { playerFeedback } = require("./intake/feedback");
+const { deliverApplication } = require("./intake/notification-queue");
+
+const DUPLICATE_WINDOW_MS = 24 * 60 * 60 * 1000;
+const sha256 = (value) => crypto.createHash("sha256").update(value).digest("hex");
+
+function payloadHashOf(value, extras) {
+  return sha256(JSON.stringify([
+    value.email, value.playerName.toLowerCase(), value.birthYear, value.position, value.currentClub,
+    value.eliteProspectsUrl, value.videoUrls, value.message, extras.birthDate, extras.profile.stats, extras.profile.goals
+  ]));
+}
+
+// Same content from the same player within 24 h is a repeat click, not a new
+// application: return the stored reference instead of creating a duplicate.
+async function findDuplicate(supabase, hash, now) {
+  try {
+    const since = new Date(now.getTime() - DUPLICATE_WINDOW_MS).toISOString();
+    const { data, error } = await supabase.from("applications").select("id, reference_code").eq("payload_hash", hash).gte("created_at", since).limit(1);
+    if (error) return null;
+    return (data || [])[0] || null;
+  } catch { return null; }
+}
+
+// A changed resubmission is a new application linked to the previous one.
+async function findPrevious(supabase, email, playerName) {
+  try {
+    const { data, error } = await supabase.from("applications").select("id, player_name").eq("email", email).order("created_at", { ascending: false }).limit(5);
+    if (error) return null;
+    return (data || []).find((r) => String(r.player_name || "").toLowerCase() === playerName.toLowerCase()) || null;
+  } catch { return null; }
+}
 
 function createReference(now, randomUUID = crypto.randomUUID) {
   const year = now.getUTCFullYear();
@@ -23,10 +57,15 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
       });
     }
 
-    const files = req.files || [];
-    const validation = validateApplication(req.body || {}, files, now(), Boolean(config.turnstileConfigured), locale);
-    if (!validation.ok) {
-      return res.status(400).json({ ok: false, code: "validation_error", errors: validation.errors });
+    const files = Array.isArray(req.files) ? req.files : ((req.files || {}).files || []);
+    const photo = Array.isArray(req.files) ? null : (((req.files || {}).photo || [])[0] || null);
+    // The photo counts towards the same limits (3 files, 10 MiB in total).
+    const validation = validateApplication(req.body || {}, photo ? [...files, photo] : files, now(), Boolean(config.turnstileConfigured), locale);
+    const extras = parseProfileExtras(req.body || {}, { birthYear: validation.value.birthYear, position: validation.value.position, locale });
+    const errors = { ...validation.errors, ...extras.errors };
+    if (photo && !["image/jpeg", "image/png"].includes(photo.mimetype)) errors.photo = locale === "en" ? "The photo must be a JPG or PNG image." : "Фото должно быть в формате JPG или PNG.";
+    if (Object.keys(errors).length) {
+      return res.status(400).json({ ok: false, code: "validation_error", errors });
     }
 
     // Captcha is optional: verified only when Turnstile keys are configured.
@@ -58,6 +97,12 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
     }
 
     const createdAt = now();
+    const payloadHash = payloadHashOf(validation.value, extras);
+    const duplicate = await findDuplicate(services.supabase, payloadHash, createdAt);
+    if (duplicate) {
+      return res.status(200).json({ ok: true, duplicate: true, applicationId: duplicate.id, reference: duplicate.reference_code });
+    }
+    const previous = validation.value.email ? await findPrevious(services.supabase, validation.value.email, validation.value.playerName) : null;
     const applicationId = randomUUID();
     const reference = createReference(createdAt, randomUUID);
     const retentionUntil = new Date(createdAt);
@@ -69,6 +114,24 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
       createdAt,
       retentionUntil,
       privacyPolicyVersion: config.privacyPolicyVersion
+    });
+    const assessment = assessApplication({
+      ...validation.value,
+      ...extras.profile,
+      birthDate: extras.birthDate,
+      currentLeague: extras.profile.currentLeague,
+      citizenships: extras.profile.citizenships
+    }, { now: createdAt });
+    const ownerToken = crypto.randomBytes(24).toString("base64url");
+    Object.assign(application, {
+      birth_date: extras.birthDate,
+      profile: extras.profile,
+      assessment,
+      public_photo_consent_at: extras.publicPhotoConsent ? createdAt.toISOString() : null,
+      public_case_consent_at: extras.publicCaseConsent ? createdAt.toISOString() : null,
+      owner_token_hash: sha256(ownerToken),
+      payload_hash: payloadHash,
+      previous_application_id: previous ? previous.id : null
     });
 
     const uploadedPaths = [];
@@ -93,6 +156,25 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
         });
         if (metadataError) throw metadataError;
       }
+      if (photo) {
+        const storagePath = `${applicationId}/photo-${randomUUID()}${photo.mimetype === "image/png" ? ".png" : ".jpg"}`;
+        const { error: uploadError } = await services.supabase.storage
+          .from("application-files")
+          .upload(storagePath, photo.buffer, { contentType: photo.mimetype, upsert: false });
+        if (uploadError) throw uploadError;
+        uploadedPaths.push(storagePath);
+        const { error: metadataError } = await services.supabase.from("application_files").insert({
+          application_id: applicationId,
+          storage_path: storagePath,
+          original_name: "player-photo" + (photo.mimetype === "image/png" ? ".png" : ".jpg"),
+          mime_type: photo.mimetype,
+          size_bytes: photo.size
+        });
+        if (metadataError) throw metadataError;
+        application.profile.photoPath = storagePath;
+        const { error: photoPatchError } = await services.supabase.from("applications").update({ profile: application.profile }).eq("id", applicationId);
+        if (photoPatchError) throw photoPatchError;
+      }
     } catch (error) {
       console.error("Application persistence failed", error.message);
       await rollbackApplication(services.supabase, applicationId, uploadedPaths);
@@ -108,11 +190,18 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
     // turn this response into a 500, otherwise the player retries and creates
     // a duplicate application.
     try {
-      await deliverNotifications(services, application, config);
+      await deliverApplication(services, application, config, { now });
     } catch (error) {
       console.error("Notification delivery failed after application was stored", error.message);
     }
-    return res.status(201).json({ ok: true, applicationId, reference });
+    // The player sees practical next steps, never the internal category.
+    return res.status(201).json({
+      ok: true,
+      applicationId,
+      reference,
+      ownerToken,
+      feedback: playerFeedback({ position: validation.value.position }, assessment, locale)
+    });
   };
 }
 
@@ -153,51 +242,6 @@ async function rollbackApplication(supabase, applicationId, paths) {
   } catch (rollbackError) {
     console.error("Application rollback failed", rollbackError.message);
   }
-}
-
-async function deliverNotifications(services, application, config = {}) {
-  // Only attempt channels that are configured — otherwise every submission
-  // would record a guaranteed failure in application_notifications.
-  const channels = [];
-  if (config.telegramConfigured !== false) channels.push(["telegram", () => services.sendTelegram(application)]);
-  if (config.emailConfigured !== false) channels.push(["email", () => services.sendEmail(application)]);
-  if (!channels.length) {
-    // The application is safe in the database, but nobody is being told about
-    // it. Loud on purpose: this is the failure mode that silently loses leads.
-    console.error(
-      `No notification channel is configured — application ${application.reference_code} was stored but not delivered. ` +
-      "Set RESEND_API_KEY (email) or TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (Telegram)."
-    );
-    return;
-  }
-  await Promise.all(channels.map(async ([channel, send]) => {
-    let providerId = null;
-    let status = "sent";
-    let errorMessage = null;
-    try {
-      providerId = await send();
-    } catch (error) {
-      status = "failed";
-      errorMessage = String(error.message || error).slice(0, 1000);
-      console.error(
-        `${channel} notification failed for ${application.reference_code} (application is stored, deliver it manually)`,
-        errorMessage
-      );
-    }
-    try {
-      const { error } = await services.supabase.from("application_notifications").insert({
-        application_id: application.id,
-        channel,
-        status,
-        provider_id: providerId,
-        error_message: errorMessage,
-        attempted_at: new Date().toISOString()
-      });
-      if (error) console.error(`${channel} notification audit failed`, error.message);
-    } catch (error) {
-      console.error(`${channel} notification audit failed`, error.message);
-    }
-  }));
 }
 
 function safeOriginalName(name) {

@@ -50,7 +50,7 @@ function loadConfig(env = process.env) {
     enUrl: primaryUrl,
     ruUrl: primaryUrl + ruPrefix,
     contactEmail,
-    privacyPolicyVersion: env.PRIVACY_POLICY_VERSION || "2026-07-18",
+    privacyPolicyVersion: env.PRIVACY_POLICY_VERSION || "2026-11-18",
     supabaseUrl: env.SUPABASE_URL || "",
     supabaseSecretKey: env.SUPABASE_SECRET_KEY || "",
     turnstileSiteKey: env.TURNSTILE_SITE_KEY || "",
@@ -76,6 +76,19 @@ function loadConfig(env = process.env) {
     // The admin view is protected by a password login (src/admin-auth.js). A
     // short or missing password disables the route entirely.
     adminPassword: env.ADMIN_PASSWORD || "",
+    // Intake automation. Elite Prospects data only via the official, licensed
+    // API (organisation key); without it the form is filled in manually.
+    eliteProspectsApiKey: env.EP_API_KEY || "",
+    eliteProspectsConfigured: Boolean(env.EP_API_KEY),
+    // "sandbox": record notifications as they would be sent, contact nobody.
+    notifyMode: env.NOTIFY_MODE === "sandbox" ? "sandbox" : "live",
+    whatsappToken: env.WHATSAPP_TOKEN || "",
+    whatsappPhoneNumberId: env.WHATSAPP_PHONE_NUMBER_ID || "",
+    whatsappTo: env.WHATSAPP_TO || "",
+    whatsappTemplate: env.WHATSAPP_TEMPLATE || "",
+    whatsappTemplateLanguage: env.WHATSAPP_TEMPLATE_LANGUAGE || "ru",
+    whatsappApiVersion: env.WHATSAPP_API_VERSION || "v21.0",
+    whatsappConfigured: Boolean(env.WHATSAPP_TOKEN && env.WHATSAPP_PHONE_NUMBER_ID && env.WHATSAPP_TO && env.WHATSAPP_TEMPLATE),
     adminConfigured: Boolean(env.ADMIN_PASSWORD && env.ADMIN_PASSWORD.length >= 12) && missingApplicationKeys.length === 0
   };
 }

@@ -175,7 +175,7 @@ if(form){
       const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}}),data=await response.json().catch(()=>({}));
       if(!response.ok){showErrors(data.errors);status.textContent=data.message||T.checkForm;status.classList.add('error');if(window.turnstile)turnstile.reset();return}
       const localePrefix=location.pathname.startsWith('/ru/')||location.pathname==='/ru'?'/ru':location.pathname.startsWith('/en/')||location.pathname==='/en'?'/en':'';
-      if(!data.ok||!/^EHA-\d{6}-[A-F0-9]{6}$/.test(data.reference||''))throw new Error('unconfirmed_submission');
+      if(!data.ok||!/^EHA-\d{6}-[A-F0-9]{6}$/.test(data.reference||''))throw new Error('unconfirmed_submission');form.dispatchEvent(new CustomEvent('eha:submitted',{detail:{reference:data.reference,ownerToken:data.ownerToken||null,feedback:data.feedback||null,duplicate:Boolean(data.duplicate)}}));
       try{sessionStorage.setItem('eha-last-funnel',JSON.stringify(funnelContext()))}catch(error){}
       try{sessionStorage.removeItem('eha-application-draft')}catch(error){}
       if(window.turnstile)turnstile.reset();location.assign(`${localePrefix}/application-success?ref=${encodeURIComponent(data.reference)}`);

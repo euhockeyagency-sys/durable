@@ -15,6 +15,8 @@ const { guideIndex, relatedGuides } = require("./guide-index");
 const { leaguesItemList } = require("./league-list");
 const { createAdminAuth } = require("./admin-auth");
 const { MARKER: CLUB_NEEDS_MARKER, renderClubNeeds, clubNeedsLocaleFor } = require("./club-needs");
+const { registerPublicIntakeRoutes, registerAdminIntakeRoutes } = require("./intake/routes");
+const { CATEGORY_LABELS, effectiveCategory } = require("./intake/assessment");
 
 const PRIORITY_LEAGUE_LINKS = [
   { en: "/leagues/czechia-maxa-liga", ru: "/ligi/chehiya-maxa-liga", title: { en: "Czechia Maxa liga", ru: "Чехия — Maxa liga" } },
@@ -135,7 +137,7 @@ function createApp({ config, services, now, randomUUID } = {}) {
     limits: {
       files: 3,
       fileSize: 5 * 1024 * 1024,
-      fields: 40,
+      fields: 120,
       fieldSize: 20 * 1024
     }
   });
@@ -158,12 +160,13 @@ function createApp({ config, services, now, randomUUID } = {}) {
       }
     });
   });
-  app.post("/api/applications", limiter, upload.array("files", 3), createApplicationHandler({
+  app.post("/api/applications", limiter, upload.fields([{ name: "files", maxCount: 3 }, { name: "photo", maxCount: 1 }]), createApplicationHandler({
     config,
     services: appServices,
     now,
     randomUUID
   }));
+  registerPublicIntakeRoutes(app, { config, services: appServices, now: now || (() => new Date()), createRateLimiter });
   app.all("/api/applications", (_req, res) => {
     res.set("Allow", "POST").status(405).json({ ok: false, code: "method_not_allowed" });
   });
@@ -225,7 +228,7 @@ function createApp({ config, services, now, randomUUID } = {}) {
       const filters = parseAdminFilters(req.query);
       try {
         const [allApplications, clubRequests] = await Promise.all([
-          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at"),
+          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at, assessment, assessment_override, review_requested_at"),
           fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, created_at")
         ]);
         const today = adminToday(now);
@@ -242,6 +245,7 @@ function createApp({ config, services, now, randomUUID } = {}) {
         res.status(503).type("text").send("Could not load admin data.");
       }
     });
+    registerAdminIntakeRoutes(app, { adminPath, requireAdmin, auth, config, services: appServices, now: now || (() => new Date()) });
     app.post(`${adminPath}/followup`, requireAdmin, express.urlencoded({ extended: false, limit: "8kb" }), async (req, res) => {
       const body = req.body || {};
       if (!auth.validCsrf(req.adminSession, body.csrf)) return res.status(403).type("text").send("Invalid request.");
@@ -629,7 +633,12 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
       `<button type="submit">Save</button></form>`;
   };
   const sourceCell = (source) => { const s = source || {}; const bits = []; if (s.applicant_type) bits.push(`<b>${htmlEscape(s.applicant_type)}</b>`); if (s.intent) bits.push(`intent: ${htmlEscape(s.intent)}`); if (s.source_page) bits.push(`page: ${htmlEscape(s.source_page)}`); if (s.utm_source) bits.push(`utm: ${htmlEscape(s.utm_source)}${s.utm_campaign ? ` / ${htmlEscape(s.utm_campaign)}` : ""}`); if (!s.source_page && s.referrer) bits.push(`ref: ${htmlEscape(s.referrer)}`); return bits.join("<br>"); };
-  const applicationRows = applications.map((a) => `<tr><td>${htmlEscape(a.reference_code)}</td>` +
+  const categoryCell = (a) => {
+    if (!a.assessment && !a.assessment_override) return "";
+    const cat = effectiveCategory(a.assessment, a.assessment_override);
+    return `${htmlEscape(CATEGORY_LABELS[cat] || cat)}${a.assessment_override ? " <small>(override)</small>" : ""}${a.review_requested_at ? "<br><small>review requested</small>" : ""}`;
+  };
+  const applicationRows = applications.map((a) => `<tr><td><a href="${adminPath}/applications/${htmlEscape(a.id)}">${htmlEscape(a.reference_code)}</a><br><small>${categoryCell(a)}</small></td>` +
     `<td>${htmlEscape(a.player_name)}<br><small>${htmlEscape(a.birth_year)}${a.is_minor ? " (minor)" : ""} · ${htmlEscape(a.position)}</small></td>` +
     `<td>${htmlEscape(a.current_club)}</td>` +
     `<td>${htmlEscape(a.phone)}${a.email ? `<br>${htmlEscape(a.email)}` : ""}</td>` +
@@ -714,7 +723,7 @@ let assetVersions = null;
 function assetVersion(config, file) {
   if (!assetVersions) {
     assetVersions = {};
-    for (const name of ["styles.css", "site.js", "assets/level-calculator.js", "assets/cost-calculator.js", "assets/leagues.ru.js", "assets/leagues.en.js"]) {
+    for (const name of ["styles.css", "site.js", "assets/level-calculator.js", "assets/cost-calculator.js", "assets/intake-form.js", "assets/leagues.ru.js", "assets/leagues.en.js"]) {
       try { assetVersions[name] = Math.round(fs.statSync(path.join(config.publicDir, name)).mtimeMs).toString(36); }
       catch { assetVersions[name] = "0"; }
     }
@@ -900,6 +909,7 @@ function renderBody(data, extension, config, context) {
       .replaceAll('src="/site.js"', `src="/site.js?v=${assetVersion(config, "site.js")}"`)
       .replaceAll('src="/assets/level-calculator.js"', `src="/assets/level-calculator.js?v=${assetVersion(config, "assets/level-calculator.js")}"`)
       .replaceAll('src="/assets/cost-calculator.js"', `src="/assets/cost-calculator.js?v=${assetVersion(config, "assets/cost-calculator.js")}"`)
+      .replaceAll('src="/assets/intake-form.js"', `src="/assets/intake-form.js?v=${assetVersion(config, "assets/intake-form.js")}"`)
       .replaceAll('src="/assets/leagues.ru.js"', `src="/assets/leagues.ru.js?v=${assetVersion(config, "assets/leagues.ru.js")}"`)
       .replaceAll('src="/assets/leagues.en.js"', `src="/assets/leagues.en.js?v=${assetVersion(config, "assets/leagues.en.js")}"`);
   }

@@ -22,8 +22,8 @@
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="/styles.css">
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-<script defer src="/site.js?v=20261104-austria-labels">
-</script>
+<script defer src="/site.js">
+</script><script defer src="/assets/intake-form.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Контакты","item":"{{BASE_URL}}/contact"}]}</script><style>
 @media (max-width:600px){
   .contact-grid > *{min-width:0}
@@ -76,7 +76,7 @@
 <label><input type="radio" name="applicantType" value="parent_guardian"> Родитель / представитель</label>
 </div>
 <small>Для обращения родителя используется та же первичная оценка, но часть параметров игрока можно добавить позже.</small>
-</fieldset>
+</fieldset><div class="ep-block"><label>Elite Prospects — необязательно<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="https://www.eliteprospects.com/player/…" maxlength="300"> <span class="field-error" data-error-for="eliteProspectsUrl"></span></label><button class="btn ghost" type="button" id="ep-lookup" hidden>Заполнить из Elite Prospects</button><small id="ep-status" class="ep-status" role="status" aria-live="polite"></small><input type="hidden" name="epImport"><label class="consent" id="ep-confirm" hidden><input type="checkbox" name="dataConfirmed" value="true">Я проверил заполненные данные и исправил неточности.</label><span class="field-error" data-error-for="dataConfirmed"></span></div>
 <label>Имя и фамилия<input name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
@@ -84,7 +84,7 @@
 <label>Год рождения<input name="birthYear" type="number" inputmode="numeric" min="1966" max="2018" required>
 <span class="field-error" data-error-for="birthYear"></span>
 </label>
-<label>Гражданство<input name="citizenship" autocomplete="country-name" maxlength="100" required>
+<label>Гражданство (несколько — через запятую)<input name="citizenship" autocomplete="country-name" maxlength="100" required>
 <span class="field-error" data-error-for="citizenship"></span>
 </label>
 </div>
@@ -107,14 +107,12 @@
 <span class="field-error" data-error-for="weightKg"></span>
 </label>
 </div>
-<label>Хват<select name="stickHand" required>
+<label id="stick-hand-label">Хват<select name="stickHand" required>
 <option value="">Выберите</option>
 <option value="left">Левый</option>
 <option value="right">Правый</option>
-</select><span class="field-error" data-error-for="stickHand"></span></label>
-<label>Elite Prospects — необязательно<input type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="Если профиля нет, оставьте поле пустым">
-<span class="field-error" data-error-for="eliteProspectsUrl"></span>
-</label>
+</select><span class="field-error" data-error-for="stickHand"></span></label><div class="two"><label>Дата рождения — по желанию<input type="date" name="birthDate"><span class="field-error" data-error-for="birthDate"></span></label><label>Текущий уровень<select name="currentLevel"><option value="">Выберите</option><option value="top">Высший дивизион</option><option value="t2">Второй дивизион</option><option value="t3">Третий дивизион и ниже</option><option value="junior">Юниорская лига</option><option value="amateur">Любительский уровень</option></select><span class="field-error" data-error-for="currentLevel"></span></label></div><label>Текущая лига<input name="currentLeague" maxlength="120" placeholder="Например: Hockeyettan, МХЛ"></label><fieldset class="stats-fieldset"><legend>Статистика за последние сезоны — по желанию</legend><small>Одна строка — один сезон и один турнир: регулярный сезон и плей-офф отдельно. Сезон в формате 2025/26.</small><div class="stats-row"><input name="statsSeason" placeholder="2025/26" aria-label="Сезон" maxlength="9" inputmode="numeric"><input name="statsTeam" placeholder="Команда" aria-label="Команда" maxlength="160"><input name="statsLeague" placeholder="Лига" aria-label="Лига" maxlength="120"><select name="statsCompetition" aria-label="Тип турнира"><option value="regular">Регулярный сезон</option><option value="playoffs">Плей-офф</option></select><input name="statsGp" type="number" min="0" max="120" placeholder="И" aria-label="Игры"><input data-skater name="statsG" type="number" min="0" max="200" placeholder="Г" aria-label="Голы"><input data-skater name="statsA" type="number" min="0" max="200" placeholder="П" aria-label="Передачи"><input data-goalie hidden name="statsGaa" type="number" min="0" max="20" step="0.01" placeholder="КН" aria-label="Коэффициент надёжности"><input data-goalie hidden name="statsSvp" type="number" min="0" max="1" step="0.001" placeholder="%ОБ (0.915)" aria-label="Процент отражённых бросков"></div><div class="stats-row"><input name="statsSeason" placeholder="2025/26" aria-label="Сезон" maxlength="9" inputmode="numeric"><input name="statsTeam" placeholder="Команда" aria-label="Команда" maxlength="160"><input name="statsLeague" placeholder="Лига" aria-label="Лига" maxlength="120"><select name="statsCompetition" aria-label="Тип турнира"><option value="regular">Регулярный сезон</option><option value="playoffs">Плей-офф</option></select><input name="statsGp" type="number" min="0" max="120" placeholder="И" aria-label="Игры"><input data-skater name="statsG" type="number" min="0" max="200" placeholder="Г" aria-label="Голы"><input data-skater name="statsA" type="number" min="0" max="200" placeholder="П" aria-label="Передачи"><input data-goalie hidden name="statsGaa" type="number" min="0" max="20" step="0.01" placeholder="КН" aria-label="Коэффициент надёжности"><input data-goalie hidden name="statsSvp" type="number" min="0" max="1" step="0.001" placeholder="%ОБ (0.915)" aria-label="Процент отражённых бросков"></div><div class="stats-row"><input name="statsSeason" placeholder="2025/26" aria-label="Сезон" maxlength="9" inputmode="numeric"><input name="statsTeam" placeholder="Команда" aria-label="Команда" maxlength="160"><input name="statsLeague" placeholder="Лига" aria-label="Лига" maxlength="120"><select name="statsCompetition" aria-label="Тип турнира"><option value="regular">Регулярный сезон</option><option value="playoffs">Плей-офф</option></select><input name="statsGp" type="number" min="0" max="120" placeholder="И" aria-label="Игры"><input data-skater name="statsG" type="number" min="0" max="200" placeholder="Г" aria-label="Голы"><input data-skater name="statsA" type="number" min="0" max="200" placeholder="П" aria-label="Передачи"><input data-goalie hidden name="statsGaa" type="number" min="0" max="20" step="0.01" placeholder="КН" aria-label="Коэффициент надёжности"><input data-goalie hidden name="statsSvp" type="number" min="0" max="1" step="0.001" placeholder="%ОБ (0.915)" aria-label="Процент отражённых бросков"></div><div class="stats-row"><input name="statsSeason" placeholder="2025/26" aria-label="Сезон" maxlength="9" inputmode="numeric"><input name="statsTeam" placeholder="Команда" aria-label="Команда" maxlength="160"><input name="statsLeague" placeholder="Лига" aria-label="Лига" maxlength="120"><select name="statsCompetition" aria-label="Тип турнира"><option value="regular">Регулярный сезон</option><option value="playoffs">Плей-офф</option></select><input name="statsGp" type="number" min="0" max="120" placeholder="И" aria-label="Игры"><input data-skater name="statsG" type="number" min="0" max="200" placeholder="Г" aria-label="Голы"><input data-skater name="statsA" type="number" min="0" max="200" placeholder="П" aria-label="Передачи"><input data-goalie hidden name="statsGaa" type="number" min="0" max="20" step="0.01" placeholder="КН" aria-label="Коэффициент надёжности"><input data-goalie hidden name="statsSvp" type="number" min="0" max="1" step="0.001" placeholder="%ОБ (0.915)" aria-label="Процент отражённых бросков"></div><span class="field-error" data-error-for="stats"></span></fieldset>
+
 <fieldset>
 <legend>Видео — ссылками, до трёх</legend>
 <small>Загрузите видео на YouTube, Vimeo или Google Drive и вставьте ссылку — видеофайлы форма не принимает.</small>
@@ -122,7 +120,7 @@
 <input type="url" name="videoUrls" aria-label="Вторая ссылка на видео" placeholder="Дополнительная ссылка">
 <input type="url" name="videoUrls" aria-label="Третья ссылка на видео" placeholder="Дополнительная ссылка">
 <span class="field-error" data-error-for="videoUrls"></span>
-</fieldset>
+</fieldset><div class="two"><label>Тип видео<select name="videoType"><option value="">Выберите</option><option value="full_game">Полный матч</option><option value="shifts">Полные смены</option><option value="highlights">Хайлайты</option><option value="mixed">Смешанное</option></select></label><label>Номер и цвет формы<span class="inline-pair"><input name="jerseyNumber" maxlength="4" inputmode="numeric" placeholder="№" aria-label="Номер"><input name="jerseyColor" maxlength="40" placeholder="например, белая" aria-label="Цвет формы"></span></label></div><label>Таймкоды — по желанию<textarea name="timecodes" rows="2" maxlength="600" placeholder="Например: 1-й период 03:15 — выход из зоны"></textarea></label>
 <div class="two">
 <label>WhatsApp или телефон<input type="tel" name="phone" autocomplete="tel" maxlength="60" required>
 <span class="field-error" data-error-for="phone"></span>
@@ -140,7 +138,7 @@
 <label class="consent"><input type="checkbox" name="parentConsent" value="true"><span id="parent-consent-copy">Я являюсь родителем или законным представителем и согласен на обработку данных игрока.</span></label>
 <span class="field-error" data-error-for="parentConsent"></span>
 </section>
-<label>Резюме или фотографии
+<label>Ваше фото — по желанию<input type="file" name="photo" accept="image/jpeg,image/png,.jpg,.jpeg,.png"><small>JPG или PNG, входит в лимит из 3 файлов. Используется для карточки игрока.</small><span class="field-error" data-error-for="photo"></span></label><label>Цель на следующий сезон<textarea name="goals" rows="2" maxlength="600" placeholder="Например: взрослый хоккей в Европе, юниорская лига, колледж в США"></textarea></label><div class="two"><label>Предпочтительные страны<input name="preferredCountries" maxlength="200" placeholder="Например: Швеция, Германия"></label><label>Бюджет — только если ищете платную программу<input name="budget" maxlength="120"></label></div><label>Сильные стороны своими словами<textarea name="strengthsSelf" rows="2" maxlength="1000"></textarea></label><label>Резюме или фотографии
 <input type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
 <small>Можно добавить резюме и фотографии. До 3 файлов, каждый до 5 МБ, общий размер до 10 МБ. Все видео отправляйте ссылками YouTube, Vimeo или Google Drive в полях выше. Не отправляйте паспорт, медицинские или другие чувствительные документы.</small>
 <span class="field-error" data-error-for="files"></span>
@@ -148,7 +146,7 @@
 <label>Дополнительная информация<textarea name="message" rows="5" maxlength="3000" placeholder="Карьерная цель, достижения и важные детали">
 </textarea>
 </label>
-<label class="consent"><input type="checkbox" name="dataConsent" value="true" required>Я согласен с <a href="/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a> и обработкой данных для оценки профиля.</label>
+<label class="consent"><input type="checkbox" name="publicPhotoConsent" value="true">По желанию: EHA может публично использовать моё фото (например, на странице кейсов).</label><label class="consent"><input type="checkbox" name="publicCaseConsent" value="true">По желанию: EHA может опубликовать мой переход как кейс после подтверждения.</label><p class="form-note">Гражданство нужно только для выбора подходящих рынков; это не проверка паспорта, визы или права на работу, и сканы документов на этом этапе мы не запрашиваем.</p><label class="consent"><input type="checkbox" name="dataConsent" value="true" required>Я согласен с <a href="/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a> и обработкой данных для оценки профиля.</label>
 <span class="field-error" data-error-for="dataConsent"></span>
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="profile_application" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
