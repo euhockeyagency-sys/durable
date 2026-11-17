@@ -72,3 +72,12 @@ test("author: Person only where the page shows the agent as author in a visible 
   }
   assert.ok(persons <= 16, `unexpected number of Person authors: ${persons}`);
 });
+
+test("reviewed pages show a visible reviewer line linking to the agent", () => {
+  for (const [rel, re] of [["en/guides/hockey-in-sweden.html", /Reviewed by <a href="\{\{EN\}\}\/agent">Viachaslau Marshchonak<\/a>/], ["ru/ligi/polsha-tauron-hokej-liga.html", /Проверено: <a href="\/agent">Вячеслав Морщенок<\/a>/]]) {
+    const html = fs.readFileSync(path.join(PUBLIC, rel), "utf8");
+    assert.match(html, re, rel);
+    assert.equal((html.match(/reviewer-note/g) || []).length, 1, rel);
+    assert.match(html, /"author":\{"@type":"Organization"/, rel);
+  }
+});
