@@ -12,6 +12,10 @@
 - Имя (RU): **Вячеслав Морщенок**
 - Имя (EN, загранпаспорт / международные документы): **Viachaslau Marshchonak**
 - Должность: **хоккейный агент, скаут, основатель European Hockey Agency**
+- Происхождение и база: **из Беларуси, работает из Гданьска (Польша)** (подтверждено владельцем 17.11.2026)
+- Опыт агента: **с 2016 года** — это личный профессиональный опыт агента (подтверждено владельцем 17.11.2026); не подменять им дату основания компании в текстах
+- Фото: `public/assets/viachaslau-marshchonak-fixed.webp` (+ `-640.webp`, `-og.webp`)
+- Страница агента: `/agent` (EN) и `/ru/agent` (RU); Person `@id` = `https://eurohockeyagency.com/agent#person`
 
 ## Опыт и рынки
 - Работает с: **2016 год** (foundingDate = 2016)
@@ -25,7 +29,10 @@
 ## Контакты (NAP)
 - Email: **euhockeyagency@gmail.com**
 - WhatsApp / телефон: **+375 29 795-78-18** (E.164: `+375297957818`)
-- Instagram: **@ehahockeyagency** → https://www.instagram.com/ehahockeyagency/
+- Instagram агентства: **@ehahockeyagency** → https://www.instagram.com/ehahockeyagency/
+- TikTok агентства: **@euhockeyagency** → https://www.tiktok.com/@euhockeyagency
+- Личный профессиональный Instagram агента: **@marshchonak_hockeyagent** → https://www.instagram.com/marshchonak_hockeyagent/ (в Schema: `sameAs` у Person, не у Organization)
+- Подпись в интерфейсе: «Официальные профили» (не «верифицированные»)
 - Локация: **Гданьск, Польша** (addressLocality `Gdańsk`, addressCountry `PL`)
 - Зона обслуживания (areaServed): **Europe**
 
