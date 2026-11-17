@@ -4,7 +4,13 @@ const T={
   en:{waAria:'Message us on WhatsApp',submitting:'Sending…',saving:'Saving your application and files…',clubSending:'Sending the club request…',clubSuccess:v=>`Request sent. Reference: ${v}`,checkForm:'Check the form and try again.',noConn:'No connection to the server. Nothing was sent. Try again or use direct contact.',unconfirmed:'We could not confirm the submission result. Do not submit again — contact us to check the application.',submit:'Send application',clubSubmit:'Send request',countryPrefix:'Target country',notFound:'reference not found',waGreeting:v=>`Hi! My application reference: ${v}`,cookieText:'We use cookies for analytics, to understand which guides are useful and make the site better.',cookieAccept:'Accept',cookieDecline:'Decline'}
 }[LANG];
 const q=(s,c=document)=>c.querySelector(s),qa=(s,c=document)=>[...c.querySelectorAll(s)],header=q('.header'),menu=q('.menu'),nav=q('.header nav'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const setHeader=()=>header?.classList.toggle('scrolled',scrollY>18);setHeader();addEventListener('scroll',setHeader,{passive:true});
+// One rAF-throttled scroll handler for all scroll-driven classes (header state,
+// header auto-hide, reading progress) instead of several listeners each doing
+// work on every scroll event.
+const onScrollFns=[];let scrollQueued=false;
+const onScroll=()=>{if(scrollQueued)return;scrollQueued=true;requestAnimationFrame(()=>{scrollQueued=false;const y=scrollY;onScrollFns.forEach(f=>f(y))})};
+addEventListener('scroll',onScroll,{passive:true});
+const setHeader=y=>header?.classList.toggle('scrolled',y>18);setHeader(scrollY);onScrollFns.push(setHeader);
 // Mobile menu: one source of truth for open/closed state, label, aria-controls,
 // Escape to close, and auto-close when the layout switches to desktop.
 const uiLang=(document.documentElement.lang||'en').slice(0,2),ruUI=uiLang==='ru',origMenuLabel=menu?.getAttribute('aria-label')||'Menu';
@@ -16,7 +22,10 @@ if(menu){menu.setAttribute('aria-controls',nav?.id||'site-nav');setMenu(false);m
 qa('.header nav a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav?.classList.contains('open'))setMenu(false,true);});
 const deskMQ=window.matchMedia('(min-width:851px)');deskMQ.addEventListener?.('change',e=>{if(e.matches)setMenu(false);});
-const reveal=qa('.split>*,.process article,.feature>* ,.markets>.kicker,.markets>h2,.market-grid article,.page-hero>*,.service-grid article,.audiences article,.checklist>*,.faq>*,.principles article,.contact-grid>*,.article-grid a,.article-hero>*,.article-body>*,.related>*,.proof>div,.section-intro>*,.case-row a,.cases-link,.case-grid article,.country-card,.fact-grid article,.evidence-legend>div,.criteria-columns>div,.cta>*');reveal.forEach((el,i)=>{el.classList.add('reveal');el.style.setProperty('--delay',`${i%4*75}ms`)});if(reduce)reveal.forEach(el=>el.classList.add('in-view'));else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -45px'});reveal.forEach(el=>io.observe(el));const show=()=>{let left=0;reveal.forEach(el=>{if(el.classList.contains('in-view'))return;if(el.getBoundingClientRect().top<innerHeight*.95){el.classList.add('in-view');io.unobserve(el)}else left++});return left};show();addEventListener('scroll',show,{passive:true});addEventListener('resize',show,{passive:true});setTimeout(()=>reveal.forEach(el=>el.classList.add('in-view')),6000)}
+const reveal=qa('.split>*,.process article,.feature>* ,.markets>.kicker,.markets>h2,.market-grid article,.page-hero>*,.service-grid article,.audiences article,.checklist>*,.faq>*,.principles article,.contact-grid>*,.article-grid a,.article-hero>*,.article-body>*,.related>*,.proof>div,.section-intro>*,.case-row a,.cases-link,.case-grid article,.country-card,.fact-grid article,.evidence-legend>div,.criteria-columns>div,.cta>*');reveal.forEach((el,i)=>{el.classList.add('reveal');el.style.setProperty('--delay',`${i%4*75}ms`)});if(reduce)reveal.forEach(el=>el.classList.add('in-view'));else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -45px'});reveal.forEach(el=>io.observe(el));// Elements already on screen at load: read all positions first, then write
+// classes (no read/write interleaving). Later reveals come from the observer
+// only, so scrolling no longer forces layout on every event.
+const vh=innerHeight*.95,first=reveal.filter(el=>el.getBoundingClientRect().top<vh);first.forEach(el=>{el.classList.add('in-view');io.unobserve(el)});addEventListener('beforeprint',()=>reveal.forEach(el=>el.classList.add('in-view')))}
 // Design system: theme toggle, header auto-hide, self-drawing hairlines, hero traces.
 // The first-paint theme is set by the inline boot script in <head> (src/app.js);
 // this only handles the visitor's later choice, stored under THEME_KEY.
@@ -33,7 +42,7 @@ if(header){
     root.classList.add('theme-vt');document.startViewTransition(apply).finished.finally(()=>root.classList.remove('theme-vt'));
   });
   header.append(tb);
-  let lastY=scrollY;addEventListener('scroll',()=>{const y=scrollY;header.classList.toggle('is-hidden',y>lastY&&y>420);lastY=y},{passive:true});
+  let lastY=scrollY;onScrollFns.push(y=>{header.classList.toggle('is-hidden',y>lastY&&y>420);lastY=y});
 }
 const draw=qa('.split,.page-hero,.related-head,.process,footer small,.country-guide>section:not(.sources-block):not(.country-action):not(.club-country-cta)');draw.forEach(el=>el.classList.add('draw'));
 if(reduce||!('IntersectionObserver' in window))draw.forEach(el=>el.classList.add('drawn'));
@@ -44,25 +53,43 @@ const heroEl=q('.hero');
 if(heroEl&&!reduce&&matchMedia('(min-width: 851px)').matches){
   const cv=document.createElement('canvas');cv.className='hero-fx';cv.setAttribute('aria-hidden','true');heroEl.prepend(cv);
   const cx=cv.getContext('2d');let w=0,h=0,running=false,raf=0,traces=[];
-  const size=()=>{const d=Math.min(devicePixelRatio||1,2);w=cv.clientWidth;h=cv.clientHeight;cv.width=w*d;cv.height=h*d;cx.setTransform(d,0,0,d,0,0)};
+  const size=()=>{const d=Math.min(devicePixelRatio||1,1.5);w=cv.clientWidth;h=cv.clientHeight;cv.width=w*d;cv.height=h*d;cx.setTransform(d,0,0,d,0,0)};
   const rnd=(a,b)=>a+Math.random()*(b-a);
-  const make=()=>{const y0=h*rnd(.3,.85),y1=h*rnd(.2,.8);return{p:[w*rnd(.36,.5),y0,w*rnd(.52,.66),y0-h*rnd(.05,.35),w*rnd(.7,.86),y1+h*rnd(.05,.3),w*1.02,y1],t:0,v:rnd(.0035,.0065),life:1}};
+  const make=()=>{const y0=h*rnd(.3,.85),y1=h*rnd(.2,.8);return{p:[w*rnd(.36,.5),y0,w*rnd(.52,.66),y0-h*rnd(.05,.35),w*rnd(.7,.86),y1+h*rnd(.05,.3),w*1.02,y1],t:0,v:rnd(.007,.013),life:1}};
   const at=(p,t)=>{const u=1-t;return[u*u*u*p[0]+3*u*u*t*p[2]+3*u*t*t*p[4]+t*t*t*p[6],u*u*u*p[1]+3*u*u*t*p[3]+3*u*t*t*p[5]+t*t*t*p[7]]};
-  const frame=()=>{
+  // Drawn at ~30 fps (speeds doubled to keep the same motion); when no trace is
+  // on screen the loop sleeps until the next one is due instead of clearing an
+  // empty canvas every frame.
+  // Traces play in a ~15 s burst each time the hero comes into view, then the
+  // loop stops completely until the hero is scrolled away and back.
+  let lastDraw=0,spawnTimer=0,burstEnd=0;
+  const wake=()=>{spawnTimer=0;if(running&&!raf)raf=requestAnimationFrame(frame)};
+  const frame=now=>{
+    raf=0;
+    if(now-lastDraw<31){if(running)raf=requestAnimationFrame(frame);return}
+    lastDraw=now;
     cx.clearRect(0,0,w,h);
     traces.forEach(o=>{
-      if(o.t<1)o.t=Math.min(1,o.t+o.v);else o.life-=.012;
+      if(o.t<1)o.t=Math.min(1,o.t+o.v);else o.life-=.024;
       cx.beginPath();for(let i=0;i<=48;i++){const[x,y]=at(o.p,o.t*i/48);i?cx.lineTo(x,y):cx.moveTo(x,y)}
       cx.strokeStyle=`rgba(247,251,255,${.3*Math.max(o.life,0)})`;cx.lineWidth=1;cx.stroke();
       if(o.t<1){const[x,y]=at(o.p,o.t);cx.beginPath();cx.arc(x,y,2.5,0,6.3);cx.fillStyle='rgba(247,251,255,.9)';cx.fill()}
     });
     traces=traces.filter(o=>o.life>0);
-    if(traces.length<3&&Math.random()<.02)traces.push(make());
-    if(running)raf=requestAnimationFrame(frame);
+    const live=now<burstEnd;
+    if(live&&traces.length<3&&Math.random()<.04)traces.push(make());
+    if(!running)return;
+    if(traces.length)raf=requestAnimationFrame(frame);
+    else if(live&&!spawnTimer)spawnTimer=setTimeout(()=>{traces.push(make());wake()},rnd(400,1600));
   };
   size();addEventListener('resize',size,{passive:true});
-  new IntersectionObserver(es=>{const on=es[0].isIntersecting;if(on&&!running){running=true;raf=requestAnimationFrame(frame)}else if(!on){running=false;cancelAnimationFrame(raf)}}).observe(heroEl);
+  let heroVisible=false;
+  const setRun=()=>{const on=heroVisible&&!document.hidden;if(on&&!running){running=true;burstEnd=performance.now()+15000;wake()}else if(!on&&running){running=false;cancelAnimationFrame(raf);raf=0;clearTimeout(spawnTimer);spawnTimer=0}};
+  new IntersectionObserver(es=>{heroVisible=es[0].isIntersecting;setRun()}).observe(heroEl);
+  document.addEventListener('visibilitychange',setRun);
 }
+// Decorative CSS loops run only while their block is on screen.
+if('IntersectionObserver' in window){const loopIO=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('fx-on',e.isIntersecting)));qa('.cta,.hero').forEach(el=>loopIO.observe(el))}
 qa('[data-count]').forEach(el=>{const end=+el.dataset.count,suffix=el.dataset.suffix||'';const run=()=>{if(reduce){el.textContent=end+suffix;return}el.textContent='0'+suffix;const start=performance.now(),tick=t=>{const p=Math.min((t-start)/950,1),n=Math.round(end*(1-Math.pow(1-p,3)));el.textContent=n+suffix;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)};if(el.getBoundingClientRect().top<innerHeight)return;const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){run();io.disconnect()}},{threshold:.7});io.observe(el)});
 const wa=document.createElement('a');wa.className='whatsapp-float';wa.href='https://wa.me/375297957818';wa.target='_blank';wa.rel='noopener';wa.setAttribute('aria-label',T.waAria);wa.textContent='WA';document.body.append(wa);
 
@@ -87,7 +114,9 @@ else if(!consent){
     banner.remove();
   });
 }
-const article=q('.article-body');if(article){const bar=document.createElement('div');bar.className='reading-progress';document.body.append(bar);const progress=()=>{const start=article.offsetTop-innerHeight*.25,end=article.offsetTop+article.offsetHeight-innerHeight*.75;bar.style.width=Math.max(0,Math.min(1,(scrollY-start)/(end-start)))*100+'%'};progress();addEventListener('scroll',progress,{passive:true})}
+// Reading progress: article geometry is measured on load/resize only; on scroll
+// the bar is moved with transform (compositor-only), never width.
+const article=q('.article-body');if(article){const bar=document.createElement('div');bar.className='reading-progress';document.body.append(bar);let start=0,span=1;const measure=()=>{const top=article.getBoundingClientRect().top+scrollY;start=top-innerHeight*.25;span=Math.max(1,article.offsetHeight-innerHeight*.5)};const progress=y=>{bar.style.transform=`scaleX(${Math.max(0,Math.min(1,(y-start)/span))})`};measure();progress(scrollY);onScrollFns.push(progress);addEventListener('resize',()=>{measure();progress(scrollY)},{passive:true});if('ResizeObserver' in window)new ResizeObserver(()=>{measure();progress(scrollY)}).observe(article)}
 // Session attribution is collected only after analytics consent. Store paths,
 // never URL queries/fragments, and keep the landing page distinct from sourcePage.
 function readAttribution(storage, pathname, params, referrer) {
