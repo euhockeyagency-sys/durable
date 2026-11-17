@@ -14,6 +14,7 @@ const { leagueFacts } = require("./league-facts");
 const { guideIndex, relatedGuides } = require("./guide-index");
 const { leaguesItemList } = require("./league-list");
 const { createAdminAuth } = require("./admin-auth");
+const { MARKER: CLUB_NEEDS_MARKER, renderClubNeeds, clubNeedsLocaleFor } = require("./club-needs");
 
 const PRIORITY_LEAGUE_LINKS = [
   { en: "/leagues/czechia-maxa-liga", ru: "/ligi/chehiya-maxa-liga", title: { en: "Czechia Maxa liga", ru: "Чехия — Maxa liga" } },
@@ -301,8 +302,8 @@ function createApp({ config, services, now, randomUUID } = {}) {
     app.get(`${prefix}/feed.xml`, localeFeed(buildFeed));
   }
 
-  app.get("*path", (req, res) => servePublic(req, res, config));
-  app.head("*path", (req, res) => servePublic(req, res, config));
+  app.get("*path", (req, res) => servePublic(req, res, config, now));
+  app.head("*path", (req, res) => servePublic(req, res, config, now));
   app.use((error, _req, res, _next) => {
     console.error("Unhandled request error", error);
     res.status(500).json({ ok: false, code: "internal_error" });
@@ -783,7 +784,7 @@ function buildSocialTags(html, pageUrl, isArticle, imageUrl, locale) {
 // language directory). Keep in sync with the actual contents of public/.
 const SHARED_ROOT_ALLOW = /^\/(?:assets\/|favicon\.svg$|robots\.txt$|llms\.txt$|site\.js$|styles\.css$|google[0-9a-f]+\.html$|yandex_[0-9a-f]+\.html$)/i;
 
-function servePublic(req, res, config) {
+function servePublic(req, res, config, now) {
   let pathname;
   try {
     pathname = decodeURIComponent(req.path);
@@ -812,7 +813,7 @@ function servePublic(req, res, config) {
   if (SHARED_ROOT_ALLOW.test(requested)) {
     candidates.push(path.resolve(config.publicDir, `.${requested}`));
   }
-  const context = { locale, logicalPath, urlPrefix };
+  const context = { locale, logicalPath, urlPrefix, now };
 
   const tryNext = (index) => {
     if (index >= candidates.length) {
@@ -845,7 +846,7 @@ function servePublic(req, res, config) {
 // `context` carries the resolved locale and the language-neutral logical path.
 function renderBody(data, extension, config, context) {
   if (![".html", ".txt", ".xml"].includes(extension)) return data;
-  const { locale, logicalPath, urlPrefix = "" } = context;
+  const { locale, logicalPath, urlPrefix = "", now } = context;
   // baseUrlFor already returns .com for EN and .com/ru for RU, so canonical,
   // og:url, hreflang, sitemap and feed all read the same consolidated URLs.
   const baseUrl = baseUrlFor(locale, config);
@@ -871,6 +872,10 @@ function renderBody(data, extension, config, context) {
     .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
     .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
     .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
+  // Club requests are filtered per request (open, cleared for publication, not
+  // past validUntil), so an expired request disappears without a redeploy.
+  const clubNeedsLocale = extension === ".html" ? clubNeedsLocaleFor(logicalPath, locale) : null;
+  if (clubNeedsLocale) html = html.replace(CLUB_NEEDS_MARKER, renderClubNeeds(clubNeedsLocale, now ? now() : new Date()));
   if (extension === ".html" && urlPrefix) {
     html = prefixInternalLinks(html, urlPrefix);
   }

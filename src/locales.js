@@ -23,6 +23,7 @@ const PAGES = [
   { ru: "/kalkulyator-urovnya", en: "/level-calculator" },
   { ru: "/ligi-evropy",         en: "/european-leagues" },
   { ru: "/otkrytye-ligi-dlya-legionerov", en: "/open-hockey-leagues-for-imports" },
+  { ru: "/zaprosy-klubov",       en: "/club-needs" },
   { ru: "/yuniorskie-ligi-evropy", en: "/junior-hockey-leagues" },
   { ru: "/yuniorskij-hokkej-roditelyam", en: "/junior-hockey-for-parents" },
   { ru: "/sravnenie-yuniorskih-marshrutov", en: "/junior-pathway-compare" },
