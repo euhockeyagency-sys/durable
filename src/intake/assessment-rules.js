@@ -16,7 +16,7 @@ const calculator = require("../../public/assets/level-calculator.js");
 module.exports = {
   version: "2026-11-18.preliminary-1",
   mode: "preliminary", // preliminary | active (active is not implemented: no auto-decisions)
-  approved: false,
+  approved: false, // owner decision 2026-11-18: stay in preliminary mode
   // Score from the calculator heuristics -> internal tier (queue order only).
   tierCutoffs: { A: 82, B: 48 }, // same cut-offs as the calculator's public bands
   // Level of the current competition: from the player's choice or from the
