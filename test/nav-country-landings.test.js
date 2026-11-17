@@ -76,3 +76,40 @@ test("league directory links each country to its guide", () => {
   const ru = read("ru/ligi-evropy.html");
   assert.match(ru, /<a href="\/guides\/hokkej-v-shvecii">Швеция<\/a>/);
 });
+
+test("country cases come from the shared data by country code and skip pending ones", () => {
+  const cases = require("../src/cases-data.js");
+  const rules = require("../src/country-rules.js");
+  for (const c of cases) {
+    assert.match(c.countryCode, /^[A-Z]{2}$/);
+    assert.ok(["elite_prospects_history", "club_announcement", "pending"].includes(c.status), c.player);
+  }
+  for (const r of rules) {
+    assert.match(r.countryCode, /^[A-Z]{2}$/);
+    assert.match(r.checkedAt, /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(r.source, /^https:\/\//);
+    assert.ok(r.season && r.text.en && r.text.ru);
+  }
+  const pending = cases.filter((c) => c.status === "pending").map((c) => c.player);
+  const se = read("en/guides/hockey-in-sweden.html");
+  const block = se.slice(se.indexOf("<!-- CASES:START -->"), se.indexOf("<!-- CASES:END -->"));
+  for (const c of cases.filter((x) => x.countryCode === "SE" && x.status !== "pending")) assert.ok(block.includes(c.player), c.player);
+  for (const p of pending) assert.ok(!block.includes(p), `pending case shown: ${p}`);
+  const sk = read("en/guides/hockey-in-slovakia.html");
+  const skBlock = sk.slice(sk.indexOf("<!-- CASES:START -->"), sk.indexOf("<!-- CASES:END -->"));
+  assert.ok(!skBlock.includes('id="country-cases"'), "no confirmed Slovak cases, block must stay empty");
+});
+
+test("homepage hockey markets link every country to its guide", () => {
+  const en = read("en/index.html");
+  const m = en.slice(en.indexOf('<section class="markets wrap">'), en.indexOf("</section>", en.indexOf('<section class="markets wrap">')));
+  for (const slug of ["sweden", "finland", "germany", "czechia", "slovakia", "france", "netherlands"]) {
+    assert.ok(m.includes(`href="{{EN}}/guides/hockey-in-${slug}"`), slug);
+    assert.ok(fs.existsSync(path.join(PUBLIC, "en/guides", `hockey-in-${slug}.html`)), slug);
+  }
+});
+
+test("tool pages explain the calculator and the league comparison", () => {
+  for (const f of ["en/level-calculator.html", "ru/kalkulyator-urovnya.html"]) assert.ok(read(f).includes('id="how-it-works"'), f);
+  for (const f of ["en/european-leagues.html", "ru/ligi-evropy.html"]) assert.ok(read(f).includes('id="league-comparison-explained"'), f);
+});

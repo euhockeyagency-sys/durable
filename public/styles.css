@@ -1098,4 +1098,8 @@ h2{font-size:clamp(34px,10vw,48px)}
 .calc-countries .calc-focus{display:block;margin-bottom:8px;color:var(--text)}
 .calc-countries .calc-prelim{display:block;margin-top:10px;font-size:13px;color:var(--muted)}
 #calc-wa{margin-left:18px}
+.market-grid p a{color:inherit;text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
+.market-grid p a:hover{color:var(--accent-text)}
+.country-cases{padding-left:20px}
+.country-cases li{margin:8px 0}
 /* === EHA DS:END === */
