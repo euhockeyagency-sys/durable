@@ -1091,4 +1091,11 @@ h2{font-size:clamp(34px,10vw,48px)}
 .article-body .template-status:not(:empty){padding:10px 14px}
 .page-hero .quick-answer{border-left:3px solid var(--accent);padding:12px 16px;margin:18px 0;background:rgba(var(--fg-rgb),.04);border-radius:0 10px 10px 0;max-width:860px}
 @media(max-width:850px){.league-table caption{display:block;width:100%;text-align:left;margin-bottom:12px}}
+/* Nav: the header already shows .mobile-lang-switch on small screens, so hide the copy inside the open menu (no duplicate link announced twice). */
+@media(max-width:850px){.header nav .lang-switch{display:none}}
+.country-guide .country-suits{border-left:3px solid var(--accent);padding:4px 0 4px 18px;margin:8px 0 28px}
+.country-guide .country-cta{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;margin-top:20px}
+.calc-countries .calc-focus{display:block;margin-bottom:8px;color:var(--text)}
+.calc-countries .calc-prelim{display:block;margin-top:10px;font-size:13px;color:var(--muted)}
+#calc-wa{margin-left:18px}
 /* === EHA DS:END === */

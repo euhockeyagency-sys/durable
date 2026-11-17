@@ -5,7 +5,17 @@ const T={
 }[LANG];
 const q=(s,c=document)=>c.querySelector(s),qa=(s,c=document)=>[...c.querySelectorAll(s)],header=q('.header'),menu=q('.menu'),nav=q('.header nav'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const setHeader=()=>header?.classList.toggle('scrolled',scrollY>18);setHeader();addEventListener('scroll',setHeader,{passive:true});
-menu?.setAttribute('aria-expanded','false');menu?.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',open);});qa('.header nav a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu?.setAttribute('aria-expanded','false')}));
+// Mobile menu: one source of truth for open/closed state, label, aria-controls,
+// Escape to close, and auto-close when the layout switches to desktop.
+const uiLang=(document.documentElement.lang||'en').slice(0,2),ruUI=uiLang==='ru',origMenuLabel=menu?.getAttribute('aria-label')||'Menu';
+const menuLabels=ruUI?['Открыть меню','Закрыть меню']:uiLang==='en'?['Open menu','Close menu']:[origMenuLabel,origMenuLabel];
+if(nav&&!nav.id)nav.id='site-nav';
+if(nav&&!nav.getAttribute('aria-label'))nav.setAttribute('aria-label',ruUI?'Основное меню':uiLang==='en'?'Main menu':'Menu');
+const setMenu=(open,returnFocus)=>{if(!nav||!menu)return;nav.classList.toggle('open',open);menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',menuLabels[open?1:0]);if(!open&&returnFocus)menu.focus();};
+if(menu){menu.setAttribute('aria-controls',nav?.id||'site-nav');setMenu(false);menu.addEventListener('click',()=>setMenu(!nav.classList.contains('open')));}
+qa('.header nav a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav?.classList.contains('open'))setMenu(false,true);});
+const deskMQ=window.matchMedia('(min-width:851px)');deskMQ.addEventListener?.('change',e=>{if(e.matches)setMenu(false);});
 const reveal=qa('.split>*,.process article,.feature>* ,.markets>.kicker,.markets>h2,.market-grid article,.page-hero>*,.service-grid article,.audiences article,.checklist>*,.faq>*,.principles article,.contact-grid>*,.article-grid a,.article-hero>*,.article-body>*,.related>*,.proof>div,.section-intro>*,.case-row a,.cases-link,.case-grid article,.country-card,.fact-grid article,.evidence-legend>div,.criteria-columns>div,.cta>*');reveal.forEach((el,i)=>{el.classList.add('reveal');el.style.setProperty('--delay',`${i%4*75}ms`)});if(reduce)reveal.forEach(el=>el.classList.add('in-view'));else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -45px'});reveal.forEach(el=>io.observe(el));const show=()=>{let left=0;reveal.forEach(el=>{if(el.classList.contains('in-view'))return;if(el.getBoundingClientRect().top<innerHeight*.95){el.classList.add('in-view');io.unobserve(el)}else left++});return left};show();addEventListener('scroll',show,{passive:true});addEventListener('resize',show,{passive:true});setTimeout(()=>reveal.forEach(el=>el.classList.add('in-view')),6000)}
 // Design system: theme toggle, header auto-hide, self-drawing hairlines, hero traces.
 // The first-paint theme is set by the inline boot script in <head> (src/app.js);

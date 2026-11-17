@@ -40,6 +40,10 @@
       summarySuffixNonEu: ". These are reference leagues to investigate, not confirmed club interest or eligibility. The passport filter is a broad model assumption, not a check of current quotas or work permission; division numbers are not equivalent across countries.",
       noLeagues: "No leagues in the reference match these parameters — send your profile and we'll review it manually.",
       countryGuide: "Hockey in ",
+      prelim: "Preliminary: the calculator uses your birth year, EU/non-EU passport, level and stats. It does not check your exact citizenship, national rules such as France's JFL status, import quotas or registration deadlines, so every country needs an individual check.",
+      focusFit: function (c, names) { return "You came from the " + c + " page. Leagues there within your indicative range: " + names + "."; },
+      focusNone: function (c) { return "You came from the " + c + " page. No " + c + " league falls within your indicative range on the current model; the guide explains the levels and requirements."; },
+      focusLink: function (c) { return "Back to the " + c + " guide"; },
       goalTips: {
         pro: "For a professional contract, clubs look first at your role and recent full-game video at your current level.",
         development: "For development, compare guaranteed ice time and coaching in each route, not only the league name.",
@@ -67,6 +71,10 @@
       summarySuffixNonEu: ". Ниже — лиги для дальнейшего изучения, а не подтверждённый интерес клубов или допуск игрока. Фильтр по паспорту — условие модели, а не проверка действующих квот или права на работу; номера дивизионов разных стран не равнозначны.",
       noLeagues: "Под такие параметры подходящих лиг в справочнике не нашлось — отправьте профиль, разберём вручную.",
       countryGuide: "Хоккей: ",
+      prelim: "Результат предварительный: калькулятор учитывает год рождения, паспорт ЕС или не ЕС, уровень и статистику. Он не проверяет точное гражданство, национальные правила вроде статуса JFL во Франции, лимиты легионеров и сроки регистрации, поэтому по каждой стране нужна индивидуальная проверка.",
+      focusFit: function (c, names) { return "Вы пришли со страницы «" + c + "». Лиги этой страны в вашем ориентировочном диапазоне: " + names + "."; },
+      focusNone: function (c) { return "Вы пришли со страницы «" + c + "». По текущей модели ни одна лига этой страны не попадает в ваш ориентировочный диапазон; в гиде описаны уровни и требования."; },
+      focusLink: function (c) { return "Вернуться к гиду: " + c; },
       goalTips: {
         pro: "Для профессионального контракта клубы прежде всего смотрят на вашу роль и свежее видео полной игры на текущем уровне.",
         development: "Для развития сравнивайте гарантированное игровое время и тренерскую работу в каждом варианте, а не только название лиги.",
@@ -194,6 +202,24 @@
     return params.map(function (p) { return p[0] + "=" + encodeURIComponent(p[1]); }).join("&");
   }
 
+
+  // Leagues of one country that pass the same band / passport / age filters
+  // as calculate(). Used only to annotate the result for a visitor who came
+  // from that country's guide.
+  function filterForFocus(leagues, r, input, guide) {
+    var names = [], countryName = "";
+    (leagues || []).forEach(function (l) {
+      var g = COUNTRY_GUIDES[String(l.country).toLowerCase()];
+      if (!g || g.en !== guide.en) return;
+      countryName = countryName || l.country;
+      if (l.tier < r.band[0] || l.tier > r.band[1]) return;
+      if (!input.eu && l.open === "low") return;
+      if (l.age === "junior" && r.playerAge > JUNIOR_AGE_CEILING) return;
+      if (names.indexOf(l.name) < 0) names.push(l.name);
+    });
+    return { names: names.slice(0, 4), countryName: countryName };
+  }
+
   function init(lang) {
     var form = document.getElementById("calc");
     if (!form) return;
@@ -258,8 +284,22 @@
           seen[l.country] = true;
           links.push('<a href="' + esc(prefixFor(lang) + g[lang === "ru" ? "ru" : "en"]) + '" data-calc-link="country">' + strings.countryGuide + esc(l.country) + "</a>");
         });
-        countriesEl.innerHTML = links.slice(0, 6).join(" · ");
-        countriesEl.parentNode.hidden = !links.length;
+        var html = links.slice(0, 6).join(" · ");
+        // Arriving from a country page (?country=sweden): say honestly whether
+        // that country's leagues fall within this player's indicative range,
+        // using the same filters as the main result, not a fixed list.
+        var focusKey = "";
+        try { focusKey = (new URLSearchParams(root.location.search).get("country") || "").toLowerCase(); } catch (e) {}
+        var focusGuide = focusKey && COUNTRY_GUIDES[focusKey];
+        if (focusGuide) {
+          var fit = filterForFocus(data, r, input, focusGuide);
+          var cname = fit.countryName || focusKey;
+          var focusHtml = '<span class="calc-focus">' + esc(fit.names.length ? strings.focusFit(cname, fit.names.join(", ")) : strings.focusNone(cname)) +
+            ' <a href="' + esc(prefixFor(lang) + focusGuide[lang === "ru" ? "ru" : "en"]) + '" data-calc-link="country">' + esc(strings.focusLink(cname)) + "</a></span>";
+          html = focusHtml + (html ? "<br>" + html : "");
+        }
+        countriesEl.innerHTML = html + '<span class="calc-prelim">' + esc(strings.prelim) + "</span>";
+        countriesEl.parentNode.hidden = false;
       }
 
       // Bug G: carry the result into the contact form. `note` keeps the
@@ -290,7 +330,7 @@
     });
   }
 
-  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate, buildCtaQuery: buildCtaQuery };
+  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate, buildCtaQuery: buildCtaQuery, filterForFocus: filterForFocus, COUNTRY_GUIDES: COUNTRY_GUIDES };
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;

@@ -85,6 +85,16 @@ function writeDataFile(locale) {
   fs.writeFileSync(path.join(ROOT, "public", "assets", `leagues.${locale}.js`), banner + body);
 }
 
+
+// Country cell links to the country guide when one exists in the locale PAGES
+// table (src/locales.js): directory -> country guide -> calculator -> profile.
+const { PAGES } = require(path.join(ROOT, "src", "locales.js"));
+const countryGuide = (enCountry, locale) => {
+  const slug = "/guides/hockey-in-" + String(enCountry).toLowerCase().replace(/\s+/g, "-");
+  const page = (PAGES || []).find((pg) => pg.en === slug);
+  return page ? page[locale === "ru" ? "ru" : "en"] : "";
+};
+
 function renderRows(locale, age = "senior") {
   const { openLabel, labels } = LOCALES[locale];
   return source.leagues.filter((l) => (l.age || "senior") === age).map((l) => {
@@ -101,7 +111,7 @@ function renderRows(locale, age = "senior") {
       ? ` <a href="${esc(review.sources[0])}" target="_blank" rel="noopener">${esc(sourceLabel)} ↗</a> <small>${esc(review.reviewedAt || "")}</small>`
       : "";
     return `<tr data-country="${esc(country)}" data-tier="${l.tier}" data-age="${esc(l.age || "senior")}" data-open="${esc(l.open)}">` +
-      `<td data-label="${esc(labels.country)}">${esc(l.flag)} ${esc(country)}</td>` +
+      `<td data-label="${esc(labels.country)}">${esc(l.flag)} ${countryGuide(l.country.en, locale) ? `<a href="${LOCALES[locale].baseToken}${esc(countryGuide(l.country.en, locale))}">${esc(country)}</a>` : esc(country)}</td>` +
       `<td data-label="${esc(labels.league)}">${leagueName}</td>` +
       `<td data-label="${esc(labels.level)}"><span class="tier tier-${l.tier}">${l.tier}</span></td>` +
       `<td data-label="${esc(labels.age)}">${l.age === "junior" ? juniorAgeLabel(l.name) : "Senior"}</td>` +
