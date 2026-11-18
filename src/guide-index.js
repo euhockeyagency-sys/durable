@@ -50,6 +50,7 @@ const GUIDES = [
   { en: "how-a-hockey-agent-works", ru: "kak-rabotaet-hokkejnyj-agent", cat: "process", title: { en: "How a hockey agent works", ru: "Как работает хоккейный агент" } },
   { en: "hockey-player-salaries-in-europe", ru: "zarplaty-hokkeistov-v-evrope", cat: "process", title: { en: "Hockey player salaries in Europe", ru: "Зарплаты хоккеистов в Европе" } },
   { en: "icehl-and-alps-hockey-league-salaries", ru: "zarplaty-icehl-i-alps-hockey-league", cat: "process", title: { en: "ICEHL and Alps Hockey League salaries", ru: "Зарплаты в ICEHL и Alps Hockey League" } },
+  { en: "hockey-academies-in-europe-cost-and-admission", ru: "hokkejnye-akademii-evropy-stoimost-i-postuplenie", cat: "parents", title: { en: "Hockey academies in Europe: cost, conditions and admission", ru: "Хоккейные академии в Европе: стоимость, условия и поступление" } },
   { en: "after-mhl-and-nmhl-to-europe-options-for-russian-and-belarusian-players", ru: "posle-mhl-i-nmhl-v-evropu-varianty-dlya-igrokov-iz-rossii-i-belarusi", cat: "process", title: { en: "After the MHL and NMHL: European options for Russian and Belarusian players", ru: "После МХЛ и НМХЛ в Европу: варианты для игроков из России и Беларуси" } },
   { en: "transfer-calendar-2026-27", ru: "kalendar-transfernyh-okon-2026-27", cat: "documents", title: { en: "Transfer calendar 2026/27", ru: "Календарь трансферных окон 2026/27" } },
   { en: "hockeyettan-vs-mestis", ru: "hockeyettan-ili-mestis", cat: "comparisons", title: { en: "HockeyEttan vs Mestis", ru: "HockeyEttan или Mestis" } },

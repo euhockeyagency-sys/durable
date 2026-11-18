@@ -90,6 +90,8 @@ const LEGACY_PATHS = new Map([
   ["/contact-us", "/contact"],
   ["/contacts", "/contact"],
   ["/parents", "/junior-hockey-for-parents"],
+  ["/for-parents", "/junior-hockey-for-parents"],
+  ["/ru/for-parents", "/ru/yuniorskij-hokkej-roditelyam"],
   ["/hockey-agent-europe", "/"],
   ["/hockey-agent-in-europe", "/"],
   ["/blog", "/guides"],
@@ -130,7 +132,8 @@ function createApp({ config, services, now, randomUUID, schemaState } = {}) {
   app.use(redirectDuplicateHosts(config));
   app.get([...LEGACY_PATHS.keys()], (req, res) => {
     const query = req.originalUrl.includes("?") ? req.originalUrl.slice(req.originalUrl.indexOf("?")) : "";
-    return res.redirect(301, `${LEGACY_PATHS.get(req.path)}${query}`);
+    const target = LEGACY_PATHS.get(req.path) || LEGACY_PATHS.get(req.path.replace(/\/+$/, ""));
+    return res.redirect(301, `${target}${query}`);
   });
   // Search Console only lists the URLs it has indexed, so the old blog may hold
   // posts beyond the mapped ones. Send any remaining /blog/... to the hub that
@@ -727,6 +730,9 @@ const YANDEX_METRIKA = `<!-- Yandex.Metrika counter --><script type="text/javasc
 // once the cookie banner in site.js reads an accepted choice from
 // localStorage — either just now or from a previous visit. Must run before
 // the gtag.js script tag so no event fires with an undefined consent state.
+// Page scripts whose URLs get a ?v= content version (see renderBody).
+const VERSIONED_SCRIPTS = ["assets/level-calculator.js", "assets/cost-calculator.js", "assets/season-cost-data.js", "assets/season-cost-estimator.js", "assets/readiness-checklist.js", "assets/intake-form.js", "assets/leagues.ru.js", "assets/leagues.en.js"];
+
 const GOOGLE_ANALYTICS = `<!-- Google tag (gtag.js) --><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{analytics_storage:'denied'});</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-TPD2W77SZ3"></script><script>gtag('js',new Date());gtag('config','G-TPD2W77SZ3');</script><!-- /Google tag -->`;
 
 // Cache-busting: CSS/JS are cached for a week, so their URLs must change when the
@@ -735,7 +741,7 @@ let assetVersions = null;
 function assetVersion(config, file) {
   if (!assetVersions) {
     assetVersions = {};
-    for (const name of ["styles.css", "site.js", "assets/level-calculator.js", "assets/cost-calculator.js", "assets/intake-form.js", "assets/leagues.ru.js", "assets/leagues.en.js"]) {
+    for (const name of ["styles.css", "site.js", ...VERSIONED_SCRIPTS]) {
       try { assetVersions[name] = Math.round(fs.statSync(path.join(config.publicDir, name)).mtimeMs).toString(36); }
       catch { assetVersions[name] = "0"; }
     }
@@ -941,12 +947,8 @@ function renderBody(data, extension, config, context) {
     const stylesheetHref = `/styles.css?v=${assetVersion(config, "styles.css")}`;
     html = html
       .replaceAll('href="/styles.css"', `href="${stylesheetHref}"`)
-      .replaceAll('src="/site.js"', `src="/site.js?v=${assetVersion(config, "site.js")}"`)
-      .replaceAll('src="/assets/level-calculator.js"', `src="/assets/level-calculator.js?v=${assetVersion(config, "assets/level-calculator.js")}"`)
-      .replaceAll('src="/assets/cost-calculator.js"', `src="/assets/cost-calculator.js?v=${assetVersion(config, "assets/cost-calculator.js")}"`)
-      .replaceAll('src="/assets/intake-form.js"', `src="/assets/intake-form.js?v=${assetVersion(config, "assets/intake-form.js")}"`)
-      .replaceAll('src="/assets/leagues.ru.js"', `src="/assets/leagues.ru.js?v=${assetVersion(config, "assets/leagues.ru.js")}"`)
-      .replaceAll('src="/assets/leagues.en.js"', `src="/assets/leagues.en.js?v=${assetVersion(config, "assets/leagues.en.js")}"`);
+      .replaceAll('src="/site.js"', `src="/site.js?v=${assetVersion(config, "site.js")}"`);
+    for (const name of VERSIONED_SCRIPTS) html = html.replaceAll(`src="/${name}"`, `src="/${name}?v=${assetVersion(config, name)}"`);
   }
   if (extension === ".html" && html.includes("</head>")) {
     const pageUrl = joinUrl(baseUrl, logicalPath);

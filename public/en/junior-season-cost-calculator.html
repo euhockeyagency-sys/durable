@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Junior season cost calculator: compare two written offers | EHA</title>
-<meta name="description" content="Add up a junior hockey season from the written offer: school, hockey fee, housing, insurance, equipment and travel. Compare two offers and start from published North America figures.">
+<title>Season Cost Estimator: junior hockey season budget | EHA</title>
+<meta name="description" content="Estimate a U16, U18 or U20 hockey season in Sweden, Czechia, Austria, Finland, Switzerland, the USA or Canada from published tariffs.">
 <link rel="canonical" href="{{BASE_URL}}/junior-season-cost-calculator">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Junior season cost calculator: compare two written offers">
-<meta property="og:description" content="Add up a junior hockey season from the written offer: school, hockey fee, housing, insurance, equipment and travel. Compare two offers and start from published North America figures.">
+<meta property="og:title" content="Season Cost Estimator: junior hockey season budget">
+<meta property="og:description" content="Estimate a U16, U18 or U20 hockey season in Sweden, Czechia, Austria, Finland, Switzerland, the USA or Canada from published tariffs.">
 <meta property="og:url" content="{{BASE_URL}}/junior-season-cost-calculator">
 <meta property="og:site_name" content="European Hockey Agency">
 <meta property="og:locale" content="en_US">
@@ -16,8 +16,8 @@
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/site.js"></script>
 
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Resources","item":"{{BASE_URL}}/guides"},{"@type":"ListItem","position":3,"name":"Junior season cost calculator: compare two written offers","item":"{{BASE_URL}}/junior-season-cost-calculator"}]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why are there no European prices?","acceptedAnswer":{"@type":"Answer","text":"No verified, sourced figures for European junior seasons exist in EHA's fact-checks, and the route comparison deliberately shows no amounts. Rather than guess, the calculator asks you to enter the figures from your offer."}},{"@type":"Question","name":"Do the North America figures include hockey costs?","acceptedAnswer":{"@type":"Answer","text":"Only Shattuck-St Mary's (a separate hockey fee) and OHA (a hockey and travel line) itemise hockey. For other schools the published figure does not say whether hockey costs are extra, so ask directly."}},{"@type":"Question","name":"Can I compare a US and a Canadian offer?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose the currency for each offer and enter an exchange rate yourself. The calculator does not look up or assume a rate."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{BASE_URL}}/"},{"@type":"ListItem","position":2,"name":"Resources","item":"{{BASE_URL}}/guides"},{"@type":"ListItem","position":3,"name":"Season Cost Estimator: junior hockey season budget","item":"{{BASE_URL}}/junior-season-cost-calculator"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why are there so few European prices?","acceptedAnswer":{"@type":"Answer","text":"European clubs and academies rarely publish full season tariffs. The estimator shows only published club fees we could verify (Sweden, Czechia) and marks everything else as missing; for Austria, Finland and Switzerland it shows “Insufficient data” and lets you enter the offer's figures."}},{"@type":"Question","name":"Do the North America figures include hockey costs?","acceptedAnswer":{"@type":"Answer","text":"Only Shattuck-St Mary's (a separate hockey fee) and OHA (a hockey and travel line) itemise hockey. For other schools the published figure does not say whether hockey costs are extra, so ask directly."}},{"@type":"Question","name":"Can I compare a US and a Canadian offer?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose the currency for each offer and enter an exchange rate yourself. The calculator does not look up or assume a rate."}}]}</script>
 </head>
 <body>
 <header class="header">
@@ -30,7 +30,7 @@
 <nav>
 <a href="{{EN}}/services">Services</a>
 <a href="{{EN}}/for-players">For players</a>
-<a href="{{EN}}/for-clubs">For clubs</a>
+<a href="{{EN}}/for-clubs">For clubs</a><a href="{{EN}}/junior-hockey-for-parents">For parents</a>
 <a href="{{EN}}/cases">Cases</a>
 <a href="{{EN}}/agent">Agent</a>
 <a href="{{EN}}/guides">Resources</a>
@@ -44,9 +44,23 @@
 <a href="{{EN}}/guides">Resources</a> / Season cost calculator</nav>
 <section class="article-hero wrap">
 <p class="kicker">Tool</p>
-<h1>Junior season cost calculator: compare two written offers</h1>
-<p class="lead">Type in the figures from a club or school offer, or start from a published North America academy price, and see the full season cost side by side. Free, no sign-up, nothing is sent anywhere.</p>
+<h1>Season Cost Estimator: hockey season budget for U16, U18 and U20</h1>
+<p class="lead">Pick the age group, market and programme type to see a sourced estimate with a line-by-line breakdown, or type in the figures from a written offer. Free, no sign-up, nothing is sent anywhere.</p>
 </section>
+<section class="wrap" id="estimator" aria-labelledby="sce-heading">
+<h2 id="sce-heading">Season Cost Estimator</h2>
+<p>Choose the age group, market and programme type. The result appears straight away: each figure comes from one named programme's published tariff, with currency, period, season and source. Lines we have no verified figure for are listed as missing and are never counted as zero — type in the amount from your written offer.</p>
+<div class="season-estimator" id="season-estimator" data-cta="{{EN}}/contact?type=parent&amp;intent=season-budget&amp;source_page=/junior-season-cost-calculator" data-wa="https://wa.me/375297957818">
+<div class="sce-controls">
+<label>Age group <select data-sce-age><option value="U16">U16</option><option value="U18" selected>U18</option><option value="U20">U20</option></select></label>
+<label>Market <select data-sce-market><option value="sweden">Sweden</option><option value="czechia">Czechia</option><option value="austria">Austria</option><option value="finland">Finland</option><option value="switzerland">Switzerland</option><option value="usa">USA</option><option value="canada">Canada</option></select></label>
+<label>Programme type <select data-sce-type></select></label>
+</div>
+<div class="sce-result" data-sce-result aria-live="polite"><noscript><p>The estimator needs JavaScript. The figures and sources are listed in the <a href="{{EN}}/editorial-methodology">editorial methodology</a>; or send us the offer.</p></noscript></div>
+</div>
+<p class="tool-note">Figures checked 18 November 2026. Examples are single programmes, not market averages, and not a quote. Prices change every season: confirm each line in writing, including deposit, refund and exit terms.</p>
+</section>
+<section class="wrap" id="compare-offers"><h2>Compare two written offers</h2><p>Already have one or two offers? Enter their lines below and see the difference side by side.</p></section>
 <section class="wrap">
 <form class="cost-form" id="cost-form">
 <div class="cost-grid">
@@ -166,7 +180,7 @@
 <h2>What the calculator does and does not do</h2>
 </div>
 <div class="body-copy">
-<p>It adds the amounts you enter, line by line, and for two offers shows the difference. It does not know any European prices: the fact-checks behind this site did not find verified European season costs, so for a club in Sweden, Finland, Czechia or elsewhere you enter the figures from the written offer.</p>
+<p>It adds the amounts you enter, line by line, and for two offers shows the difference. The estimator above only knows published tariffs listed in its data file; for Europe that is a few club fees, so most European lines stay “missing” until you enter the figures from the written offer.</p>
 <p>The built-in North America figures are published prices from each school's own page, recorded on 10 August 2026 with their academic year. They are individual, dated data points, not an average or a ranking, and they are not a quote. Tuition changes every year; re-check the school's current page. Financial aid is not subtracted.</p>
 <p>Ask the club or school to confirm every line in writing, including what happens to money already paid if the player leaves or is not registered. See the <a href="{{EN}}/guides/how-to-verify-a-hockey-club-offer">offer checklist</a>, the <a href="{{EN}}/guides/hockey-academies-in-north-america">North America academies guide</a>, the <a href="{{EN}}/guides/junior-hockey-europe-vs-north-america">Europe vs North America comparison</a> and the <a href="{{EN}}/junior-pathway-compare">route comparison</a>.</p>
 </div>
@@ -175,8 +189,8 @@
 <h2>FAQ</h2>
 <div class="faq">
 <details>
-<summary>Why are there no European prices?</summary>
-<p>No verified, sourced figures for European junior seasons exist in EHA's fact-checks, and the route comparison deliberately shows no amounts. Rather than guess, the calculator asks you to enter the figures from your offer.</p>
+<summary>Why are there so few European prices?</summary>
+<p>European clubs and academies rarely publish full season tariffs. The estimator shows only published club fees we could verify (Sweden, Czechia) and marks everything else as missing; for Austria, Finland and Switzerland it shows “Insufficient data” and lets you enter the offer's figures.</p>
 </details>
 <details>
 <summary>Do the North America figures include hockey costs?</summary>
@@ -189,6 +203,8 @@
 </div>
 </section>
 <script src="/assets/cost-calculator.js"></script>
+<script src="/assets/season-cost-data.js"></script>
+<script src="/assets/season-cost-estimator.js"></script>
 </main>
 <footer id="footer">
 <div class="footer-brand">
