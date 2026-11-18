@@ -60,7 +60,7 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
     const files = Array.isArray(req.files) ? req.files : ((req.files || {}).files || []);
     const photo = Array.isArray(req.files) ? null : (((req.files || {}).photo || [])[0] || null);
     // The photo counts towards the same limits (3 files, 10 MiB in total).
-    const validation = validateApplication(req.body || {}, photo ? [...files, photo] : files, now(), Boolean(config.turnstileConfigured), locale, { measurementsRequired: schemaState ? schemaState.measurementsRequired() : true });
+    const validation = validateApplication(req.body || {}, photo ? [...files, photo] : files, now(), Boolean(config.turnstileConfigured), locale, { measurementsRequired: true }); // owner decision 18.11.2026: always required
     const extras = parseProfileExtras(req.body || {}, { birthYear: validation.value.birthYear, position: validation.value.position, locale });
     const errors = { ...validation.errors, ...extras.errors };
     if (photo && !["image/jpeg", "image/png"].includes(photo.mimetype)) errors.photo = locale === "en" ? "The photo must be a JPG or PNG image." : "Фото должно быть в формате JPG или PNG.";

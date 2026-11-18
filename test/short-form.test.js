@@ -15,29 +15,25 @@ const get = (app, url) => request(app).get(url).set("Host", "eha.test");
 const mainPart = (html) => { const f = html.slice(html.indexOf('<form id="profile-form"')); return f.slice(0, f.indexOf("<details")); };
 const body = { playerName: "Test Player", birthYear: "2001", citizenship: "Testonia", currentClub: "Club", position: "forward", phone: "+100", email: "a@b.test", dataConsent: "true" };
 
-test("short form: only the basics are outside the optional block once the database allows it", async () => {
-  for (const url of ["/contact", "/ru/contact"]) {
-    const html = (await get(appWith(true), url)).text;
-    assert.ok(html.includes('data-measurements="optional"') && !html.includes("MEASUREMENTS"), url);
+test("form: height, weight and stick hand are required in the main part, whatever the database state", async () => {
+  for (const state of [true, false, null]) for (const url of ["/contact", "/ru/contact"]) {
+    const html = (await get(appWith(state), url)).text;
+    assert.ok(html.includes('data-measurements="required"') && !html.includes("MEASUREMENTS"), url);
     const main = mainPart(html);
     const required = [...main.matchAll(/<(?:input|select)\b[^>]*name="([A-Za-z]+)"[^>]*\srequired/g)].map((m) => m[1]);
-    assert.deepEqual(required, ["playerName", "birthYear", "citizenship", "currentClub", "position", "phone", "email"], url);
-    for (const name of ["heightCm", "weightKg", "stickHand", "statsSeason", "goals", "budget", "photo"]) assert.ok(!main.includes(`name="${name}"`), `${url}: ${name} is in the optional block`);
+    for (const name of ["playerName", "birthYear", "citizenship", "currentClub", "position", "heightCm", "weightKg", "stickHand", "phone", "email"]) assert.ok(required.includes(name), `${url}: ${name} required`);
+    for (const name of ["statsSeason", "goals", "budget", "photo"]) assert.ok(!main.includes(`name="${name}"`), `${url}: ${name} is in the optional block`);
     assert.ok(main.includes('name="eliteProspectsUrl"') && main.includes('name="videoUrls"'));
-    const more = html.slice(html.indexOf("<details"), html.indexOf("</details>"));
-    assert.ok(!/name="(heightCm|weightKg|stickHand)"[^>]*\srequired/.test(more));
-    assert.equal((more.match(/class="stats-row stats-extra"/g) || []).length, 3);
-    assert.equal((html.match(/name="videoUrls"/g) || []).length, 3);
   }
 });
 
-test("until the migration is applied, height, weight and stick hand stay required in the main fields", async () => {
-  for (const state of [false, null]) {
-    const html = (await get(appWith(state), "/ru/contact")).text;
-    assert.ok(html.includes('data-measurements="required"') && !html.includes("MEASUREMENTS"));
-    const main = mainPart(html);
-    for (const name of ["heightCm", "weightKg", "stickHand"]) assert.match(main, new RegExp(`name="${name}"[^>]*\\srequired`));
-  }
+test("submission without height, weight or stick hand is refused with field errors", async () => {
+  const app = appWith(true);
+  let call = request(app).post("/api/applications");
+  for (const [k, v] of Object.entries(body)) call = call.field(k, v);
+  const res = await call;
+  assert.equal(res.status, 400);
+  for (const k of ["heightCm", "weightKg", "stickHand"]) assert.ok(res.body.errors && res.body.errors[k], k);
 });
 
 test("validation: measurements optional only when allowed; given values are always range-checked", () => {
