@@ -156,7 +156,7 @@
 
 ### Тесты
 10 файлов, 162 теста. Среди них краулер внутренних ссылок (404, лишние 301, неподставленные `{{токены}}`), парность RU/EN по `PAGES`, формы с моками, калькулятор уровня, калькулятор стоимости сезона (расчёт, валюты, пресеты сверены с фактчеком), бонусные языки, клубные страницы, кеш-бастинг скриптов.
-- Профили лиг (18.11.2026, ветка `claude/league-profiles`, не опубликовано): общий шаблон страницы лиги из данных (`src/league-profiles.js` + `src/league-profile.js`, маркеры `<!-- LEAGUE_PROFILE -->`, `<!-- LEAGUE_RULES:id -->`), встроенный калькулятор с оценкой конкретной лиги; пилоты France Division 1 и TAURON Hokej Liga EN/RU по регламентам FFHG и THL 2026/27; в `leagues.src.js` добавлены 15 ссылок на существующие страницы. Аудит — `docs/league-pages-audit.md`, факты — `docs/league-profiles-factcheck.md`.
+- Профили лиг (18.11.2026, опубликовано в main, проверено на production): общий шаблон страницы лиги из данных (`src/league-profiles.js` + `src/league-profile.js`, маркеры `<!-- LEAGUE_PROFILE -->`, `<!-- LEAGUE_RULES:id -->`), встроенный калькулятор с оценкой конкретной лиги; пилоты France Division 1 и TAURON Hokej Liga EN/RU по регламентам FFHG и THL 2026/27; в `leagues.src.js` добавлены 15 ссылок на существующие страницы. Аудит — `docs/league-pages-audit.md`, факты — `docs/league-profiles-factcheck.md`.
 
 ## 5. Текущее состояние проверок
 
