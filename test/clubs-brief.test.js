@@ -53,7 +53,7 @@ test("/for-clubs: brief builder, choice of WhatsApp or site (email + Telegram), 
 });
 
 test("footer Navigation links to the parents section in both languages", async () => {
-  for (const [url, label, href] of [["/", "For parents", "/junior-hockey-for-parents"], ["/guides/hockey-transfer-windows", "For parents", "/junior-hockey-for-parents"], ["/ru/", "Родителям", "/ru/yuniorskij-hokkej-roditelyam"], ["/ru/metodologiya", "Родителям", "/ru/yuniorskij-hokkej-roditelyam"]]) {
+  for (const [url, label, href] of [["/", "For parents", "/junior-hockey-for-parents"], ["/guides/hockey-transfer-windows", "For parents", "/junior-hockey-for-parents"], ["/ru/", "Родителям", "/ru/yuniorskij-hokkej-roditelyam"], ["/ru/metodologiya", "Родителям", "/ru/yuniorskij-hokkej-roditelyam"], ["/ru/guides/kak-vybrat-hokkejnuyu-akademiyu", "Родителям", "/ru/yuniorskij-hokkej-roditelyam"], ["/leagues/sweden-j18", "For parents", "/junior-hockey-for-parents"]]) {
     const html = (await get(url)).text;
     const footer = html.slice(html.indexOf("<footer"));
     assert.ok(footer.includes(`${href}">${label}</a>`), `${url}: footer link`);
