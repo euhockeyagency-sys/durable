@@ -72,6 +72,9 @@ test("calculator 'What to read next': imports for adults, parents for juniors, u
   assert.ok(!keys(18).includes("minor"), "turning 18 this year may already be 18");
   assert.deepEqual(keys(19, false), ["parents", "academy", "imports"]);
   assert.deepEqual(keys(26), ["imports"]);
+  const adult = { year: y - 26, pos: "forward", level: "t3", seasons: 5, gp: 40, pts: 20, eu: true };
+  assert.deepEqual(calc.readNext(calc.calculate(adult, [], "en"), adult, "en").map((i) => i.url), ["/open-hockey-leagues-for-imports"]);
+  assert.deepEqual(calc.readNext(calc.calculate(adult, [], "ru"), adult, "ru").map((i) => i.url), ["/otkrytye-ligi-dlya-legionerov"]);
   const ru = calc.readNext(calc.calculate({ year: y - 16, pos: "forward", level: "t3", seasons: 1, gp: 20, pts: 5, eu: true }, [], "ru"), { eu: true }, "ru");
   assert.ok(ru.every((i) => i.url.startsWith("/guides/") || i.url === "/yuniorskij-hokkej-roditelyam"));
   assert.ok(calc.renderReadNext(ru, "ru").includes('href="/ru/'));
@@ -86,7 +89,12 @@ test("new and extended articles: pairs, listed in Resources, links back", async 
     assert.ok(idxEn.includes(en.replace("/guides/", "")) && idxRu.includes(ru.replace("/ru/guides/", "")), `${en}: in Resources`);
   }
   const open = (await get("/guides/best-european-hockey-leagues-for-imports")).text;
-  assert.ok(open.includes('id="most-open"') && /href="[^"]*\/level-calculator"/.test(open));
+  assert.ok(open.includes('id="most-open"') && open.includes('/open-hockey-leagues-for-imports#import-rules"'), "top-10 points to the dedicated page");
+  assert.ok(!open.includes('class="league-table"><thead><tr><th>League</th><th>Non-domestic'), "rules table lives on one page only");
+  for (const [u, calcLink] of [["/open-hockey-leagues-for-imports", "/level-calculator"], ["/ru/otkrytye-ligi-dlya-legionerov", "/ru/kalkulyator-urovnya"]]) {
+    const html = (await get(u)).text;
+    assert.ok(html.includes('id="import-rules"') && html.includes("league-table") && html.includes(`${calcLink}"`), `${u}: rules table and calculator link`);
+  }
   const choose = (await get("/ru/guides/kak-vybrat-hokkejnuyu-akademiyu")).text;
   assert.ok(choose.includes("/ru/kalkulyator-stoimosti-sezona") && choose.includes("/ru/yuniorskij-hokkej-roditelyam") && choose.includes("/ru/kalkulyator-urovnya"));
 });

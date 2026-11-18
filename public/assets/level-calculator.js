@@ -273,7 +273,7 @@
   // is under 18 all year (turns 17 or younger this year). Import overview for
   // adult results and for players without an EU passport.
   var READ_NEXT = {
-    imports: { en: "/guides/best-european-hockey-leagues-for-imports#most-open", ru: "/guides/luchshie-ligi-evropy-dlya-legionerov#most-open" },
+    imports: { en: "/open-hockey-leagues-for-imports", ru: "/otkrytye-ligi-dlya-legionerov" },
     parents: { en: "/junior-hockey-for-parents", ru: "/yuniorskij-hokkej-roditelyam" },
     academy: { en: "/guides/how-to-choose-a-hockey-academy", ru: "/guides/kak-vybrat-hokkejnuyu-akademiyu" },
     minor: { en: "/guides/documents-and-iihf-transfer-for-a-minor-hockey-player", ru: "/guides/dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf" }
