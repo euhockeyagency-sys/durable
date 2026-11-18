@@ -8,7 +8,7 @@ Russian pages: the primary domain serves them under `/ru/`; `eurohockeyagency.ru
 | 2 | Net vs gross: €2,000 in Germany and Poland | new | /guides/net-vs-gross-hockey-salary-germany-poland · /ru/guides/netto-i-brutto-zarplata-hokkeista-germaniya-polsha |
 | 3 | Sports visa and EU work permit, CIS and North America | updated existing guide | /guides/work-visa-for-hockey-player · /ru/guides/rabochaya-viza-dlya-hokkeista |
 | 4 | Import player insurance | new | /guides/hockey-player-insurance-abroad · /ru/guides/strahovka-hokkeista-legionera |
-| 5 | After MHL/NMHL to Europe | not published | needs a country-by-country check of league restrictions and visa availability for Russian and Belarusian citizens in 2026/27 |
+| 5 | After MHL/NMHL to Europe | `/guides/after-mhl-and-nmhl-to-europe-options-for-russian-and-belarusian-players` · `/ru/guides/posle-mhl-i-nmhl-v-evropu-varianty-dlya-igrokov-iz-rossii-i-belarusi` | written 18 Nov 2026: transfer route (NMHL/FHR vs MHL/KHL non-member), entry and work rules for RU/BY citizens in FI, LV, LT, PL, CZ, KZ, RS with status official/press; no player cases |
 | 6 | From USPHL / EHL / NA3HL to Europe | new | /guides/from-usphl-ehl-na3hl-to-senior-hockey-in-europe · /ru/guides/iz-usphl-ehl-na3hl-vo-vzroslyj-hokkej-evropy |
 | 7 | European U20: SWE, FIN, CZE, SUI, AUT | new hub | /guides/european-u20-hockey-sweden-finland-czechia-switzerland-austria · /ru/guides/evropejskie-u20-shvetsiya-finlyandiya-chehiya-shvejcariya-avstriya |
 | 8 | Clubs: import on a budget | new | /guides/import-player-on-a-budget-for-second-and-third-division-clubs · /ru/guides/legioner-s-ogranichennym-byudzhetom-dlya-klubov-vtorogo-i-tretego-diviziona |
@@ -32,9 +32,26 @@ Russian pages: the primary domain serves them under `/ru/`; `eurohockeyagency.ru
 
 ## Not confirmed / open
 
-- Article 5 (MHL/NMHL): not written — league restrictions for Russian/Belarusian players and visa availability by country need primary sources.
+- Article 5 (MHL/NMHL): written. Open: no league-level nationality bans found (only state visa/entry rules); MHL transfer procedure (FHR ITC vs IIHF section 9 non-member) not confirmed by a federation; Lithuania and Serbia rows rely on press; Germany, Austria, Switzerland, Slovakia, Hungary, Italy, France not checked individually; no EHA cases. Rules changed twice in Nov 2026 — recheck before publishing and monthly.
 - Transfer calendar: 16 countries have "requires checking" or "not published" rows (ICEHL, CEHL, CHL, Czech senior leagues, Denmark, Estonia, Finland senior, DEL/Oberliga, Erste Liga, Japan, Kazakhstan, Latvia, Lithuania, Norway, Romania, Serbia, Slovakia, Spain, USA); UK dates are from the 2025/26 IHUK policy; Polish 1 Liga year to confirm.
 - No EHA salary sample for any league in the comparisons except the AlpsHL estimate.
 - No verified EHA transfer cases from USPHL/EHL/NA3HL; no data for an EHA Index (cases lack seasons and previous leagues).
 - Expert review: all new texts say "Prepared by the EHA editorial team" (owner decision); no "Reviewed by" claim.
 - Search demand for the three comparisons is a hypothesis from Search Console query and page data; no direct "X vs Y" queries were seen.
+
+## Article 5 fact-check (checked 18 Nov 2026)
+
+| Claim | Status | Source |
+| --- | --- | --- |
+| Russia and Belarus excluded from IIHF events 2026/27 | official | iihf.com/en/news/71781 |
+| CAS ordered reinstatement end of Oct 2026; some federations/governments refuse | press | dailyfaceoff.com (3 Nov 2026), expats.cz |
+| KHL is an IIHF non-member; IIHF members must respect its contracts (8.1) | KHL statement | en.khl.ru/news/2024/10/18/536334.html |
+| IIHF Transfer Regulations have section 9 on non-member organisations | official | en.fhr.ru (IIHF ITR 6 Oct 2025) |
+| Finland: from 16 Nov 2026 no visas for short-term work incl. pro sport for RU citizens unless national interest; incl. neutral athletes and transit | official (MFA via Yle, Reuters) | yle.fi/a/74-20256630 |
+| Finland: non-biometric RU passports refused from 1 Jun 2026; exceptions incl. under 18 | official | um.fi |
+| Latvia: no employment visas for RU citizens; BY long-term visa applications accepted; biometric RU passport since 15 Jul 2025 | official | pmlp.gov.lv, likumi.lv (Reg. 123) |
+| Lithuania: visa halt for RU and BY since 2023; BY work residence de facto hard from 1 Nov 2026 | press | atozserwisplus, Nasha Niva |
+| Poland: entry for tourism/culture/sport/business restricted for RU citizens | official | ISAP Dz.U. 2023 poz. 1403 |
+| Czechia: Reg. 55/2024 limits visa types for RU and BY; state-interest exception | official | mzv.gov.cz |
+| Kazakhstan: EAEU citizens work without a permit | official | egov.kz |
+| Serbia: visa-free entry, work needs permit; ending visa-free regime discussed | press | n1info.rs |

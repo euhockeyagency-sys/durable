@@ -114,7 +114,8 @@ test("new articles, comparisons and club guides: B2B pages lead to /for-clubs", 
     ["/guides/tauron-hokej-liga-vs-ligue-magnus", "/ru/guides/tauron-hokej-liga-ili-ligue-magnus"],
     ["/guides/hockeyettan-vs-mestis", "/ru/guides/hockeyettan-ili-mestis"],
     ["/guides/import-player-on-a-budget-for-second-and-third-division-clubs", "/ru/guides/legioner-s-ogranichennym-byudzhetom-dlya-klubov-vtorogo-i-tretego-diviziona"],
-    ["/guides/import-player-first-two-weeks-checklist", "/ru/guides/pervye-dve-nedeli-legionera-v-klube"]
+    ["/guides/import-player-first-two-weeks-checklist", "/ru/guides/pervye-dve-nedeli-legionera-v-klube"],
+    ["/guides/after-mhl-and-nmhl-to-europe-options-for-russian-and-belarusian-players", "/ru/guides/posle-mhl-i-nmhl-v-evropu-varianty-dlya-igrokov-iz-rossii-i-belarusi"]
   ];
   for (const pair of pairs) for (const url of pair) {
     const html = (await get(url)).text;
