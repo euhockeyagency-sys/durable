@@ -1210,3 +1210,5 @@ h2{font-size:clamp(34px,10vw,48px)}
 .next-step-cta{margin:32px 0;padding:20px 22px;border:1px solid var(--line);border-radius:12px;background:rgba(var(--accent-rgb),.06)}
 .next-step-cta h2,.next-step-cta h3{margin-top:0}
 .next-step-cta .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px}
+.article-hero h1{overflow-wrap:break-word}
+.article-byline a{color:var(--accent-text);text-decoration:underline;text-underline-offset:3px}

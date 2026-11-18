@@ -50,6 +50,8 @@ const GUIDES = [
   { en: "how-a-hockey-agent-works", ru: "kak-rabotaet-hokkejnyj-agent", cat: "process", title: { en: "How a hockey agent works", ru: "Как работает хоккейный агент" } },
   { en: "hockey-player-salaries-in-europe", ru: "zarplaty-hokkeistov-v-evrope", cat: "process", title: { en: "Hockey player salaries in Europe", ru: "Зарплаты хоккеистов в Европе" } },
   { en: "icehl-and-alps-hockey-league-salaries", ru: "zarplaty-icehl-i-alps-hockey-league", cat: "process", title: { en: "ICEHL and Alps Hockey League salaries", ru: "Зарплаты в ICEHL и Alps Hockey League" } },
+  { en: "restart-hockey-career-after-bad-season-or-injury", ru: "perezapusk-kariery-posle-slabogo-sezona-ili-travmy", cat: "process", title: { en: "Restart a hockey career after a weak season or injury", ru: "Перезапуск карьеры после слабого сезона или травмы" } },
+  { en: "paid-hockey-showcases-in-europe", ru: "platnye-prosmotry-i-shoukejsy-v-evrope", cat: "parents", title: { en: "Paid tryouts and showcases in Europe", ru: "Платные просмотры и шоукейсы в Европе" } },
   { en: "france-poland-or-alps-hockey-league-after-juniors", ru: "franciya-polsha-ili-alps-hockey-league-posle-yuniorov", cat: "process", title: { en: "France, Poland or AlpsHL after juniors", ru: "Франция, Польша или AlpsHL после юниоров" } },
   { en: "best-european-hockey-leagues-for-imports", ru: "luchshie-ligi-evropy-dlya-legionerov", cat: "process", title: { en: "Top 10 European leagues for imports 2026/27", ru: "Топ-10 лиг Европы для легионеров 2026/27" } },
   { en: "hockey-agent-in-germany", ru: "hokkejnyj-agent-v-germanii", cat: "process", title: { en: "Hockey agent in Germany", ru: "Хоккейный агент в Германии" } },

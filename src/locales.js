@@ -121,6 +121,8 @@ const PAGES = [
   { ru: "/guides/hokkej-v-belgii", en: "/guides/hockey-in-belgium" },
   { ru: "/guides/zarplaty-hokkeistov-v-evrope", en: "/guides/hockey-player-salaries-in-europe" },
   { ru: "/guides/zarplaty-icehl-i-alps-hockey-league", en: "/guides/icehl-and-alps-hockey-league-salaries" },
+  { ru: "/guides/perezapusk-kariery-posle-slabogo-sezona-ili-travmy", en: "/guides/restart-hockey-career-after-bad-season-or-injury" },
+  { ru: "/guides/platnye-prosmotry-i-shoukejsy-v-evrope", en: "/guides/paid-hockey-showcases-in-europe" },
   { ru: "/guides/franciya-polsha-ili-alps-hockey-league-posle-yuniorov", en: "/guides/france-poland-or-alps-hockey-league-after-juniors" },
   { ru: "/guides/luchshie-ligi-evropy-dlya-legionerov", en: "/guides/best-european-hockey-leagues-for-imports" },
   { ru: "/ligi/italiya-ihl-serie-a", en: "/leagues/italy-ihl-serie-a" },

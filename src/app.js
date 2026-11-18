@@ -912,7 +912,7 @@ function renderBody(data, extension, config, context) {
   // League profiles (src/league-profiles.js): league page body, FAQ JSON-LD and
   // rule summaries on country guides, all from one record per league.
   if (extension === ".html" && html.includes("<!-- LEAGUE_")) html = applyLeagueProfiles(html, logicalPath, locale);
-  if (extension === ".html" && (html.includes("<!-- LEAGUE_COMPARE:") || html.includes("<!-- EHA_BYLINE -->"))) html = applyArticleBlocks(html, logicalPath, locale);
+  if (extension === ".html" && (html.includes("<!-- LEAGUE_COMPARE:") || html.includes("<!-- LEAGUE_DEADLINES:") || html.includes("<!-- EHA_BYLINE -->"))) html = applyArticleBlocks(html, logicalPath, locale);
   if (extension === ".html" && urlPrefix) {
     html = prefixInternalLinks(html, urlPrefix);
   }
