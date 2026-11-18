@@ -64,10 +64,10 @@ test("CTA query carries a valid EP link and the source trail, nothing else from 
 
 test("calculator pages and league embeds show the Elite Prospects next step beside the result", async () => {
   for (const [url, cta, note] of [
-    ["/level-calculator", "Submit your Elite Prospects profile", "Your personal list is prepared after we review the application."],
-    ["/ru/kalkulyator-urovnya", "Отправить профиль Elite Prospects", "Персональный список готовится после рассмотрения заявки."],
-    ["/leagues/france-division-1", "Submit your Elite Prospects profile", "Your personal list is prepared after we review the application."],
-    ["/ru/ligi/polsha-tauron-hokej-liga", "Отправить профиль Elite Prospects", "Персональный список готовится после рассмотрения заявки."]
+    ["/level-calculator", "Submit Your Profile", "Your personal list is prepared after we review the application."],
+    ["/ru/kalkulyator-urovnya", "Отправить профиль агенту", "Персональный список готовится после рассмотрения заявки."],
+    ["/leagues/france-division-1", "Submit Your Profile", "Your personal list is prepared after we review the application."],
+    ["/ru/ligi/polsha-tauron-hokej-liga", "Отправить профиль агенту", "Персональный список готовится после рассмотрения заявки."]
   ]) {
     const html = (await get(url)).text;
     assert.ok(html.includes(`id="calc-cta" href="${url.startsWith("/ru") ? "/ru" : ""}/contact">${cta}</a>`), url);

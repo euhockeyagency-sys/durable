@@ -58,3 +58,19 @@ test("transfer windows guide lists official 2026/27 league deadlines from the pr
   const html = (await get("/guides/hockey-transfer-windows")).text;
   assert.ok(html.includes("15 February 2027") && html.includes("31 December 2026, 23:59") && html.includes("11 January 2027"));
 });
+
+test("calculator: up to three matching guides, the league page first, the directory when nothing matches", () => {
+  const calc = require("../public/assets/level-calculator.js");
+  const leagues = [
+    { name: "A", country: "Germany", tier: 2, open: "mid", url: "/leagues/a" },
+    { name: "B", country: "Germany", tier: 2, open: "mid" },
+    { name: "C", country: "Poland", tier: 2, open: "mid" },
+    { name: "D", country: "Atlantis", tier: 2, open: "mid" },
+    { name: "E", country: "France", tier: 2, open: "mid", url: "/leagues/e" }
+  ];
+  const items = calc.recommendGuides({ candidates: leagues }, "en");
+  assert.deepEqual(items.map((i) => i.url), ["/leagues/a", "/guides/hockey-in-germany", "/guides/hockey-in-poland"]);
+  assert.equal(calc.recommendGuides({ candidates: [leagues[0]] }, "en").length, 1);
+  const none = calc.renderRecommendations([], "ru");
+  assert.ok(none.includes('href="/ru/ligi-evropy"') && none.includes("Данных недостаточно"));
+});
