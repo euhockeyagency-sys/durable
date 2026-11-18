@@ -1253,3 +1253,31 @@ h2{font-size:clamp(34px,10vw,48px)}
 .readiness .rq-opts input{width:auto;margin:0;accent-color:var(--accent)}
 .readiness button[type=reset]{background:none;border:0;padding:0;cursor:pointer;color:inherit;text-decoration:underline}
 @media (min-width:851px) and (max-width:1240px){.header nav{gap:clamp(10px,1.4vw,18px);font-size:12px}.header .brand b{display:none}}
+/* /for-clubs brief builder and available players */
+.club-brief fieldset.brief-tags{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 14px;display:grid;gap:10px}
+.club-brief legend{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted);padding:0 6px}
+.club-brief .chips{display:flex;flex-wrap:wrap;gap:8px}
+.club-brief .chip{display:inline-flex!important;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px;text-transform:none;letter-spacing:0;font-weight:600;margin:0;width:auto}
+.club-brief .chip input{width:auto;margin:0;accent-color:var(--accent)}
+.club-brief .chip:has(input:checked){border-color:var(--accent);background:rgba(var(--fg-rgb),.06)}
+.club-brief .chip:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.club-brief .three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.club-brief small{text-transform:none;letter-spacing:0;font-weight:400}
+.brief-preview-box{border:1px solid var(--line-strong);border-radius:10px;padding:14px;display:grid;gap:10px;margin:6px 0 14px}
+.brief-preview-label{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted)}
+#brief-preview{margin:0;white-space:pre-wrap;word-break:break-word;font:14px/1.6 Manrope,Arial,sans-serif;color:var(--text)}
+#brief-preview.is-empty{color:var(--muted)}
+#brief-wa[aria-disabled=true]{opacity:.55}
+.brief-site-form{border-top:1px solid var(--line);padding-top:12px;margin-bottom:10px}
+.brief-site-form summary{cursor:pointer;font-weight:700;margin-bottom:12px}
+.players-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:18px 0}
+.players-filters label{display:grid;gap:8px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted)}
+.players-filters select{border:1px solid var(--line);background:var(--field);color:var(--text);padding:12px;font:inherit;border-radius:8px;text-transform:none;letter-spacing:0}
+.players-empty{border:1px dashed var(--line-strong);border-radius:12px;padding:22px;display:grid;gap:10px;justify-items:start}
+.players-empty h3{margin:0;font-size:20px}.players-empty p{margin:0;color:var(--text-2)}
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.player-card{border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:10px}
+.player-card header{display:flex;gap:10px;align-items:center}.player-pos{background:var(--accent);color:var(--on-accent);font-weight:800;padding:4px 10px;border-radius:6px}
+.player-card dl{margin:0;display:grid;gap:6px;font-size:14px}.player-card dt{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.player-card dd{margin:0}
+@media (max-width:640px){.club-brief .three{grid-template-columns:1fr}}
+.calc-read-next{margin-top:16px}

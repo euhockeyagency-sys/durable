@@ -51,10 +51,35 @@
 </div>
 <p class="legal-note">Submitting a request does not guarantee an available player, registration approval or a signed contract.</p>
 </div>
-<form id="club-request-form" action="/api/club-request" method="post">
+<form id="club-request-form" class="club-brief" action="/api/club-request" method="post">
 <div class="form-status" id="club-form-status" role="status" aria-live="polite"></div>
+<div class="two">
 <label>Club name<input name="clubName" maxlength="160" autocomplete="organization" required>
 <span class="field-error" data-error-for="clubName"></span></label>
+<label>Country<input name="country" maxlength="100" autocomplete="country-name" required>
+<span class="field-error" data-error-for="country"></span></label>
+</div>
+<div class="two">
+<label>League or team level<input name="level" maxlength="160" placeholder="League, division, senior or junior" required>
+<span class="field-error" data-error-for="level"></span></label>
+<label>Season or joining date <small>(optional)</small><input name="briefTiming" maxlength="120" placeholder="For example: 2026/27, from 1 December"></label>
+</div>
+<fieldset class="brief-tags"><legend>Position</legend><div class="chips"><label class="chip"><input type="checkbox" name="briefPos" value="C"><span>C</span></label><label class="chip"><input type="checkbox" name="briefPos" value="LW"><span>LW</span></label><label class="chip"><input type="checkbox" name="briefPos" value="RW"><span>RW</span></label><label class="chip"><input type="checkbox" name="briefPos" value="D"><span>D</span></label><label class="chip"><input type="checkbox" name="briefPos" value="G"><span>G</span></label><label class="chip"><input type="checkbox" name="briefPos" value="any"><span>Any</span></label></div><span class="field-error" data-error-for="positionNeeded"></span></fieldset>
+<input type="hidden" name="positionNeeded">
+<fieldset class="brief-tags"><legend>Shooting side</legend><div class="chips"><label class="chip"><input type="radio" name="briefHand" value="L"><span>Left</span></label><label class="chip"><input type="radio" name="briefHand" value="R"><span>Right</span></label><label class="chip"><input type="radio" name="briefHand" value="any"><span>Any</span></label></div></fieldset>
+<fieldset class="brief-tags"><legend>Passport or eligibility</legend><div class="chips"><label class="chip"><input type="radio" name="briefElig" value="EU"><span>EU</span></label><label class="chip"><input type="radio" name="briefElig" value="nonEU"><span>Non-EU, if an import slot is free</span></label><label class="chip"><input type="radio" name="briefElig" value="any"><span>Any</span></label><label class="chip"><input type="radio" name="briefElig" value="other"><span>Other</span></label></div>
+<label>Specific restriction <small>(optional)</small><input name="briefEligNote" maxlength="200" placeholder="For example: Swiss licence, max. 2 imports, born 2006 or later"></label></fieldset>
+<fieldset class="brief-tags"><legend>Conditions</legend>
+<div class="three"><label>Budget<input name="briefBudget" maxlength="40" inputmode="decimal"></label><label>Currency<select name="briefCurrency"><option>EUR</option><option>CHF</option><option>SEK</option><option>CZK</option><option>PLN</option><option>GBP</option><option>NOK</option><option>DKK</option><option>HUF</option><option>USD</option></select></label><label>Payment period<select name="briefPeriod"><option value="">—</option><option value="month">Per month</option><option value="season">Per season</option><option value="discuss">To discuss</option></select></label></div>
+<div class="two"><label>Housing<select name="briefHousing"><option value="">—</option><option value="provided">Provided</option><option value="partly">Partly covered</option><option value="none">Not provided</option><option value="discuss">To discuss</option></select></label><label>Transport<select name="briefTransport"><option value="">—</option><option value="car">Car</option><option value="public">Public transport / bike</option><option value="none">Not provided</option><option value="discuss">To discuss</option></select></label></div>
+<label>Other conditions <small>(optional)</small><input name="briefOther" maxlength="300" placeholder="Meals, insurance, flights, job or study, bonus"></label></fieldset>
+<label>Additional comment <small>(optional)</small><textarea name="briefComment" rows="3" maxlength="1500" placeholder="Player type, role, priority skills"></textarea></label>
+<input type="hidden" name="message">
+<span class="field-error" data-error-for="message"></span>
+<div class="brief-preview-box"><p class="brief-preview-label">Message preview</p><pre id="brief-preview" tabindex="-1" aria-live="polite"></pre>
+<a class="btn primary" id="brief-wa" href="https://wa.me/375297957818" target="_blank" rel="noopener">Send brief via WhatsApp</a>
+<p class="form-note">WhatsApp opens with this message filled in; you confirm sending it there. Empty optional fields are left out.</p></div>
+<details class="brief-site-form"><summary>Or send the brief through the site</summary>
 <label>Contact person<input name="contactName" maxlength="120" autocomplete="name" required>
 <span class="field-error" data-error-for="contactName"></span></label>
 <div class="two">
@@ -64,26 +89,24 @@
 <span class="field-error" data-error-for="phone"></span></label>
 </div>
 <small class="form-help">Provide at least one contact method: email or phone.</small>
-<div class="two">
-<label>Country or market<input name="country" maxlength="100" autocomplete="country-name" required>
-<span class="field-error" data-error-for="country"></span></label>
-<label>Position needed<input name="positionNeeded" maxlength="120" placeholder="For example: centre" required>
-<span class="field-error" data-error-for="positionNeeded"></span></label>
-</div>
-<label>League or team level<input name="level" maxlength="160" placeholder="League, division, senior or junior" required>
-<span class="field-error" data-error-for="level"></span></label>
-<label>Player requirements<textarea name="message" rows="6" maxlength="3000" placeholder="Age, shooting side, production, role, timing, budget and other key conditions" required></textarea>
-<span class="field-error" data-error-for="message"></span></label>
 <label class="consent"><input type="checkbox" name="dataConsent" value="true" required>I agree to the <a href="{{EN}}/privacy" target="_blank" rel="noopener">Privacy Policy</a> and the processing of my contact details to answer this request.</label>
 <span class="field-error" data-error-for="dataConsent"></span>
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="club_request" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
 <label class="honeypot" aria-hidden="true">Your website<input name="website" tabindex="-1" autocomplete="off"></label>
 <input type="hidden" name="locale" value="en">
-<button class="btn primary" type="submit">Send request</button>
-<p class="form-note">If the form is unavailable, email <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a>.</p>
+<button class="btn ghost" type="submit">Send request</button>
+</details>
+<p class="form-note">If the form is unavailable, send the brief via WhatsApp with the button above.</p>
 </form>
 </section>
+<section class="wrap available-players" id="available-players" aria-labelledby="ap-title"><p class="kicker">Free agents</p><h2 id="ap-title">Available players</h2><p class="lead">Filter by position, shooting side and passport. Cards show only fields players agreed to publish; EHA sends the full profile and contacts on request.</p>
+<div class="players-filters"><label>Position<select data-filter="pos"><option value="any">Any</option><option value="C">C</option><option value="LW">LW</option><option value="RW">RW</option><option value="D">D</option><option value="G">G</option></select></label>
+<label>Shooting side<select data-filter="hand"><option value="any">Any</option><option value="L">Left</option><option value="R">Right</option></select></label>
+<label>Passport<select data-filter="passport"><option value="any">Any</option><option value="EU">EU</option><option value="non-EU">Non-EU</option><option value="other">Other</option></select></label></div>
+<div data-players aria-live="polite"><noscript><p>Request the current list of players from EHA.</p></noscript></div>
+</section>
+
 <section class="club-value wrap">
 <div><p class="kicker">What the club receives</p><h2>Relevant profiles, not a mass list</h2><ul class="ticks"><li>Profiles matched to the position, role and team level</li><li>Elite Prospects, current statistics and available video where applicable</li><li>Citizenship, contract status and known availability</li><li>A direct route for sporting and practical follow-up questions</li></ul></div>
 <div><p class="kicker">A useful request includes</p><h2>Details that improve the match</h2><ul class="ticks"><li>League, age group and the role inside your system</li><li>Position, shooting side, player type and priority skills</li><li>Import, passport or registration constraints that must be checked</li><li>Timing, trial format and the relevant compensation or budget framework</li></ul><p class="legal-note">More precise criteria help reduce unsuitable introductions. EHA does not promise that every request will produce a candidate.</p></div>
@@ -131,15 +154,17 @@
 <details><summary>What happens after the club sends a request?</summary><p>EHA reviews the sporting criteria, clarifies missing details, checks relevant profiles and contacts the club if a reasonable match is available for discussion.</p></details>
 </section>
 <section class="club-country-cta wrap">
-<div><p class="kicker">Open roster need</p><h2>Send the club brief</h2><p class="lead">Use the form above or email {{CONTACT_EMAIL}}. Include the decision-maker’s contact details and the essential sporting criteria.</p></div>
+<div><p class="kicker">Open roster need</p><h2>Send the club brief</h2><p class="lead">Build the brief above and send it via WhatsApp or through the site. Include the decision-maker’s contact details and the essential sporting criteria.</p></div>
 <a class="btn primary" href="#club-request-form">Request a player</a>
 </section>
 </main>
 <footer id="footer">
 <div class="footer-brand"><a class="brand" href="{{EN}}/"><span>EHA</span><b>EUROPEAN<br>HOCKEY AGENCY</b></a><p>Personal representation of hockey players across European markets.</p></div>
-<div><h4>Navigation</h4><nav class="footer-links"><a href="{{EN}}/services">Services</a><a href="{{EN}}/for-players">For players</a><a class="active" href="{{EN}}/for-clubs">For clubs</a><a href="{{EN}}/cases">Cases</a><a href="{{EN}}/guides">Resources</a><a href="{{EN}}/news">News</a></nav></div>
+<div><h4>Navigation</h4><nav class="footer-links"><a href="{{EN}}/services">Services</a><a href="{{EN}}/for-players">For players</a><a href="{{EN}}/junior-hockey-for-parents">For parents</a><a class="active" href="{{EN}}/for-clubs">For clubs</a><a href="{{EN}}/cases">Cases</a><a href="{{EN}}/guides">Resources</a><a href="{{EN}}/news">News</a></nav></div>
 <div><h4>Contact</h4><div class="footer-links"><a href="https://www.instagram.com/ehahockeyagency/" rel="noopener">Instagram ↗</a><a href="{{EN}}/privacy">Privacy</a></div></div>
 <small><span>© 2026 European Hockey Agency.</span><span><a href="{{EN}}/privacy">Privacy Policy</a></span></small>
 </footer>
+<script src="/assets/available-players.js"></script>
+<script src="/assets/club-brief.js"></script>
 </body>
 </html>

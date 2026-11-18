@@ -267,6 +267,41 @@
     return out;
   }
 
+  // "What to read next": article links chosen from the calculator's own
+  // data. Junior scenario = age this calendar year at or under the junior
+  // ceiling; the under-18 article only when the birth year proves the player
+  // is under 18 all year (turns 17 or younger this year). Import overview for
+  // adult results and for players without an EU passport.
+  var READ_NEXT = {
+    imports: { en: "/guides/best-european-hockey-leagues-for-imports#most-open", ru: "/guides/luchshie-ligi-evropy-dlya-legionerov#most-open" },
+    parents: { en: "/junior-hockey-for-parents", ru: "/yuniorskij-hokkej-roditelyam" },
+    academy: { en: "/guides/how-to-choose-a-hockey-academy", ru: "/guides/kak-vybrat-hokkejnuyu-akademiyu" },
+    minor: { en: "/guides/documents-and-iihf-transfer-for-a-minor-hockey-player", ru: "/guides/dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf" }
+  };
+  var READ_NEXT_TEXT = {
+    en: { title: "What to read next", imports: "Most open leagues for imports in 2026/27", parents: "For parents: route, school, housing and budget", academy: "How to choose a hockey academy", minor: "Moving abroad under 18: IIHF transfer, residence and school" },
+    ru: { title: "Что читать дальше", imports: "Какие лиги открыты для легионеров в 2026/27", parents: "Родителям: маршрут, учёба, жильё и бюджет", academy: "Как выбрать хоккейную академию", minor: "Переезд до 18 лет: трансфер IIHF, проживание и учёба" }
+  };
+  function readNext(r, input, lang) {
+    var keys = [];
+    var age = r.playerAge;
+    var junior = typeof age === "number" && age <= JUNIOR_AGE_CEILING;
+    if (junior) {
+      if (age <= 17) keys.push("minor");
+      keys.push("parents", "academy");
+      if (input && input.eu === false) keys.push("imports");
+    } else keys.push("imports");
+    var L = lang === "ru" ? "ru" : "en";
+    return keys.slice(0, 3).map(function (k) { return { key: k, url: READ_NEXT[k][L], text: READ_NEXT_TEXT[L][k] }; });
+  }
+  function renderReadNext(items, lang) {
+    if (!items.length) return "";
+    var T = READ_NEXT_TEXT[lang === "ru" ? "ru" : "en"];
+    return '<div class="calc-read-next"><p class="kicker">' + esc(T.title) + '</p><ul class="calc-reco-list">' + items.map(function (i) {
+      return '<li><a href="' + esc(prefixFor(lang) + i.url) + '" data-calc-link="next-' + i.key + '">' + esc(i.text) + "</a></li>";
+    }).join("") + "</ul></div>";
+  }
+
   function renderRecommendations(items, lang) {
     var strings = STRINGS[lang] || STRINGS.ru;
     if (!items.length) {
@@ -429,7 +464,7 @@
         if (nextEl) nextEl.parentNode.insertBefore(recoEl, nextEl); else resultEl.appendChild(recoEl);
       }
       var reco = recommendGuides(r, lang);
-      recoEl.innerHTML = renderRecommendations(reco, lang);
+      recoEl.innerHTML = renderRecommendations(reco, lang) + renderReadNext(readNext(r, input, lang), lang);
       document.getElementById("calc-leagues").innerHTML =
         r.candidates.map(function (l) { return renderLeagueCard(l, lang); }).join("") || '<p class="tool-note">' + strings.noLeagues + "</p>";
       var tips = r.tips.slice();
@@ -512,7 +547,7 @@
     });
   }
 
-  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate, leagueFit: leagueFit, findLeague: findLeague, guideFor: guideFor, renderGuide: renderGuide, recommendGuides: recommendGuides, renderRecommendations: renderRecommendations, buildCtaQuery: buildCtaQuery, filterForFocus: filterForFocus, COUNTRY_GUIDES: COUNTRY_GUIDES };
+  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate, leagueFit: leagueFit, findLeague: findLeague, guideFor: guideFor, renderGuide: renderGuide, recommendGuides: recommendGuides, renderRecommendations: renderRecommendations, readNext: readNext, renderReadNext: renderReadNext, buildCtaQuery: buildCtaQuery, filterForFocus: filterForFocus, COUNTRY_GUIDES: COUNTRY_GUIDES };
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;

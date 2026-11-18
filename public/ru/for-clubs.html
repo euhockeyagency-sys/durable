@@ -51,10 +51,35 @@
 </div>
 <p class="legal-note">Отправка запроса не гарантирует наличие игрока, одобрение регистрации или заключение контракта.</p>
 </div>
-<form id="club-request-form" action="/api/club-request" method="post">
+<form id="club-request-form" class="club-brief" action="/api/club-request" method="post">
 <div class="form-status" id="club-form-status" role="status" aria-live="polite"></div>
+<div class="two">
 <label>Название клуба<input name="clubName" maxlength="160" autocomplete="organization" required>
 <span class="field-error" data-error-for="clubName"></span></label>
+<label>Страна<input name="country" maxlength="100" autocomplete="country-name" required>
+<span class="field-error" data-error-for="country"></span></label>
+</div>
+<div class="two">
+<label>Лига или уровень команды<input name="level" maxlength="160" placeholder="Лига, дивизион, взрослая или юниорская" required>
+<span class="field-error" data-error-for="level"></span></label>
+<label>Сезон или срок присоединения <small>(необязательно)</small><input name="briefTiming" maxlength="120" placeholder="Например: 2026/27, с 1 декабря"></label>
+</div>
+<fieldset class="brief-tags"><legend>Позиция</legend><div class="chips"><label class="chip"><input type="checkbox" name="briefPos" value="C"><span>C</span></label><label class="chip"><input type="checkbox" name="briefPos" value="LW"><span>LW</span></label><label class="chip"><input type="checkbox" name="briefPos" value="RW"><span>RW</span></label><label class="chip"><input type="checkbox" name="briefPos" value="D"><span>D</span></label><label class="chip"><input type="checkbox" name="briefPos" value="G"><span>G</span></label><label class="chip"><input type="checkbox" name="briefPos" value="any"><span>Любая</span></label></div><span class="field-error" data-error-for="positionNeeded"></span></fieldset>
+<input type="hidden" name="positionNeeded">
+<fieldset class="brief-tags"><legend>Хват</legend><div class="chips"><label class="chip"><input type="radio" name="briefHand" value="L"><span>Левый</span></label><label class="chip"><input type="radio" name="briefHand" value="R"><span>Правый</span></label><label class="chip"><input type="radio" name="briefHand" value="any"><span>Любой</span></label></div></fieldset>
+<fieldset class="brief-tags"><legend>Паспорт или критерий допуска</legend><div class="chips"><label class="chip"><input type="radio" name="briefElig" value="EU"><span>ЕС</span></label><label class="chip"><input type="radio" name="briefElig" value="nonEU"><span>Non-EU, если есть свободное место легионера</span></label><label class="chip"><input type="radio" name="briefElig" value="any"><span>Любой</span></label><label class="chip"><input type="radio" name="briefElig" value="other"><span>Другое</span></label></div>
+<label>Конкретное ограничение <small>(необязательно)</small><input name="briefEligNote" maxlength="200" placeholder="Например: швейцарская лицензия, не больше 2 легионеров, 2006 г. р. и младше"></label></fieldset>
+<fieldset class="brief-tags"><legend>Условия</legend>
+<div class="three"><label>Бюджет<input name="briefBudget" maxlength="40" inputmode="decimal"></label><label>Валюта<select name="briefCurrency"><option>EUR</option><option>CHF</option><option>SEK</option><option>CZK</option><option>PLN</option><option>GBP</option><option>NOK</option><option>DKK</option><option>HUF</option><option>USD</option></select></label><label>Период оплаты<select name="briefPeriod"><option value="">—</option><option value="month">В месяц</option><option value="season">За сезон</option><option value="discuss">Обсуждается</option></select></label></div>
+<div class="two"><label>Жильё<select name="briefHousing"><option value="">—</option><option value="provided">Предоставляется</option><option value="partly">Частично</option><option value="none">Не предоставляется</option><option value="discuss">Обсуждается</option></select></label><label>Транспорт<select name="briefTransport"><option value="">—</option><option value="car">Автомобиль</option><option value="public">Общественный транспорт / велосипед</option><option value="none">Не предоставляется</option><option value="discuss">Обсуждается</option></select></label></div>
+<label>Другие условия <small>(необязательно)</small><input name="briefOther" maxlength="300" placeholder="Питание, страховка, перелёты, работа или учёба, бонусы"></label></fieldset>
+<label>Дополнительный комментарий <small>(необязательно)</small><textarea name="briefComment" rows="3" maxlength="1500" placeholder="Тип игрока, роль, приоритетные навыки"></textarea></label>
+<input type="hidden" name="message">
+<span class="field-error" data-error-for="message"></span>
+<div class="brief-preview-box"><p class="brief-preview-label">Предпросмотр сообщения</p><pre id="brief-preview" tabindex="-1" aria-live="polite"></pre>
+<a class="btn primary" id="brief-wa" href="https://wa.me/375297957818" target="_blank" rel="noopener">Отправить бриф в WhatsApp</a>
+<p class="form-note">WhatsApp откроется с заполненным сообщением; отправку вы подтверждаете там. Пустые необязательные поля не попадают в текст.</p></div>
+<details class="brief-site-form"><summary>Или отправьте бриф через сайт</summary>
 <label>Контактное лицо<input name="contactName" maxlength="120" autocomplete="name" required>
 <span class="field-error" data-error-for="contactName"></span></label>
 <div class="two">
@@ -64,26 +89,24 @@
 <span class="field-error" data-error-for="phone"></span></label>
 </div>
 <small class="form-help">Укажите хотя бы один способ связи: email или телефон.</small>
-<div class="two">
-<label>Страна или рынок<input name="country" maxlength="100" autocomplete="country-name" required>
-<span class="field-error" data-error-for="country"></span></label>
-<label>Нужная позиция<input name="positionNeeded" maxlength="120" placeholder="Например: центральный нападающий" required>
-<span class="field-error" data-error-for="positionNeeded"></span></label>
-</div>
-<label>Лига или уровень команды<input name="level" maxlength="160" placeholder="Лига, дивизион, senior/junior" required>
-<span class="field-error" data-error-for="level"></span></label>
-<label>Требования к игроку<textarea name="message" rows="6" maxlength="3000" placeholder="Возраст, хват, статистика, роль, сроки, бюджет и другие важные условия" required></textarea>
-<span class="field-error" data-error-for="message"></span></label>
 <label class="consent"><input type="checkbox" name="dataConsent" value="true" required>Я согласен с <a href="/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a> и обработкой контактных данных для ответа на запрос.</label>
 <span class="field-error" data-error-for="dataConsent"></span>
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="club_request" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
 <label class="honeypot" aria-hidden="true">Ваш сайт<input name="website" tabindex="-1" autocomplete="off"></label>
 <input type="hidden" name="locale" value="ru">
-<button class="btn primary" type="submit">Отправить запрос</button>
-<p class="form-note">Если форма недоступна, напишите на <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a>.</p>
+<button class="btn ghost" type="submit">Отправить запрос</button>
+</details>
+<p class="form-note">Если форма недоступна, отправьте бриф в WhatsApp кнопкой выше.</p>
 </form>
 </section>
+<section class="wrap available-players" id="available-players" aria-labelledby="ap-title"><p class="kicker">Свободные агенты</p><h2 id="ap-title">Свободные игроки</h2><p class="lead">Фильтр по позиции, хвату и паспорту. В карточках только поля, которые игроки согласились опубликовать; полный профиль и контакты EHA передаёт по запросу.</p>
+<div class="players-filters"><label>Позиция<select data-filter="pos"><option value="any">Любая</option><option value="C">C</option><option value="LW">LW</option><option value="RW">RW</option><option value="D">D</option><option value="G">G</option></select></label>
+<label>Хват<select data-filter="hand"><option value="any">Любой</option><option value="L">Левый</option><option value="R">Правый</option></select></label>
+<label>Паспорт<select data-filter="passport"><option value="any">Любой</option><option value="EU">EU</option><option value="non-EU">Non-EU</option><option value="other">Другое</option></select></label></div>
+<div data-players aria-live="polite"><noscript><p>Запросите актуальный список игроков у EHA.</p></noscript></div>
+</section>
+
 <section class="club-value wrap">
 <div><p class="kicker">Что получает клуб</p><h2>Релевантные профили, а не массовый список</h2><ul class="ticks"><li>Кандидаты под позицию, роль и уровень команды</li><li>Elite Prospects, актуальная статистика и доступное видео, когда применимо</li><li>Гражданство, контрактный статус и известная доступность</li><li>Прямой контакт для спортивных и практических уточнений</li></ul></div>
 <div><p class="kicker">Что указать в запросе</p><h2>Данные для точного подбора</h2><ul class="ticks"><li>Лигу, возрастную группу и роль игрока в системе команды</li><li>Позицию, хват, тип игрока и приоритетные качества</li><li>Ограничения по легионерам, паспорту или регистрации, которые нужно проверить</li><li>Сроки, формат просмотра и применимые условия или рамки бюджета</li></ul><p class="legal-note">Чем точнее критерии, тем меньше нерелевантных представлений. EHA не обещает, что по каждому запросу найдётся кандидат.</p></div>
@@ -131,15 +154,17 @@
 <details><summary>Что происходит после отправки запроса?</summary><p>EHA проверяет спортивные критерии, уточняет недостающие данные, рассматривает релевантные профили и связывается с клубом, если есть разумное соответствие для обсуждения.</p></details>
 </section>
 <section class="club-country-cta wrap">
-<div><p class="kicker">Открытая позиция в составе</p><h2>Отправьте запрос клуба</h2><p class="lead">Используйте форму выше или email {{CONTACT_EMAIL}}. Укажите контакт ответственного лица и основные спортивные критерии.</p></div>
+<div><p class="kicker">Открытая позиция в составе</p><h2>Отправьте запрос клуба</h2><p class="lead">Соберите бриф выше и отправьте его в WhatsApp или через сайт. Укажите контакт ответственного лица и основные спортивные критерии.</p></div>
 <a class="btn primary" href="#club-request-form">Запросить игрока</a>
 </section>
 </main>
 <footer id="footer">
 <div class="footer-brand"><a class="brand" href="/"><span>EHA</span><b>EUROPEAN<br>HOCKEY AGENCY</b></a><p>Персональное представительство хоккеистов на европейских рынках.</p></div>
-<div><h4>Навигация</h4><nav class="footer-links"><a href="/services">Услуги</a><a href="/players">Игрокам</a><a class="active" href="/for-clubs">Клубам</a><a href="/cases">Кейсы</a><a href="/guides">Материалы</a><a href="/novosti">Новости</a></nav></div>
+<div><h4>Навигация</h4><nav class="footer-links"><a href="/services">Услуги</a><a href="/players">Игрокам</a><a href="/yuniorskij-hokkej-roditelyam">Родителям</a><a class="active" href="/for-clubs">Клубам</a><a href="/cases">Кейсы</a><a href="/guides">Материалы</a><a href="/novosti">Новости</a></nav></div>
 <div><h4>Связаться</h4><div class="footer-links"><a href="https://www.instagram.com/ehahockeyagency/" rel="noopener">Instagram ↗</a><a href="/privacy">Конфиденциальность</a></div></div>
 <small><span>© 2026 European Hockey Agency.</span><span><a href="/privacy">Политика конфиденциальности</a></span></small>
 </footer>
+<script src="/assets/available-players.js"></script>
+<script src="/assets/club-brief.js"></script>
 </body>
 </html>
