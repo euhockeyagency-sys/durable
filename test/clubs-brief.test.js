@@ -61,6 +61,8 @@ test("footer Navigation links to the parents section in both languages", async (
   const home = (await get("/")).text, ru = (await get("/ru/")).text;
   assert.ok(home.includes('/junior-hockey-for-parents">Parent guide →'));
   assert.ok(ru.includes('/ru/yuniorskij-hokkej-roditelyam">Гайд для родителей →'));
+  assert.ok(home.includes("Three free tools: a realistic-level calculator, a reference guide to European hockey leagues, and an overview of the leagues most open to import players."));
+  assert.ok(ru.includes("Три бесплатных инструмента: калькулятор реалистичного уровня, справочник европейских хоккейных лиг и обзор лиг, наиболее открытых для легионеров."));
 });
 
 test("calculator 'What to read next': imports for adults, parents for juniors, under-18 only when proven", () => {
