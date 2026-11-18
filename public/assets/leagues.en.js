@@ -353,13 +353,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "mid",
       "note": "Second division, professional",
-      "imports": "Current quota and eligibility were not verified in this review; check the season rules and player status.",
+      "imports": "2026/27: at most 4 foreign players per game sheet and 6 foreign licences per club and season; foreign = no German citizenship (EU not exempt); licences until 15 February.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Spielordnung DEL2 (September 2026) §18(2), §26(3)",
+        "status": "partial",
+        "sources": [
+          "https://www.del-2.org/media/regeln/spielordnung_del2_26_27.pdf"
+        ]
       }
     },
     {
@@ -371,13 +373,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "high",
       "note": "Third level, North and South groups",
-      "imports": "Current quota and eligibility were not verified in this review; check the season rules and player status.",
+      "imports": "Press reports (2022, 2024): 3 imports per game, 5 import licences per season, over-23 limit; DEB 2026/27 regulation not verified.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Press reports only; DEB 2026/27 Oberliga regulation not seen",
+        "status": "partial",
+        "sources": [
+          "https://www.eishockeynews.de/artikel/2024/04/05/oberligisten-staerken-nachwuchsfoerderung-weiterhin-drei-kontingentspieler-erlaubt/e11703f8-3051-4e68-89ca-c6484d166c81.html"
+        ]
       }
     },
     {

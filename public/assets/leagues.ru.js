@@ -353,13 +353,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "mid",
       "note": "Второй дивизион, профессиональный",
-      "imports": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
+      "imports": "2026/27: не больше 4 иностранцев в протоколе и 6 лицензий иностранцев на клуб за сезон; иностранец — любой без немецкого гражданства (ЕС не исключён); лицензии до 15 февраля.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Spielordnung DEL2 (September 2026) §18(2), §26(3)",
+        "status": "partial",
+        "sources": [
+          "https://www.del-2.org/media/regeln/spielordnung_del2_26_27.pdf"
+        ]
       }
     },
     {
@@ -371,13 +373,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "high",
       "note": "Третий уровень, группы Север и Юг",
-      "imports": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
+      "imports": "По данным прессы (2022, 2024): 3 легионера на матч, 5 лицензий за сезон, лимит игроков старше 23 лет; регламент DEB 2026/27 не проверен.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Press reports only; DEB 2026/27 Oberliga regulation not seen",
+        "status": "partial",
+        "sources": [
+          "https://www.eishockeynews.de/artikel/2024/04/05/oberligisten-staerken-nachwuchsfoerderung-weiterhin-drei-kontingentspieler-erlaubt/e11703f8-3051-4e68-89ca-c6484d166c81.html"
+        ]
       }
     },
     {

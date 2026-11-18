@@ -120,3 +120,25 @@ test("renderer escapes text and keeps logical internal paths", () => {
   assert.ok(html.includes('href="/guides/hokkej-v-polshe"'));
   assert.ok(!html.includes("/ru/"));
 });
+
+test("Germany: DEL2 keeps its club table before the rules, guide shows both rule tables, Oberliga rule is labelled as press", async () => {
+  const del2 = (await get("/leagues/germany-del2")).text;
+  assert.ok(del2.indexOf('<section class="league-clubs"') > 0 && del2.indexOf('<section class="league-clubs"') < del2.indexOf('id="import-rules"'));
+  assert.ok(del2.includes("at most 4 may be foreign") && del2.includes("§18 (2)"));
+  const ober = (await get("/ru/ligi/germaniya-oberliga")).text;
+  assert.ok(ober.includes("сообщение прессы, не регламент"));
+  const guide = (await get("/guides/hockey-in-germany")).text;
+  assert.ok(guide.includes('data-league-id="de-del2"') && guide.includes('data-league-id="de-oberliga"'));
+  assert.ok(!guide.includes("there is no single verified import limit"));
+  assert.match(guide, /<title>How to Play Pro Hockey in Germany: DEL2, Oberliga, Import Rules &amp; Visas \| EHA<\/title>/);
+});
+
+test("free tools: Hockey CV and transfer-window checklist are copyable and downloadable without a form", async () => {
+  for (const [url, id] of [["/guides/hockey-resume-for-european-clubs", "tpl-resume"], ["/ru/guides/hokkejnoe-rezyume", "tpl-resume"], ["/guides/hockey-transfer-windows", "tpl-window-checklist"], ["/ru/guides/transfernye-okna-v-hokkee", "tpl-window-checklist"]]) {
+    const html = (await get(url)).text;
+    assert.ok(html.includes(`<pre id="${id}">`) || html.includes(`id="${id}"`), url);
+    assert.ok(html.includes(`data-copy="${id}"`) && html.includes(`data-download="${id}"`), url);
+    assert.ok(/href="(\/ru)?\/contact\?/.test(html) && html.includes("wa.me/"), `${url}: next step`);
+    assert.ok(!/>\s*\+?375[\d\s]{6,}</.test(html), `${url}: no phone as text`);
+  }
+});

@@ -62,6 +62,38 @@ const SOURCES = {
   phieSalaries: {
     label: { en: "playhockeyineurope.com: salary ranges by league (third-party, page dated 7 September 2026)", ru: "playhockeyineurope.com: диапазоны зарплат по лигам (сторонний сайт, страница от 7 сентября 2026)" },
     url: "https://www.playhockeyineurope.com/how-much-do-hockey-players-make-in-europe/"
+  },
+  del2Rules: {
+    label: { en: "DEL2: Spielordnung (September 2026)", ru: "DEL2: Spielordnung (сентябрь 2026)" },
+    url: "https://www.del-2.org/media/regeln/spielordnung_del2_26_27.pdf"
+  },
+  del2Format: {
+    label: { en: "DEL2: competition format", ru: "DEL2: формат соревнования" },
+    url: "https://www.del-2.org/spielmodus/"
+  },
+  debOberligaTeams: {
+    label: { en: "DEB: Oberliga licensing for 2026/27 completed", ru: "DEB: допуск команд Oberliga на 2026/27" },
+    url: "https://www.deb-online.de/2026/07/01/deb-oberligen-zulassungsverfahren-fuer-die-saison-2026-2027-abgeschlossen/"
+  },
+  debOberligaSchedule: {
+    label: { en: "DEB: Oberliga schedule 2026/27", ru: "DEB: календарь Oberliga 2026/27" },
+    url: "https://www.deb-online.de/2026/07/06/deb-oberliga-spielplan-fuer-die-saison-2026-2027-steht/"
+  },
+  ehnImports2022: {
+    label: { en: "Eishockey NEWS: DEB vice-president on three import players in the Oberliga (2022, press)", ru: "Eishockey NEWS: вице-президент DEB о трёх легионерах в Oberliga (2022, пресса)" },
+    url: "https://www.eishockeynews.de/artikel/2022/06/17/deb-vizepraesident-marc-hindelang-spricht-in-der-aktuellen-printausgabe-ueber-die-erhoehung-der-importstellen-in-der-oberliga/146b2c76-3342-47bd-9871-43a7d045e680.html"
+  },
+  ehnU23_2024: {
+    label: { en: "Eishockey NEWS: new over-23 limit in the Oberliga, still three import players (2024, press)", ru: "Eishockey NEWS: новый лимит игроков старше 23 лет в Oberliga, по-прежнему три легионера (2024, пресса)" },
+    url: "https://www.eishockeynews.de/artikel/2024/04/05/oberligisten-staerken-nachwuchsfoerderung-weiterhin-drei-kontingentspieler-erlaubt/e11703f8-3051-4e68-89ca-c6484d166c81.html"
+  },
+  deAthleteVisa: {
+    label: { en: "Make it in Germany (federal portal): athletes and coaches", ru: "Make it in Germany (федеральный портал): спортсмены и тренеры" },
+    url: "https://www.make-it-in-germany.com/en/visa-residence/types/other/athletes-coaches"
+  },
+  iihfTransfer2026: {
+    label: { en: "IIHF International Transfer Regulations 2026", ru: "IIHF: регламент международных переходов 2026" },
+    url: "https://blob.iihf.com/iihf-media/iihfmvc/media/downloads/regulations/2026/2026_iihf_international_transfer_regulations.pdf"
   }
 };
 
@@ -556,6 +588,414 @@ const PROFILES = [
       ]
     },
     sources: ["thlRules", "pzhlDocs", "thlSchedule", "plWork", "euPortal", "iihf", "flashscorePl"]
+  },
+
+  {
+    id: "de-del2",
+    country: { code: "DE", en: "Germany", ru: "Германия" },
+    data: { name: "DEL2", country: "Germany" },
+    names: {
+      display: { en: "DEL2", ru: "DEL2" },
+      short: "DEL2",
+      aliases: ["DEL 2", "2. Liga Deutschland", "German second division"],
+      note: {
+        en: "DEL2 is the second professional level in Germany, run by ESBG (Eishockeyspielbetriebsgesellschaft mbH). It is a separate league company from the DEL above it.",
+        ru: "DEL2 — второй профессиональный уровень Германии, её проводит ESBG (Eishockeyspielbetriebsgesellschaft mbH). Это отдельная лига, не связанная организационно с DEL уровнем выше."
+      }
+    },
+    paths: { en: "/leagues/germany-del2", ru: "/ligi/germaniya-del2" },
+    guide: { en: "/guides/hockey-in-germany", ru: "/guides/hokkej-v-germanii" },
+    season: "2026/27",
+    checkedAt: "2026-11-18",
+    question: {
+      en: "How many imports can play in DEL2, and who counts as one?",
+      ru: "Сколько легионеров может играть в DEL2 и кто считается легионером?"
+    },
+    answer: {
+      en: "At most four foreign players on a DEL2 game sheet, and a club can license at most six foreign players over the whole season. “Foreign” means anyone without German citizenship when the licence is issued, so an EU passport does not make a player non-foreign here. No new licences can be applied for after 15 February 2027 (DEL2 Spielordnung, September 2026). For a non-EU player the federal professional-athlete route also requires a gross salary of at least €50,700 a year in 2026.",
+      ru: "В протокол матча DEL2 можно внести не больше четырёх иностранных игроков, а за весь сезон клуб может лицензировать не больше шести. «Иностранец» здесь — любой игрок без немецкого гражданства на момент выдачи лицензии, поэтому паспорт ЕС не делает игрока «своим». После 15 февраля 2027 года новые лицензии запросить нельзя (Spielordnung DEL2, сентябрь 2026). Для игрока не из ЕС федеральный путь для профессиональных спортсменов в 2026 году требует ещё и зарплаты не меньше 50 700 евро брутто в год."
+    },
+    fitFor: {
+      en: "It fits an import who is ready to play a top-six, top-four or starting-goaltender role in a professional league from day one: with only four import places per game, clubs do not sign foreign depth players. For a North American player that usually means a strong ECHL season or a high-level U Sports/NCAA record with a defined role; for a European, a solid season in a comparable second division or a top division of a smaller country.",
+      ru: "Лига подходит легионеру, готовому с первого дня играть в первых двух звеньях, первой четвёрке защиты или основным вратарём профессиональной лиги: при четырёх местах на матч клубы не берут иностранцев «на глубину». Для игрока из Северной Америки это обычно сильный сезон в ECHL или высокого уровня U Sports/NCAA с понятной ролью; для европейца — уверенный сезон в сопоставимом втором дивизионе или высшем дивизионе небольшой страны."
+    },
+    position: {
+      en: "DEL2 is the second level, below the DEL and above the two Oberliga groups. In 2026/27 it has 14 clubs and 52 regular-season games each (DEL2 format page). A game sheet holds up to 19 skaters, 2 goaltenders and an emergency goaltender; at most 15 of them may hold regular licences, and the 18th and 19th skater spots are for U21 development players.",
+      ru: "DEL2 — второй уровень: ниже DEL и выше двух групп Oberliga. В сезоне 2026/27 в лиге 14 клубов, у каждого 52 матча регулярного чемпионата (страница формата DEL2). В протокол входят до 19 полевых, 2 вратаря и запасной вратарь; не больше 15 из них — с обычными лицензиями, а 18-е и 19-е места полевых отведены игрокам U21 по программе развития."
+    },
+    expectations: {
+      en: [
+        "Experience: recent professional or high-level senior seasons; DEL2 clubs rarely take an import straight from junior hockey.",
+        "Role: an import is expected to be a difference-maker — power play, top-four minutes or the starting job in goal.",
+        "Video: a recent full game plus role clips; pace, battles and decisions under pressure are what clubs check first.",
+        "Status: say whether you hold German citizenship or are eligible for a German licence category (U21/U24 rules), because that changes whether you take an import place at all."
+      ],
+      ru: [
+        "Опыт: свежие профессиональные или сильные взрослые сезоны; сразу из юниоров легионеров в DEL2 берут редко.",
+        "Роль: от легионера ждут, что он будет решать — большинство, минуты в первой четвёрке или место основного вратаря.",
+        "Видео: свежая полная игра и нарезка по роли; клубы прежде всего смотрят на скорость, единоборства и решения под давлением.",
+        "Статус: сообщите, есть ли у вас немецкое гражданство или право на немецкую категорию лицензии (правила U21/U24) — от этого зависит, займёте ли вы место легионера вообще."
+      ]
+    },
+    rules: [
+      {
+        id: "de-del2-foreign-gamesheet",
+        season: "2026/27",
+        scope: "game_sheet",
+        category: { en: "Foreign players (no German citizenship)", ru: "Иностранные игроки (без немецкого гражданства)" },
+        value: {
+          en: "Up to 19 skaters, 2 goaltenders and 1 emergency goaltender on the game sheet; at most 15 with regular licences, of whom at most 4 may be foreign. Breaking the limit means the game is scored as lost.",
+          ru: "В протоколе до 19 полевых, 2 вратарей и 1 запасного вратаря; не больше 15 с обычными лицензиями, из них не больше 4 иностранцев. Нарушение — техническое поражение."
+        },
+        exceptions: {
+          en: "A foreign player is one without German citizenship at the time the licence is issued; a player who becomes German later stops counting from that date. The regulation does not exempt EU citizens. U21 skaters, U24 players and goaltenders aged under 26 hold non-regular licences.",
+          ru: "Иностранец — игрок без немецкого гражданства на момент выдачи лицензии; если он позже получает гражданство, то перестаёт считаться иностранцем с этой даты. Граждан ЕС регламент не исключает. Полевые U21, игроки U24 и вратари младше 26 лет получают необычные (не «регулярные») лицензии."
+        },
+        ref: "Spielordnung DEL2 (September 2026), §18 (2), §24 (6)–(9), §10 (8) f)",
+        status: "official",
+        source: "del2Rules",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "de-del2-foreign-season",
+        season: "2026/27",
+        scope: "registration",
+        category: { en: "Foreign licences per club and season", ru: "Лицензии иностранцев на клуб за сезон" },
+        value: {
+          en: "A club can be granted licences for at most 6 foreign players over the whole season. A replacement after a release uses one of these six.",
+          ru: "За весь сезон клуб может получить лицензии не больше чем на 6 иностранных игроков. Замена после отчисления тоже расходует одно из этих шести мест."
+        },
+        exceptions: null,
+        ref: "Spielordnung DEL2 (September 2026), §18 (2)",
+        status: "official",
+        source: "del2Rules",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "de-del2-deadline",
+        season: "2026/27",
+        scope: "transfer",
+        category: { en: "Licence deadline (all players)", ru: "Срок лицензирования (все игроки)" },
+        value: {
+          en: "No player licences can be applied for after 15 February for the current season. Documents must reach the league at least 24 hours before a player's first championship game.",
+          ru: "После 15 февраля лицензии на текущий сезон запросить нельзя. Документы должны поступить в лигу минимум за 24 часа до первого матча игрока."
+        },
+        exceptions: {
+          en: "The IIHF international transfer period for players aged 18 and over runs from 1 July to 15 February (IIHF 2026 regulations), so a move from abroad must be completed inside it as well.",
+          ru: "Период международных переходов IIHF для игроков от 18 лет — с 1 июля по 15 февраля (регламент IIHF 2026), поэтому переход из-за рубежа тоже должен уложиться в эти даты."
+        },
+        ref: "Spielordnung DEL2 (September 2026), §24 (1), §26 (3)",
+        status: "official",
+        source: "del2Rules",
+        checkedAt: "2026-11-18"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from the league company (ESBG): a DEL2 licence in the right category, counted against the four-per-game and six-per-season import limits, plus the IIHF transfer for a player from another federation.",
+        ru: "Спортивный допуск даёт лига (ESBG): лицензия DEL2 нужной категории, которая учитывается в лимитах «четыре на матч» и «шесть за сезон», плюс трансфер IIHF для игрока из другой федерации."
+      },
+      residence: {
+        en: "EU/EEA and Swiss citizens can live in Germany without a visa but must register their address. Other players need a visa and residence title for the purpose of employment before they start.",
+        ru: "Граждане ЕС/ЕЭЗ и Швейцарии живут в Германии без визы, но регистрируют адрес. Остальным до начала работы нужны виза и вид на жительство с целью трудоустройства."
+      },
+      work: {
+        en: "For non-EU players, the federal professional-athlete route in 2026 requires age 16+, employment by a German club in competitive sport, confirmation by the national governing body and at least €50,700 gross a year (€4,225 a month). This is an immigration threshold, not a league salary scale.",
+        ru: "Для игроков не из ЕС федеральный путь для профессиональных спортсменов в 2026 году требует: возраст от 16 лет, работа в немецком клубе в соревновательном спорте, подтверждение национальной федерации и не меньше 50 700 евро брутто в год (4 225 в месяц). Это миграционный порог, а не зарплатная шкала лиги."
+      },
+      sources: ["deAthleteVisa", "iihfTransfer2026"]
+    },
+    windows: [
+      {
+        kind: "official",
+        label: { en: "IIHF transfer period (18+)", ru: "Период переходов IIHF (18+)" },
+        dates: { en: "1 July 2026 – 15 February 2027", ru: "1 июля 2026 – 15 февраля 2027" },
+        ref: "IIHF International Transfer Regulations 2026",
+        source: "iihfTransfer2026"
+      },
+      {
+        kind: "official",
+        label: { en: "Last day to apply for a DEL2 licence", ru: "Последний день запроса лицензии DEL2" },
+        dates: { en: "15 February 2027", ru: "15 февраля 2027" },
+        ref: "Spielordnung DEL2, §26 (3)",
+        source: "del2Rules"
+      },
+      {
+        kind: "guide",
+        label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" },
+        dates: { en: "March to July; in-season clubs mostly replace an import who is injured or released", ru: "С марта по июль; по ходу сезона клубы в основном заменяют травмированного или отчисленного легионера" },
+        ref: null,
+        source: null
+      }
+    ],
+    money: {
+      status: "third_party",
+      summary: {
+        en: "There is no official DEL2 salary scale and EHA has no reliable sample of its own. The public figures are third-party ranges, shown as examples. For a non-EU player the €50,700 immigration threshold is a separate, hard requirement.",
+        ru: "Официальной шкалы зарплат DEL2 нет, собственной надёжной выборки у EHA тоже. Публичные цифры — диапазоны сторонних сайтов, приведены как примеры. Для игрока не из ЕС порог 50 700 евро — отдельное обязательное требование."
+      },
+      examples: [
+        {
+          value: { en: "EUR 25,000–90,000", ru: "25 000–90 000 евро" },
+          note: {
+            en: "Third-party range for DEL2. The source does not say gross or net, per year or per season, or what is included.",
+            ru: "Диапазон стороннего сайта для DEL2. Источник не уточняет брутто или нетто, за год или за сезон и что входит."
+          },
+          source: "phieSalaries",
+          checkedAt: "2026-11-15"
+        }
+      ]
+    },
+    steps: {
+      en: [
+        "Check your status: citizenship (German citizenship changes everything), age category for U21/U24 licences, contract or release.",
+        "Prepare a recent full game, role clips and verified statistics.",
+        "Check your level with the calculator on this page. With four import places per game, aim for a role where you would be among the club's top imports.",
+        "Shortlist clubs by position needs and how many of their six import licences are already used.",
+        "Non-EU: check the €50,700 salary threshold and the governing-body confirmation before you agree terms.",
+        "Get the offer in writing and finish the IIHF transfer and licence before 15 February."
+      ],
+      ru: [
+        "Проверьте статус: гражданство (немецкое меняет всё), возрастная категория для лицензий U21/U24, контракт или отказ.",
+        "Подготовьте свежую полную игру, нарезку по роли и проверяемую статистику.",
+        "Оцените уровень в калькуляторе на этой странице. При четырёх местах на матч цельтесь в роль, где вы будете среди лучших легионеров клуба.",
+        "Составьте список клубов по потребностям в позиции и по тому, сколько из шести лицензий иностранцев у них уже занято.",
+        "Игроки не из ЕС: до согласования условий проверьте порог 50 700 евро и подтверждение федерации.",
+        "Получите письменное предложение и завершите трансфер IIHF и лицензию до 15 февраля."
+      ]
+    },
+    calcChecks: {
+      en: ["At most 4 foreign players per game sheet, 6 foreign licences per club and season.", "EU passport does not count as German in DEL2.", "Licence deadline 15 February 2027; non-EU visa route needs €50,700 gross a year."],
+      ru: ["Не больше 4 иностранцев в протоколе и 6 лицензий иностранцев на клуб за сезон.", "Паспорт ЕС в DEL2 не приравнивается к немецкому.", "Лицензии до 15 февраля 2027; виза для игрока не из ЕС — от 50 700 евро брутто в год."]
+    },
+    faq: [
+      {
+        q: { en: "How many imports can play in DEL2?", ru: "Сколько легионеров может играть в DEL2?" },
+        a: {
+          en: "At most four foreign players on the game sheet, and at most six foreign licences per club over the season (DEL2 Spielordnung, September 2026, §18).",
+          ru: "Не больше четырёх иностранцев в протоколе матча и не больше шести лицензий иностранцев на клуб за сезон (Spielordnung DEL2, сентябрь 2026, §18)."
+        }
+      },
+      {
+        q: { en: "Does an EU passport count as German in DEL2?", ru: "Считается ли паспорт ЕС немецким в DEL2?" },
+        a: {
+          en: "No. The regulation defines a foreign player as one without German citizenship when the licence is issued and does not exempt EU citizens.",
+          ru: "Нет. Регламент считает иностранцем любого игрока без немецкого гражданства на момент выдачи лицензии и граждан ЕС не исключает."
+        }
+      },
+      {
+        q: { en: "Until when can a DEL2 club sign a player?", ru: "До какого числа клуб DEL2 может заявить игрока?" },
+        a: {
+          en: "Licences cannot be applied for after 15 February. A player from abroad also needs the IIHF transfer, whose period for players 18+ ends on 15 February.",
+          ru: "После 15 февраля лицензию запросить нельзя. Игроку из-за рубежа нужен ещё трансфер IIHF, период которого для игроков от 18 лет тоже заканчивается 15 февраля."
+        }
+      },
+      {
+        q: { en: "What salary does a non-EU player need for a German work visa?", ru: "Какая зарплата нужна игроку не из ЕС для немецкой рабочей визы?" },
+        a: {
+          en: "On the federal professional-athlete route, at least €50,700 gross a year in 2026, plus the other conditions listed on Make it in Germany. It is a visa threshold, not a DEL2 pay standard.",
+          ru: "По федеральному пути для профессиональных спортсменов — не меньше 50 700 евро брутто в год в 2026 году плюс остальные условия с портала Make it in Germany. Это визовый порог, а не стандарт зарплат DEL2."
+        }
+      }
+    ],
+    missing: {
+      en: ["A reliable DEL2 salary sample; only a third-party range is available.", "Which licence category applies to a dual citizen or a player with German heritage — confirm with the club.", "Whether the 14-club field and promotion/relegation format change for 2027/28."],
+      ru: ["Надёжная выборка зарплат DEL2; есть только диапазон стороннего сайта.", "Какая категория лицензии у игрока с двойным гражданством или немецкими корнями — уточняйте у клуба.", "Изменятся ли состав из 14 клубов и формат повышения и вылета в 2027/28."]
+    },
+    sources: ["del2Rules", "del2Format", "deAthleteVisa", "iihfTransfer2026", "phieSalaries"]
+  },
+
+  {
+    id: "de-oberliga",
+    country: { code: "DE", en: "Germany", ru: "Германия" },
+    data: { name: "Oberliga", country: "Germany" },
+    names: {
+      display: { en: "Oberliga (Germany)", ru: "Oberliga (Германия)" },
+      short: "Oberliga",
+      aliases: ["Oberliga Nord", "Oberliga Süd", "DEB-Oberliga", "German third division"],
+      note: {
+        en: "The Oberliga is run by the German Ice Hockey Federation (DEB) in two groups, Nord and Süd. It is the third national level and not the same competition as the regional Oberliga levels in other sports.",
+        ru: "Oberliga проводит Федерация хоккея Германии (DEB) в двух группах — Nord и Süd. Это третий национальный уровень; не путайте с региональными «Оберлигами» в других видах спорта."
+      }
+    },
+    paths: { en: "/leagues/germany-oberliga", ru: "/ligi/germaniya-oberliga" },
+    guide: { en: "/guides/hockey-in-germany", ru: "/guides/hokkej-v-germanii" },
+    season: "2026/27",
+    checkedAt: "2026-11-18",
+    question: {
+      en: "Can an import play in the German Oberliga, and what does it pay?",
+      ru: "Может ли легионер играть в немецкой Oberliga и сколько там платят?"
+    },
+    answer: {
+      en: "Yes, but places are few: press reports since 2022 describe three import players per game and five import licences per club and season, and EHA has not seen the DEB's 2026/27 regulation itself. The league has 26 teams (12 North, 14 South) in 2026/27. Pay varies from club to club; a third-party source puts import packages at €15,000–40,000. For a non-EU player that matters: the federal athlete visa route needs at least €50,700 gross a year in 2026, which many Oberliga offers do not reach.",
+      ru: "Да, но мест мало: по сообщениям прессы с 2022 года — три легионера на матч и пять лицензий легионеров на клуб за сезон; сам регламент DEB на 2026/27 EHA не видела. В сезоне 2026/27 в лиге 26 команд (12 на севере, 14 на юге). Условия зависят от клуба; сторонний сайт оценивает пакеты легионеров в 15 000–40 000 евро. Для игрока не из ЕС это важно: федеральный визовый путь для спортсменов требует не меньше 50 700 евро брутто в год в 2026 году, и многие предложения Oberliga до него не дотягивают."
+    },
+    fitFor: {
+      en: "It fits an EU/EEA player who wants a senior role in a deep, well-supported league, a young import using it as a first season in Germany, or a veteran looking for a defined role with a community club. A non-EU player should first check whether the offer can meet the visa salary threshold.",
+      ru: "Лига подходит игроку из ЕС/ЕЭЗ, которому нужна взрослая роль в плотной лиге с хорошей поддержкой, молодому легионеру для первого сезона в Германии или опытному игроку на понятную роль в клубе с сильной местной базой. Игроку не из ЕС сначала стоит проверить, может ли предложение соответствовать визовому порогу по зарплате."
+    },
+    position: {
+      en: "The Oberliga is the third level, below DEL2. In 2026/27 the DEB licensed 26 teams: 12 in the North and 14 in the South, each group with its own schedule. Clubs range from semi-professional to near-professional budgets, so two offers with the same league name can be very different.",
+      ru: "Oberliga — третий уровень, ниже DEL2. На сезон 2026/27 DEB допустила 26 команд: 12 на севере и 14 на юге, у каждой группы свой календарь. Бюджеты клубов — от полупрофессиональных до почти профессиональных, поэтому два предложения с одним названием лиги могут сильно различаться."
+    },
+    expectations: {
+      en: [
+        "Experience: a recent senior season or a strong final junior year; for an import, a clear scoring or defensive role.",
+        "Age: press reports describe an over-23 limit on the game sheet that tightens towards 12 players by 2027/28, so clubs value younger players.",
+        "Video: a full game and role clips; the North and South groups play different styles, ask which one the club is in.",
+        "Package: ask what is paid in cash and what comes as housing, car or meals — that decides whether the offer works, especially for a visa."
+      ],
+      ru: [
+        "Опыт: свежий взрослый сезон или сильный последний юниорский год; легионеру нужна понятная атакующая или оборонительная роль.",
+        "Возраст: по сообщениям прессы, в протоколе действует лимит игроков старше 23 лет, который ужесточается до 12 к 2027/28, поэтому клубы ценят молодых.",
+        "Видео: полная игра и нарезка по роли; у групп Nord и Süd разный стиль, уточните, где играет клуб.",
+        "Пакет: спросите, что выплачивается деньгами, а что — жильём, машиной или питанием; от этого зависит, подходит ли предложение, особенно для визы."
+      ]
+    },
+    rules: [
+      {
+        id: "de-oberliga-imports",
+        season: "2022/23 onwards (press)",
+        scope: "game_sheet",
+        category: { en: "Import players (transfer-card players)", ru: "Легионеры (игроки с трансферной картой)" },
+        value: {
+          en: "Three import players per game and at most five import licences per club over a season, according to the DEB vice-president quoted in 2022 and repeated in 2024 reporting.",
+          ru: "Три легионера на матч и не больше пяти лицензий легионеров на клуб за сезон — по словам вице-президента DEB в 2022 году, что подтверждали и публикации 2024 года."
+        },
+        exceptions: {
+          en: "EHA has not seen the DEB's 2026/27 Oberliga regulation, so treat this as a press report and ask the club for the current wording. How EU citizens are counted is not confirmed here.",
+          ru: "Регламент DEB для Oberliga на 2026/27 EHA не видела, поэтому считайте это сообщением прессы и уточняйте у клуба текущую формулировку. Как учитываются граждане ЕС, здесь не подтверждено."
+        },
+        ref: null,
+        status: "press",
+        source: "ehnImports2022",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "de-oberliga-u23",
+        season: "2024/25–2027/28 (press)",
+        scope: "game_sheet",
+        category: { en: "Players over 23", ru: "Игроки старше 23 лет" },
+        value: {
+          en: "Reported limit on over-23 players in a game: 14 in 2024/25, 13 in 2025/26, falling to 12 from 2027/28.",
+          ru: "Сообщаемый лимит игроков старше 23 лет в матче: 14 в 2024/25, 13 в 2025/26, со снижением до 12 с 2027/28."
+        },
+        exceptions: {
+          en: "The 2026/27 figure is not stated in the report EHA read.",
+          ru: "Цифра для 2026/27 в прочитанном материале не названа."
+        },
+        ref: null,
+        status: "press",
+        source: "ehnU23_2024",
+        checkedAt: "2026-11-18"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from the DEB: a player licence for the Oberliga club, counted against the import limits, plus the IIHF international transfer for a player from another federation.",
+        ru: "Спортивный допуск даёт DEB: лицензия игрока для клуба Oberliga с учётом лимита легионеров плюс международный трансфер IIHF для игрока из другой федерации."
+      },
+      residence: {
+        en: "EU/EEA and Swiss citizens can live in Germany without a visa but must register their address. Other players need a visa and residence title for employment before they start.",
+        ru: "Граждане ЕС/ЕЭЗ и Швейцарии живут в Германии без визы, но регистрируют адрес. Остальным до начала работы нужны виза и вид на жительство с целью трудоустройства."
+      },
+      work: {
+        en: "For non-EU players, the federal professional-athlete route in 2026 requires age 16+, employment by a German club in competitive sport, governing-body confirmation and at least €50,700 gross a year. If an Oberliga offer is below that, ask the club which other legal route it intends to use before travelling.",
+        ru: "Для игроков не из ЕС федеральный путь для профессиональных спортсменов в 2026 году требует: возраст от 16 лет, работа в немецком клубе в соревновательном спорте, подтверждение федерации и не меньше 50 700 евро брутто в год. Если предложение Oberliga ниже порога, до поездки спросите клуб, какой другой законный путь он планирует использовать."
+      },
+      sources: ["deAthleteVisa", "iihfTransfer2026"]
+    },
+    windows: [
+      {
+        kind: "official",
+        label: { en: "IIHF transfer period (18+)", ru: "Период переходов IIHF (18+)" },
+        dates: { en: "1 July 2026 – 15 February 2027", ru: "1 июля 2026 – 15 февраля 2027" },
+        ref: "IIHF International Transfer Regulations 2026",
+        source: "iihfTransfer2026"
+      },
+      {
+        kind: "guide",
+        label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" },
+        dates: { en: "April to August; the DEB's own Oberliga registration deadline for 2026/27 is not confirmed here — ask the club", ru: "С апреля по август; собственный срок регистрации DEB для Oberliga 2026/27 здесь не подтверждён — уточняйте у клуба" },
+        ref: null,
+        source: null
+      }
+    ],
+    money: {
+      status: "third_party",
+      summary: {
+        en: "No official salary scale and no reliable EHA sample. Packages often combine a smaller salary with housing, a car and meals; ask for each item in writing. The third-party range below is an example only.",
+        ru: "Официальной шкалы нет, надёжной выборки у EHA тоже. Пакет часто сочетает небольшую зарплату с жильём, машиной и питанием; просите каждый пункт письменно. Диапазон ниже — только пример."
+      },
+      examples: [
+        {
+          value: { en: "EUR 15,000–40,000 (imports)", ru: "15 000–40 000 евро (легионеры)" },
+          note: {
+            en: "Third-party range for Oberliga imports. The source does not say gross or net, per year or per season, or what is included.",
+            ru: "Диапазон стороннего сайта для легионеров Oberliga. Источник не уточняет брутто или нетто, за год или за сезон и что входит."
+          },
+          source: "phieSalaries",
+          checkedAt: "2026-11-15"
+        }
+      ]
+    },
+    steps: {
+      en: [
+        "Decide North or South: travel, style and clubs differ between the two groups.",
+        "Check your status: citizenship, age (over-23 limit), contract or release.",
+        "Prepare a full game, role clips and verified statistics.",
+        "Check your level with the calculator on this page; compare with DEL2 if your profile is above range.",
+        "Ask how many of the club's import places and licences are already taken before you discuss money.",
+        "Non-EU: confirm the visa route and salary before travelling; get the full package in writing."
+      ],
+      ru: [
+        "Выберите север или юг: поездки, стиль и клубы в группах различаются.",
+        "Проверьте статус: гражданство, возраст (лимит старше 23 лет), контракт или отказ.",
+        "Подготовьте полную игру, нарезку по роли и проверяемую статистику.",
+        "Оцените уровень в калькуляторе на этой странице; если профиль выше, сравните с DEL2.",
+        "До разговора о деньгах спросите, сколько мест и лицензий легионеров у клуба уже занято.",
+        "Игрокам не из ЕС: до поездки подтвердите визовый путь и зарплату; весь пакет — письменно."
+      ]
+    },
+    calcChecks: {
+      en: ["Reported: 3 imports per game, 5 import licences per season (press, not the 2026/27 regulation).", "Over-23 limit on the game sheet favours younger players.", "Non-EU visa route needs €50,700 gross a year — check the offer first."],
+      ru: ["По сообщениям прессы: 3 легионера на матч, 5 лицензий за сезон (не регламент 2026/27).", "Лимит игроков старше 23 лет в протоколе — плюс для молодых.", "Виза для игрока не из ЕС — от 50 700 евро брутто в год; сначала проверьте предложение."]
+    },
+    faq: [
+      {
+        q: { en: "How many imports can play in the Oberliga?", ru: "Сколько легионеров может играть в Oberliga?" },
+        a: {
+          en: "Press reports since 2022 describe three per game and five licences per club and season. EHA has not seen the 2026/27 DEB regulation, so confirm with the club.",
+          ru: "По сообщениям прессы с 2022 года — три на матч и пять лицензий на клуб за сезон. Регламент DEB на 2026/27 EHA не видела, уточняйте у клуба."
+        }
+      },
+      {
+        q: { en: "How many teams play in the Oberliga in 2026/27?", ru: "Сколько команд в Oberliga в 2026/27?" },
+        a: {
+          en: "Twenty-six: twelve in the North and fourteen in the South (DEB licensing announcement, July 2026).",
+          ru: "Двадцать шесть: двенадцать на севере и четырнадцать на юге (сообщение DEB о допуске, июль 2026)."
+        }
+      },
+      {
+        q: { en: "Can a non-EU player get a visa for an Oberliga contract?", ru: "Может ли игрок не из ЕС получить визу по контракту Oberliga?" },
+        a: {
+          en: "Only if a legal route applies. The federal athlete route needs at least €50,700 gross a year in 2026, which many Oberliga packages do not reach; ask the club which route it will use before you travel.",
+          ru: "Только если подходит законный путь. Федеральный путь для спортсменов требует не меньше 50 700 евро брутто в год в 2026 году, а многие пакеты Oberliga до этого не дотягивают; до поездки спросите клуб, какой путь он будет использовать."
+        }
+      },
+      {
+        q: { en: "Is the Oberliga a good first step to DEL2?", ru: "Oberliga — хороший первый шаг к DEL2?" },
+        a: {
+          en: "It can be, if the player gets a real role and minutes. Production at this level is read together with age, role and video, not on its own.",
+          ru: "Может быть, если у игрока реальная роль и минуты. Статистику на этом уровне оценивают вместе с возрастом, ролью и видео, а не саму по себе."
+        }
+      }
+    ],
+    missing: {
+      en: ["The DEB's 2026/27 Oberliga regulation: import limit, how EU citizens count, over-23 figure for this season.", "The Oberliga registration deadline for 2026/27.", "A reliable salary sample."],
+      ru: ["Регламент DEB для Oberliga 2026/27: лимит легионеров, учёт граждан ЕС, цифра «старше 23 лет» на этот сезон.", "Срок регистрации Oberliga на 2026/27.", "Надёжная выборка зарплат."]
+    },
+    sources: ["debOberligaTeams", "debOberligaSchedule", "ehnImports2022", "ehnU23_2024", "deAthleteVisa", "iihfTransfer2026", "phieSalaries"]
   }
 ];
 

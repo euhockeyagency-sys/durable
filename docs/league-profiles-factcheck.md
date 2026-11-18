@@ -55,3 +55,24 @@ Not confirmed: opening date of the transfer window; any separate PZHL/PIHED reso
 ## EHA guidance, not facts
 
 The "main roster building" rows (spring–summer for France, April–August for Poland), the "who it suits" text and the step lists are EHA guidance and are labelled as such on the page.
+
+## Germany: DEL2 and Oberliga (season 2026/27, checked 18 November 2026)
+
+DEL2 — source: Spielordnung der DEL2 (September 2026), https://www.del-2.org/media/regeln/spielordnung_del2_26_27.pdf (read via WebFetch, text layer).
+
+| Fact | Basis |
+|---|---|
+| Game sheet: max 19 skaters, 2 goaltenders, 1 emergency goaltender; max 15 regular licences, of which max 4 foreign | §18 (2) |
+| Max 6 foreign licences per club per season | §18 (2) |
+| Foreign = no German citizenship at the time of licensing; later naturalisation ends foreign status; EU citizens not exempted in the text | §18 (2) |
+| Breach: game scored as lost | §10 (8) f) |
+| 18th/19th skater only U21 development players; U21/U24 licences; goaltenders under 26 not regular licences | §18 (2), §24 (6)–(9) |
+| No licence applications after 15 February; documents 24 h before first game | §26 (3), §24 (1) |
+| 14 clubs, 52 games | DEL2 format page, checked 5 October 2026 (not re-checked) |
+
+Oberliga — no official 2026/27 regulation found. Press only, labelled on the page:
+- three import players per game, max five import licences per season: DEB vice-president quoted by Eishockey NEWS, 17 June 2022; repeated as "still three" in Eishockey NEWS, 5 April 2024;
+- over-23 limit on the game sheet: 14 in 2024/25, 13 in 2025/26, 12 from 2027/28 (Eishockey NEWS, 5 April 2024); 2026/27 figure not stated.
+- 26 teams (12 North, 14 South): DEB licensing announcement, 1 July 2026.
+
+Shared: €50,700 gross/year athlete-visa threshold for 2026 (Make it in Germany, cited on the country guide 5 October 2026, not re-read); IIHF transfer period for 18+ 1 July–15 February (IIHF Transfer Regulations 2026, cited on the country guide). Salary examples: playhockeyineurope.com (see `hockey-salaries-factcheck.md`).

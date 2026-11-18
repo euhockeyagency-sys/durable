@@ -916,7 +916,12 @@ function renderBody(data, extension, config, context) {
   }
   if (extension === ".html") {
     const facts = leagueFacts(logicalPath, locale);
-    if (facts) html = html.replace('<section data-country-section="3"', `${facts}<section data-country-section="3"`);
+    if (facts) {
+      // Classic league pages: before section 3. League-profile pages: before
+      // the rules table (src/league-profile.js renders id="import-rules").
+      if (html.includes('<section data-country-section="3"')) html = html.replace('<section data-country-section="3"', `${facts}<section data-country-section="3"`);
+      else html = html.replace('<section class="league-profile-section" id="import-rules">', `${facts}<section class="league-profile-section" id="import-rules">`);
+    }
     const editorial = leagueEditorial(logicalPath, locale);
     if (editorial) html = html.replace('<section data-country-section="11"', `${editorial}<section data-country-section="11"`);
     if (logicalPath === "/guides") html = html.replace('<section class="cta"', `${guideIndex(locale)}<section class="cta"`);
