@@ -72,7 +72,7 @@ test("calculator pages and league embeds show the Elite Prospects next step besi
     const html = (await get(url)).text;
     assert.ok(html.includes(`id="calc-cta" href="${url.startsWith("/ru") ? "/ru" : ""}/contact">${cta}</a>`), url);
     assert.ok(html.includes(note) && html.includes('id="calc-guide"') && html.includes('id="calc-ep"'), url);
-    assert.ok(!/до 5 клубов|up to 5 clubs/i.test(html), url);
+    assert.ok(/1–3 suitable clubs|1–3 подходящих клуба/.test(html), url);
   }
 });
 
