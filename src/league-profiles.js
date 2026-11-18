@@ -170,6 +170,42 @@ const SOURCES = {
   semNonEu: {
     label: { en: "SEM: work for non-EU/EFTA nationals", ru: "SEM: работа для граждан стран вне ЕС/ЕАСТ" },
     url: "https://www.sem.admin.ch/sem/en/home/themen/arbeit/nicht-eu_efta-angehoerige.html"
+  },
+  mestisRoster: {
+    label: { en: "Mestis: roster rules 2026/27 (22 April 2026)", ru: "Mestis: правила составов 2026/27 (22 апреля 2026)" },
+    url: "https://mestis.fi/fi/uutiset/2026/04/22/mestiksen-kokoonpanosaannot-202627"
+  },
+  mestisFormat: {
+    label: { en: "Mestis: competition format 2026/27", ru: "Mestis: формат сезона 2026/27" },
+    url: "https://mestis.fi/fi/uutiset/2026/05/21/mestiksen-pelaamistapa-202627"
+  },
+  mestisSchedule: {
+    label: { en: "Mestis: schedule 2026/27 published", ru: "Mestis: календарь сезона 2026/27" },
+    url: "https://mestis.fi/fi/uutiset/2026/06/05/mestiksen-otteluohjelma-kaudelle-202627-on-julkaistu"
+  },
+  migriAthlete: {
+    label: { en: "Migri: residence permit for an athlete, coach or trainer", ru: "Migri: вид на жительство для спортсмена или тренера" },
+    url: "https://migri.fi/en/athlete-coach-or-trainer"
+  },
+  eihlOpeningRosters: {
+    label: { en: "Elite League: opening rosters 2026/27", ru: "Elite League: стартовые составы 2026/27" },
+    url: "https://www.eliteleague.co.uk/article/5504-opening-rosters-2026-27"
+  },
+  eihlRules2526: {
+    label: { en: "Elite League: updated roster regulations for 2025/26", ru: "Elite League: правила составов на 2025/26" },
+    url: "https://www.eliteleague.co.uk/article/4646-updated-roster-regulations-for-2025-26"
+  },
+  phnEihl2627: {
+    label: { en: "Pro Hockey News: EIHL roster regulations updated for 2026/27 (league release, trade press)", ru: "Pro Hockey News: правила составов EIHL на 2026/27 (релиз лиги, отраслевая пресса)" },
+    url: "https://prohockeynews.com/eihl-roster-regulations-updated-for-2026-27/"
+  },
+  eihlSeason: {
+    label: { en: "Elite League: 50 days to go — 2026/27 season dates", ru: "Elite League: даты сезона 2026/27" },
+    url: "https://www.eliteleague.co.uk/article/5442-50-days-to-go"
+  },
+  ukSportsVisa: {
+    label: { en: "GOV.UK: International Sportsperson visa", ru: "GOV.UK: виза International Sportsperson" },
+    url: "https://www.gov.uk/sportsperson-visa"
   }
 };
 
@@ -1995,6 +2031,297 @@ const PROFILES = [
       ru: ["Выборка или надёжный диапазон зарплат.", "Точный возрастной предел статуса «как швейцарец» (23 в решении 2021 года, 22 в одном телерепортаже)."]
     },
     sources: ["nlWeisungen2627", "nlDecision2021", "sihfClubs", "semEu", "semNonEu", "iihfTransfer2026"]
+  },
+
+  {
+    id: "fi-mestis",
+    country: { code: "FI", en: "Finland", ru: "Финляндия" },
+    data: { name: "Mestis", country: "Finland" },
+    names: {
+      display: { en: "Mestis (Finland)", ru: "Mestis (Финляндия)" },
+      short: "Mestis",
+      aliases: ["Mestis", "Finnish second division", "Mestis hockey league"],
+      note: {
+        en: "Mestis is Finland's second national senior level, below Liiga. It is run separately from the Liiga; the league's own site is mestis.fi.",
+        ru: "Mestis — второй национальный взрослый уровень Финляндии, ниже Liiga. Лига работает отдельно от Liiga; её сайт — mestis.fi."
+      }
+    },
+    paths: { en: "/leagues/finland-mestis", ru: "/ligi/finlyandiya-mestis" },
+    guide: { en: "/guides/hockey-in-finland", ru: "/guides/hokkej-v-finlyandii" },
+    season: "2026/27",
+    checkedAt: "2026-11-18",
+    question: {
+      en: "Can an import play in Mestis, and what does Mestis pay?",
+      ru: "Может ли легионер играть в Mestis и сколько там платят?"
+    },
+    answer: {
+      en: "Mestis publishes no foreign-player quota for 2026/27: its roster rules limit Liiga loan players (at most two per game, plus two U19–U20 skaters born 2007–2008) and require at least 20 own contracted players at the start of the season. So an import's chances depend on the club's need, not a quota. There is no official salary scale and EHA has no reliable sample; the only fixed number is immigration: a non-EU athlete needs a gross sports salary of at least €1,149 a month in 2026 for the Finnish athlete permit.",
+      ru: "Квоты иностранцев на 2026/27 Mestis не публикует: правила составов ограничивают игроков в аренде из Liiga (не больше двух на матч плюс двое U19–U20 2007–2008 годов рождения) и требуют не меньше 20 собственных игроков по контракту на старте сезона. Поэтому шансы легионера зависят от потребности клуба, а не от квоты. Официальной шкалы зарплат нет, надёжной выборки у EHA тоже; единственная твёрдая цифра — миграционная: для финского разрешения спортсмена игроку не из ЕС нужна спортивная зарплата не меньше 1 149 евро брутто в месяц в 2026 году."
+    },
+    fitFor: {
+      en: "It fits a player who wants a professional environment and real minutes one level below Liiga: a strong junior graduate, a player from a European third level, or an import ready for a defined role. For a North American player, think strong junior A, NCAA Division III or SPHL/FPHL level with a clear role, and expect clubs to compare carefully with Finnish players and Liiga loans.",
+      ru: "Лига подходит игроку, которому нужна профессиональная среда и реальные минуты на уровень ниже Liiga: сильному выпускнику юниоров, игроку третьего европейского уровня или легионеру, готовому к понятной роли. Для игрока из Северной Америки ориентир — сильный junior A, NCAA Division III или уровень SPHL/FPHL с понятной ролью; клубы будут внимательно сравнивать вас с финскими игроками и арендованными из Liiga."
+    },
+    position: {
+      en: "Mestis is the second level below Liiga. For 2026/27 the league confirmed nine teams — Hermes, IPK, Ketterä, KeuPa HT, Kiekko-Pojat, Kiekko-Vantaa, Pyry, RoKi and TUTO; the regular season is a six-fold round robin of 48 games per team from 11 September 2026 to 13 March 2027. Any move into the Liiga-run competition for 2027/28 remains subject to licence conditions.",
+      ru: "Mestis — второй уровень после Liiga. На сезон 2026/27 лига подтвердила девять команд — Hermes, IPK, Ketterä, KeuPa HT, Kiekko-Pojat, Kiekko-Vantaa, Pyry, RoKi и TUTO; регулярный чемпионат — шесть кругов, по 48 матчей на команду, с 11 сентября 2026 по 13 марта 2027. Переход в соревнование под управлением Liiga в 2027/28 зависит от лицензионных условий."
+    },
+    expectations: {
+      en: [
+        "Role: clubs carry at least 20 own contracted players and can add Liiga loans, so an import needs a clear position and special-teams role.",
+        "Experience: a recent full senior season or a leading junior role.",
+        "Video: a full game and role clips.",
+        "Package: many offers combine a modest salary with housing and a car; ask for each item in writing."
+      ],
+      ru: [
+        "Роль: у клубов не меньше 20 собственных игроков по контракту плюс аренды из Liiga, поэтому легионеру нужна понятная позиция и роль в спецбригадах.",
+        "Опыт: свежий полный взрослый сезон или ведущая роль в юниорах.",
+        "Видео: полная игра и нарезка по роли.",
+        "Пакет: многие предложения сочетают скромную зарплату с жильём и машиной; просите каждый пункт письменно."
+      ]
+    },
+    rules: [
+      {
+        id: "fi-mestis-loans",
+        season: "2026/27",
+        scope: "game_sheet",
+        category: { en: "Liiga loan players (not an import quota)", ru: "Игроки в аренде из Liiga (не квота легионеров)" },
+        value: {
+          en: "At most two defined Liiga loan skaters per game, plus two U19–U20 skaters born in 2007–2008.",
+          ru: "Не больше двух полевых игроков в аренде из Liiga на матч плюс двое U19–U20 2007–2008 годов рождения."
+        },
+        exceptions: {
+          en: "The 2026/27 rules publish no separate limit on foreign players.",
+          ru: "Отдельного лимита на иностранцев правила 2026/27 не публикуют."
+        },
+        ref: "Mestis roster rules 2026/27",
+        status: "official",
+        source: "mestisRoster",
+        checkedAt: "2026-10-02"
+      },
+      {
+        id: "fi-mestis-own-players",
+        season: "2026/27",
+        scope: "registration",
+        category: { en: "Own contracted players", ru: "Собственные игроки по контракту" },
+        value: {
+          en: "At least 20 of a club's own contracted players at the start of the regular season.",
+          ru: "Не меньше 20 собственных игроков клуба по контракту на старте регулярного чемпионата."
+        },
+        exceptions: null,
+        ref: "Mestis roster rules 2026/27",
+        status: "official",
+        source: "mestisRoster",
+        checkedAt: "2026-10-02"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from the Finnish Ice Hockey Association and the league: registration with the club and the IIHF transfer for a player from another federation.",
+        ru: "Спортивный допуск дают Федерация хоккея Финляндии и лига: регистрация в клубе и трансфер IIHF для игрока из другой федерации."
+      },
+      residence: {
+        en: "EU/EEA citizens register their right of residence. Other players need a residence permit before they start; Migri has a dedicated permit for professional athletes and coaches.",
+        ru: "Граждане ЕС/ЕЭЗ регистрируют право на проживание. Остальным до начала работы нужен вид на жительство; у Migri есть отдельное разрешение для профессиональных спортсменов и тренеров."
+      },
+      work: {
+        en: "For the athlete permit the sports work must be professional and income must mainly come from it; in 2026 Migri sets a minimum gross sports salary of €1,149 a month. That is an immigration threshold, not a Mestis salary.",
+        ru: "Для разрешения спортсмена спортивная работа должна быть профессиональной, а доход — в основном от неё; в 2026 году Migri устанавливает минимальную спортивную зарплату 1 149 евро брутто в месяц. Это миграционный порог, а не зарплата Mestis."
+      },
+      sources: ["migriAthlete", "iihfTransfer2026"]
+    },
+    windows: [
+      { kind: "official", label: { en: "IIHF transfer period (18+)", ru: "Период переходов IIHF (18+)" }, dates: { en: "1 July 2026 – 15 February 2027", ru: "1 июля 2026 – 15 февраля 2027" }, ref: "IIHF International Transfer Regulations 2026", source: "iihfTransfer2026" },
+      { kind: "official", label: { en: "Regular season", ru: "Регулярный чемпионат" }, dates: { en: "11 September 2026 – 13 March 2027", ru: "11 сентября 2026 – 13 марта 2027" }, ref: "Mestis format and schedule", source: "mestisFormat" },
+      { kind: "guide", label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" }, dates: { en: "April to August", ru: "С апреля по август" }, ref: null, source: null }
+    ],
+    money: {
+      status: "no_sample",
+      summary: {
+        en: "Mestis publishes no salary scale, and EHA has no reliable sample or third-party range for it, so we do not quote an average. The only official figure is Migri's €1,149 gross monthly minimum for a non-EU athlete permit (2026). Compare offers on guaranteed income minus every cost you pay yourself.",
+        ru: "Mestis не публикует шкалу зарплат, а у EHA нет ни надёжной выборки, ни стороннего диапазона, поэтому среднюю цифру мы не называем. Единственная официальная цифра — минимум Migri 1 149 евро брутто в месяц для разрешения спортсмена не из ЕС (2026). Сравнивайте предложения по гарантированному доходу за вычетом всех расходов, которые вы оплачиваете сами."
+      },
+      examples: []
+    },
+    steps: {
+      en: [
+        "Check your status: EU/EEA citizenship or the Migri athlete permit route.",
+        "Prepare a full game, role clips and verified statistics.",
+        "Check your level with the calculator on this page; compare with HockeyAllsvenskan and Liiga loans.",
+        "Shortlist the nine clubs by position needs.",
+        "Get salary, housing, car and insurance in writing; for non-EU check the €1,149 monthly minimum.",
+        "Finish the IIHF transfer and permit before travel."
+      ],
+      ru: [
+        "Проверьте статус: гражданство ЕС/ЕЭЗ или путь через разрешение спортсмена Migri.",
+        "Подготовьте полную игру, нарезку по роли и проверяемую статистику.",
+        "Оцените уровень в калькуляторе на этой странице; сравните с HockeyAllsvenskan и арендами из Liiga.",
+        "Составьте список из девяти клубов по потребностям в позиции.",
+        "Получите письменно зарплату, жильё, машину и страховку; игрокам не из ЕС — проверить минимум 1 149 евро в месяц.",
+        "Завершите трансфер IIHF и разрешение до поездки."
+      ]
+    },
+    calcChecks: {
+      en: ["No published foreign-player quota; clubs fill needs around 20 own players and Liiga loans.", "Non-EU athlete permit: at least €1,149 gross a month (2026)."],
+      ru: ["Квота иностранцев не публикуется; клубы закрывают потребности при 20 своих игроках и арендах из Liiga.", "Разрешение спортсмена не из ЕС: от 1 149 евро брутто в месяц (2026)."]
+    },
+    faq: [
+      { q: { en: "What is the Mestis salary?", ru: "Какая зарплата в Mestis?" }, a: { en: "There is no official scale and EHA has no reliable sample, so we do not quote a number. A non-EU player needs at least €1,149 gross a month for the Finnish athlete permit (2026).", ru: "Официальной шкалы нет, надёжной выборки у EHA тоже, поэтому цифру мы не называем. Игроку не из ЕС для финского разрешения спортсмена нужно не меньше 1 149 евро брутто в месяц (2026)." } },
+      { q: { en: "Is there an import limit in Mestis?", ru: "Есть ли лимит легионеров в Mestis?" }, a: { en: "The 2026/27 roster rules publish none; they limit Liiga loan players instead (two per game plus two U19–U20).", ru: "Правила составов 2026/27 его не публикуют; вместо этого ограничены аренды из Liiga (двое на матч плюс двое U19–U20)." } },
+      { q: { en: "How many teams play in Mestis in 2026/27?", ru: "Сколько команд в Mestis в 2026/27?" }, a: { en: "Nine, with 48 regular-season games each from 11 September 2026 to 13 March 2027.", ru: "Девять, по 48 матчей регулярного чемпионата с 11 сентября 2026 по 13 марта 2027." } }
+    ],
+    missing: {
+      en: ["A salary sample or reliable range.", "A Mestis registration deadline for 2026/27."],
+      ru: ["Выборка или надёжный диапазон зарплат.", "Срок регистрации игроков Mestis на 2026/27."]
+    },
+    sources: ["mestisRoster", "mestisFormat", "mestisSchedule", "migriAthlete", "iihfTransfer2026"]
+  },
+
+  {
+    id: "uk-eihl",
+    country: { code: "GB", en: "United Kingdom", ru: "Великобритания" },
+    data: { name: "EIHL", country: "United Kingdom" },
+    names: {
+      display: { en: "Elite Ice Hockey League (EIHL)", ru: "Elite Ice Hockey League (EIHL)" },
+      short: "EIHL",
+      aliases: ["EIHL", "Elite League", "Motorpoint Elite League", "British Elite League"],
+      note: {
+        en: "The Elite Ice Hockey League (Motorpoint Elite League, after its title sponsor) is the UK's top senior league, with ten teams from England, Scotland, Wales and Northern Ireland. Its rules speak of homegrown and non-homegrown players, not “imports”.",
+        ru: "Elite Ice Hockey League (по титульному спонсору — Motorpoint Elite League) — высшая взрослая лига Великобритании, десять команд из Англии, Шотландии, Уэльса и Северной Ирландии. В её правилах говорят о «homegrown» и «non-homegrown» игроках, а не о «легионерах»."
+      }
+    },
+    paths: { en: "/leagues/uk-eihl", ru: "/ligi/velikobritaniya-eihl" },
+    guide: { en: "/guides/hockey-in-united-kingdom", ru: "/guides/hokkej-v-velikobritanii" },
+    season: "2026/27",
+    checkedAt: "2026-11-18",
+    question: {
+      en: "What are the EIHL import rules for 2026/27?",
+      ru: "Какие правила для легионеров в EIHL в 2026/27?"
+    },
+    answer: {
+      en: "The EIHL limits “non-homegrown” players rather than imports: at most 15 on a gameday roster of 18 skaters and two goaltenders, at most 18 registered at one time and 20 used over the season, within a 25-player season roster — as published after the league's July 2026 board meeting. Every team needs a British goaltender. The ten opening rosters on 12 September 2026 carried 15–18 non-homegrown players each. A non-UK player also needs the UK International Sportsperson visa.",
+      ru: "EIHL ограничивает не «легионеров», а игроков «non-homegrown»: не больше 15 в заявке на матч из 18 полевых и двух вратарей, не больше 18 зарегистрированных одновременно и 20 использованных за сезон при общем составе на сезон 25 игроков — по решению совета лиги в июле 2026 года. В каждой команде должен быть британский вратарь. В десяти стартовых составах 12 сентября 2026 года было по 15–18 игроков non-homegrown. Игроку без британского права на работу нужна виза International Sportsperson."
+    },
+    fitFor: {
+      en: "It fits an import who wants a full professional season with a defined role: most EIHL rosters are built around non-homegrown players, so there are more places than in leagues with tight passport quotas. For a North American player, strong ECHL, SPHL-top or U Sports/NCAA experience is a common route; clubs still sign for a specific role.",
+      ru: "Лига подходит легионеру, которому нужен полный профессиональный сезон с понятной ролью: большинство составов EIHL строятся вокруг игроков non-homegrown, поэтому мест больше, чем в лигах с жёсткими квотами по паспорту. Для игрока из Северной Америки частый путь — сильный ECHL, лучшие игроки SPHL или U Sports/NCAA; клубы всё равно подписывают под конкретную роль."
+    },
+    position: {
+      en: "The EIHL is the UK's highest senior competition. In 2026/27 its ten teams opened on 12 September with Challenge Cup games; league fixtures run from 20 September 2026 to 4 April 2027, 54 regular-season games per club.",
+      ru: "EIHL — высшее взрослое соревнование Великобритании. В сезоне 2026/27 десять команд стартовали 12 сентября матчами Challenge Cup; матчи лиги идут с 20 сентября 2026 по 4 апреля 2027, по 54 игры регулярного чемпионата на клуб."
+    },
+    expectations: {
+      en: [
+        "Role: with up to 15 non-homegrown players dressed, clubs sign imports for specific lines and special teams.",
+        "Experience: recent professional or high-level college seasons.",
+        "Video: a full game and role clips; clubs check pace and physical play.",
+        "Status: tell the club about any British citizenship or UK training history — homegrown status changes your roster value; the league's definition must be confirmed in writing."
+      ],
+      ru: [
+        "Роль: при заявке до 15 игроков non-homegrown клубы подписывают легионеров под конкретные звенья и спецбригады.",
+        "Опыт: свежие профессиональные или сильные студенческие сезоны.",
+        "Видео: полная игра и нарезка по роли; клубы смотрят на скорость и силовую игру.",
+        "Статус: сообщите клубу о британском гражданстве или подготовке в Великобритании — статус homegrown меняет вашу ценность для состава; определение лиги подтвердите письменно."
+      ]
+    },
+    rules: [
+      {
+        id: "uk-eihl-gameday",
+        season: "2026/27",
+        scope: "game_sheet",
+        category: { en: "Non-homegrown players per game", ru: "Игроки non-homegrown на матч" },
+        value: {
+          en: "Gameday roster of 18 skaters and two goaltenders, with at most 15 non-homegrown players. Every team must have at least one British goaltender on its roster.",
+          ru: "Заявка на матч — 18 полевых и два вратаря, из них не больше 15 игроков non-homegrown. В составе каждой команды должен быть хотя бы один британский вратарь."
+        },
+        exceptions: {
+          en: "As published after the July 2026 board meeting (league release, read via trade press). The league's definition of “homegrown” was not confirmed from a primary source.",
+          ru: "По решению совета лиги в июле 2026 года (релиз лиги в пересказе отраслевой прессы). Определение «homegrown» по первоисточнику не подтверждено."
+        },
+        ref: null,
+        status: "press",
+        source: "phnEihl2627",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "uk-eihl-season",
+        season: "2026/27",
+        scope: "registration",
+        category: { en: "Season roster", ru: "Состав на сезон" },
+        value: {
+          en: "25 players for the season (excluding injured-reserve replacements and, where allowed, two-way players); at most 20 non-homegrown players used in a season and 18 registered at one time. Opening rosters on 12 September 2026: 15–18 non-homegrown players per team.",
+          ru: "25 игроков на сезон (без замен с injured reserve и, где разрешено, двусторонних игроков); не больше 20 игроков non-homegrown за сезон и 18 зарегистрированных одновременно. Стартовые составы 12 сентября 2026: по 15–18 игроков non-homegrown в команде."
+        },
+        exceptions: {
+          en: "Two-way players (homegrown, under 25 on 1 August, contracted mainly to a lower-league club) may play 20 league games before they count. A homegrown player on injured reserve can be replaced only by another homegrown player.",
+          ru: "Двусторонние игроки (homegrown, младше 25 лет на 1 августа, с основным контрактом в клубе низшей лиги) могут сыграть 20 матчей лиги, прежде чем их начнут учитывать в составе. Игрока homegrown на injured reserve можно заменить только другим homegrown."
+        },
+        ref: null,
+        status: "press",
+        source: "phnEihl2627",
+        checkedAt: "2026-11-18"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from the league and Ice Hockey UK: registration within the roster rules and the IIHF transfer for a player from another federation.",
+        ru: "Спортивный допуск дают лига и Ice Hockey UK: регистрация в рамках правил состава и трансфер IIHF для игрока из другой федерации."
+      },
+      residence: {
+        en: "Players without a UK right to work, including EU citizens since Brexit, need a UK visa for the season.",
+        ru: "Игрокам без британского права на работу, включая граждан ЕС после Brexit, нужна британская виза на сезон."
+      },
+      work: {
+        en: "The usual route is the International Sportsperson visa, which needs a licensed sponsor (the club) and an endorsement from the sport's governing body; check the conditions on GOV.UK before agreeing terms.",
+        ru: "Обычный путь — виза International Sportsperson: нужен лицензированный спонсор (клуб) и одобрение руководящего органа вида спорта; до согласования условий проверьте требования на GOV.UK."
+      },
+      sources: ["ukSportsVisa", "iihfTransfer2026"]
+    },
+    windows: [
+      { kind: "official", label: { en: "Season", ru: "Сезон" }, dates: { en: "Opened 12 September 2026; league games 20 September 2026 – 4 April 2027", ru: "Старт 12 сентября 2026; матчи лиги с 20 сентября 2026 по 4 апреля 2027" }, ref: "Elite League season announcement", source: "eihlSeason" },
+      { kind: "official", label: { en: "IIHF transfer period (18+)", ru: "Период переходов IIHF (18+)" }, dates: { en: "1 July 2026 – 15 February 2027", ru: "1 июля 2026 – 15 февраля 2027" }, ref: "IIHF International Transfer Regulations 2026", source: "iihfTransfer2026" },
+      { kind: "guide", label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" }, dates: { en: "March to August; visa time must be added before the first game", ru: "С марта по август; до первого матча нужно учесть время на визу" }, ref: null, source: null }
+    ],
+    money: {
+      status: "no_sample",
+      summary: {
+        en: "The EIHL publishes no salary scale and EHA has no reliable sample or third-party range for it, so we do not quote a number. Ask whether pay is weekly or monthly, gross or net of UK tax, and whether housing, a car and flights are included — and who pays the visa costs.",
+        ru: "EIHL не публикует шкалу зарплат, а у EHA нет ни надёжной выборки, ни стороннего диапазона, поэтому цифру мы не называем. Уточняйте, платят понедельно или помесячно, брутто или нетто после британских налогов, входят ли жильё, машина и перелёты и кто оплачивает визу."
+      },
+      examples: []
+    },
+    steps: {
+      en: [
+        "Check your status: British citizenship or UK training history (homegrown), UK right to work.",
+        "Prepare a full game, role clips and verified statistics.",
+        "Check your level with the calculator on this page.",
+        "Shortlist clubs by position and how many non-homegrown places they use.",
+        "Get the offer in writing, including who pays the visa, housing and flights.",
+        "Start the International Sportsperson visa early; finish the IIHF transfer before 15 February."
+      ],
+      ru: [
+        "Проверьте статус: британское гражданство или подготовка в Великобритании (homegrown), право на работу в Великобритании.",
+        "Подготовьте полную игру, нарезку по роли и проверяемую статистику.",
+        "Оцените уровень в калькуляторе на этой странице.",
+        "Составьте список клубов по позиции и по тому, сколько мест non-homegrown занято.",
+        "Получите предложение письменно, включая оплату визы, жилья и перелётов.",
+        "Заранее начните оформление визы International Sportsperson; завершите трансфер IIHF до 15 февраля."
+      ]
+    },
+    calcChecks: {
+      en: ["At most 15 non-homegrown players per game; 20 per season, 18 at one time (2026/27, as published).", "Non-UK players need the International Sportsperson visa."],
+      ru: ["Не больше 15 non-homegrown на матч; 20 за сезон, 18 одновременно (2026/27, по опубликованным данным).", "Игрокам без британского права на работу нужна виза International Sportsperson."]
+    },
+    faq: [
+      { q: { en: "How many imports can play in the EIHL?", ru: "Сколько легионеров может играть в EIHL?" }, a: { en: "The league counts non-homegrown players: at most 15 on an 18 + 2 gameday roster, 20 used per season and 18 registered at one time in 2026/27, as published after the July board meeting.", ru: "Лига считает игроков non-homegrown: не больше 15 в заявке 18 + 2, 20 за сезон и 18 одновременно в 2026/27 — по решению совета лиги в июле." } },
+      { q: { en: "Do EU players need a visa for the EIHL?", ru: "Нужна ли игрокам из ЕС виза для EIHL?" }, a: { en: "Yes, unless they already have a UK right to work. The usual route is the International Sportsperson visa.", ru: "Да, если у них ещё нет британского права на работу. Обычный путь — виза International Sportsperson." } },
+      { q: { en: "When does the 2026/27 EIHL season run?", ru: "Когда идёт сезон EIHL 2026/27?" }, a: { en: "It opened on 12 September 2026; league games run from 20 September 2026 to 4 April 2027, 54 per club.", ru: "Старт 12 сентября 2026; матчи лиги — с 20 сентября 2026 по 4 апреля 2027, по 54 на клуб." } }
+    ],
+    missing: {
+      en: ["The league's own 2026/27 roster regulations text and its definition of “homegrown”.", "A salary sample or reliable range.", "An EIHL registration deadline for 2026/27."],
+      ru: ["Собственный текст правил составов лиги на 2026/27 и её определение «homegrown».", "Выборка или надёжный диапазон зарплат.", "Срок регистрации игроков EIHL на 2026/27."]
+    },
+    sources: ["phnEihl2627", "eihlOpeningRosters", "eihlRules2526", "eihlSeason", "ukSportsVisa", "iihfTransfer2026"]
   }
 ];
 

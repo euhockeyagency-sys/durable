@@ -35,13 +35,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "mid",
       "note": "Second division, professional",
-      "imports": "Current quota and eligibility were not verified in this review; check the season rules and player status.",
+      "imports": "2026/27: no published foreign-player quota; per game at most 2 Liiga loan skaters plus 2 U19–U20; at least 20 own contracted players.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Mestis roster rules 2026/27 (league news 22 April 2026)",
+        "status": "partial",
+        "sources": [
+          "https://mestis.fi/fi/uutiset/2026/04/22/mestiksen-kokoonpanosaannot-202627"
+        ]
       }
     },
     {
@@ -777,13 +779,16 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "mid",
       "note": "Top division, many foreigners",
-      "imports": "Current quota and eligibility were not verified in this review; check the season rules and player status.",
+      "imports": "2026/27 (per press release): up to 15 non-homegrown per game, 20 per season and 18 at one time; a British goaltender required; non-UK players need a UK visa.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "League release on 2026/27 roster regulations via trade press; opening rosters (league)",
+        "status": "partial",
+        "sources": [
+          "https://prohockeynews.com/eihl-roster-regulations-updated-for-2026-27/",
+          "https://www.eliteleague.co.uk/article/5504-opening-rosters-2026-27"
+        ]
       }
     },
     {

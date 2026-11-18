@@ -93,3 +93,9 @@ German-language page `/de/eishockey-in-deutschland`: DEL2 rule and Oberliga pres
 - Format: ICEHL game mode page, checked 3 November 2026 (14 clubs, 52 games, start 18 September 2026, top six to quarterfinals, 7–10 pre-playoffs).
 - Salary: EHA approximate estimate €35,000–150,000+ per season (owner, 16 November 2026, see hockey-salaries-factcheck.md); third-party playhockeyineurope.com €40,000–150,000+.
 - The page keeps its own 2026/27 club list (`id="icehl-clubs"`) between `LEAGUE_CLUBS` markers; `src/league-profile.js` moves it in front of the rules table.
+
+## Mestis and EIHL (checked 18 November 2026)
+
+Mestis (`fi-mestis`): roster rules 2026/27 from the league's own news of 22 April 2026 (at least 20 own contracted players at the start of the regular season; per match at most two defined Liiga loan skaters plus two U19–U20 skaters born 2007–2008). No foreign-player quota is published, so the page says so and does not invent one. Nine teams, 48 games, 11 Sep 2026 – 13 Mar 2027 from the league's format and schedule news. Migri athlete permit: €1,149 gross per month in 2026, shown as an immigration threshold, not a salary. No salary sample or range; the profile says that plainly. The league-facts club table stays labelled 2025/26.
+
+EIHL (`uk-eihl`): 2026/27 roster limits (15 non-homegrown per 18+2 gameday roster, 25-man season roster, 20 non-homegrown per season, 18 at one time, British goaltender, two-way players, IR replacement rule) come from the league release as republished by Pro Hockey News, so both rules carry the "press" label. Opening rosters (15–18 non-homegrown per team) and season dates come from league articles 5504 and 5442. Visa route: GOV.UK International Sportsperson. Homegrown definition and salary range not confirmed; listed under "missing".

@@ -60,15 +60,17 @@ window.EHA_LEAGUES_SRC = {
         "en": "Second division, professional"
       },
       "imports": {
-        "ru": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
-        "en": "Current quota and eligibility were not verified in this review; check the season rules and player status."
+        "ru": "2026/27: квота иностранцев не публикуется; на матч не больше 2 игроков в аренде из Liiga плюс 2 U19–U20; не меньше 20 своих игроков по контракту.",
+        "en": "2026/27: no published foreign-player quota; per game at most 2 Liiga loan skaters plus 2 U19–U20; at least 20 own contracted players."
       },
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Mestis roster rules 2026/27 (league news 22 April 2026)",
+        "status": "partial",
+        "sources": [
+          "https://mestis.fi/fi/uutiset/2026/04/22/mestiksen-kokoonpanosaannot-202627"
+        ]
       }
     },
     {
@@ -1221,15 +1223,18 @@ window.EHA_LEAGUES_SRC = {
         "en": "Top division, many foreigners"
       },
       "imports": {
-        "ru": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
-        "en": "Current quota and eligibility were not verified in this review; check the season rules and player status."
+        "ru": "2026/27 (по пресс-релизу): до 15 non-homegrown на матч, 20 за сезон и 18 одновременно; нужен британский вратарь; иностранцам — британская виза.",
+        "en": "2026/27 (per press release): up to 15 non-homegrown per game, 20 per season and 18 at one time; a British goaltender required; non-UK players need a UK visa."
       },
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "League release on 2026/27 roster regulations via trade press; opening rosters (league)",
+        "status": "partial",
+        "sources": [
+          "https://prohockeynews.com/eihl-roster-regulations-updated-for-2026-27/",
+          "https://www.eliteleague.co.uk/article/5504-opening-rosters-2026-27"
+        ]
       }
     },
     {

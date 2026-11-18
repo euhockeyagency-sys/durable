@@ -161,3 +161,25 @@ test("Swiss National League: 2026/27 directive numbers and deadlines are shown w
   const guide = (await get("/ru/guides/hokkej-v-shvejcarii")).text;
   assert.ok(guide.includes('data-league-id="ch-national-league"') && !guide.includes("Директива лиги 2025/26 разрешала"));
 });
+
+test("Mestis: no invented import quota or salary, 2026/27 roster rule and Migri threshold shown, club table kept", async () => {
+  for (const url of ["/leagues/finland-mestis", "/ru/ligi/finlyandiya-mestis"]) {
+    const html = (await get(url)).text;
+    assert.ok(html.includes('id="import-rules"') && html.includes("Kiekko-Pojat"), url);
+    assert.ok(/1[  ,]?149/.test(html), `${url}: Migri threshold`);
+    assert.ok(html.indexOf("<table") < html.indexOf('id="import-rules"'), `${url}: club table before rules`);
+  }
+  const guide = (await get("/guides/hockey-in-finland")).text;
+  assert.ok(guide.includes('data-league-id="fi-mestis"'));
+});
+
+test("EIHL: non-homegrown limits labelled as press, visa route and guide rule table shown", async () => {
+  for (const url of ["/leagues/uk-eihl", "/ru/ligi/velikobritaniya-eihl"]) {
+    const html = (await get(url)).text;
+    assert.ok(html.includes("non-homegrown") && html.includes("International Sportsperson"), url);
+    assert.ok(html.includes(url.startsWith("/ru") ? "сообщение прессы, не регламент" : "press report, not a regulation"), url);
+    assert.ok(!html.includes("LEAGUE_PROFILE"), `${url}: markers replaced`);
+  }
+  const guide = (await get("/ru/guides/hokkej-v-velikobritanii")).text;
+  assert.ok(guide.includes('data-league-id="uk-eihl"'));
+});

@@ -33,3 +33,5 @@ Not verified, do not publish as fact: the league's definition of "homegrown" (th
 Playoffs: a snippet of the league's `/the-eihl` page says seeds run from #1 to #8, which supports "the top eight enter the playoffs". That page carries injected third-party betting text (see the 15 November note above), so the claim stays on the page but is marked as supported by one weak source.
 
 Next check: open the league's 2026/27 roster-regulations article or PDF directly (ask the league or a club if the URL cannot be found) and replace the trade-press source.
+
+2026-11-18: league page rebuilt on the league-profile template (`uk-eihl` in `src/league-profiles.js`). The 2026/27 limits are shown with the "press report, not a regulation" label; the next check above still applies.
