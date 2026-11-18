@@ -153,3 +153,11 @@ test("ICEHL: salary answer first, own 2026/27 club list kept before the rules, i
     assert.ok(html.includes(url.startsWith("/ru") ? "сообщение прессы, не регламент" : "press report, not a regulation"));
   }
 });
+
+test("Swiss National League: 2026/27 directive numbers and deadlines are shown with section references", async () => {
+  const html = (await get("/leagues/switzerland-national-league")).text;
+  assert.ok(html.includes("Six foreign players per game") && html.includes("sec. 1.3.1"));
+  assert.ok(html.includes("15 February 2027, 24:00") && html.includes("1 February 2027, 24:00"));
+  const guide = (await get("/ru/guides/hokkej-v-shvejcarii")).text;
+  assert.ok(guide.includes('data-league-id="ch-national-league"') && !guide.includes("Директива лиги 2025/26 разрешала"));
+});

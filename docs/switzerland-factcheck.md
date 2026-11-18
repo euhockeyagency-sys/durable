@@ -13,3 +13,12 @@ Not confirmed:
 - 2026/27 transfer deadline date.
 
 Next check: when the 2026/27 directive is readable, confirm quota, per-game number, age cap and deadline, then drop the caveats.
+
+## 2026-11-18: 2026/27 directive read
+
+- Weisungen für den Spielbetrieb der National League, Saison 2026/27 (dated 02.09.2026, 16 pages), https://www.nationalleague.ch/media/bvinatrg/weisungen_spielbetrieb_nl_26_27_d.pdf — URL found through the regulations page in the browser (the page is rendered by JavaScript).
+- Sec. 1.3.1: season quota 10 foreign players in the NL (10 or unlimited in the NL/SL qualification); per game 6 in the NL, 4 in the qualification; a place counts as used when the player is on the game sheet at the start of a league game; dual citizens and "Wie Schweizer" do not count; players with S status count as foreign. Sec. 1.7: same limits for warm-up line-ups, max 20 skaters + 2 goaltenders.
+- Sec. 1.3.2: deadline Swiss/dual/"Wie Schweizer" players 1 February 2027, 24:00; foreign players 15 February 2027, 24:00; T3 form complete and signed; IIHF online approval by 15 February 24:00, releasing federation has 7 days.
+- Sec. 1.3.4: one club change per player per season within NL and Sky Swiss League. Sec. 1.3.3: U24 goaltenders born 2004 or later.
+- The directive does not state the "Wie Schweizer" age limit; 23 (2021 decision) vs 22 (SRF) stays open.
+- League page moved to the profile template (`ch-national-league`); country guides updated from "2025/26 allowed" to "2026/27 allows".

@@ -599,13 +599,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "low",
       "note": "Высший взрослый дивизион Швейцарии.",
-      "imports": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
+      "imports": "2026/27: 6 иностранцев на матч и 10 на клуб за сезон; двойное гражданство и «как швейцарец» не в квоте; переходы иностранцев до 15 февраля 2027.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Weisungen Spielbetrieb NL 2026/27 sec. 1.3.1–1.3.4, 1.7",
+        "status": "partial",
+        "sources": [
+          "https://www.nationalleague.ch/media/bvinatrg/weisungen_spielbetrieb_nl_26_27_d.pdf"
+        ]
       }
     },
     {

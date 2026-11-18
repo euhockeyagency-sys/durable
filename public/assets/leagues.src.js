@@ -950,15 +950,17 @@ window.EHA_LEAGUES_SRC = {
         "en": "Switzerland's top senior division."
       },
       "imports": {
-        "ru": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
-        "en": "Current quota and eligibility were not verified in this review; check the season rules and player status."
+        "ru": "2026/27: 6 иностранцев на матч и 10 на клуб за сезон; двойное гражданство и «как швейцарец» не в квоте; переходы иностранцев до 15 февраля 2027.",
+        "en": "2026/27: 6 foreign players per game and 10 per club and season; dual citizens and “like a Swiss” not counted; foreign players' deadline 15 February 2027."
       },
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Weisungen Spielbetrieb NL 2026/27 sec. 1.3.1–1.3.4, 1.7",
+        "status": "partial",
+        "sources": [
+          "https://www.nationalleague.ch/media/bvinatrg/weisungen_spielbetrieb_nl_26_27_d.pdf"
+        ]
       }
     },
     {

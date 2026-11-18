@@ -150,6 +150,26 @@ const SOURCES = {
   ehaIcehlSalaries: {
     label: { en: "EHA: ICEHL and Alps Hockey League salaries (approximate EHA estimate)", ru: "EHA: зарплаты в ICEHL и Alps Hockey League (приблизительная оценка EHA)" },
     url: "https://eurohockeyagency.com/guides/icehl-and-alps-hockey-league-salaries"
+  },
+  nlWeisungen2627: {
+    label: { en: "National League: Weisungen Spielbetrieb 2026/27 (2 September 2026)", ru: "National League: Weisungen Spielbetrieb 2026/27 (2 сентября 2026)" },
+    url: "https://www.nationalleague.ch/media/bvinatrg/weisungen_spielbetrieb_nl_26_27_d.pdf"
+  },
+  nlDecision2021: {
+    label: { en: "National League clubs' 2021 decisions on foreign players (copy on evz.ch)", ru: "Решения клубов National League 2021 года по иностранцам (копия на evz.ch)" },
+    url: "https://www.evz.ch/news/medientyp/news/2021/06/national-league-faellt-wichtige-entscheide-fuer-die-zukunft/"
+  },
+  sihfClubs: {
+    label: { en: "SIHF Game Center: National League clubs 2026/27", ru: "SIHF Game Center: клубы National League 2026/27" },
+    url: "https://www.sihf.ch/de/game-center/on-boarding/"
+  },
+  semEu: {
+    label: { en: "SEM: EU/EFTA citizens in Switzerland", ru: "SEM: граждане ЕС/ЕАСТ в Швейцарии" },
+    url: "https://www.sem.admin.ch/sem/en/home/themen/fza_schweiz-eu-efta/eu-efta_buerger_schweiz.html"
+  },
+  semNonEu: {
+    label: { en: "SEM: work for non-EU/EFTA nationals", ru: "SEM: работа для граждан стран вне ЕС/ЕАСТ" },
+    url: "https://www.sem.admin.ch/sem/en/home/themen/arbeit/nicht-eu_efta-angehoerige.html"
   }
 };
 
@@ -1812,6 +1832,169 @@ const PROFILES = [
       ru: ["Документ ICEHL о составах на 2026/27 (число легионеров, определение местного игрока).", "Срок регистрации или обмена легионеров на 2026/27.", "Процедуры разрешения на работу в каждой стране клубов."]
     },
     sources: ["icehlGameMode", "laolaRules2022", "laolaRules2023", "hnEuProposal", "ehaIcehlSalaries", "phieSalaries", "euPortal", "iihfTransfer2026"]
+  },
+
+  {
+    id: "ch-national-league",
+    country: { code: "CH", en: "Switzerland", ru: "Швейцария" },
+    data: { name: "National League", country: "Switzerland" },
+    names: {
+      display: { en: "Swiss National League", ru: "National League (Швейцария)" },
+      short: "National League",
+      aliases: ["NL", "Swiss NL", "National League A", "NLA", "Swiss hockey league"],
+      note: {
+        en: "The National League (NL, formerly NLA) is Switzerland's top professional league, run by National League AG within the Swiss Ice Hockey Federation (SIHF). The level below is the Sky Swiss League.",
+        ru: "National League (NL, раньше NLA) — высшая профессиональная лига Швейцарии; её проводит National League AG в структуре Федерации хоккея Швейцарии (SIHF). Уровнем ниже — Sky Swiss League."
+      }
+    },
+    paths: { en: "/leagues/switzerland-national-league", ru: "/ligi/shvejcariya-national-league" },
+    guide: { en: "/guides/hockey-in-switzerland", ru: "/guides/hokkej-v-shvejcarii" },
+    season: "2026/27",
+    checkedAt: "2026-11-18",
+    question: {
+      en: "How many foreign players can a Swiss National League team use in 2026/27?",
+      ru: "Сколько иностранцев может использовать команда Swiss National League в 2026/27?"
+    },
+    answer: {
+      en: "Six per game and ten per club over the season (four per game in the NL/SL qualification), according to the National League's 2026/27 game-operations directive. Dual citizens and players with “like a Swiss” (Wie Schweizer) status do not count; players with S status do. Club changes for foreign players close on 15 February 2027 at 24:00, and international transfers must be approved in the IIHF system by then. There is no official salary scale and EHA has no reliable sample for this league.",
+      ru: "Шесть на матч и десять на клуб за сезон (четыре на матч в квалификации NL/SL) — по директиве National League на сезон 2026/27. Игроки с двойным гражданством и со статусом «как швейцарец» (Wie Schweizer) не считаются; игроки со статусом S — считаются. Переходы иностранцев закрываются 15 февраля 2027 года в 24:00, и международный трансфер должен быть одобрен в системе IIHF к этому сроку. Официальной шкалы зарплат нет, надёжной выборки по этой лиге у EHA тоже."
+    },
+    fitFor: {
+      en: "It fits an established professional who would be one of a club's six best imports: a proven top-league or AHL scorer, a top-pair defender or a starting goaltender. With six places per game, Swiss clubs rarely sign imports for depth; for most players the realistic first step in Switzerland is the Sky Swiss League or another strong league.",
+      ru: "Лига подходит состоявшемуся профессионалу, который будет одним из шести лучших легионеров клуба: результативному игроку высших лиг или AHL, защитнику первой пары или основному вратарю. При шести местах на матч швейцарские клубы почти не берут легионеров «на глубину»; для большинства игроков реалистичный первый шаг в Швейцарии — Sky Swiss League или другая сильная лига."
+    },
+    position: {
+      en: "The National League is Switzerland's highest professional men's competition, above the Sky Swiss League. SIHF lists 14 clubs for 2026/27. Under the clubs' 2021 decision the number of foreign players per game follows league size — 4 with 12 clubs, 5 with 13, 6 with 14 — which matches the six in the 2026/27 directive.",
+      ru: "National League — высшее профессиональное мужское соревнование Швейцарии, выше Sky Swiss League. SIHF указывает 14 клубов на сезон 2026/27. По решению клубов 2021 года число иностранцев на матч зависит от числа клубов — 4 при 12, 5 при 13, 6 при 14, — что совпадает с шестью в директиве на 2026/27."
+    },
+    expectations: {
+      en: [
+        "Experience: a proven role in a top European league or the AHL; clubs pay for impact.",
+        "Role: top-six forward, top-four defence or starting goaltender — the six import places go to the best players.",
+        "Video: recent full games and role clips; special-teams value matters.",
+        "Status: tell the club about any Swiss citizenship, dual citizenship or Swiss youth-hockey history — it can mean you do not use a quota place."
+      ],
+      ru: [
+        "Опыт: подтверждённая роль в высшей лиге Европы или AHL; клубы платят за результат.",
+        "Роль: первые два звена, первая четвёрка защиты или основной вратарь — шесть мест легионеров достаются лучшим.",
+        "Видео: свежие полные игры и нарезка по роли; важна польза в спецбригадах.",
+        "Статус: сообщите клубу о швейцарском или двойном гражданстве и о детско-юношеском хоккее в Швейцарии — это может означать, что вы не занимаете место в квоте."
+      ]
+    },
+    rules: [
+      {
+        id: "ch-nl-game",
+        season: "2026/27",
+        scope: "game_sheet",
+        category: { en: "Foreign players per game", ru: "Иностранцы на матч" },
+        value: {
+          en: "Six foreign players per game in the National League; four in the NL/SL qualification. A quota place counts as used when the foreign player is on the game sheet at the start of a league game; the same limits apply to the warm-up line-up (max 20 skaters and 2 goaltenders).",
+          ru: "Шесть иностранцев на матч в National League; четыре — в квалификации NL/SL. Место в квоте считается использованным, если иностранец внесён в протокол на начало матча; те же лимиты действуют для разминки (не больше 20 полевых и 2 вратарей)."
+        },
+        exceptions: {
+          en: "Dual citizens and “like a Swiss” players do not count; players with S status count as foreign. Under the clubs' 2021 decision, a Swiss-trained foreign player keeps “like a Swiss” status in the NL only until age 23 from 2026/27 (a broadcaster reported 22); the 2026/27 directive does not state the age.",
+          ru: "Игроки с двойным гражданством и «как швейцарцы» не считаются; игроки со статусом S считаются иностранцами. По решению клубов 2021 года с 2026/27 иностранец, подготовленный в Швейцарии, сохраняет статус «как швейцарец» в NL только до 23 лет (одна телекомпания сообщала о 22); директива 2026/27 возраст не называет."
+        },
+        ref: "Weisungen Spielbetrieb NL 2026/27, sec. 1.3.1, 1.7",
+        status: "official",
+        source: "nlWeisungen2627",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "ch-nl-quota",
+        season: "2026/27",
+        scope: "registration",
+        category: { en: "Foreign players per club and season", ru: "Иностранцы на клуб за сезон" },
+        value: {
+          en: "A season quota of 10 foreign players per club in the National League.",
+          ru: "Квота — 10 иностранных игроков на клуб за сезон в National League."
+        },
+        exceptions: null,
+        ref: "Weisungen Spielbetrieb NL 2026/27, sec. 1.3.1",
+        status: "official",
+        source: "nlWeisungen2627",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "ch-nl-deadline",
+        season: "2026/27",
+        scope: "transfer",
+        category: { en: "Club-change deadlines", ru: "Сроки переходов" },
+        value: {
+          en: "Foreign players: 15 February 2027, 24:00. Swiss players, dual citizens and “like a Swiss” players: 1 February 2027, 24:00. The T3 form must be complete and signed by then, and an international transfer must be approved in the IIHF online system by 15 February, 24:00 — the releasing federation has seven days to decide.",
+          ru: "Иностранцы: 15 февраля 2027, 24:00. Швейцарцы, игроки с двойным гражданством и «как швейцарцы»: 1 февраля 2027, 24:00. К этому сроку форма T3 должна быть заполнена и подписана, а международный трансфер — одобрен в системе IIHF до 15 февраля, 24:00; у отпускающей федерации есть семь дней на решение."
+        },
+        exceptions: {
+          en: "Each player may change club only once per season within the National League and the Sky Swiss League.",
+          ru: "Каждый игрок может сменить клуб только один раз за сезон в пределах National League и Sky Swiss League."
+        },
+        ref: "Weisungen Spielbetrieb NL 2026/27, sec. 1.3.2, 1.3.4",
+        status: "official",
+        source: "nlWeisungen2627",
+        checkedAt: "2026-11-18"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from the National League and SIHF: registration and the T3 transfer form, the foreign-player quota and, for a player from abroad, IIHF approval by 15 February.",
+        ru: "Спортивный допуск дают National League и SIHF: регистрация и форма перехода T3, квота иностранцев и, для игрока из-за рубежа, одобрение IIHF до 15 февраля."
+      },
+      residence: {
+        en: "EU/EFTA citizens are handled by the cantons under the free-movement framework. Other players need a residence permit linked to the job.",
+        ru: "Граждан ЕС/ЕАСТ оформляют кантоны в рамках свободы передвижения. Остальным нужен вид на жительство, связанный с работой."
+      },
+      work: {
+        en: "For non-EU/EFTA nationals admission is restrictive: the employer must meet labour-market requirements and employment conditions (SEM). Start the permit process as soon as terms are agreed.",
+        ru: "Для граждан стран вне ЕС/ЕАСТ допуск ограничен: работодатель должен выполнить требования рынка труда и условий найма (SEM). Начинайте оформление разрешения сразу после согласования условий."
+      },
+      sources: ["semEu", "semNonEu", "iihfTransfer2026"]
+    },
+    windows: [
+      { kind: "official", label: { en: "Swiss, dual-citizen and “like a Swiss” players", ru: "Швейцарцы, двойное гражданство и «как швейцарцы»" }, dates: { en: "Until 1 February 2027, 24:00", ru: "До 1 февраля 2027, 24:00" }, ref: "Weisungen 2026/27, sec. 1.3.2", source: "nlWeisungen2627" },
+      { kind: "official", label: { en: "Foreign players and IIHF approval", ru: "Иностранцы и одобрение IIHF" }, dates: { en: "Until 15 February 2027, 24:00", ru: "До 15 февраля 2027, 24:00" }, ref: "Weisungen 2026/27, sec. 1.3.2", source: "nlWeisungen2627" },
+      { kind: "guide", label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" }, dates: { en: "Often a season ahead for top imports; in-season moves mostly replace injured imports", ru: "Для лучших легионеров часто за сезон вперёд; по ходу сезона в основном заменяют травмированных" }, ref: null, source: null }
+    ],
+    money: {
+      status: "no_sample",
+      summary: {
+        en: "The National League publishes no salary scale, and EHA has no reliable sample or third-party range for it, so we do not quote a number. Swiss contracts are usually stated in CHF; ask whether the figure is gross or net, what tax and social contributions are deducted, and what housing, car and insurance are included.",
+        ru: "National League не публикует шкалу зарплат, а у EHA нет ни надёжной выборки, ни диапазона стороннего источника, поэтому цифру мы не называем. Швейцарские контракты обычно указывают в CHF; уточняйте, брутто это или нетто, какие налоги и взносы вычитают и входят ли жильё, машина и страховка."
+      },
+      examples: []
+    },
+    steps: {
+      en: [
+        "Check your status: Swiss or dual citizenship, Swiss youth-hockey years (“like a Swiss”), S status.",
+        "Be honest about level: with six import places, compare the Sky Swiss League and other top leagues too.",
+        "Prepare recent full games, role clips and verified statistics.",
+        "Shortlist clubs by position needs and how many of their ten quota places are used.",
+        "Agree the contract in CHF with gross/net, tax, housing and insurance in writing.",
+        "Start the permit process early and finish the T3 form and IIHF approval before 15 February."
+      ],
+      ru: [
+        "Проверьте статус: швейцарское или двойное гражданство, годы в швейцарском детско-юношеском хоккее («как швейцарец»), статус S.",
+        "Трезво оцените уровень: при шести местах легионеров сравните и Sky Swiss League, и другие сильные лиги.",
+        "Подготовьте свежие полные игры, нарезку по роли и проверяемую статистику.",
+        "Составьте список клубов по потребностям в позиции и по тому, сколько из десяти мест квоты занято.",
+        "Согласуйте контракт в CHF с брутто/нетто, налогами, жильём и страховкой — письменно.",
+        "Рано начните оформление разрешений и завершите форму T3 и одобрение IIHF до 15 февраля."
+      ]
+    },
+    calcChecks: {
+      en: ["6 foreign players per game, 10 per club and season (2026/27 directive).", "Dual citizens and “like a Swiss” players do not count; S status does.", "Foreign players' deadline 15 February 2027, including IIHF approval."],
+      ru: ["6 иностранцев на матч, 10 на клуб за сезон (директива 2026/27).", "Двойное гражданство и «как швейцарец» не считаются; статус S считается.", "Срок для иностранцев — 15 февраля 2027, включая одобрение IIHF."]
+    },
+    faq: [
+      { q: { en: "How many imports can play in the Swiss National League?", ru: "Сколько легионеров может играть в Swiss National League?" }, a: { en: "Six per game and ten per club over the 2026/27 season (four per game in the NL/SL qualification), under the league's game-operations directive.", ru: "Шесть на матч и десять на клуб за сезон 2026/27 (четыре на матч в квалификации NL/SL) — по директиве лиги." } },
+      { q: { en: "Who does not count as a foreign player?", ru: "Кто не считается иностранцем?" }, a: { en: "Dual citizens and players with “like a Swiss” status. Players with S status do count as foreign.", ru: "Игроки с двойным гражданством и со статусом «как швейцарец». Игроки со статусом S считаются иностранцами." } },
+      { q: { en: "When is the transfer deadline in 2026/27?", ru: "Когда срок переходов в 2026/27?" }, a: { en: "15 February 2027 at 24:00 for foreign players, including IIHF approval; 1 February 2027 for Swiss, dual-citizen and “like a Swiss” players.", ru: "15 февраля 2027 в 24:00 для иностранцев, включая одобрение IIHF; 1 февраля 2027 для швейцарцев, игроков с двойным гражданством и «как швейцарцев»." } },
+      { q: { en: "What do Swiss National League players earn?", ru: "Сколько зарабатывают в Swiss National League?" }, a: { en: "There is no official salary scale and EHA has no reliable sample, so we do not quote a figure. Compare offers in CHF, gross and net, with housing, car and insurance listed.", ru: "Официальной шкалы нет, надёжной выборки у EHA тоже, поэтому цифру мы не называем. Сравнивайте предложения в CHF, брутто и нетто, с перечнем жилья, машины и страховки." } }
+    ],
+    missing: {
+      en: ["Any salary sample or reliable range.", "The exact age limit for “like a Swiss” status (23 in the 2021 decision, 22 in one broadcast report)."],
+      ru: ["Выборка или надёжный диапазон зарплат.", "Точный возрастной предел статуса «как швейцарец» (23 в решении 2021 года, 22 в одном телерепортаже)."]
+    },
+    sources: ["nlWeisungen2627", "nlDecision2021", "sihfClubs", "semEu", "semNonEu", "iihfTransfer2026"]
   }
 ];
 
