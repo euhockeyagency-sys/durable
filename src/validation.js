@@ -42,7 +42,7 @@ function calculatorContext(body) {
   return { band, score, leagues };
 }
 
-function validateApplication(body, files, now = new Date(), requireTurnstile = true, locale = "ru") {
+function validateApplication(body, files, now = new Date(), requireTurnstile = true, locale = "ru", { measurementsRequired = true } = {}) {
   const m = messages(locale);
   const errors = {};
   const currentYear = now.getUTCFullYear();
@@ -70,12 +70,13 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   if (!POSITION_VALUES.has(position)) errors.position = m.position;
   if (!citizenship) errors.citizenship = m.citizenship;
   if (!currentClub) errors.currentClub = m.currentClub;
-  if (applicantType === "player" && (!Number.isFinite(heightCm) || heightCm < 120 || heightCm > 230)) errors.heightCm = m.heightCm;
-  if (applicantType === "parent_guardian" && body.heightCm && (!Number.isFinite(heightCm) || heightCm < 120 || heightCm > 230)) errors.heightCm = m.heightCm;
-  if (applicantType === "player" && (!Number.isFinite(weightKg) || weightKg < 35 || weightKg > 180)) errors.weightKg = m.weightKg;
-  if (applicantType === "parent_guardian" && body.weightKg && (!Number.isFinite(weightKg) || weightKg < 35 || weightKg > 180)) errors.weightKg = m.weightKg;
-  if (applicantType === "player" && !STICK_VALUES.has(stickHand)) errors.stickHand = m.stickHand;
-  if (applicantType === "parent_guardian" && stickHand && !STICK_VALUES.has(stickHand)) errors.stickHand = m.stickHand;
+  // Height, weight and stick hand are required from a player only while the
+  // database still demands them (see src/intake/schema-state.js). A value that
+  // is given is always range-checked.
+  const needMeasurements = measurementsRequired && applicantType === "player";
+  if ((needMeasurements || body.heightCm) && (!Number.isFinite(heightCm) || heightCm < 120 || heightCm > 230)) errors.heightCm = m.heightCm;
+  if ((needMeasurements || body.weightKg) && (!Number.isFinite(weightKg) || weightKg < 35 || weightKg > 180)) errors.weightKg = m.weightKg;
+  if ((needMeasurements || stickHand) && !STICK_VALUES.has(stickHand)) errors.stickHand = m.stickHand;
   if (!phone) errors.phone = m.phone;
   // Required since applications are answered by email: without an address there
   // is no way to reply to the player.

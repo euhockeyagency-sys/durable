@@ -53,6 +53,24 @@
     };
     if (position) { position.addEventListener("change", syncPosition); syncPosition(); }
 
+    // Optional details: one stats row by default, more on request. Rows that
+    // already hold data (browser restore, Elite Prospects import) stay visible.
+    var more = q("#form-more", form);
+    var addRow = q("#stats-add", form);
+    var rowUsed = function (row) { return qa("input", row).some(function (el) { return el.value !== ""; }); };
+    var syncRows = function () {
+      var hiddenLeft = 0;
+      qa(".stats-extra", form).forEach(function (row) { if (rowUsed(row)) row.hidden = false; if (row.hidden) hiddenLeft += 1; });
+      if (addRow) addRow.hidden = hiddenLeft === 0;
+    };
+    qa(".stats-extra", form).forEach(function (row) { row.hidden = !rowUsed(row); });
+    if (addRow) addRow.addEventListener("click", function () {
+      var next = qa(".stats-extra", form).filter(function (row) { return row.hidden; })[0];
+      if (next) { next.hidden = false; var first = q("input", next); if (first) first.focus(); }
+      syncRows();
+    });
+    syncRows();
+
     var setField = function (name, value, filled) {
       if (value === null || value === undefined || value === "") return;
       var el = q('[name="' + name + '"]', form);
@@ -98,7 +116,9 @@
             setField("currentClub", p.currentTeam, filled);
             setField("currentLeague", p.currentLeague, filled);
             setRows(data.stats, filled);
-            syncPosition();
+            syncPosition(); syncRows();
+            // Imported values must be checked by the player: show them.
+            if (more) more.open = true;
             if (epImport) epImport.value = JSON.stringify({ epId: data.epId, fetchedAt: data.fetchedAt, fields: filled });
             if (confirmBox) { confirmBox.hidden = false; var cb = q('[name="dataConfirmed"]', confirmBox); if (cb) cb.required = true; }
             say(T.filled, false);

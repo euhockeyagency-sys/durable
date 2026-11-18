@@ -12,6 +12,7 @@ const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales
 const { leagueEditorial } = require("./league-editorial");
 const { leagueFacts } = require("./league-facts");
 const { applyLeagueProfiles } = require("./league-profile");
+const { createSchemaState } = require("./intake/schema-state");
 const { guideIndex, relatedGuides } = require("./guide-index");
 const { leaguesItemList } = require("./league-list");
 const { createAdminAuth } = require("./admin-auth");
@@ -117,7 +118,7 @@ const LEGACY_PATHS = new Map([
   ["/blog/new-post", "/guides"]
 ]);
 
-function createApp({ config, services, now, randomUUID } = {}) {
+function createApp({ config, services, now, randomUUID, schemaState } = {}) {
   if (!config) throw new Error("createApp requires config");
   const app = express();
   if (config.trustProxy !== false) app.set("trust proxy", config.trustProxy);
@@ -145,6 +146,10 @@ function createApp({ config, services, now, randomUUID } = {}) {
   const limiter = createRateLimiter({ limit: 5, windowMs: 15 * 60 * 1000, now: () => (now ? now().getTime() : Date.now()) });
   const clubLimiter = createRateLimiter({ limit: 5, windowMs: 15 * 60 * 1000, now: () => (now ? now().getTime() : Date.now()) });
   const appServices = services || ((config.applicationConfigured || config.clubRequestConfigured) ? createServices(config) : null);
+  // Knows whether the database accepts a short application (no height, weight,
+  // stick hand); the form and the validation follow it.
+  const schema = schemaState || createSchemaState({ supabase: appServices && appServices.supabase });
+  schema.probe().catch(() => {});
 
   app.get("/api/health", (_req, res) => {
     // Notification state is reported too: storage alone being configured is not
@@ -165,7 +170,8 @@ function createApp({ config, services, now, randomUUID } = {}) {
     config,
     services: appServices,
     now,
-    randomUUID
+    randomUUID,
+    schemaState: schema
   }));
   registerPublicIntakeRoutes(app, { config, services: appServices, now: now || (() => new Date()), createRateLimiter });
   app.all("/api/applications", (_req, res) => {
@@ -309,8 +315,8 @@ function createApp({ config, services, now, randomUUID } = {}) {
     app.get(`${prefix}/feed.xml`, localeFeed(buildFeed));
   }
 
-  app.get("*path", (req, res) => servePublic(req, res, config, now));
-  app.head("*path", (req, res) => servePublic(req, res, config, now));
+  app.get("*path", (req, res) => servePublic(req, res, config, now, schema));
+  app.head("*path", (req, res) => servePublic(req, res, config, now, schema));
   app.use((error, _req, res, _next) => {
     console.error("Unhandled request error", error);
     res.status(500).json({ ok: false, code: "internal_error" });
@@ -796,7 +802,7 @@ function buildSocialTags(html, pageUrl, isArticle, imageUrl, locale) {
 // language directory). Keep in sync with the actual contents of public/.
 const SHARED_ROOT_ALLOW = /^\/(?:assets\/|favicon\.svg$|robots\.txt$|llms\.txt$|site\.js$|styles\.css$|google[0-9a-f]+\.html$|yandex_[0-9a-f]+\.html$)/i;
 
-function servePublic(req, res, config, now) {
+function servePublic(req, res, config, now, schemaState) {
   let pathname;
   try {
     pathname = decodeURIComponent(req.path);
@@ -825,7 +831,7 @@ function servePublic(req, res, config, now) {
   if (SHARED_ROOT_ALLOW.test(requested)) {
     candidates.push(path.resolve(config.publicDir, `.${requested}`));
   }
-  const context = { locale, logicalPath, urlPrefix, now };
+  const context = { locale, logicalPath, urlPrefix, now, schemaState };
 
   const tryNext = (index) => {
     if (index >= candidates.length) {
@@ -856,9 +862,19 @@ function servePublic(req, res, config, now) {
 
 // Applies template tokens and, for HTML, injects social tags + analytics.
 // `context` carries the resolved locale and the language-neutral logical path.
+const MEASUREMENTS_BLOCK = /<!-- MEASUREMENTS:START -->([\s\S]*?)<!-- MEASUREMENTS:END -->/;
+function applyMeasurements(html, required) {
+  html = html.replaceAll("{{MEASUREMENTS}}", required ? "required" : "optional");
+  const match = html.match(MEASUREMENTS_BLOCK);
+  if (!match) return html.replace("<!-- MEASUREMENTS_SLOT -->", "");
+  if (!required) return html.replace("<!-- MEASUREMENTS_SLOT -->", "").replace(MEASUREMENTS_BLOCK, "$1");
+  const block = match[1].replace(/<(input|select)\b([^>]*name="(?:heightCm|weightKg|stickHand)"[^>]*)>/g, "<$1$2 required>");
+  return html.replace(MEASUREMENTS_BLOCK, "").replace("<!-- MEASUREMENTS_SLOT -->", block);
+}
+
 function renderBody(data, extension, config, context) {
   if (![".html", ".txt", ".xml"].includes(extension)) return data;
-  const { locale, logicalPath, urlPrefix = "", now } = context;
+  const { locale, logicalPath, urlPrefix = "", now, schemaState } = context;
   // baseUrlFor already returns .com for EN and .com/ru for RU, so canonical,
   // og:url, hreflang, sitemap and feed all read the same consolidated URLs.
   const baseUrl = baseUrlFor(locale, config);
@@ -888,6 +904,10 @@ function renderBody(data, extension, config, context) {
   // past validUntil), so an expired request disappears without a redeploy.
   const clubNeedsLocale = extension === ".html" ? clubNeedsLocaleFor(logicalPath, locale) : null;
   if (clubNeedsLocale) html = html.replace(CLUB_NEEDS_MARKER, renderClubNeeds(clubNeedsLocale, now ? now() : new Date()));
+  // Short application form: height, weight and stick hand live in the optional
+  // details block; while the database still requires them they are moved back
+  // into the main fields and marked required.
+  if (extension === ".html" && html.includes("{{MEASUREMENTS}}")) html = applyMeasurements(html, schemaState ? schemaState.measurementsRequired() : true);
   // League profiles (src/league-profiles.js): league page body, FAQ JSON-LD and
   // rule summaries on country guides, all from one record per league.
   if (extension === ".html" && html.includes("<!-- LEAGUE_")) html = applyLeagueProfiles(html, logicalPath, locale);

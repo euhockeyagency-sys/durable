@@ -44,7 +44,7 @@ function createReference(now, randomUUID = crypto.randomUUID) {
   return `EHA-${year}${month}-${suffix}`;
 }
 
-function createApplicationHandler({ config, services, now = () => new Date(), randomUUID = crypto.randomUUID }) {
+function createApplicationHandler({ config, services, now = () => new Date(), randomUUID = crypto.randomUUID, schemaState = null }) {
   return async function submitApplication(req, res) {
     const locale = normalizeLocale((req.body || {}).locale);
     const m = messages(locale);
@@ -60,7 +60,7 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
     const files = Array.isArray(req.files) ? req.files : ((req.files || {}).files || []);
     const photo = Array.isArray(req.files) ? null : (((req.files || {}).photo || [])[0] || null);
     // The photo counts towards the same limits (3 files, 10 MiB in total).
-    const validation = validateApplication(req.body || {}, photo ? [...files, photo] : files, now(), Boolean(config.turnstileConfigured), locale);
+    const validation = validateApplication(req.body || {}, photo ? [...files, photo] : files, now(), Boolean(config.turnstileConfigured), locale, { measurementsRequired: schemaState ? schemaState.measurementsRequired() : true });
     const extras = parseProfileExtras(req.body || {}, { birthYear: validation.value.birthYear, position: validation.value.position, locale });
     const errors = { ...validation.errors, ...extras.errors };
     if (photo && !["image/jpeg", "image/png"].includes(photo.mimetype)) errors.photo = locale === "en" ? "The photo must be a JPG or PNG image." : "Фото должно быть в формате JPG или PNG.";
@@ -144,6 +144,18 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
         console.error("Intake columns missing (apply migration 20261118120000); storing the application without them");
         legacyOnly = true;
         ({ error: insertError } = await services.supabase.from("applications").insert(legacyRow(application)));
+      }
+      if (schemaState && !insertError) schemaState.note(!legacyOnly);
+      // The database still requires height, weight and stick hand (migration
+      // not applied) but the form was served as short: ask for the fields
+      // instead of failing, and keep them required from now on.
+      if (insertError && insertError.code === "23502" && (validation.value.heightCm === null || validation.value.weightKg === null || validation.value.stickHand === null)) {
+        if (schemaState) schemaState.note(false);
+        const errors = {};
+        if (validation.value.heightCm === null) errors.heightCm = m.heightCm;
+        if (validation.value.weightKg === null) errors.weightKg = m.weightKg;
+        if (validation.value.stickHand === null) errors.stickHand = m.stickHand;
+        return res.status(400).json({ ok: false, code: "validation_error", errors });
       }
       if (insertError) throw insertError;
 
