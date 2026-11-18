@@ -21,6 +21,12 @@ function statLine(s) {
   return `${s.season} ${s.team || ""} (${s.league || "лига не указана"}, ${s.competition === "playoffs" ? "плей-офф" : "рег. сезон"}): ${s.gp ?? "?"} игр, ${tail}`;
 }
 
+const CALC_BANDS = { top: "высшие дивизионы", mid: "2–3 дивизионы", low: "низшие дивизионы" };
+function calculatorLine(c) {
+  const leagues = c.leagues && c.leagues.length ? `; лиги: ${c.leagues.join(", ")}` : "";
+  return `${CALC_BANDS[c.band] || c.band}, балл ${c.score}${leagues}`;
+}
+
 function agentCard(app, { adminUrl, pdfStatus = "не создан" } = {}) {
   const p = app.profile || {};
   const a = app.assessment || {};
@@ -33,11 +39,13 @@ function agentCard(app, { adminUrl, pdfStatus = "не создан" } = {}) {
     `Гражданство (со слов игрока): ${(p.citizenships && p.citizenships.length ? p.citizenships : [app.citizenship]).join(", ")}`,
     `Команда: ${app.current_club}${p.currentLeague ? ` · ${p.currentLeague}` : ""}`,
     last ? `Статистика: ${statLine(last)}` : "Статистика: не указана",
-    app.elite_prospects_url ? `EP: ${app.elite_prospects_url}` : null,
+    app.elite_prospects_url ? `EP: ${app.elite_prospects_url}` : "EP: не указан",
     ...(app.video_urls || []).map((u, i) => `Видео ${i + 1}: ${u}`),
     `Внутренняя категория (предварительно, правила ${a.rulesVersion || "—"}): ${CATEGORY_LABELS[cat] || cat}${app.assessment_override ? " — изменено агентом" : ""}`,
     a.reasons && a.reasons.length ? `Причины: ${a.reasons.join("; ")}` : null,
     a.missing && a.missing.length ? `Не хватает: ${a.missing.map((k) => MISSING[k] || k).join(", ")}` : "Не хватает: —",
+    app.source?.source_page ? `Источник: ${app.source.source_page}` : null,
+    app.source?.calculator ? `Калькулятор (со слов игрока): ${calculatorLine(app.source.calculator)}` : null,
     adminUrl ? `Заявка в панели: ${adminUrl}` : null,
     `PDF: ${pdfStatus}`,
   ].filter(Boolean).join("\n");

@@ -189,15 +189,18 @@ function calculatorBlock(profile, locale) {
     `<label>${en ? "Points last season" : "Очки за прошлый сезон"}<input type="number" id="c-points" min="0" max="300" placeholder="25"><small>${en ? "Goaltenders can leave this blank" : "Вратарям можно не заполнять"}</small></label>` +
     `<label>${en ? "Games last season" : "Игры за прошлый сезон"}<input type="number" id="c-games" min="1" max="120" placeholder="45"></label>` +
     `<label>${en ? "Pro seasons played" : "Сезонов во взрослом хоккее"}<input type="number" id="c-seasons" min="0" max="25" placeholder="2" required></label>` +
+    `<label>${en ? "Elite Prospects profile link — optional" : "Ссылка на профиль Elite Prospects — необязательно"}<input type="url" id="calc-ep" maxlength="300" placeholder="https://www.eliteprospects.com/player/…"><small>${en ? "It is passed to the application form; you confirm all data there." : "Ссылка перейдёт в форму заявки; все данные вы подтвердите там."}</small></label>` +
     `<button class="btn primary" type="submit">${en ? "Check my level" : "Проверить уровень"}</button></form>` +
     `<div class="calc-result" id="calc-result" hidden role="status" aria-live="polite">` +
     `<p class="kicker">${en ? "Your estimate" : "Ваша оценка"}</p><h3 class="calc-band" id="calc-band" tabindex="-1"></h3>` +
     `<div class="calc-league-fit" id="calc-league-fit"></div>` +
-    `<p class="calc-summary" id="calc-summary"></p>` +
+    `<p class="calc-guide" id="calc-guide"></p><p class="calc-summary" id="calc-summary"></p>` +
+    `<div class="calc-next" id="calc-next"><p class="kicker">${en ? "Next step" : "Следующий шаг"}</p><p>${en ? "Leave your Elite Prospects link. EHA will review your profile and pick suitable clubs. Your personal list is prepared after we review the application." : "Оставьте ссылку на Elite Prospects. EHA рассмотрит ваш профиль и подберёт подходящие клубы. Персональный список готовится после рассмотрения заявки."}</p>` +
+    `<a class="btn primary" id="calc-cta" href="/contact">${en ? "Submit your Elite Prospects profile" : "Отправить профиль Elite Prospects"}</a> <a class="text-link" href="${WHATSAPP_URL}" target="_blank" rel="noopener">${s.whatsapp}</a>` +
+    `<p class="calc-next-note">${en ? "No Elite Prospects profile? Use the same button: the form works without it, add your stats and video instead." : "Нет профиля на Elite Prospects? Нажмите ту же кнопку: форма работает и без него, вместо ссылки укажите статистику и видео."}</p></div>` +
     `<h4 class="calc-subtitle">${en ? "Leagues to research for your profile" : "Лиги для изучения по вашему профилю"}</h4><div class="calc-leagues" id="calc-leagues"></div>` +
     `<div hidden><h4 class="calc-subtitle">${en ? "Country guides" : "Гиды по странам"}</h4><p class="calc-countries" id="calc-countries"></p></div>` +
     `<h4 class="calc-subtitle">${en ? "What to strengthen in your profile" : "Что усилить в профиле"}</h4><ul class="ticks" id="calc-tips"></ul>` +
-    `<a class="btn primary" id="calc-cta" href="/contact">${s.submit}</a> <a class="text-link" href="${WHATSAPP_URL}" target="_blank" rel="noopener">${s.whatsapp}</a>` +
     `</div>`;
 }
 

@@ -21,6 +21,9 @@
   // instead of letting BASE alone carry an implausible score (bug F).
   var IMPLAUSIBLE_AGE_FLOOR = 23;
 
+  // Russian genitive country names for "второй дивизион Франции".
+  var RU_GENITIVE = { "Финляндия": "Финляндии", "Швеция": "Швеции", "Чехия": "Чехии", "Словакия": "Словакии", "Германия": "Германии", "Австрия": "Австрии", "Словения": "Словении", "Польша": "Польши", "Норвегия": "Норвегии", "Дания": "Дании", "Швейцария": "Швейцарии", "Франция": "Франции", "Венгрия": "Венгрии", "Великобритания": "Великобритании", "Италия": "Италии", "Латвия": "Латвии", "Литва": "Литвы", "Эстония": "Эстонии", "Нидерланды": "Нидерландов", "Испания": "Испании", "Румыния": "Румынии", "Сербия": "Сербии", "Хорватия": "Хорватии", "Бельгия": "Бельгии", "Казахстан": "Казахстана", "Япония": "Японии", "Канада": "Канады", "США": "США" };
+
   var STRINGS = {
     en: {
       belowBenchmark: "Your production is below the benchmark for your position — in your video, emphasise play without the puck, defending and your role on the team.",
@@ -44,6 +47,12 @@
       focusFit: function (c, names) { return "You came from the " + c + " page. Leagues there within your indicative range: " + names + "."; },
       focusNone: function (c) { return "You came from the " + c + " page. No " + c + " league falls within your indicative range on the current model; the guide explains the levels and requirements."; },
       focusLink: function (c) { return "Back to the " + c + " guide"; },
+      guidePrefix: "Preliminary guide — ",
+      guideOr: " or ",
+      tierWord: { 1: "top division", 2: "second division", 3: "third division" },
+      guidePhrase: function (tier, country) { return tier + " of " + country; },
+      guideNeedStats: "To narrow the range, add games and points from a full season (at least 10 games). Until then the range is wide; you can also send your profile for a manual assessment.",
+      guideNone: "The reference has no league that matches these parameters. Send your profile and EHA will review it manually.",
       leagueFit: {
         fit: function (n) { return n + " is within your indicative range. The next step is a role-based shortlist of clubs and a check of the rules below."; },
         stretch: function (n) { return n + " is above your indicative range right now. It is a stretch target: a stronger season at your current level or one step below usually comes first."; },
@@ -86,6 +95,12 @@
       focusFit: function (c, names) { return "Вы пришли со страницы «" + c + "». Лиги этой страны в вашем ориентировочном диапазоне: " + names + "."; },
       focusNone: function (c) { return "Вы пришли со страницы «" + c + "». По текущей модели ни одна лига этой страны не попадает в ваш ориентировочный диапазон; в гиде описаны уровни и требования."; },
       focusLink: function (c) { return "Вернуться к гиду: " + c; },
+      guidePrefix: "Предварительный ориентир — ",
+      guideOr: " или ",
+      tierWord: { 1: "высший дивизион", 2: "второй дивизион", 3: "третий дивизион" },
+      guidePhrase: function (tier, country) { return tier + " " + (RU_GENITIVE[country] || ("(" + country + ")")); },
+      guideNeedStats: "Чтобы сузить диапазон, укажите игры и очки за полный сезон (не меньше 10 игр). Пока диапазон широкий; можно также отправить профиль на ручную оценку.",
+      guideNone: "В справочнике нет лиги под эти параметры. Отправьте профиль — EHA рассмотрит его вручную.",
       leagueFit: {
         fit: function (n) { return n + " входит в ваш ориентировочный диапазон. Следующий шаг — список клубов под вашу роль и проверка правил ниже."; },
         stretch: function (n) { return n + " сейчас выше вашего ориентировочного диапазона. Это цель на вырост: обычно сначала нужен сильный сезон на текущем уровне или ступенью ниже."; },
@@ -195,9 +210,38 @@
     return { score: score, elite: elite, band: band, bandKey: bandKey, label: label, summary: summary, candidates: candidates, tips: tips, playerAge: playerAge };
   }
 
+  // One plain sentence built only from the calculator's own shortlist: the
+  // first leagues of up to three different countries, each linked to its page.
+  // Returns { status: "ok" | "need_stats" | "none", parts: [{ text, url }] }.
+  function guideFor(r, input, lang) {
+    var strings = STRINGS[lang] || STRINGS.ru;
+    if (!r.candidates.length) return { status: "none", parts: [] };
+    var needStats = PPG[input.pos] && !(input.games >= 10);
+    var seen = {}, parts = [];
+    r.candidates.forEach(function (l) {
+      if (parts.length >= 3 || seen[l.country]) return;
+      seen[l.country] = true;
+      var tier = strings.tierWord[l.tier] || strings.tierWord[3];
+      parts.push({ text: strings.guidePhrase(tier, l.country) + " (" + l.name + ")", url: l.url || null });
+    });
+    return { status: needStats ? "need_stats" : "ok", parts: parts };
+  }
+
+  function renderGuide(g, lang) {
+    var strings = STRINGS[lang] || STRINGS.ru;
+    if (g.status === "none") return esc(strings.guideNone);
+    var items = g.parts.map(function (p) {
+      return p.url ? '<a href="' + esc(prefixFor(lang) + p.url) + '" data-calc-link="league">' + esc(p.text) + "</a>" : esc(p.text);
+    });
+    var html = "<strong>" + esc(strings.guidePrefix) + "</strong>" + items.join(esc(strings.guideOr)) + ".";
+    if (g.status === "need_stats") html += " " + esc(strings.guideNeedStats);
+    return html;
+  }
+
   // Country guide paths keyed by the lower-cased country name used in the
   // league data (EN and RU). Generated from PAGES in src/locales.js.
   var COUNTRY_GUIDES = {"poland": {"en": "/guides/hockey-in-poland", "ru": "/guides/hokkej-v-polshe"}, "austria": {"en": "/guides/hockey-in-austria", "ru": "/guides/hokkej-v-avstrii"}, "canada": {"en": "/guides/hockey-in-canada", "ru": "/guides/hokkej-v-kanade"}, "czechia": {"en": "/guides/hockey-in-czechia", "ru": "/guides/hokkej-v-chexii"}, "denmark": {"en": "/guides/hockey-in-denmark", "ru": "/guides/hokkej-v-danii"}, "finland": {"en": "/guides/hockey-in-finland", "ru": "/guides/hokkej-v-finlyandii"}, "france": {"en": "/guides/hockey-in-france", "ru": "/guides/hokkej-vo-francii"}, "germany": {"en": "/guides/hockey-in-germany", "ru": "/guides/hokkej-v-germanii"}, "italy": {"en": "/guides/hockey-in-italy", "ru": "/guides/hokkej-v-italii"}, "netherlands": {"en": "/guides/hockey-in-netherlands", "ru": "/guides/hokkej-v-niderlandah"}, "norway": {"en": "/guides/hockey-in-norway", "ru": "/guides/hokkej-v-norvegii"}, "slovakia": {"en": "/guides/hockey-in-slovakia", "ru": "/guides/hokkej-v-slovakii"}, "sweden": {"en": "/guides/hockey-in-sweden", "ru": "/guides/hokkej-v-shvecii"}, "switzerland": {"en": "/guides/hockey-in-switzerland", "ru": "/guides/hokkej-v-shvejcarii"}, "united kingdom": {"en": "/guides/hockey-in-united-kingdom", "ru": "/guides/hokkej-v-velikobritanii"}, "usa": {"en": "/guides/hockey-in-usa", "ru": "/guides/hokkej-v-ssha"}, "estonia": {"en": "/guides/hockey-in-estonia", "ru": "/guides/hokkej-v-estonii"}, "hungary": {"en": "/guides/hockey-in-hungary", "ru": "/guides/hokkej-v-vengrii"}, "japan": {"en": "/guides/hockey-in-japan", "ru": "/guides/hokkej-v-yaponii"}, "kazakhstan": {"en": "/guides/hockey-in-kazakhstan", "ru": "/guides/hokkej-v-kazahstane"}, "latvia": {"en": "/guides/hockey-in-latvia", "ru": "/guides/hokkej-v-latvii"}, "lithuania": {"en": "/guides/hockey-in-lithuania", "ru": "/guides/hokkej-v-litve"}, "romania": {"en": "/guides/hockey-in-romania", "ru": "/guides/hokkej-v-rumynii"}, "slovenia": {"en": "/guides/hockey-in-slovenia", "ru": "/guides/hokkej-v-slovenii"}, "spain": {"en": "/guides/hockey-in-spain", "ru": "/guides/hokkej-v-ispanii"}, "serbia": {"en": "/guides/hockey-in-serbia", "ru": "/guides/hokkej-v-serbii"}, "croatia": {"en": "/guides/hockey-in-croatia", "ru": "/guides/hokkej-v-horvatii"}, "belgium": {"en": "/guides/hockey-in-belgium", "ru": "/guides/hokkej-v-belgii"}, "австрия": {"en": "/guides/hockey-in-austria", "ru": "/guides/hokkej-v-avstrii"}, "бельгия": {"en": "/guides/hockey-in-belgium", "ru": "/guides/hokkej-v-belgii"}, "великобритания": {"en": "/guides/hockey-in-united-kingdom", "ru": "/guides/hokkej-v-velikobritanii"}, "венгрия": {"en": "/guides/hockey-in-hungary", "ru": "/guides/hokkej-v-vengrii"}, "германия": {"en": "/guides/hockey-in-germany", "ru": "/guides/hokkej-v-germanii"}, "дания": {"en": "/guides/hockey-in-denmark", "ru": "/guides/hokkej-v-danii"}, "испания": {"en": "/guides/hockey-in-spain", "ru": "/guides/hokkej-v-ispanii"}, "италия": {"en": "/guides/hockey-in-italy", "ru": "/guides/hokkej-v-italii"}, "казахстан": {"en": "/guides/hockey-in-kazakhstan", "ru": "/guides/hokkej-v-kazahstane"}, "канада": {"en": "/guides/hockey-in-canada", "ru": "/guides/hokkej-v-kanade"}, "латвия": {"en": "/guides/hockey-in-latvia", "ru": "/guides/hokkej-v-latvii"}, "литва": {"en": "/guides/hockey-in-lithuania", "ru": "/guides/hokkej-v-litve"}, "нидерланды": {"en": "/guides/hockey-in-netherlands", "ru": "/guides/hokkej-v-niderlandah"}, "норвегия": {"en": "/guides/hockey-in-norway", "ru": "/guides/hokkej-v-norvegii"}, "польша": {"en": "/guides/hockey-in-poland", "ru": "/guides/hokkej-v-polshe"}, "румыния": {"en": "/guides/hockey-in-romania", "ru": "/guides/hokkej-v-rumynii"}, "сша": {"en": "/guides/hockey-in-usa", "ru": "/guides/hokkej-v-ssha"}, "сербия": {"en": "/guides/hockey-in-serbia", "ru": "/guides/hokkej-v-serbii"}, "словакия": {"en": "/guides/hockey-in-slovakia", "ru": "/guides/hokkej-v-slovakii"}, "словения": {"en": "/guides/hockey-in-slovenia", "ru": "/guides/hokkej-v-slovenii"}, "финляндия": {"en": "/guides/hockey-in-finland", "ru": "/guides/hokkej-v-finlyandii"}, "франция": {"en": "/guides/hockey-in-france", "ru": "/guides/hokkej-vo-francii"}, "хорватия": {"en": "/guides/hockey-in-croatia", "ru": "/guides/hokkej-v-horvatii"}, "чехия": {"en": "/guides/hockey-in-czechia", "ru": "/guides/hokkej-v-chexii"}, "швейцария": {"en": "/guides/hockey-in-switzerland", "ru": "/guides/hokkej-v-shvejcarii"}, "швеция": {"en": "/guides/hockey-in-sweden", "ru": "/guides/hokkej-v-shvecii"}, "эстония": {"en": "/guides/hockey-in-estonia", "ru": "/guides/hokkej-v-estonii"}, "япония": {"en": "/guides/hockey-in-japan", "ru": "/guides/hokkej-v-yaponii"}};
+  var EP_RE = /^https:\/\/(www\.)?eliteprospects\.com\/player\/\d+/i;
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
   var prefixFor = function (lang) { return lang === "ru" ? "/ru" : ""; };
 
@@ -221,6 +265,8 @@
       ["calc_score", r.score],
       ["calc_leagues", r.candidates.slice(0, 3).map(function (l) { return l.name; }).join("|")]
     ];
+    if (input.source) params.push(["source_page", String(input.source).slice(0, 300)]);
+    if (input.ep && EP_RE.test(input.ep)) params.push(["ep", input.ep.slice(0, 300)]);
     return params.map(function (p) { return p[0] + "=" + encodeURIComponent(p[1]); }).join("&");
   }
 
@@ -295,6 +341,20 @@
       if (root.ehaTrack) root.ehaTrack("calculator_start");
     });
 
+    // Where the visitor came from before the calculator (same-origin path
+    // only), so the agent sees e.g. "/european-leagues → /level-calculator".
+    var sourceTrail = function () {
+      var from = "";
+      try { var ref = new URL(document.referrer); if (ref.origin === location.origin && ref.pathname !== location.pathname) from = ref.pathname; } catch (e) {}
+      return (from ? from + " → " : "") + location.pathname;
+    };
+
+    // CTA click: only the band, whether an EP link was given and the page
+    // type are sent, never the link itself or any contact data.
+    if (ctaEl) ctaEl.addEventListener("click", function () {
+      if (root.ehaTrack) root.ehaTrack("calculator_cta_click", { band: ctaEl.getAttribute("data-band") || "", has_ep: ctaEl.getAttribute("data-has-ep") === "1", league_page: Boolean(form.getAttribute("data-league-name")) });
+    });
+
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       var input = {
@@ -311,6 +371,15 @@
 
       bandEl.textContent = r.label;
       document.getElementById("calc-summary").textContent = r.summary;
+      var guideEl = document.getElementById("calc-guide");
+      if (!guideEl) {
+        guideEl = document.createElement("p");
+        guideEl.id = "calc-guide";
+        guideEl.className = "calc-guide";
+        bandEl.parentNode.insertBefore(guideEl, document.getElementById("calc-summary"));
+      }
+      var guide = guideFor(r, input, lang);
+      guideEl.innerHTML = renderGuide(guide, lang);
       document.getElementById("calc-leagues").innerHTML =
         r.candidates.map(function (l) { return renderLeagueCard(l, lang); }).join("") || '<p class="tool-note">' + strings.noLeagues + "</p>";
       var tips = r.tips.slice();
@@ -367,8 +436,13 @@
         var posLabel = document.querySelector('#c-pos option[value="' + input.pos + '"]').textContent;
         var note = strings.ctaNote({ label: r.label, score: r.score, pos: posLabel, year: input.year, eu: input.eu });
         if (leagueName) note += " " + (form.getAttribute("data-league-label") || leagueName) + ": " + strings.leagueFitShort[fitStatus] + ".";
+        var epEl = document.getElementById("calc-ep");
+        input.ep = epEl ? epEl.value.trim() : "";
+        input.source = sourceTrail();
         var base = ctaEl.getAttribute("href").split("?")[0];
         ctaEl.href = base + "?" + buildCtaQuery(input, r, note);
+        ctaEl.setAttribute("data-has-ep", input.ep && EP_RE.test(input.ep) ? "1" : "0");
+        ctaEl.setAttribute("data-band", r.bandKey);
       }
 
       resultEl.hidden = false;
@@ -377,7 +451,7 @@
       // gets keyboard/AT users there, not just scrolls sighted users to it.
       resultEl.scrollIntoView({ behavior: "smooth", block: "start" });
       bandEl.focus();
-      if (root.ehaTrack) root.ehaTrack("calculator_done", { band: r.bandKey, score: r.score, goal: input.goal || "", league_fit: fitStatus });
+      if (root.ehaTrack) root.ehaTrack("calculator_done", { band: r.bandKey, score: r.score, goal: input.goal || "", league_fit: fitStatus, guide: guide.status });
     });
 
     // Clicks from the result to a league or country page. Only the page path is sent.
@@ -388,7 +462,7 @@
     });
   }
 
-  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate, leagueFit: leagueFit, findLeague: findLeague, buildCtaQuery: buildCtaQuery, filterForFocus: filterForFocus, COUNTRY_GUIDES: COUNTRY_GUIDES };
+  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate, leagueFit: leagueFit, findLeague: findLeague, guideFor: guideFor, renderGuide: renderGuide, buildCtaQuery: buildCtaQuery, filterForFocus: filterForFocus, COUNTRY_GUIDES: COUNTRY_GUIDES };
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;
