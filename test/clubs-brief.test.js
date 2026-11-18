@@ -40,13 +40,14 @@ test("available players: filters, and the public list ships empty (no demo playe
   assert.deepEqual(brief.filterPlayers(sample, { pos: "any", hand: "L", passport: "non-EU" }), []);
 });
 
-test("/for-clubs: brief builder, WhatsApp button, showcase, server form kept, no public email", async () => {
+test("/for-clubs: brief builder, choice of WhatsApp or site (email + Telegram), no public email", async () => {
   for (const [url, wa] of [["/for-clubs", "Send brief via WhatsApp"], ["/ru/for-clubs", "Отправить бриф в WhatsApp"]]) {
     const html = (await get(url)).text;
-    assert.ok(html.includes('id="brief-preview"') && html.includes(wa) && html.includes('id="available-players"'));
+    assert.ok(html.includes('id="brief-preview"') && html.includes(wa) && !html.includes('id="available-players"'), "showcase hidden for now");
+    assert.ok(html.includes('name="briefChannel" value="wa" checked') && html.includes('name="briefChannel" value="site"') && html.includes('data-channel="site" hidden'));
     assert.ok(html.includes('action="/api/club-request"') && html.includes('name="positionNeeded"') && html.includes('name="message"'));
     assert.ok(!/gmail|mailto:|p@eha\.test/.test(html), `${url}: no email shown`);
-    assert.ok(html.includes("club-brief.js?v=") && html.includes("available-players.js?v="));
+    assert.ok(html.includes("club-brief.js?v="));
     for (const v of ["C", "LW", "RW", "D", "G", "any"]) assert.ok(html.includes(`name="briefPos" value="${v}"`));
   }
 });

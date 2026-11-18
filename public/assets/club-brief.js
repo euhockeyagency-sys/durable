@@ -132,7 +132,19 @@
       }
       update();
     });
-    form.addEventListener("reset", function () { setTimeout(update, 0); });
+    form.addEventListener("reset", function () { setTimeout(function () { showChannel(); update(); }, 0); });
+    // Channel choice: WhatsApp hand-off or the site form (email + Telegram).
+    function channel() { var c = form.querySelector('[name="briefChannel"]:checked'); return c ? c.value : "wa"; }
+    function showChannel() {
+      var ch = channel();
+      Array.prototype.forEach.call(form.querySelectorAll(".brief-send"), function (p) { p.hidden = p.getAttribute("data-channel") !== ch; });
+    }
+    form.addEventListener("change", function (ev) { if (ev.target.name === "briefChannel") showChannel(); });
+    // Enter in a field while WhatsApp is chosen must not post the site form.
+    document.addEventListener("submit", function (ev) {
+      if (ev.target === form && channel() !== "site") { ev.preventDefault(); ev.stopImmediatePropagation(); }
+    }, true);
+    showChannel();
     waBtn.addEventListener("click", function (ev) {
       if (waBtn.getAttribute("aria-disabled") === "true") { ev.preventDefault(); preview.focus(); return; }
       if (window.ehaTrack) window.ehaTrack("club_brief_whatsapp", { lang: lang });

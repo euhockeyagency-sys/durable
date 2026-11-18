@@ -76,10 +76,10 @@
 <label>Дополнительный комментарий <small>(необязательно)</small><textarea name="briefComment" rows="3" maxlength="1500" placeholder="Тип игрока, роль, приоритетные навыки"></textarea></label>
 <input type="hidden" name="message">
 <span class="field-error" data-error-for="message"></span>
-<div class="brief-preview-box"><p class="brief-preview-label">Предпросмотр сообщения</p><pre id="brief-preview" tabindex="-1" aria-live="polite"></pre>
-<a class="btn primary" id="brief-wa" href="https://wa.me/375297957818" target="_blank" rel="noopener">Отправить бриф в WhatsApp</a>
-<p class="form-note">WhatsApp откроется с заполненным сообщением; отправку вы подтверждаете там. Пустые необязательные поля не попадают в текст.</p></div>
-<details class="brief-site-form"><summary>Или отправьте бриф через сайт</summary>
+<div class="brief-preview-box"><p class="brief-preview-label">Предпросмотр сообщения</p><pre id="brief-preview" tabindex="-1" aria-live="polite"></pre><p class="form-note">Пустые необязательные поля в сообщение не попадают.</p></div>
+<fieldset class="brief-channel"><legend>Как отправить бриф</legend><label class="channel-option"><input type="radio" name="briefChannel" value="wa" checked><span><b>WhatsApp</b><small>Откроется чат с EHA с этим сообщением; отправку вы подтверждаете сами.</small></span></label><label class="channel-option"><input type="radio" name="briefChannel" value="site"><span><b>Email / Telegram</b><small>Бриф уйдёт через сайт сразу на email и в Telegram EHA. Оставьте контакт для ответа.</small></span></label></fieldset>
+<div class="brief-send" data-channel="wa"><a class="btn primary" id="brief-wa" href="https://wa.me/375297957818" target="_blank" rel="noopener">Отправить бриф в WhatsApp</a></div>
+<div class="brief-send" data-channel="site" hidden>
 <label>Контактное лицо<input name="contactName" maxlength="120" autocomplete="name" required>
 <span class="field-error" data-error-for="contactName"></span></label>
 <div class="two">
@@ -95,16 +95,9 @@
 <span class="field-error" data-error-for="turnstile"></span>
 <label class="honeypot" aria-hidden="true">Ваш сайт<input name="website" tabindex="-1" autocomplete="off"></label>
 <input type="hidden" name="locale" value="ru">
-<button class="btn ghost" type="submit">Отправить запрос</button>
-</details>
-<p class="form-note">Если форма недоступна, отправьте бриф в WhatsApp кнопкой выше.</p>
+<button class="btn primary" type="submit">Отправить бриф в EHA</button>
+</div>
 </form>
-</section>
-<section class="wrap available-players" id="available-players" aria-labelledby="ap-title"><p class="kicker">Свободные агенты</p><h2 id="ap-title">Свободные игроки</h2><p class="lead">Фильтр по позиции, хвату и паспорту. В карточках только поля, которые игроки согласились опубликовать; полный профиль и контакты EHA передаёт по запросу.</p>
-<div class="players-filters"><label>Позиция<select data-filter="pos"><option value="any">Любая</option><option value="C">C</option><option value="LW">LW</option><option value="RW">RW</option><option value="D">D</option><option value="G">G</option></select></label>
-<label>Хват<select data-filter="hand"><option value="any">Любой</option><option value="L">Левый</option><option value="R">Правый</option></select></label>
-<label>Паспорт<select data-filter="passport"><option value="any">Любой</option><option value="EU">EU</option><option value="non-EU">Non-EU</option><option value="other">Другое</option></select></label></div>
-<div data-players aria-live="polite"><noscript><p>Запросите актуальный список игроков у EHA.</p></noscript></div>
 </section>
 
 <section class="club-value wrap">
@@ -164,7 +157,6 @@
 <div><h4>Связаться</h4><div class="footer-links"><a href="https://www.instagram.com/ehahockeyagency/" rel="noopener">Instagram ↗</a><a href="/privacy">Конфиденциальность</a></div></div>
 <small><span>© 2026 European Hockey Agency.</span><span><a href="/privacy">Политика конфиденциальности</a></span></small>
 </footer>
-<script src="/assets/available-players.js"></script>
 <script src="/assets/club-brief.js"></script>
 </body>
 </html>

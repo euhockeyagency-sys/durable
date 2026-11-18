@@ -1281,3 +1281,10 @@ h2{font-size:clamp(34px,10vw,48px)}
 .player-card dl{margin:0;display:grid;gap:6px;font-size:14px}.player-card dt{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.player-card dd{margin:0}
 @media (max-width:640px){.club-brief .three{grid-template-columns:1fr}}
 .calc-read-next{margin-top:16px}
+.brief-channel{border:0;padding:0;margin:0 0 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.brief-channel legend{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted);margin-bottom:8px}
+.brief-channel .channel-option{display:flex!important;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;text-transform:none;letter-spacing:0;margin:0}
+.brief-channel .channel-option input{width:auto;margin:3px 0 0;accent-color:var(--accent)}
+.brief-channel .channel-option span{display:grid;gap:4px}.brief-channel .channel-option b{font-size:15px}.brief-channel .channel-option small{color:var(--muted);font-weight:400;font-size:13px;line-height:1.5}
+.brief-channel .channel-option:has(input:checked){border-color:var(--accent);background:rgba(var(--fg-rgb),.06)}
+.brief-send{margin-bottom:12px}.brief-send[hidden]{display:none!important}
