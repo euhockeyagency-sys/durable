@@ -121,6 +121,7 @@ const PAGES = [
   { ru: "/guides/hokkej-v-belgii", en: "/guides/hockey-in-belgium" },
   { ru: "/guides/zarplaty-hokkeistov-v-evrope", en: "/guides/hockey-player-salaries-in-europe" },
   { ru: "/guides/zarplaty-icehl-i-alps-hockey-league", en: "/guides/icehl-and-alps-hockey-league-salaries" },
+  { ru: "/guides/kalendar-transfernyh-okon-2026-27", en: "/guides/transfer-calendar-2026-27" },
   { ru: "/guides/hockeyettan-ili-mestis", en: "/guides/hockeyettan-vs-mestis" },
   { ru: "/guides/tauron-hokej-liga-ili-ligue-magnus", en: "/guides/tauron-hokej-liga-vs-ligue-magnus" },
   { ru: "/guides/alps-hockey-league-ili-oberliga", en: "/guides/alps-hockey-league-vs-oberliga" },

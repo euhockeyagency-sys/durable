@@ -1214,3 +1214,5 @@ h2{font-size:clamp(34px,10vw,48px)}
 .article-byline a{color:var(--accent-text);text-decoration:underline;text-underline-offset:3px}
 .calc-reco{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px}.calc-reco-list{margin:6px 0 0;padding-left:18px}.calc-reco-list li{margin:4px 0}
 @media print{body.printing-one *{visibility:hidden}body.printing-one .print-target,body.printing-one .print-target *{visibility:visible}body.printing-one .print-target{position:absolute;left:0;top:0;width:100%;color:#000;background:#fff}}
+.calendar-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin:16px 0}.calendar-filters label{display:flex;flex-direction:column;gap:4px;font-size:14px;min-width:160px}.calendar-filters p{margin:0}
+.cal-status{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line)}.cal-confirmed{background:rgba(46,160,90,.12)}.cal-needs_check{background:rgba(214,160,40,.14)}.cal-not_published{background:rgba(128,128,128,.12)}

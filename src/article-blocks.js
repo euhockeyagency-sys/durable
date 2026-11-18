@@ -128,6 +128,10 @@ function applyArticleBlocks(html, logicalPath, locale) {
   if (html.includes("<!-- LEAGUE_DEADLINES:")) {
     html = html.replace(DEADLINES_RE, (m, ids) => deadlinesTable(ids.split(","), locale));
   }
+  if (html.includes("<!-- TRANSFER_CALENDAR -->")) {
+    const { renderCalendar } = require("./transfer-calendar");
+    html = html.replace("<!-- TRANSFER_CALENDAR -->", renderCalendar(locale));
+  }
   if (html.includes(BYLINE_MARKER)) html = html.split(BYLINE_MARKER).join(byline(logicalPath, locale));
   return html;
 }

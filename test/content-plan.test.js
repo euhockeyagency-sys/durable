@@ -74,3 +74,55 @@ test("calculator: up to three matching guides, the league page first, the direct
   const none = calc.renderRecommendations([], "ru");
   assert.ok(none.includes('href="/ru/ligi-evropy"') && none.includes("Данных недостаточно"));
 });
+
+test("transfer calendar: every directory country in server HTML, statuses and sources, filters for country, league and category", async () => {
+  global.window = {};
+  require("../public/assets/leagues.src.js");
+  const countries = [...new Set(global.window.EHA_LEAGUES_SRC.leagues.map((l) => l.country.en))];
+  const { ROWS } = require("../src/transfer-calendar");
+  for (const c of countries) assert.ok(ROWS.some((r) => r.country.en === c), `calendar covers ${c}`);
+  for (const r of ROWS) {
+    assert.ok(["confirmed", "needs_check", "not_published"].includes(r.status));
+    if (r.status === "confirmed") assert.ok(r.source, `${r.country.en} ${r.league}: confirmed rows need a source`);
+  }
+  for (const url of ["/guides/transfer-calendar-2026-27", "/ru/guides/kalendar-transfernyh-okon-2026-27"]) {
+    const html = (await get(url)).text;
+    assert.equal((html.match(/<tr data-country=/g) || []).length, ROWS.length);
+    for (const f of ["country", "league", "category"]) assert.ok(html.includes(`data-filter="${f}"`));
+    assert.ok(html.includes("/assets/transfer-calendar.js"));
+  }
+});
+
+test("free Hockey CV: editable .docx and PDF download without a form", async () => {
+  for (const [file, type] of [["EHA-Hockey-CV-template.docx", "wordprocessingml"], ["EHA-Hockey-CV-template.pdf", "application/pdf"], ["EHA-hokkejnoe-rezyume-shablon.docx", "wordprocessingml"], ["EHA-hokkejnoe-rezyume-shablon.pdf", "application/pdf"]]) {
+    const res = await get(`/assets/downloads/${file}`);
+    assert.ok(String(res.headers["content-type"]).includes(type), file);
+    assert.ok(res.body.length > 5000 || (res.text || "").length > 5000, file);
+  }
+  const page = (await get("/guides/hockey-resume-for-european-clubs")).text;
+  assert.ok(page.includes('href="/assets/downloads/EHA-Hockey-CV-template.docx" download') && page.includes('EHA-Hockey-CV-template.pdf'));
+});
+
+test("new articles, comparisons and club guides: B2B pages lead to /for-clubs", async () => {
+  const pairs = [
+    ["/guides/net-vs-gross-hockey-salary-germany-poland", "/ru/guides/netto-i-brutto-zarplata-hokkeista-germaniya-polsha"],
+    ["/guides/hockey-player-insurance-abroad", "/ru/guides/strahovka-hokkeista-legionera"],
+    ["/guides/from-usphl-ehl-na3hl-to-senior-hockey-in-europe", "/ru/guides/iz-usphl-ehl-na3hl-vo-vzroslyj-hokkej-evropy"],
+    ["/guides/european-u20-hockey-sweden-finland-czechia-switzerland-austria", "/ru/guides/evropejskie-u20-shvetsiya-finlyandiya-chehiya-shvejcariya-avstriya"],
+    ["/guides/why-points-do-not-translate-between-hockey-leagues", "/ru/guides/pochemu-ochki-ne-perenosyatsya-mezhdu-ligami"],
+    ["/guides/alps-hockey-league-vs-oberliga", "/ru/guides/alps-hockey-league-ili-oberliga"],
+    ["/guides/tauron-hokej-liga-vs-ligue-magnus", "/ru/guides/tauron-hokej-liga-ili-ligue-magnus"],
+    ["/guides/hockeyettan-vs-mestis", "/ru/guides/hockeyettan-ili-mestis"],
+    ["/guides/import-player-on-a-budget-for-second-and-third-division-clubs", "/ru/guides/legioner-s-ogranichennym-byudzhetom-dlya-klubov-vtorogo-i-tretego-diviziona"],
+    ["/guides/import-player-first-two-weeks-checklist", "/ru/guides/pervye-dve-nedeli-legionera-v-klube"]
+  ];
+  for (const pair of pairs) for (const url of pair) {
+    const html = (await get(url)).text;
+    const other = pair.find((u) => u !== url);
+    assert.ok(html.includes(`href="http://eha.test${other}"`), `${url}: hreflang pair`);
+    assert.ok(html.includes('class="article-byline"'), `${url}: byline`);
+    if (/budget|byudzhet|two-weeks|dve-nedeli/.test(url)) assert.ok(/class="btn primary" href="(\/ru)?\/for-clubs/.test(html), `${url}: club CTA first`);
+  }
+  const twoWeeks = (await get("/guides/import-player-first-two-weeks-checklist")).text;
+  assert.ok(twoWeeks.includes('data-print="tpl-first-two-weeks"'));
+});

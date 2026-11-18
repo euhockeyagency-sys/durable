@@ -50,6 +50,7 @@ const GUIDES = [
   { en: "how-a-hockey-agent-works", ru: "kak-rabotaet-hokkejnyj-agent", cat: "process", title: { en: "How a hockey agent works", ru: "Как работает хоккейный агент" } },
   { en: "hockey-player-salaries-in-europe", ru: "zarplaty-hokkeistov-v-evrope", cat: "process", title: { en: "Hockey player salaries in Europe", ru: "Зарплаты хоккеистов в Европе" } },
   { en: "icehl-and-alps-hockey-league-salaries", ru: "zarplaty-icehl-i-alps-hockey-league", cat: "process", title: { en: "ICEHL and Alps Hockey League salaries", ru: "Зарплаты в ICEHL и Alps Hockey League" } },
+  { en: "transfer-calendar-2026-27", ru: "kalendar-transfernyh-okon-2026-27", cat: "documents", title: { en: "Transfer calendar 2026/27", ru: "Календарь трансферных окон 2026/27" } },
   { en: "hockeyettan-vs-mestis", ru: "hockeyettan-ili-mestis", cat: "comparisons", title: { en: "HockeyEttan vs Mestis", ru: "HockeyEttan или Mestis" } },
   { en: "tauron-hokej-liga-vs-ligue-magnus", ru: "tauron-hokej-liga-ili-ligue-magnus", cat: "comparisons", title: { en: "TAURON Hokej Liga (PHL) vs Ligue Magnus", ru: "TAURON Hokej Liga (PHL) или Ligue Magnus" } },
   { en: "alps-hockey-league-vs-oberliga", ru: "alps-hockey-league-ili-oberliga", cat: "comparisons", title: { en: "Alps Hockey League vs Oberliga", ru: "Alps Hockey League или Oberliga" } },
