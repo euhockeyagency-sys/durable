@@ -503,14 +503,14 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "high",
       "note": "Второй дивизион",
-      "imports": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
+      "imports": "2026/27: не меньше 55% польских полевых и один польский вратарь в заявке; квота растёт до 60% в 2027/28.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified; 1 LIGA listed in federation competition directory",
-        "status": "pending",
+        "scope": "Regulamin 1 Ligi 2026/27 §6–§9",
+        "status": "partial",
         "sources": [
-          "https://polskihokej.eu/ligi"
+          "https://cdn.sportigio.com/spaces/173/uploads/ObrL4yd4mzFvGON0dykXw3aM0SVSMkj4LMDmMXZ7.pdf"
         ]
       }
     },
@@ -694,13 +694,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "mid",
       "note": "Высший дивизион",
-      "imports": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
+      "imports": "2026/27: в протоколе на 19–20 игроков не меньше 10 JFL (на 21 — 11), то есть до 10 игроков без JFL; переходы до 31 декабря плюс два новичка в январе.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "AS art. 8.3, SLM art. 3–4, ALM art. 32.2/33.3",
+        "status": "partial",
+        "sources": [
+          "https://www.hockeyfrance.com/wp-content/uploads/2026/09/12-Reglements-generaux-SLM-2026.27-VF.pdf"
+        ]
       }
     },
     {
@@ -751,13 +753,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "high",
       "note": "Международная лига (Венгрия, Румыния)",
-      "imports": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
+      "imports": "2026/27: не больше 5 иностранцев в матче и 11 зарегистрированных за сезон (MJSZ).",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-10-02",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "MJSZ season information: match and season foreign limits",
+        "status": "partial",
+        "sources": [
+          "https://www.jegkorongszovetseg.hu/informaciok-az-erste-liga-uj-szezonjarol"
+        ]
       }
     },
     {
@@ -812,6 +816,26 @@ window.EHA_LEAGUES = {
         "scope": "Import wording screened; current quota not verified",
         "status": "pending",
         "sources": []
+      }
+    },
+    {
+      "country": "Италия",
+      "flag": "🇮🇹",
+      "name": "Italian Hockey League",
+      "url": "/ligi/italiya-italian-hockey-league",
+      "tier": 2,
+      "age": "senior",
+      "open": "mid",
+      "note": "Второй уровень (ниже IHL Serie A)",
+      "imports": "2026/27: не больше 3 игроков категории B; вратари только категории A; срок регистрации 11 января 2027 (FISG).",
+      "review": {
+        "reviewedAt": "2026-10-02",
+        "season": "2026/27",
+        "scope": "FISG NOFA 2026/27: Category B limit, goaltender rule, deadline",
+        "status": "partial",
+        "sources": [
+          "https://static.fisg.it/wp-content/uploads/2026/07/07183941/NOFA_26_27_def-1.pdf"
+        ]
       }
     },
     {

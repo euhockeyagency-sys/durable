@@ -94,6 +94,42 @@ const SOURCES = {
   iihfTransfer2026: {
     label: { en: "IIHF International Transfer Regulations 2026", ru: "IIHF: регламент международных переходов 2026" },
     url: "https://blob.iihf.com/iihf-media/iihfmvc/media/downloads/regulations/2026/2026_iihf_international_transfer_regulations.pdf"
+  },
+  slmRules: {
+    label: { en: "FFHG: Synerglace Ligue Magnus general regulations 2026/27", ru: "FFHG: общий регламент Synerglace Ligue Magnus 2026/27" },
+    url: "https://www.hockeyfrance.com/wp-content/uploads/2026/09/12-Reglements-generaux-SLM-2026.27-VF.pdf"
+  },
+  slmFormat: {
+    label: { en: "Ligue Magnus: season format 2026/27", ru: "Ligue Magnus: формат сезона 2026/27" },
+    url: "https://liguemagnus.com/la-ligue-magnus/formule/"
+  },
+  pl1LigaRules: {
+    label: { en: "PZHL: 1 Liga regulation 2026/27 (PDF)", ru: "PZHL: регламент 1 Ligi 2026/27 (PDF)" },
+    url: "https://cdn.sportigio.com/spaces/173/uploads/ObrL4yd4mzFvGON0dykXw3aM0SVSMkj4LMDmMXZ7.pdf"
+  },
+  pl1LigaSchedule: {
+    label: { en: "PZHL: 1 Liga schedule 2026/27", ru: "PZHL: календарь 1 Ligi 2026/27" },
+    url: "https://polskihokej.eu/artykul/5117"
+  },
+  mjszSeason: {
+    label: { en: "MJSZ: Erste Liga 2026/27 season information", ru: "MJSZ: информация о сезоне Erste Liga 2026/27" },
+    url: "https://www.jegkorongszovetseg.hu/informaciok-az-erste-liga-uj-szezonjarol"
+  },
+  mjszTeams: {
+    label: { en: "MJSZ: ten teams entered for 2026/27", ru: "MJSZ: десять команд на сезон 2026/27" },
+    url: "https://www.jegkorongszovetseg.hu/tiz-csapat-nevezett-az-erste-liga-uj-idenyere"
+  },
+  huCard: {
+    label: { en: "Hungarian immigration office: Hungarian Card residence permit", ru: "Миграционная служба Венгрии: вид на жительство Hungarian Card" },
+    url: "https://oif.gov.hu/factsheets/residence-permit-for-hungarian-card"
+  },
+  fisgNofa: {
+    label: { en: "FISG: competition rules 2026/27 (NOFA)", ru: "FISG: правила соревнований 2026/27 (NOFA)" },
+    url: "https://static.fisg.it/wp-content/uploads/2026/07/07183941/NOFA_26_27_def-1.pdf"
+  },
+  itWork: {
+    label: { en: "EU Immigration Portal: employed worker in Italy", ru: "Иммиграционный портал ЕС: работа по найму в Италии" },
+    url: "https://home-affairs.ec.europa.eu/policies/migration-and-asylum/eu-immigration-portal/employed-worker-italy_en"
   }
 };
 
@@ -996,6 +1032,608 @@ const PROFILES = [
       ru: ["Регламент DEB для Oberliga 2026/27: лимит легионеров, учёт граждан ЕС, цифра «старше 23 лет» на этот сезон.", "Срок регистрации Oberliga на 2026/27.", "Надёжная выборка зарплат."]
     },
     sources: ["debOberligaTeams", "debOberligaSchedule", "ehnImports2022", "ehnU23_2024", "deAthleteVisa", "iihfTransfer2026", "phieSalaries"]
+  },
+
+  {
+    id: "fr-ligue-magnus",
+    country: { code: "FR", en: "France", ru: "Франция" },
+    data: { name: "Ligue Magnus", country: "France" },
+    names: {
+      display: { en: "Synerglace Ligue Magnus", ru: "Synerglace Ligue Magnus" },
+      short: "Ligue Magnus",
+      aliases: ["Ligue Magnus", "SLM", "French top league", "Magnus"],
+      note: {
+        en: "Official name: Synerglace Ligue Magnus (SLM), France's top division, organised by the FFHG. Synerglace is the title sponsor; searches for “Ligue Magnus” mean this league.",
+        ru: "Официальное название — Synerglace Ligue Magnus (SLM), высший дивизион Франции, организатор — FFHG. Synerglace — титульный спонсор; запрос «Ligue Magnus» — про эту лигу."
+      }
+    },
+    paths: { en: "/leagues/france-ligue-magnus", ru: "/ligi/franciya-ligue-magnus" },
+    guide: { en: "/guides/hockey-in-france", ru: "/guides/hokkej-vo-francii" },
+    season: "2026/27",
+    checkedAt: "2026-11-18",
+    question: {
+      en: "How many non-French players can a Ligue Magnus team dress?",
+      ru: "Сколько игроков без французской подготовки может заявить команда Ligue Magnus?"
+    },
+    answer: {
+      en: "France does not count passports but locally trained (JFL) players. A Ligue Magnus game sheet of 19–20 players needs at least 10 JFL, including a goaltender, and a 21-player sheet at least 11 — so up to 10 players without JFL status can dress. Each club must also have at least 14 skaters and 2 goaltenders under full-time professional contracts. Transfers must be filed by 31 December 2026; Ligue Magnus clubs then get two extra arrivals in January.",
+      ru: "Во Франции считают не паспорта, а игроков местной подготовки (JFL). В протоколе Ligue Magnus на 19–20 игроков нужно не меньше 10 JFL, включая вратаря, на 21 игрока — не меньше 11, то есть без статуса JFL могут играть до 10 человек. У каждого клуба также должно быть не меньше 14 полевых и 2 вратарей на полных профессиональных контрактах. Переходы подаются до 31 декабря 2026 года, а в январе у клубов Ligue Magnus есть ещё два места для новичков."
+    },
+    fitFor: {
+      en: "It fits a professional who can take a top-nine forward, top-four defence or starting-goaltender role in a 12-team top division. For a North American player that usually means a solid AHL/ECHL or strong European second-division record; clubs sign non-JFL players for impact, since each one uses one of about ten places.",
+      ru: "Лига подходит профессионалу, готовому играть в первых трёх звеньях, первой четвёрке защиты или основным вратарём в высшем дивизионе из 12 команд. Для игрока из Северной Америки это обычно уверенный уровень AHL/ECHL или сильный сезон во втором дивизионе Европы; игроков без JFL берут как усиление, ведь каждый занимает одно из примерно десяти мест."
+    },
+    position: {
+      en: "Ligue Magnus is France's top division, above Division 1. In 2026/27 it has 12 teams; the regular season runs from 15 September 2026 to 2 March 2027, playoffs from 8 March to 17 April 2027 and a relegation group from 9 March to 2 April. A team can dress up to 19 skaters and 2 goaltenders on weekdays and in the playoffs, 18 + 2 on Friday to Sunday.",
+      ru: "Ligue Magnus — высший дивизион Франции, выше Division 1. В сезоне 2026/27 в ней 12 команд; регулярный чемпионат — с 15 сентября 2026 по 2 марта 2027, плей-офф — с 8 марта по 17 апреля 2027, турнир на выживание — с 9 марта по 2 апреля. В будние дни и в плей-офф в протоколе до 19 полевых и 2 вратарей, с пятницы по воскресенье — 18 + 2."
+    },
+    expectations: {
+      en: [
+        "Experience: recent professional seasons; a top-division role elsewhere or a leading role in a strong second division.",
+        "Contract: Ligue Magnus requires full-time fixed-term employment contracts registered with the FFHG for the professional core of the roster.",
+        "Video: a full game from last season plus role clips; clubs want to see special-teams value.",
+        "Status: tell the club whether you may be JFL (training years in French clubs) — a JFL player does not use a non-JFL place."
+      ],
+      ru: [
+        "Опыт: свежие профессиональные сезоны; роль в высшем дивизионе другой страны или ведущая роль в сильном втором дивизионе.",
+        "Контракт: для профессионального ядра состава Ligue Magnus требует срочных трудовых договоров на полный день, зарегистрированных в FFHG.",
+        "Видео: полная игра прошлого сезона и нарезка по роли; клубы хотят видеть пользу в спецбригадах.",
+        "Статус: сообщите клубу, можете ли вы быть JFL (годы подготовки во французских клубах) — игрок JFL не занимает место игрока без JFL."
+      ]
+    },
+    rules: [
+      {
+        id: "fr-lm-jfl",
+        season: "2026/27",
+        scope: "game_sheet",
+        category: { en: "Players without JFL status (any passport)", ru: "Игроки без статуса JFL (любой паспорт)" },
+        value: {
+          en: "JFL minimum on the game sheet, including at least one JFL goaltender: 10 for 19–20 players, 11 for 21, 9 for 17–18, 8 for 15–16, 7 for 13–14, 6 for 11–12. So at most 10 players without JFL status dress.",
+          ru: "Минимум JFL в протоколе, включая хотя бы одного вратаря JFL: 10 при 19–20 игроках, 11 при 21, 9 при 17–18, 8 при 15–16, 7 при 13–14, 6 при 11–12. Значит, без статуса JFL играют не больше 10 человек."
+        },
+        exceptions: {
+          en: "JFL is training history, not nationality: four full seasons licensed only for ice hockey in FFHG clubs up to the season of turning 20 (AS art. 8.1). No separate cap on foreign or non-EU players was found in the Ligue Magnus regulations.",
+          ru: "JFL — это история подготовки, а не гражданство: четыре полных сезона с лицензией только по хоккею в клубах FFHG до сезона, в котором игроку исполняется 20 (AS ст. 8.1). Отдельного лимита на иностранцев или игроков не из ЕС в регламенте Ligue Magnus не найдено."
+        },
+        ref: "Règlement AS 2026/27 art. 8.3; Règlements SLM 2026/27 art. 4.2–4.3",
+        status: "official",
+        source: "slmRules",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "fr-lm-professionals",
+        season: "2026/27",
+        scope: "registration",
+        category: { en: "Professional roster core", ru: "Профессиональное ядро состава" },
+        value: {
+          en: "At least 14 skaters and 2 goaltenders under the professional-player status (full-time fixed-term employment contract approved by the FFHG), checked on the eve of the first game and on 31 January at 12:00.",
+          ru: "Не меньше 14 полевых и 2 вратарей со статусом профессионального игрока (срочный трудовой договор на полный день, утверждённый FFHG); проверяется накануне первого матча и 31 января в 12:00."
+        },
+        exceptions: {
+          en: "Contracts must state the gross salary; the regulation sets no minimum amount.",
+          ru: "В контракте обязательно указывается зарплата брутто; минимальной суммы регламент не устанавливает."
+        },
+        ref: "Règlements SLM 2026/27 art. 3, 6, 36",
+        status: "official",
+        source: "slmRules",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "fr-lm-transfers",
+        season: "2026/27",
+        scope: "transfer",
+        category: { en: "Transfers into Ligue Magnus", ru: "Переходы в Ligue Magnus" },
+        value: {
+          en: "National and international transfers must be filed by 31 December 2026, 23:59. From 1 to 31 January each Ligue Magnus club may make two more arrivals (national or international). Qualification is possible from 1 July; a complete file must reach the FFHG at least 48 hours before the game.",
+          ru: "Переходы внутри страны и международные подаются до 31 декабря 2026 года, 23:59. С 1 по 31 января каждый клуб Ligue Magnus может оформить ещё двух новичков. Допуск возможен с 1 июля; полный пакет документов должен поступить в FFHG минимум за 48 часов до матча."
+        },
+        exceptions: null,
+        ref: "Règlement ALM 2026/27 art. 32.2, 33.3; Règlements SLM 2026/27 art. 17, 21",
+        status: "official",
+        source: "ffhgAlm",
+        checkedAt: "2026-11-18"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from the FFHG: licence and qualification for the Ligue Magnus club, the JFL count on each game sheet and the IIHF transfer for a player from another federation.",
+        ru: "Спортивный допуск даёт FFHG: лицензия и допуск в клуб Ligue Magnus, учёт JFL в каждом протоколе и трансфер IIHF для игрока из другой федерации."
+      },
+      residence: {
+        en: "EU, EEA and Swiss citizens can live in France without a visa. Others need a visa or residence document for the length of the contract.",
+        ru: "Граждане ЕС, ЕЭЗ и Швейцарии живут во Франции без визы. Остальным нужна виза или вид на жительство на срок контракта."
+      },
+      work: {
+        en: "For a player who is not an EU, EEA or Swiss citizen, the employer generally needs a work authorisation; the Ligue Magnus file includes, where applicable, the document allowing the player to work in France (SLM art. 40.1).",
+        ru: "Для игрока без гражданства ЕС, ЕЭЗ или Швейцарии работодатель, как правило, оформляет разрешение на работу; в пакет документов Ligue Magnus при необходимости входит документ, разрешающий работать во Франции (SLM ст. 40.1)."
+      },
+      sources: ["frWork", "iihf"]
+    },
+    windows: [
+      { kind: "official", label: { en: "Qualification opens", ru: "Начало допуска" }, dates: { en: "1 July 2026", ru: "1 июля 2026" }, ref: "Règlements SLM art. 17", source: "slmRules" },
+      { kind: "official", label: { en: "Last day to file a transfer", ru: "Последний день подачи перехода" }, dates: { en: "31 December 2026, 23:59", ru: "31 декабря 2026, 23:59" }, ref: "Règlement ALM art. 32.2, 33.3", source: "ffhgAlm" },
+      { kind: "official", label: { en: "January window (two arrivals per club)", ru: "Январское окно (два новичка на клуб)" }, dates: { en: "1–31 January 2027", ru: "1–31 января 2027" }, ref: "Règlement ALM art. 32.2", source: "ffhgAlm" },
+      { kind: "guide", label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" }, dates: { en: "March to July", ru: "С марта по июль" }, ref: null, source: null }
+    ],
+    money: {
+      status: "no_sample",
+      summary: {
+        en: "Every professional contract must state the gross salary, but there is no official salary scale and EHA has no reliable sample, so we do not quote an average. Ask for gross and net pay, housing, car, flights and insurance separately.",
+        ru: "В каждом профессиональном контракте указывается зарплата брутто, но официальной шкалы нет, а надёжной выборки у EHA тоже нет, поэтому среднюю цифру мы не называем. Уточняйте отдельно зарплату брутто и нетто, жильё, машину, перелёты и страховку."
+      },
+      examples: []
+    },
+    steps: {
+      en: [
+        "Check whether you can be JFL; if not, you compete for about ten non-JFL places.",
+        "Prepare a full game, role clips and verified statistics.",
+        "Check your level with the calculator on this page; Division 1 is the step below.",
+        "Shortlist clubs by position needs; ask how many non-JFL places are already used.",
+        "Get a full-time contract in writing with the gross salary stated.",
+        "File the transfer by 31 December, or use one of the club's two January places."
+      ],
+      ru: [
+        "Проверьте, можете ли вы быть JFL; если нет — вы претендуете на одно из примерно десяти мест без JFL.",
+        "Подготовьте полную игру, нарезку по роли и проверяемую статистику.",
+        "Оцените уровень в калькуляторе на этой странице; Division 1 — ступень ниже.",
+        "Составьте список клубов по потребностям в позиции; спросите, сколько мест без JFL уже занято.",
+        "Получите письменный контракт на полный день с указанной зарплатой брутто.",
+        "Подайте переход до 31 декабря или займите одно из двух январских мест клуба."
+      ]
+    },
+    calcChecks: {
+      en: ["Up to 10 players without JFL status per game sheet.", "Transfers by 31 December 2026, plus two January arrivals per club.", "Non-EU: work authorisation in the qualification file."],
+      ru: ["До 10 игроков без JFL в протоколе.", "Переходы до 31 декабря 2026 плюс два январских новичка на клуб.", "Игроки не из ЕС: разрешение на работу в пакете документов."]
+    },
+    faq: [
+      { q: { en: "How many imports can play in Ligue Magnus?", ru: "Сколько легионеров может играть в Ligue Magnus?" }, a: { en: "France counts JFL, not passports: at least 10 JFL on a 19–20 player sheet (11 on 21), so up to 10 without JFL status.", ru: "Во Франции считают JFL, а не паспорта: не меньше 10 JFL в протоколе на 19–20 игроков (11 на 21), то есть до 10 без статуса JFL." } },
+      { q: { en: "Does Ligue Magnus have a January transfer window?", ru: "Есть ли у Ligue Magnus январское окно?" }, a: { en: "Yes. After the 31 December deadline, each Ligue Magnus club may make two more arrivals from 1 to 31 January.", ru: "Да. После срока 31 декабря каждый клуб Ligue Magnus может оформить ещё двух новичков с 1 по 31 января." } },
+      { q: { en: "Is there a minimum salary in Ligue Magnus?", ru: "Есть ли минимальная зарплата в Ligue Magnus?" }, a: { en: "The regulation requires full-time contracts that state the gross salary but sets no minimum amount.", ru: "Регламент требует контракты на полный день с указанием зарплаты брутто, но минимальной суммы не устанавливает." } },
+      { q: { en: "How many teams play in 2026/27?", ru: "Сколько команд в сезоне 2026/27?" }, a: { en: "Twelve, in one group, with playoffs from 8 March 2027.", ru: "Двенадцать в одной группе, плей-офф с 8 марта 2027." } }
+    ],
+    missing: {
+      en: ["Any salary sample or scale.", "Whether a separate document limits non-EU players (none found in the regulations read)."],
+      ru: ["Выборка или шкала зарплат.", "Ограничивает ли игроков не из ЕС отдельный документ (в прочитанных регламентах такого нет)."]
+    },
+    sources: ["slmRules", "ffhgAs", "ffhgAlm", "slmFormat", "frWork", "iihf"]
+  },
+
+  {
+    id: "pl-1-liga",
+    country: { code: "PL", en: "Poland", ru: "Польша" },
+    data: { name: "1 liga", country: "Poland" },
+    names: {
+      display: { en: "Polish 1 Liga", ru: "1 Liga (Польша)" },
+      short: "1 Liga",
+      aliases: ["I liga", "Polska 1 Liga", "MHL Poland", "Polish second division"],
+      note: {
+        en: "The 1 Liga (I Liga) is Poland's second level, organised by the PZHL itself, below TAURON Hokej Liga. Several teams are development or academy sides.",
+        ru: "1 Liga (I Liga) — второй уровень Польши, её проводит сама PZHL, ниже TAURON Hokej Liga. Часть команд — молодёжные и академические."
+      }
+    },
+    paths: { en: "/leagues/poland-1-liga-mhl", ru: "/ligi/polsha-1-liga-mhl" },
+    guide: { en: "/guides/hockey-in-poland", ru: "/guides/hokkej-v-polshe" },
+    season: "2026/27",
+    checkedAt: "2026-11-18",
+    question: {
+      en: "Can a foreign player play in the Polish 1 Liga in 2026/27?",
+      ru: "Может ли иностранец играть в польской 1 Liga в 2026/27?"
+    },
+    answer: {
+      en: "Yes, within a domestic quota: in 2026/27 at least 55% of skaters on the roster must be Polish (for example 11 of 20, 6 of 10) and one goaltender must hold a Polish passport. The quota tightens every season — 60% and two Polish goaltenders in 2027/28, 80% by 2030/31. Academic teams are exempt under their own conditions. The league is small: five active teams after one withdrew in August 2026.",
+      ru: "Да, в пределах квоты: в 2026/27 не меньше 55% полевых в заявке должны быть поляками (например, 11 из 20, 6 из 10), а один вратарь — с польским паспортом. Квота ужесточается каждый сезон — 60% и два польских вратаря в 2027/28, 80% к 2030/31. Академические команды освобождены на своих условиях. Лига небольшая: пять активных команд после того, как одна снялась в августе 2026."
+    },
+    fitFor: {
+      en: "It fits a young player who needs senior minutes and a development plan, or a player with Polish roots building a route to TAURON Hokej Liga. For a foreign veteran the quota and the small field make it a narrow market.",
+      ru: "Лига подходит молодому игроку, которому нужны взрослые минуты и план развития, или игроку с польскими корнями, который строит путь в TAURON Hokej Liga. Для опытного иностранца квота и маленький состав лиги делают этот рынок узким."
+    },
+    position: {
+      en: "The 1 Liga is the second level under TAURON Hokej Liga, organised by the PZHL. Six teams entered for 2026/27; UHT Sabers Oświęcim withdrew on 12 August, leaving five active. The regular season has six rounds and 30 games per team from 19–20 September 2026, followed by semifinals and a final.",
+      ru: "1 Liga — второй уровень после TAURON Hokej Liga, организатор — PZHL. На сезон 2026/27 заявились шесть команд; UHT Sabers Oświęcim снялась 12 августа, активных осталось пять. Регулярный чемпионат — шесть кругов, 30 матчей на команду с 19–20 сентября 2026, затем полуфиналы и финал."
+    },
+    expectations: {
+      en: [
+        "Role: clubs want players who develop and play real minutes, not depth.",
+        "Status: Polish citizenship changes everything because of the 55% quota.",
+        "Video and statistics: a full game and recent stats are still expected even at this level.",
+        "Conditions: ask about housing, registration and the link to a TAURON Hokej Liga club."
+      ],
+      ru: [
+        "Роль: клубам нужны игроки, которые развиваются и играют реальные минуты, а не «на глубину».",
+        "Статус: польское гражданство меняет всё из-за квоты 55%.",
+        "Видео и статистика: полная игра и свежая статистика нужны и на этом уровне.",
+        "Условия: спросите о жилье, регистрации и связи с клубом TAURON Hokej Liga."
+      ]
+    },
+    rules: [
+      {
+        id: "pl-1liga-quota",
+        season: "2026/27",
+        scope: "game_sheet",
+        category: { en: "Polish players on the roster", ru: "Польские игроки в заявке" },
+        value: {
+          en: "At least 55% Polish skaters on the roster (e.g. 11 of 20, 6 of 10) and one goaltender with a Polish passport. Teams play with at least 10 skaters and 2 goaltenders.",
+          ru: "Не меньше 55% польских полевых в заявке (например, 11 из 20, 6 из 10) и один вратарь с польским паспортом. Команды играют минимум с 10 полевыми и 2 вратарями."
+        },
+        exceptions: {
+          en: "Rising quota: 60% and two Polish goaltenders in 2027/28, up to 80% and two Polish goaltenders in 2030/31. Academic teams are exempt from §7 if at least 10 players meet the listed nationality or training conditions.",
+          ru: "Квота растёт: 60% и два польских вратаря в 2027/28, до 80% и двух польских вратарей в 2030/31. Академические команды освобождены от §7, если не меньше 10 игроков отвечают перечисленным условиям гражданства или подготовки."
+        },
+        ref: "Regulamin 1 Ligi 2026/27, §6, §7, §9",
+        status: "official",
+        source: "pl1LigaRules",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "pl-1liga-deadline",
+        season: "2026/27",
+        scope: "transfer",
+        category: { en: "Transfers and player approval", ru: "Переходы и утверждение игроков" },
+        value: {
+          en: "The regulation sets a transfer deadline of 31 January; the text prints “31.01.2026”, which appears to be a typo for 2027 — confirm with the PZHL. Players must be submitted for approval by Thursday 14:30 before each match weekend.",
+          ru: "Регламент устанавливает срок переходов 31 января; в тексте напечатано «31.01.2026», что похоже на опечатку вместо 2027 — уточняйте в PZHL. Игроков нужно подать на утверждение до четверга 14:30 перед каждым игровым уикендом."
+        },
+        exceptions: null,
+        ref: "Regulamin 1 Ligi 2026/27, §7, §8",
+        status: "official",
+        source: "pl1LigaRules",
+        checkedAt: "2026-11-18"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from the PZHL: player approval for the 1 Liga club, the Polish quota on each roster and the IIHF transfer for a player from another federation.",
+        ru: "Спортивный допуск даёт PZHL: утверждение игрока для клуба 1 Ligi, учёт польской квоты в заявке и трансфер IIHF для игрока из другой федерации."
+      },
+      residence: {
+        en: "EU, EEA and Swiss citizens can live in Poland without a visa. Others need a visa or a temporary residence permit.",
+        ru: "Граждане ЕС, ЕЭЗ и Швейцарии живут в Польше без визы. Остальным нужна виза или разрешение на временное пребывание."
+      },
+      work: {
+        en: "EU, EEA and Swiss citizens and Karta Polaka holders do not need a work permit. Others generally do, applied for by the employer through praca.gov.pl, unless another exemption applies.",
+        ru: "Гражданам ЕС, ЕЭЗ и Швейцарии и владельцам Карты поляка разрешение на работу не нужно. Остальным оно, как правило, требуется, заявление подаёт работодатель через praca.gov.pl, если нет другого исключения."
+      },
+      sources: ["plWork", "euPortal", "iihf"]
+    },
+    windows: [
+      { kind: "official", label: { en: "Transfer deadline (regulation)", ru: "Срок переходов (регламент)" }, dates: { en: "31 January (text says 31.01.2026; confirm the year)", ru: "31 января (в тексте 31.01.2026; уточняйте год)" }, ref: "Regulamin 1 Ligi §7", source: "pl1LigaRules" },
+      { kind: "official", label: { en: "Weekly player approval", ru: "Еженедельное утверждение игроков" }, dates: { en: "By Thursday 14:30 before the match weekend", ru: "До четверга 14:30 перед игровым уикендом" }, ref: "Regulamin 1 Ligi §8", source: "pl1LigaRules" },
+      { kind: "guide", label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" }, dates: { en: "May to August", ru: "С мая по август" }, ref: null, source: null }
+    ],
+    money: {
+      status: "no_sample",
+      summary: {
+        en: "No official scale and no reliable sample. At this level many offers are development packages (housing, meals, equipment) rather than salaries; ask for each item in writing and who pays registration and visa costs.",
+        ru: "Официальной шкалы и надёжной выборки нет. На этом уровне многие предложения — пакеты развития (жильё, питание, экипировка), а не зарплата; просите каждый пункт письменно и уточняйте, кто платит за регистрацию и визу."
+      },
+      examples: []
+    },
+    steps: {
+      en: [
+        "Check your status: Polish citizenship or Karta Polaka, age, contract.",
+        "Prepare a full game and recent statistics.",
+        "Check your level with the calculator on this page; compare with TAURON Hokej Liga.",
+        "Ask the club how many non-Polish places it still has under the 55% quota.",
+        "Get housing, registration and any link to a top-league club in writing.",
+        "Complete the transfer before the deadline and the Thursday approval cut-off."
+      ],
+      ru: [
+        "Проверьте статус: польское гражданство или Карта поляка, возраст, контракт.",
+        "Подготовьте полную игру и свежую статистику.",
+        "Оцените уровень в калькуляторе на этой странице; сравните с TAURON Hokej Liga.",
+        "Спросите клуб, сколько мест для не-поляков у него осталось в рамках квоты 55%.",
+        "Зафиксируйте письменно жильё, регистрацию и связь с клубом высшей лиги.",
+        "Завершите переход до срока и до четверговой подачи на утверждение."
+      ]
+    },
+    calcChecks: {
+      en: ["At least 55% Polish skaters and one Polish goaltender per roster (2026/27).", "Quota rises to 60% in 2027/28.", "Transfer deadline 31 January — confirm the year with the PZHL."],
+      ru: ["Не меньше 55% польских полевых и один польский вратарь в заявке (2026/27).", "Квота вырастет до 60% в 2027/28.", "Срок переходов 31 января — год уточняйте в PZHL."]
+    },
+    faq: [
+      { q: { en: "How many foreigners can play in the Polish 1 Liga?", ru: "Сколько иностранцев может играть в польской 1 Liga?" }, a: { en: "At least 55% of skaters must be Polish and one goaltender must hold a Polish passport in 2026/27, so on a 20-player roster up to 9 skaters can be non-Polish.", ru: "В 2026/27 не меньше 55% полевых должны быть поляками, а один вратарь — с польским паспортом, поэтому в заявке из 20 игроков не-поляков среди полевых может быть до 9." } },
+      { q: { en: "Will the quota change?", ru: "Изменится ли квота?" }, a: { en: "Yes: 60% and two Polish goaltenders in 2027/28, rising to 80% by 2030/31.", ru: "Да: 60% и два польских вратаря в 2027/28, до 80% к 2030/31." } },
+      { q: { en: "How many teams play in 2026/27?", ru: "Сколько команд в 2026/27?" }, a: { en: "Five active teams; six entered but UHT Sabers Oświęcim withdrew on 12 August 2026.", ru: "Пять активных команд; заявились шесть, но UHT Sabers Oświęcim снялась 12 августа 2026." } }
+    ],
+    missing: {
+      en: ["The correct year of the transfer deadline (the regulation prints 31.01.2026).", "Whether Karta Polaka holders count as Polish for the 1 Liga quota (the text says passport for goaltenders).", "Any salary sample."],
+      ru: ["Правильный год срока переходов (в регламенте напечатано 31.01.2026).", "Считаются ли владельцы Карты поляка поляками для квоты 1 Ligi (для вратарей в тексте указан паспорт).", "Выборка зарплат."]
+    },
+    sources: ["pl1LigaRules", "pl1LigaSchedule", "plWork", "euPortal", "iihf"]
+  },
+
+  {
+    id: "hu-erste-liga",
+    country: { code: "HU", en: "Hungary", ru: "Венгрия" },
+    data: { name: "Erste Liga", country: "Hungary" },
+    names: {
+      display: { en: "Erste Liga", ru: "Erste Liga" },
+      short: "Erste Liga",
+      aliases: ["Erste Liga Hungary", "Erste Liga Romania", "MOL Liga"],
+      note: {
+        en: "Erste Liga is a cross-border league of Hungarian and Romanian clubs run by the Hungarian federation (MJSZ). It is not the same competition as the national Andersen Liga.",
+        ru: "Erste Liga — международная лига венгерских и румынских клубов под управлением Федерации хоккея Венгрии (MJSZ). Это не то же соревнование, что национальная Andersen Liga."
+      }
+    },
+    paths: { en: "/leagues/hungary-erste-liga", ru: "/ligi/vengriya-erste-liga" },
+    guide: { en: "/guides/hockey-in-hungary", ru: "/guides/hokkej-v-vengrii" },
+    season: "2026/27",
+    checkedAt: "2026-10-02",
+    question: {
+      en: "What is the import limit in the Erste Liga?",
+      ru: "Какой лимит легионеров в Erste Liga?"
+    },
+    answer: {
+      en: "The published 2026/27 rules allow at most five foreign players in a match and eleven registered foreign players over the season. Ten clubs from Hungary and Romania play; the season started on 18 September 2026 and the top eight reach the playoffs from 12 March 2027. Immigration follows the country of the club: Hungarian rules for Hungarian clubs, Romanian rules for Romanian clubs.",
+      ru: "Опубликованные правила 2026/27 допускают не больше пяти иностранцев в матче и одиннадцати зарегистрированных иностранцев за сезон. Играют десять клубов из Венгрии и Румынии; сезон начался 18 сентября 2026 года, восемь лучших выходят в плей-офф с 12 марта 2027. Миграционные правила зависят от страны клуба: венгерские для венгерских клубов, румынские — для румынских."
+    },
+    fitFor: {
+      en: "It fits an import who wants a clear role with five import places per game: a scoring forward, a puck-moving defender or a starting goaltender. With eleven season registrations, clubs do replace imports during the season, so in-season openings are more common than in tighter leagues.",
+      ru: "Лига подходит легионеру, которому нужна понятная роль при пяти местах на матч: результативному нападающему, защитнику с первым пасом или основному вратарю. При одиннадцати регистрациях за сезон клубы меняют легионеров по ходу сезона, поэтому вакансии в сезоне здесь чаще, чем в лигах с жёстким лимитом."
+    },
+    position: {
+      en: "Erste Liga is a cross-border senior competition of Hungarian and Romanian clubs within the MJSZ structure, alongside the ICE Hockey League and the national Andersen Liga. In 2026/27 the MJSZ announced ten clubs; each plays every opponent four times, and the top eight advance to the playoffs starting on 12 March 2027.",
+      ru: "Erste Liga — международное взрослое соревнование венгерских и румынских клубов в структуре MJSZ, наряду с ICE Hockey League и национальной Andersen Liga. На 2026/27 MJSZ объявила десять клубов; каждый играет с каждым четыре раза, восемь лучших выходят в плей-офф с 12 марта 2027."
+    },
+    expectations: {
+      en: [
+        "Experience: senior seasons at a comparable second-division level or a top division of a smaller country.",
+        "Role: imports are expected to lead; show special-teams value.",
+        "Video: a recent full game and role clips.",
+        "Location: ask whether the club is in Hungary or Romania — it changes the visa and work route."
+      ],
+      ru: [
+        "Опыт: взрослые сезоны в сопоставимом втором дивизионе или высшем дивизионе небольшой страны.",
+        "Роль: от легионеров ждут лидерства; покажите пользу в спецбригадах.",
+        "Видео: свежая полная игра и нарезка по роли.",
+        "Страна: уточните, где находится клуб — в Венгрии или Румынии; от этого зависит виза и право на работу."
+      ]
+    },
+    rules: [
+      {
+        id: "hu-erste-imports",
+        season: "2026/27",
+        scope: "game_sheet",
+        category: { en: "Foreign players", ru: "Иностранные игроки" },
+        value: {
+          en: "At most five foreign players in a match.",
+          ru: "Не больше пяти иностранцев в матче."
+        },
+        exceptions: {
+          en: "How a dual citizen or a player with Hungarian or Romanian roots is classified is decided by the federation; confirm before signing.",
+          ru: "Как классифицируется игрок с двойным гражданством или венгерскими/румынскими корнями, решает федерация; уточняйте до подписания."
+        },
+        ref: "MJSZ, Erste Liga 2026/27 season information",
+        status: "official",
+        source: "mjszSeason",
+        checkedAt: "2026-10-02"
+      },
+      {
+        id: "hu-erste-registrations",
+        season: "2026/27",
+        scope: "registration",
+        category: { en: "Foreign registrations per season", ru: "Регистрации иностранцев за сезон" },
+        value: {
+          en: "At most eleven foreign players registered by a club during the season.",
+          ru: "Не больше одиннадцати зарегистрированных иностранцев на клуб за сезон."
+        },
+        exceptions: null,
+        ref: "MJSZ, Erste Liga 2026/27 season information",
+        status: "official",
+        source: "mjszSeason",
+        checkedAt: "2026-10-02"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from the MJSZ (and the Romanian federation for Romanian clubs): registration within the eleven-player season limit and the IIHF transfer for a player from another federation.",
+        ru: "Спортивный допуск даёт MJSZ (и румынская федерация для румынских клубов): регистрация в пределах одиннадцати иностранцев за сезон и трансфер IIHF для игрока из другой федерации."
+      },
+      residence: {
+        en: "EU, EEA and Swiss citizens can live in Hungary or Romania without a visa. Others need a residence permit of the club's country.",
+        ru: "Граждане ЕС, ЕЭЗ и Швейцарии живут в Венгрии или Румынии без визы. Остальным нужен вид на жительство страны клуба."
+      },
+      work: {
+        en: "For a Hungary-based club, the official framework includes the Hungarian Card route for a professional sportsperson doing genuine paid work, subject to its conditions. Romanian clubs follow Romanian immigration law.",
+        ru: "Для клуба в Венгрии официальная система предусматривает путь Hungarian Card для профессионального спортсмена на реальной оплачиваемой работе — при соблюдении условий. Клубы в Румынии следуют румынскому миграционному праву."
+      },
+      sources: ["huCard", "iihf"]
+    },
+    windows: [
+      { kind: "official", label: { en: "Season", ru: "Сезон" }, dates: { en: "From 18 September 2026; playoffs from 12 March 2027", ru: "С 18 сентября 2026; плей-офф с 12 марта 2027" }, ref: "MJSZ season announcement", source: "mjszSeason" },
+      { kind: "guide", label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" }, dates: { en: "April to August; replacements during the season within the eleven registrations", ru: "С апреля по август; замены по ходу сезона в пределах одиннадцати регистраций" }, ref: null, source: null }
+    ],
+    money: {
+      status: "third_party",
+      summary: {
+        en: "No official scale and no reliable EHA sample. The third-party range below is an example only; ask for gross and net, housing, car and flights separately.",
+        ru: "Официальной шкалы и надёжной выборки у EHA нет. Диапазон ниже — только пример; уточняйте отдельно брутто и нетто, жильё, машину и перелёты."
+      },
+      examples: [
+        {
+          value: { en: "EUR 15,000–50,000", ru: "15 000–50 000 евро" },
+          note: { en: "Third-party range for Erste Liga (Hungary and Romania). The source does not say gross or net, per year or per season, or what is included.", ru: "Диапазон стороннего сайта для Erste Liga (Венгрия и Румыния). Источник не уточняет брутто или нетто, за год или за сезон и что входит." },
+          source: "phieSalaries",
+          checkedAt: "2026-11-15"
+        }
+      ]
+    },
+    steps: {
+      en: [
+        "Check whether the target club is in Hungary or Romania.",
+        "Prepare a full game, role clips and verified statistics.",
+        "Check your level with the calculator on this page.",
+        "Ask how many of the five game places and eleven season registrations are used.",
+        "Confirm the residence and work route for the club's country before travel.",
+        "Get the full package in writing."
+      ],
+      ru: [
+        "Уточните, где находится клуб — в Венгрии или Румынии.",
+        "Подготовьте полную игру, нарезку по роли и проверяемую статистику.",
+        "Оцените уровень в калькуляторе на этой странице.",
+        "Спросите, сколько из пяти мест на матч и одиннадцати регистраций за сезон уже занято.",
+        "До поездки подтвердите путь к проживанию и работе в стране клуба.",
+        "Получите весь пакет условий письменно."
+      ]
+    },
+    calcChecks: {
+      en: ["At most 5 foreign players per match, 11 registered per season.", "Visa and work route depend on whether the club is in Hungary or Romania."],
+      ru: ["Не больше 5 иностранцев в матче и 11 зарегистрированных за сезон.", "Виза и право на работу зависят от страны клуба — Венгрия или Румыния."]
+    },
+    faq: [
+      { q: { en: "How many imports can play in the Erste Liga?", ru: "Сколько легионеров может играть в Erste Liga?" }, a: { en: "At most five in a match and eleven registered per club over the 2026/27 season (MJSZ).", ru: "Не больше пяти в матче и одиннадцати зарегистрированных на клуб за сезон 2026/27 (MJSZ)." } },
+      { q: { en: "Is the Erste Liga the Hungarian national championship?", ru: "Erste Liga — национальный чемпионат Венгрии?" }, a: { en: "No. It is a cross-border league of Hungarian and Romanian clubs; the national senior championship is the Andersen Liga, and some Hungarian clubs play in the ICE Hockey League.", ru: "Нет. Это международная лига венгерских и румынских клубов; национальный взрослый чемпионат — Andersen Liga, а часть венгерских клубов играет в ICE Hockey League." } },
+      { q: { en: "How many clubs play in 2026/27?", ru: "Сколько клубов в 2026/27?" }, a: { en: "Ten, according to the MJSZ.", ru: "Десять, по данным MJSZ." } }
+    ],
+    missing: {
+      en: ["The registration deadline for foreign players in 2026/27.", "A reliable salary sample."],
+      ru: ["Срок регистрации иностранцев в сезоне 2026/27.", "Надёжная выборка зарплат."]
+    },
+    sources: ["mjszSeason", "mjszTeams", "huCard", "iihf", "phieSalaries"]
+  },
+
+  {
+    id: "it-ihl",
+    country: { code: "IT", en: "Italy", ru: "Италия" },
+    data: { name: "Italian Hockey League", country: "Italy" },
+    names: {
+      display: { en: "Italian Hockey League (IHL)", ru: "Italian Hockey League (IHL)" },
+      short: "Italian Hockey League",
+      aliases: ["IHL Italy", "Serie B Italy", "Italian second division"],
+      note: {
+        en: "The Italian Hockey League is the national league below IHL Serie A, run by the Italian federation FISG. Do not confuse it with the International Hockey League in Serbia and Croatia.",
+        ru: "Italian Hockey League — национальная лига ниже IHL Serie A под управлением федерации FISG. Не путайте с International Hockey League в Сербии и Хорватии."
+      }
+    },
+    paths: { en: "/leagues/italy-italian-hockey-league", ru: "/ligi/italiya-italian-hockey-league" },
+    guide: { en: "/guides/hockey-in-italy", ru: "/guides/hokkej-v-italii" },
+    season: "2026/27",
+    checkedAt: "2026-10-02",
+    question: {
+      en: "How many foreign players can an Italian Hockey League team use?",
+      ru: "Сколько иностранцев может использовать команда Italian Hockey League?"
+    },
+    answer: {
+      en: "Italy works with player categories, not a simple passport count. In 2026/27 an Italian Hockey League team may use at most three Category B players, and only Category A players may play in goal. The published transfer and registration deadline is 11 January 2027. Twelve teams play; FISG decides each player's category before registration.",
+      ru: "В Италии работают категории игроков, а не простой подсчёт паспортов. В 2026/27 команда Italian Hockey League может использовать не больше трёх игроков категории B, а вратарями могут быть только игроки категории A. Опубликованный срок переходов и регистрации — 11 января 2027. Играют двенадцать команд; категорию каждого игрока до регистрации определяет FISG."
+    },
+    fitFor: {
+      en: "It fits a player with Italian eligibility (Category A) looking for senior minutes, or an import strong enough to be one of only three Category B players. A foreign goaltender cannot play here unless he is Category A.",
+      ru: "Лига подходит игроку с итальянским статусом (категория A), которому нужны взрослые минуты, или легионеру, достаточно сильному, чтобы быть одним из всего трёх игроков категории B. Иностранный вратарь здесь играть не может, если он не категории A."
+    },
+    position: {
+      en: "The Italian Hockey League is the national level below IHL Serie A (whose clubs also play in the Alps Hockey League). FISG lists 12 teams in 2026/27; the first phase starts on 19 September 2026, then teams split into Master and Qualification rounds, followed by an eight-team playoff.",
+      ru: "Italian Hockey League — национальный уровень ниже IHL Serie A (клубы которой играют ещё и в Alps Hockey League). В сезоне 2026/27 FISG указывает 12 команд; первая фаза начинается 19 сентября 2026, затем команды делятся на группы Master и Qualification, после — плей-офф восьми команд."
+    },
+    expectations: {
+      en: [
+        "Status first: ask FISG, through the club, which category you are before anything else.",
+        "Role: a Category B import is expected to be among the team's best players.",
+        "Video: a full game and role clips.",
+        "Goaltenders: only Category A goaltenders are allowed."
+      ],
+      ru: [
+        "Сначала статус: через клуб узнайте у FISG, к какой категории вы относитесь.",
+        "Роль: от легионера категории B ждут, что он будет среди лучших игроков команды.",
+        "Видео: полная игра и нарезка по роли.",
+        "Вратари: допускаются только вратари категории A."
+      ]
+    },
+    rules: [
+      {
+        id: "it-ihl-category-b",
+        season: "2026/27",
+        scope: "game_sheet",
+        category: { en: "Category B players", ru: "Игроки категории B" },
+        value: {
+          en: "At most three Category B players per team; only Category A players may be used as goaltenders.",
+          ru: "Не больше трёх игроков категории B на команду; вратарями могут быть только игроки категории A."
+        },
+        exceptions: {
+          en: "The category is a FISG classification, not simply nationality; FISG and the club confirm it before registration.",
+          ru: "Категория — это классификация FISG, а не просто гражданство; FISG и клуб подтверждают её до регистрации."
+        },
+        ref: "FISG NOFA 2026/27",
+        status: "official",
+        source: "fisgNofa",
+        checkedAt: "2026-10-02"
+      },
+      {
+        id: "it-ihl-deadline",
+        season: "2026/27",
+        scope: "transfer",
+        category: { en: "Transfer and registration deadline", ru: "Срок переходов и регистрации" },
+        value: {
+          en: "11 January 2027.",
+          ru: "11 января 2027."
+        },
+        exceptions: null,
+        ref: "FISG NOFA 2026/27",
+        status: "official",
+        source: "fisgNofa",
+        checkedAt: "2026-10-02"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from FISG: the player's category, registration before 11 January 2027 and the IIHF transfer for a player from another federation.",
+        ru: "Спортивный допуск даёт FISG: категория игрока, регистрация до 11 января 2027 и трансфер IIHF для игрока из другой федерации."
+      },
+      residence: {
+        en: "EU, EEA and Swiss citizens can live in Italy without a visa. Others need a visa and residence permit for the purpose of employment.",
+        ru: "Граждане ЕС, ЕЭЗ и Швейцарии живут в Италии без визы. Остальным нужны виза и вид на жительство с целью работы."
+      },
+      work: {
+        en: "A non-EU player needs authorisation to work in Italy before starting; the EU Immigration Portal describes the employed-worker route. Ask the club which route it will use for a sports contract.",
+        ru: "Игроку не из ЕС до начала работы нужно разрешение на работу в Италии; путь работника по найму описан на иммиграционном портале ЕС. Спросите клуб, какой путь он использует для спортивного контракта."
+      },
+      sources: ["itWork", "iihf"]
+    },
+    windows: [
+      { kind: "official", label: { en: "Season start", ru: "Начало сезона" }, dates: { en: "19 September 2026", ru: "19 сентября 2026" }, ref: "FISG NOFA 2026/27", source: "fisgNofa" },
+      { kind: "official", label: { en: "Transfer and registration deadline", ru: "Срок переходов и регистрации" }, dates: { en: "11 January 2027", ru: "11 января 2027" }, ref: "FISG NOFA 2026/27", source: "fisgNofa" },
+      { kind: "guide", label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" }, dates: { en: "May to August", ru: "С мая по август" }, ref: null, source: null }
+    ],
+    money: {
+      status: "no_sample",
+      summary: {
+        en: "No official scale and no reliable sample. Ask for gross and net pay, housing, car, meals and insurance separately before signing.",
+        ru: "Официальной шкалы и надёжной выборки нет. До подписания уточняйте отдельно зарплату брутто и нетто, жильё, машину, питание и страховку."
+      },
+      examples: []
+    },
+    steps: {
+      en: [
+        "Find out your FISG category through the club first.",
+        "Prepare a full game, role clips and verified statistics.",
+        "Check your level with the calculator on this page.",
+        "If you are Category B, ask how many of the three places are taken.",
+        "Confirm the work route for a non-EU player before travel.",
+        "Register before 11 January 2027."
+      ],
+      ru: [
+        "Сначала через клуб узнайте свою категорию FISG.",
+        "Подготовьте полную игру, нарезку по роли и проверяемую статистику.",
+        "Оцените уровень в калькуляторе на этой странице.",
+        "Если вы категории B, спросите, сколько из трёх мест занято.",
+        "До поездки подтвердите путь к работе для игрока не из ЕС.",
+        "Зарегистрируйтесь до 11 января 2027."
+      ]
+    },
+    calcChecks: {
+      en: ["At most 3 Category B players; goaltenders must be Category A.", "Transfer and registration deadline 11 January 2027."],
+      ru: ["Не больше 3 игроков категории B; вратари — только категории A.", "Срок переходов и регистрации — 11 января 2027."]
+    },
+    faq: [
+      { q: { en: "What is the import limit in the Italian Hockey League?", ru: "Какой лимит легионеров в Italian Hockey League?" }, a: { en: "At most three Category B players per team in 2026/27, and only Category A goaltenders (FISG NOFA).", ru: "Не больше трёх игроков категории B на команду в 2026/27, вратари — только категории A (FISG NOFA)." } },
+      { q: { en: "Can a foreign goaltender play in the Italian Hockey League?", ru: "Может ли иностранный вратарь играть в Italian Hockey League?" }, a: { en: "Only if FISG classifies him as Category A.", ru: "Только если FISG относит его к категории A." } },
+      { q: { en: "When is the registration deadline?", ru: "Когда срок регистрации?" }, a: { en: "11 January 2027.", ru: "11 января 2027." } }
+    ],
+    missing: {
+      en: ["The exact FISG definitions of Category A and B for 2026/27 (summarised, not quoted here).", "A reliable salary sample."],
+      ru: ["Точные определения категорий A и B по FISG на 2026/27 (здесь в пересказе, без цитаты).", "Надёжная выборка зарплат."]
+    },
+    sources: ["fisgNofa", "itWork", "iihf"]
   }
 ];
 

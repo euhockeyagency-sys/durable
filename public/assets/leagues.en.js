@@ -503,14 +503,14 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "high",
       "note": "Second division",
-      "imports": "Current quota and eligibility were not verified in this review; check the season rules and player status.",
+      "imports": "2026/27: at least 55% Polish skaters and one Polish goaltender per roster; quota rises to 60% in 2027/28.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified; 1 LIGA listed in federation competition directory",
-        "status": "pending",
+        "scope": "Regulamin 1 Ligi 2026/27 §6–§9",
+        "status": "partial",
         "sources": [
-          "https://polskihokej.eu/ligi"
+          "https://cdn.sportigio.com/spaces/173/uploads/ObrL4yd4mzFvGON0dykXw3aM0SVSMkj4LMDmMXZ7.pdf"
         ]
       }
     },
@@ -694,13 +694,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "mid",
       "note": "Top division",
-      "imports": "Current quota and eligibility were not verified in this review; check the season rules and player status.",
+      "imports": "2026/27: at least 10 JFL on a 19–20 player sheet (11 on 21), so up to 10 non-JFL; transfers by 31 December plus two January arrivals.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "AS art. 8.3, SLM art. 3–4, ALM art. 32.2/33.3",
+        "status": "partial",
+        "sources": [
+          "https://www.hockeyfrance.com/wp-content/uploads/2026/09/12-Reglements-generaux-SLM-2026.27-VF.pdf"
+        ]
       }
     },
     {
@@ -751,13 +753,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "high",
       "note": "International league (Hungary, Romania)",
-      "imports": "Current quota and eligibility were not verified in this review; check the season rules and player status.",
+      "imports": "2026/27: at most 5 foreign players per match and 11 registered per season (MJSZ).",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-10-02",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "MJSZ season information: match and season foreign limits",
+        "status": "partial",
+        "sources": [
+          "https://www.jegkorongszovetseg.hu/informaciok-az-erste-liga-uj-szezonjarol"
+        ]
       }
     },
     {
@@ -812,6 +816,26 @@ window.EHA_LEAGUES = {
         "scope": "Import wording screened; current quota not verified",
         "status": "pending",
         "sources": []
+      }
+    },
+    {
+      "country": "Italy",
+      "flag": "🇮🇹",
+      "name": "Italian Hockey League",
+      "url": "/leagues/italy-italian-hockey-league",
+      "tier": 2,
+      "age": "senior",
+      "open": "mid",
+      "note": "Second level (below IHL Serie A)",
+      "imports": "2026/27: at most 3 Category B players; goaltenders Category A only; registration deadline 11 January 2027 (FISG).",
+      "review": {
+        "reviewedAt": "2026-10-02",
+        "season": "2026/27",
+        "scope": "FISG NOFA 2026/27: Category B limit, goaltender rule, deadline",
+        "status": "partial",
+        "sources": [
+          "https://static.fisg.it/wp-content/uploads/2026/07/07183941/NOFA_26_27_def-1.pdf"
+        ]
       }
     },
     {

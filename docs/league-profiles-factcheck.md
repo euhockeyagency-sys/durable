@@ -76,3 +76,13 @@ Oberliga — no official 2026/27 regulation found. Press only, labelled on the p
 - 26 teams (12 North, 14 South): DEB licensing announcement, 1 July 2026.
 
 Shared: €50,700 gross/year athlete-visa threshold for 2026 (Make it in Germany, cited on the country guide 5 October 2026, not re-read); IIHF transfer period for 18+ 1 July–15 February (IIHF Transfer Regulations 2026, cited on the country guide). Salary examples: playhockeyineurope.com (see `hockey-salaries-factcheck.md`).
+
+## Ligue Magnus, Polish 1 Liga, Erste Liga, Italian Hockey League (18 November 2026)
+
+Ligue Magnus — FFHG Règlement AS 2026/27 art. 1.5.2, 8.3 (JFL minimums for LM: 6/7/8/9/10/11 for 11–12/13–14/15–16/17–18/19–20/21 players, at least one JFL goaltender); Règlements généraux SLM 2026/27 (https://www.hockeyfrance.com/wp-content/uploads/2026/09/12-Reglements-generaux-SLM-2026.27-VF.pdf): art. 3 minimum 14 + 2 professional players, checked on the eve of the first game and on 31 January 12:00; art. 4.2–4.3 roster size and 10 locally trained; art. 6 professional = full-time fixed-term contract approved by FFHG; art. 17 qualification from 1 July; art. 21 complete file 48 h before the game; art. 36 gross salary must be stated, no minimum found; art. 40.1 work document where applicable. No foreign/non-EU cap found. ALM art. 32.2 January window (two arrivals) for LM. Format: liguemagnus.com (12 teams, dates).
+
+Polish 1 Liga — Regulamin 1 Ligi 2026/27 (PZHL list): §1.1 organiser PZHL; §4–5 six teams entered, UHT Sabers withdrew 12.08.2026, six rounds/30 games, playoffs; §6 minimum 10 skaters + 2 goaltenders; §7 55% Polish skaters + one Polish-passport goaltender in 2026/27, 60% + 2 goaltenders in 2027/28, 80% + 2 by 2030/31; §7 transfer deadline printed "31.01.2026" (likely typo, labelled on the page); §8 approval by Thursday 14:30; §9 academic teams exempt under conditions. Read via WebFetch (text layer). Note: the WebFetch summary first described the 55% as "foreign"; the worked examples (11 Polish of 20) and the hokej.net report ("55 procent zawodników krajowych") show it is the Polish share.
+
+Erste Liga and Italian Hockey League — facts reused from the pages verified on 2 October 2026 (MJSZ season announcement: 5 foreign per match, 11 per season, ten clubs, start 18 September, playoffs 12 March; FISG NOFA 2026/27: max 3 Category B, Category A goaltenders only, deadline 11 January 2027, 12 teams, start 19 September). Not re-read in this pass; profiles keep checkedAt 2026-10-02. Italian Hockey League added to `leagues.src.js` as a tier-2 record so the calculator can assess it.
+
+German-language page `/de/eishockey-in-deutschland`: DEL2 rule and Oberliga press note added, same sources as the DEL2/Oberliga profiles.

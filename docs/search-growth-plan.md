@@ -63,3 +63,11 @@ Audience framing to add when pages are rewritten:
 ## 6. Outreach
 
 Drafts (analysis, short community version, outlet list) are kept in the project docs (`claude/outreach-league-rules-2026-11.md`) for approval. Nothing has been sent or posted. Reddit could not be opened from the work environment, so r/hockeyplayers rules must be read manually before any post.
+
+## 7. Done in the second pass (18 November 2026)
+
+- Profiles added: Ligue Magnus, Polish 1 Liga, Erste Liga, Italian Hockey League (rule tables also on the France, Poland, Hungary and Italy guides).
+- German page `/de/eishockey-in-deutschland`: DEL2 rule, Oberliga press note, new FAQ question.
+- Calculator pages EN/RU: "From North America" mapping (EHA guide, labelled) and "For parents of juniors" block with links to the cost calculator and parent hub.
+- Search Console: the browser profile has no access to the property, so prioritisation stayed on data readiness.
+- Next with data: UK EIHL, Swiss National League, Alps Hockey League (three federations), Sweden Hockeyettan, CEHL; Slovak page after the Tipsport liga rule is verified.
