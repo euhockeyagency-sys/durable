@@ -44,6 +44,17 @@
       focusFit: function (c, names) { return "You came from the " + c + " page. Leagues there within your indicative range: " + names + "."; },
       focusNone: function (c) { return "You came from the " + c + " page. No " + c + " league falls within your indicative range on the current model; the guide explains the levels and requirements."; },
       focusLink: function (c) { return "Back to the " + c + " guide"; },
+      leagueFit: {
+        fit: function (n) { return n + " is within your indicative range. The next step is a role-based shortlist of clubs and a check of the rules below."; },
+        stretch: function (n) { return n + " is above your indicative range right now. It is a stretch target: a stronger season at your current level or one step below usually comes first."; },
+        below: function (n) { return n + " is below your indicative range. It can still make sense for ice time or a first season abroad, but compare it with the leagues listed below."; },
+        access: function (n) { return n + " is a hard market for a player without an EU passport on this model: few import places. Check the exact rules and your status before you approach clubs."; },
+        junior: function (n) { return n + " is a junior competition; at your age it is not a realistic target."; },
+        unknown: function (n) { return "The reference data has no level for " + n + ", so the calculator cannot compare it. Send your profile for a manual check."; }
+      },
+      leagueFitShort: { fit: "in range", stretch: "above range", below: "below range", access: "limited import access", junior: "junior competition", unknown: "no data" },
+      leagueChecks: "Check for this league:",
+      leagueDocs: "Preliminary sporting estimate only. Licence, transfer, residence and work permission are checked separately.",
       goalTips: {
         pro: "For a professional contract, clubs look first at your role and recent full-game video at your current level.",
         development: "For development, compare guaranteed ice time and coaching in each route, not only the league name.",
@@ -75,6 +86,17 @@
       focusFit: function (c, names) { return "Вы пришли со страницы «" + c + "». Лиги этой страны в вашем ориентировочном диапазоне: " + names + "."; },
       focusNone: function (c) { return "Вы пришли со страницы «" + c + "». По текущей модели ни одна лига этой страны не попадает в ваш ориентировочный диапазон; в гиде описаны уровни и требования."; },
       focusLink: function (c) { return "Вернуться к гиду: " + c; },
+      leagueFit: {
+        fit: function (n) { return n + " входит в ваш ориентировочный диапазон. Следующий шаг — список клубов под вашу роль и проверка правил ниже."; },
+        stretch: function (n) { return n + " сейчас выше вашего ориентировочного диапазона. Это цель на вырост: обычно сначала нужен сильный сезон на текущем уровне или ступенью ниже."; },
+        below: function (n) { return n + " ниже вашего ориентировочного диапазона. Вариант может иметь смысл ради игрового времени или первого сезона за рубежом, но сравните его с лигами ниже."; },
+        access: function (n) { return n + " по этой модели — сложный рынок для игрока без паспорта ЕС: мало мест для легионеров. До обращения в клубы проверьте точные правила и свой статус."; },
+        junior: function (n) { return n + " — юниорское соревнование; в вашем возрасте это нереалистичная цель."; },
+        unknown: function (n) { return "В справочнике нет уровня для " + n + ", поэтому калькулятор не может сравнить. Отправьте профиль на ручную проверку."; }
+      },
+      leagueFitShort: { fit: "в диапазоне", stretch: "выше диапазона", below: "ниже диапазона", access: "мало мест для легионеров", junior: "юниорское соревнование", unknown: "нет данных" },
+      leagueChecks: "Проверьте для этой лиги:",
+      leagueDocs: "Это только предварительная спортивная оценка. Лицензия, трансфер, проживание и право на работу проверяются отдельно.",
       goalTips: {
         pro: "Для профессионального контракта клубы прежде всего смотрят на вашу роль и свежее видео полной игры на текущем уровне.",
         development: "Для развития сравнивайте гарантированное игровое время и тренерскую работу в каждом варианте, а не только название лиги.",
@@ -220,6 +242,26 @@
     return { names: names.slice(0, 4), countryName: countryName };
   }
 
+  // How one specific league (the page the calculator is embedded in) relates
+  // to the result. Same band / passport / age logic as calculate(), so the
+  // league page never contradicts the shortlist under it.
+  function leagueFit(league, r, input) {
+    if (!league) return "unknown";
+    if (league.age === "junior" && r.playerAge > JUNIOR_AGE_CEILING) return "junior";
+    if (league.tier < r.band[0]) return "stretch";
+    if (league.tier > r.band[1]) return "below";
+    if (!input.eu && league.open === "low") return "access";
+    return "fit";
+  }
+
+  function findLeague(leagues, name, guideEn) {
+    return (leagues || []).filter(function (l) {
+      if (l.name !== name) return false;
+      var g = COUNTRY_GUIDES[String(l.country).toLowerCase()];
+      return !guideEn || (g && g.en === guideEn);
+    })[0] || null;
+  }
+
   function init(lang) {
     var form = document.getElementById("calc");
     if (!form) return;
@@ -274,6 +316,21 @@
       var tips = r.tips.slice();
       if (input.goal && strings.goalTips[input.goal]) tips.unshift(strings.goalTips[input.goal]);
       document.getElementById("calc-tips").innerHTML = tips.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+      // Embedded on a league page: say how that league relates to the result.
+      var fitEl = document.getElementById("calc-league-fit");
+      var leagueName = form.getAttribute("data-league-name");
+      var fitStatus = "";
+      if (fitEl && leagueName) {
+        var label = form.getAttribute("data-league-label") || leagueName;
+        var league = findLeague(data, leagueName, form.getAttribute("data-league-guide"));
+        fitStatus = leagueFit(league, r, input);
+        var checks = [];
+        try { checks = JSON.parse(form.getAttribute("data-league-checks") || "[]"); } catch (e) {}
+        fitEl.className = "calc-league-fit fit-" + fitStatus;
+        fitEl.innerHTML = "<p><strong>" + esc(strings.leagueFit[fitStatus](label)) + "</strong></p>" +
+          (checks.length ? "<p>" + esc(strings.leagueChecks) + "</p><ul>" + checks.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ul>" : "") +
+          '<p class="calc-prelim">' + esc(strings.leagueDocs) + "</p>";
+      }
       // Country guides for the suggested leagues: the route article -> calculator -> country -> application.
       var countriesEl = document.getElementById("calc-countries");
       if (countriesEl) {
@@ -309,6 +366,7 @@
       if (ctaEl) {
         var posLabel = document.querySelector('#c-pos option[value="' + input.pos + '"]').textContent;
         var note = strings.ctaNote({ label: r.label, score: r.score, pos: posLabel, year: input.year, eu: input.eu });
+        if (leagueName) note += " " + (form.getAttribute("data-league-label") || leagueName) + ": " + strings.leagueFitShort[fitStatus] + ".";
         var base = ctaEl.getAttribute("href").split("?")[0];
         ctaEl.href = base + "?" + buildCtaQuery(input, r, note);
       }
@@ -319,7 +377,7 @@
       // gets keyboard/AT users there, not just scrolls sighted users to it.
       resultEl.scrollIntoView({ behavior: "smooth", block: "start" });
       bandEl.focus();
-      if (root.ehaTrack) root.ehaTrack("calculator_done", { band: r.bandKey, score: r.score, goal: input.goal || "" });
+      if (root.ehaTrack) root.ehaTrack("calculator_done", { band: r.bandKey, score: r.score, goal: input.goal || "", league_fit: fitStatus });
     });
 
     // Clicks from the result to a league or country page. Only the page path is sent.
@@ -330,7 +388,7 @@
     });
   }
 
-  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate, buildCtaQuery: buildCtaQuery, filterForFocus: filterForFocus, COUNTRY_GUIDES: COUNTRY_GUIDES };
+  var api = { BASE: BASE, PPG: PPG, STRINGS: STRINGS, calculate: calculate, leagueFit: leagueFit, findLeague: findLeague, buildCtaQuery: buildCtaQuery, filterForFocus: filterForFocus, COUNTRY_GUIDES: COUNTRY_GUIDES };
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;

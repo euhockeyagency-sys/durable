@@ -128,3 +128,9 @@ npm --prefix mcp run check     # при изменениях MCP
 - Правила внутренней оценки — только `src/intake/assessment-rules.js`; после правки поднимайте `version`. Оценка предварительная, автоматических отказов нет.
 - Внутренняя категория, причины и заметки не должны попадать в публичные ответы, страницу успеха и PDF (это проверяет `test/intake.test.js`). Elite Prospects — только официальный API с ключом, без скрейпинга.
 - Шрифты PDF (Manrope, Oswald, OFL) лежат в `assets/pdf-fonts/` вне `public/`: статические начертания с латиницей и кириллицей, собранные из шрифтов сайта.
+
+## Профили лиг
+
+- Данные — `src/league-profiles.js` (одна запись на лигу, стабильный `id`), вывод — `src/league-profile.js`. Маркер `<!-- LEAGUE_PROFILE -->` на странице лиги заменяется телом страницы, `<!-- LEAGUE_PROFILE_LD -->` — FAQPage, `<!-- LEAGUE_RULES:<id> -->` на гиде страны — таблицей правил из той же записи.
+- У каждого правила: сезон, `scope` (game_sheet / registration / transfer / eligibility), `status` (official / press), источник и дата проверки; проверка — `validateProfile` и `test/league-profiles.test.js`. Факты фиксируйте в `docs/league-profiles-factcheck.md`.
+- `data.name`/`data.country` должны совпадать с записью в `leagues.src.js`: по ним встроенный калькулятор оценивает лигу. После правки правил обновите `imports`/`review` этой записи и выполните `node scripts/build-leagues.js`.

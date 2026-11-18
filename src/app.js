@@ -11,6 +11,7 @@ const { messages, normalizeLocale } = require("./messages");
 const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales");
 const { leagueEditorial } = require("./league-editorial");
 const { leagueFacts } = require("./league-facts");
+const { applyLeagueProfiles } = require("./league-profile");
 const { guideIndex, relatedGuides } = require("./guide-index");
 const { leaguesItemList } = require("./league-list");
 const { createAdminAuth } = require("./admin-auth");
@@ -887,6 +888,9 @@ function renderBody(data, extension, config, context) {
   // past validUntil), so an expired request disappears without a redeploy.
   const clubNeedsLocale = extension === ".html" ? clubNeedsLocaleFor(logicalPath, locale) : null;
   if (clubNeedsLocale) html = html.replace(CLUB_NEEDS_MARKER, renderClubNeeds(clubNeedsLocale, now ? now() : new Date()));
+  // League profiles (src/league-profiles.js): league page body, FAQ JSON-LD and
+  // rule summaries on country guides, all from one record per league.
+  if (extension === ".html" && html.includes("<!-- LEAGUE_")) html = applyLeagueProfiles(html, logicalPath, locale);
   if (extension === ".html" && urlPrefix) {
     html = prefixInternalLinks(html, urlPrefix);
   }

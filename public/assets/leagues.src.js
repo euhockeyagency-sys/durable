@@ -666,6 +666,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇦🇹",
       "name": "ICE Hockey League",
+      "url": {
+        "ru": "/ligi/avstriya-ice-hockey-league",
+        "en": "/leagues/austria-ice-hockey-league"
+      },
       "tier": 1,
       "open": "mid",
       "note": {
@@ -691,6 +695,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇦🇹",
       "name": "Alps Hockey League",
+      "url": {
+        "ru": "/ligi/alps-hockey-league",
+        "en": "/leagues/alps-hockey-league"
+      },
       "tier": 2,
       "open": "high",
       "note": {
@@ -752,16 +760,16 @@ window.EHA_LEAGUES_SRC = {
         "en": "Top division, a growing market"
       },
       "imports": {
-        "ru": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
-        "en": "Current quota and eligibility were not verified in this review; check the season rules and player status."
+        "ru": "2026/27: в заявке на матч (12–22) минимум 10 игроков с польским гражданством или Картой поляка, включая вратаря; прямого лимита легионеров нет; окно до 15 февраля.",
+        "en": "2026/27: at least 10 players with Polish citizenship or a Karta Polaka, including a goaltender, in each 12–22 player match roster; no direct import cap; window closes 15 February."
       },
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified; competition name verified",
-        "status": "pending",
+        "scope": "Match-roster Polish minimum and U23 rule (§13.3–13.6), transfer window (§20); no licence cap found in the pages read",
+        "status": "partial",
         "sources": [
-          "https://polskihokej.eu/ligi"
+          "https://cdn.sportigio.com/spaces/173/uploads/f860h7rqa4MI3nmLYztiSFQxHyeorimVe970fPR9.pdf"
         ]
       },
       "url": {
@@ -837,12 +845,16 @@ window.EHA_LEAGUES_SRC = {
         "en": "Norway"
       },
       "flag": "🇳🇴",
-      "name": "1. divisjon",
+      "name": "Hockeyliga1",
+      "url": {
+        "ru": "/ligi/norvegiya-hockeyliga1",
+        "en": "/leagues/norway-hockeyliga1"
+      },
       "tier": 2,
       "open": "high",
       "note": {
-        "ru": "Второй дивизион",
-        "en": "Second division"
+        "ru": "Второй дивизион (бывший 1. divisjon)",
+        "en": "Second division (formerly 1. divisjon)"
       },
       "imports": {
         "ru": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
@@ -863,6 +875,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇩🇰",
       "name": "Metal Ligaen",
+      "url": {
+        "ru": "/ligi/daniya-metal-ligaen",
+        "en": "/leagues/denmark-metal-ligaen"
+      },
       "tier": 1,
       "open": "mid",
       "note": {
@@ -888,6 +904,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇩🇰",
       "name": "1. division",
+      "url": {
+        "ru": "/ligi/daniya-1-division",
+        "en": "/leagues/denmark-1-division"
+      },
       "tier": 2,
       "open": "high",
       "note": {
@@ -913,6 +933,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇨🇭",
       "name": "National League",
+      "url": {
+        "ru": "/ligi/shvejcariya-national-league",
+        "en": "/leagues/switzerland-national-league"
+      },
       "tier": 1,
       "open": "low",
       "note": {
@@ -938,6 +962,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇨🇭",
       "name": "Swiss League",
+      "url": {
+        "ru": "/ligi/shvejcariya-sky-swiss-league",
+        "en": "/leagues/switzerland-sky-swiss-league"
+      },
       "tier": 2,
       "open": "low",
       "note": {
@@ -1055,6 +1083,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇫🇷",
       "name": "Ligue Magnus",
+      "url": {
+        "ru": "/ligi/franciya-ligue-magnus",
+        "en": "/leagues/france-ligue-magnus"
+      },
       "tier": 1,
       "open": "mid",
       "note": {
@@ -1080,6 +1112,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇫🇷",
       "name": "Division 1",
+      "url": {
+        "ru": "/ligi/franciya-division-1",
+        "en": "/leagues/france-division-1"
+      },
       "tier": 2,
       "open": "high",
       "note": {
@@ -1087,15 +1123,18 @@ window.EHA_LEAGUES_SRC = {
         "en": "Second division"
       },
       "imports": {
-        "ru": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
-        "en": "Current quota and eligibility were not verified in this review; check the season rules and player status."
+        "ru": "2026/27: в протоколе на 19–20 игроков не меньше 13 JFL (местной подготовки, не гражданство), то есть до 7 игроков без JFL; переходы — до 31 декабря.",
+        "en": "2026/27: at least 13 JFL (locally trained, not nationality) on a 19–20 player game sheet, so up to 7 non-JFL; transfers by 31 December."
       },
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Game-sheet JFL minimum (AS art. 8.3) and transfer deadline (ALM art. 32.2, 33.3); no separate licence cap found",
+        "status": "partial",
+        "sources": [
+          "https://www.hockeyfrance.com/wp-content/uploads/2026/05/06-Reglement-AS-2026.27_VF.pdf",
+          "https://www.hockeyfrance.com/wp-content/uploads/2026/05/07-Reglement-ALM-2026.27_VF.pdf"
+        ]
       }
     },
     {
@@ -1130,6 +1169,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇭🇺",
       "name": "Erste Liga",
+      "url": {
+        "ru": "/ligi/vengriya-erste-liga",
+        "en": "/leagues/hungary-erste-liga"
+      },
       "tier": 1,
       "open": "high",
       "note": {
@@ -1155,6 +1198,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇬🇧",
       "name": "EIHL",
+      "url": {
+        "ru": "/ligi/velikobritaniya-eihl",
+        "en": "/leagues/uk-eihl"
+      },
       "tier": 1,
       "open": "mid",
       "note": {
@@ -1180,6 +1227,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇬🇧",
       "name": "NIHL National",
+      "url": {
+        "ru": "/ligi/velikobritaniya-planet-ice-national-league",
+        "en": "/leagues/uk-planet-ice-national-league"
+      },
       "tier": 2,
       "open": "high",
       "note": {
@@ -1205,6 +1256,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇮🇹",
       "name": "IHL Serie A",
+      "url": {
+        "ru": "/ligi/italiya-ihl-serie-a",
+        "en": "/leagues/italy-ihl-serie-a"
+      },
       "tier": 1,
       "open": "high",
       "note": {
@@ -1230,6 +1285,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇱🇻",
       "name": "Optibet hokeja līga",
+      "url": {
+        "ru": "/ligi/latviya-optibet-hokeja-liga",
+        "en": "/leagues/latvia-optibet-hokeja-liga"
+      },
       "tier": 1,
       "open": "high",
       "note": {
@@ -1373,6 +1432,10 @@ window.EHA_LEAGUES_SRC = {
       },
       "flag": "🇷🇴",
       "name": "Liga Naţională",
+      "url": {
+        "ru": "/ligi/rumyniya-campionatul-national",
+        "en": "/leagues/romania-campionatul-national"
+      },
       "tier": 1,
       "open": "high",
       "note": {

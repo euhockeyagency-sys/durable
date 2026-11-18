@@ -1,0 +1,57 @@
+# League profiles factcheck: France Division 1 and TAURON Hokej Liga (18 November 2026)
+
+Data: `src/league-profiles.js` (ids `fr-d1`, `pl-thl`). Directory summaries in `public/assets/leagues.src.js` were updated from the same facts (review status `partial`, date 2026-11-18).
+
+## France Division 1 (season 2026/27)
+
+Sources read:
+- FFHG Règlement AS 2026/27 — https://www.hockeyfrance.com/wp-content/uploads/2026/05/06-Reglement-AS-2026.27_VF.pdf (first 100,000 of 360,570 characters read; annex AS 3 with the D1 format not read).
+- FFHG Règlement ALM 2026/27 — https://www.hockeyfrance.com/wp-content/uploads/2026/05/07-Reglement-ALM-2026.27_VF.pdf (same text also on sud-est.ffhg.org; first 100,000 of 104,883 characters read).
+
+| Fact on the page | Basis |
+|---|---|
+| D1 game sheet: up to 18 skaters + 2 goaltenders | AS art. 1.5.2 |
+| JFL minimums: 13 for 19–20 players (incl. a JFL goaltender), 12 for 17–18, 11 for 16, 10 for 14–15, 9 for 13, 8 for 11–12 | AS art. 8.3 |
+| "At most 7 non-JFL players" | EHA arithmetic: 20 − 13 |
+| JFL definition: any nationality, four full seasons licensed only for ice hockey in FFHG clubs up to the season of turning 20, since 29 April 2006; transitional rule for players born 2006 | AS art. 8.1 |
+| No separate cap on non-JFL or foreign licences | Not found in the parts of AS and ALM read; labelled on the page as "not found", not as "none exists" |
+| Team entries by 15 July, validated from 1 August | AS art. 11.3.2 |
+| Transfer requests (national and international) by 31 December, 23:59; national transfer validated by former club by 5 January | ALM art. 32.2, 33.3 |
+| January window (two arrivals) only for Ligue Magnus | ALM art. 32.2 |
+| Medical jokers after 31 December for D1 (six-week national-team injury; goaltender out 3+ months with 7+ senior sheets) | ALM art. 38.1–38.2 |
+| Tryout: DECOUVERTE licence coupled with tryout, home-federation approval; 15 days renewable once for players needing an international transfer | ALM art. 34.1, 21.1 |
+| 16 teams, 30 rounds | FFHG D1 calendar, checked 2 October 2026 (not re-checked) |
+| Work authorisation for non-EU/EEA/Swiss employees | Service-Public.fr F2728 (cited before, not re-read) |
+
+Not confirmed: opening date of the senior transfer period; 2026/27 club list and playoff/relegation format; any salary sample. These are listed on the page.
+
+## TAURON Hokej Liga (season 2026/27)
+
+Source: Regulamin TAURON Hokej Ligi na sezon 2026/2027, linked from the PZHL document list https://pzhl.eu/i/dokumenty/13 as "Regulamin Tauron Hokej Ligi (2026/27)" — https://cdn.sportigio.com/spaces/173/uploads/f860h7rqa4MI3nmLYztiSFQxHyeorimVe970fPR9.pdf. The PDF is a 40-page scan without a text layer. EHA read it by OCR (Polish), run in the browser on the page images; the paragraphs below were read in full from the OCR text. OCR errors are possible; the key figures (10 players, two U23, 12–22 roster, 15 February, 3/2 transfers, 3 months) are consistent with the surrounding text and with the press report of 10 Polish players, but a check against the original by a Polish reader is advisable.
+
+| Fact on the page | Basis |
+|---|---|
+| THL = TAURON Hokej Liga, men's top professional league; organiser PIHED (Polish Ice Hockey Events Department Sp. z o.o., Katowice) | §2.3.5–2.3.6 |
+| Competitions between 1 September and 30 April | §5.5 |
+| Match roster 12–22 players | §13.3 |
+| At least 10 players with Polish citizenship or Karta Polaka, including one goaltender | §13.4 |
+| At least two Polish/Karta Polaka players born 2003–2010; otherwise max 20 players (21 with one) | §13.5 |
+| Breach of 13.4 or 13.5: forfeit 1:0 | §13.6 |
+| "Up to 12 others" / "room cut to 10" | EHA arithmetic, labelled as such on the page |
+| Foreign player licence after a PZHL promise; club applies with passport copy | §15.3, §16.2.2 |
+| No cap on foreign licences | Not found in the pages read; labelled as "not found" |
+| Transfer window open until 15 February, 23:59; 1–31 December max 3 incoming (loans included); 1 January–15 February max 2; extra transfer for a national-team injury; after the window only own players | §20.2–20.4 |
+| Contract at least 3 months; no salary limits | §21.2 |
+| 10 teams, start 15 September 2026, 45 rounds to 21 February 2027, playoffs from 26–27 February | PZHL schedule, checked 2 October 2026 (not re-checked) |
+| PHL is the former name | PZHL document list still uses "PHL" (e.g. "dotyczy wszystkich rozgrywek oprócz PHL", coach-licence regulation for "Polskiej Hokej Ligi"); the 2026/27 regulation uses TAURON Hokej Liga |
+| Future minimum 11 and 12 | Press only: Flashscore.pl quoting the PZHL president; shown with a "press report" label |
+| Work permit not needed for EU/EEA/Swiss citizens and Karta Polaka holders; applications via praca.gov.pl since 1 June 2025; short exemption for athletes up to 30 days a year | Wielkopolska Voivodeship Office, migrant.poznan.uw.gov.pl (gov.pl), read 18 November 2026 |
+| Salary example EUR 15,000–60,000+ | playhockeyineurope.com, page dated 7 September 2026, read 15 November 2026 (see `hockey-salaries-factcheck.md`); shown as a third-party example, not an average |
+
+Corrected elsewhere: the Poland country guide (EN/RU) said "reported limit of ten imports (Polish Puck)". The regulation sets a minimum of 10 Polish/Karta Polaka players, not an import cap; the row now says so and the guide shows the rule table from the same data.
+
+Not confirmed: opening date of the transfer window; any separate PZHL/PIHED resolution capping foreign licences; a reliable salary sample.
+
+## EHA guidance, not facts
+
+The "main roster building" rows (spring–summer for France, April–August for Poland), the "who it suits" text and the step lists are EHA guidance and are labelled as such on the page.
