@@ -276,11 +276,12 @@
     imports: { en: "/open-hockey-leagues-for-imports", ru: "/otkrytye-ligi-dlya-legionerov" },
     parents: { en: "/junior-hockey-for-parents", ru: "/yuniorskij-hokkej-roditelyam" },
     academy: { en: "/guides/how-to-choose-a-hockey-academy", ru: "/guides/kak-vybrat-hokkejnuyu-akademiyu" },
-    minor: { en: "/guides/documents-and-iihf-transfer-for-a-minor-hockey-player", ru: "/guides/dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf" }
+    minor: { en: "/guides/documents-and-iihf-transfer-for-a-minor-hockey-player", ru: "/guides/dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf" },
+    alpsOber: { en: "/guides/alps-hockey-league-vs-oberliga", ru: "/guides/alps-hockey-league-ili-oberliga" }
   };
   var READ_NEXT_TEXT = {
-    en: { title: "What to read next", imports: "Most open leagues for imports in 2026/27", parents: "For parents: route, school, housing and budget", academy: "How to choose a hockey academy", minor: "Moving abroad under 18: IIHF transfer, residence and school" },
-    ru: { title: "Что читать дальше", imports: "Какие лиги открыты для легионеров в 2026/27", parents: "Родителям: маршрут, учёба, жильё и бюджет", academy: "Как выбрать хоккейную академию", minor: "Переезд до 18 лет: трансфер IIHF, проживание и учёба" }
+    en: { title: "What to read next", imports: "Most open leagues for imports in 2026/27", parents: "For parents: route, school, housing and budget", academy: "How to choose a hockey academy", minor: "Moving abroad under 18: IIHF transfer, residence and school", alpsOber: "Alps Hockey League vs Oberliga: which to choose" },
+    ru: { title: "Что читать дальше", imports: "Какие лиги открыты для легионеров в 2026/27", parents: "Родителям: маршрут, учёба, жильё и бюджет", academy: "Как выбрать хоккейную академию", minor: "Переезд до 18 лет: трансфер IIHF, проживание и учёба", alpsOber: "Alps Hockey League или Oberliga: что выбрать" }
   };
   function readNext(r, input, lang) {
     var keys = [];
@@ -291,6 +292,9 @@
       keys.push("parents", "academy");
       if (input && input.eu === false) keys.push("imports");
     } else keys.push("imports");
+    // A result that names the Alps Hockey League or the Oberliga gets the head-to-head guide.
+    var names = (r.candidates || []).map(function (l) { return String(l.name); }).join("|");
+    if (/Alps Hockey League|Oberliga/.test(names)) keys.push("alpsOber");
     var L = lang === "ru" ? "ru" : "en";
     return keys.slice(0, 3).map(function (k) { return { key: k, url: READ_NEXT[k][L], text: READ_NEXT_TEXT[L][k] }; });
   }

@@ -72,6 +72,8 @@ test("calculator 'What to read next': imports for adults, parents for juniors, u
   assert.ok(!keys(18).includes("minor"), "turning 18 this year may already be 18");
   assert.deepEqual(keys(19, false), ["parents", "academy", "imports"]);
   assert.deepEqual(keys(26), ["imports"]);
+  const withAlps = calc.readNext({ playerAge: 24, candidates: [{ name: "Alps Hockey League" }] }, { eu: true }, "ru");
+  assert.deepEqual(withAlps.map((i) => i.url), ["/otkrytye-ligi-dlya-legionerov", "/guides/alps-hockey-league-ili-oberliga"]);
   const adult = { year: y - 26, pos: "forward", level: "t3", seasons: 5, gp: 40, pts: 20, eu: true };
   assert.deepEqual(calc.readNext(calc.calculate(adult, [], "en"), adult, "en").map((i) => i.url), ["/open-hockey-leagues-for-imports"]);
   assert.deepEqual(calc.readNext(calc.calculate(adult, [], "ru"), adult, "ru").map((i) => i.url), ["/otkrytye-ligi-dlya-legionerov"]);
