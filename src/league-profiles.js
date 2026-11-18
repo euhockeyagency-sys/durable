@@ -1853,6 +1853,10 @@ const PROFILES = [
         "Подтвердите путь к разрешению на работу в стране клуба и завершите трансфер IIHF до 15 февраля."
       ]
     },
+    importSummary: {
+      en: "Up to 10 imports on a 22-player game sheet under the 2022 rule; the 2026/27 number is not confirmed.",
+      ru: "До 10 легионеров в протоколе на 22 игрока по правилу 2022 года; число на 2026/27 не подтверждено."
+    },
     calcChecks: {
       en: ["EHA estimate: €35,000–150,000+ per season; ask gross or net.", "Up to 10 imports on a 22-player sheet under the 2022 rule; the 2026/27 number is not confirmed.", "Work permit depends on the club's country (AT, IT, SI, HU)."],
       ru: ["Оценка EHA: 35 000–150 000+ евро за сезон; уточняйте брутто или нетто.", "До 10 легионеров в протоколе на 22 игрока по правилу 2022 года; число на 2026/27 не подтверждено.", "Разрешение на работу зависит от страны клуба (AT, IT, SI, HU)."]

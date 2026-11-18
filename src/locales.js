@@ -121,6 +121,8 @@ const PAGES = [
   { ru: "/guides/hokkej-v-belgii", en: "/guides/hockey-in-belgium" },
   { ru: "/guides/zarplaty-hokkeistov-v-evrope", en: "/guides/hockey-player-salaries-in-europe" },
   { ru: "/guides/zarplaty-icehl-i-alps-hockey-league", en: "/guides/icehl-and-alps-hockey-league-salaries" },
+  { ru: "/guides/franciya-polsha-ili-alps-hockey-league-posle-yuniorov", en: "/guides/france-poland-or-alps-hockey-league-after-juniors" },
+  { ru: "/guides/luchshie-ligi-evropy-dlya-legionerov", en: "/guides/best-european-hockey-leagues-for-imports" },
   { ru: "/ligi/italiya-ihl-serie-a", en: "/leagues/italy-ihl-serie-a" },
   { ru: "/ligi/italiya-italian-hockey-league", en: "/leagues/italy-italian-hockey-league" },
   { ru: "/ligi/latviya-1-liga", en: "/leagues/latvia-1-liga" },

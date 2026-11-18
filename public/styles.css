@@ -1204,3 +1204,9 @@ h2{font-size:clamp(34px,10vw,48px)}
 .audience-grid h2{font-size:clamp(22px,2.4vw,30px);margin:6px 0 10px}
 @media (max-width:760px){.audience-grid{grid-template-columns:1fr}}
 .league-own-clubs h2{font-size:clamp(22px,2.4vw,28px)}
+.article-byline{display:flex;gap:14px;align-items:center;margin:24px 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:rgba(var(--fg-rgb),.03)}
+.article-byline img{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:none}
+.article-byline p{margin:0;font-size:14px;line-height:1.5;color:var(--text-2)}
+.next-step-cta{margin:32px 0;padding:20px 22px;border:1px solid var(--line);border-radius:12px;background:rgba(var(--accent-rgb),.06)}
+.next-step-cta h2,.next-step-cta h3{margin-top:0}
+.next-step-cta .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px}
