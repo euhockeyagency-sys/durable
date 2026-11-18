@@ -1203,3 +1203,4 @@ h2{font-size:clamp(34px,10vw,48px)}
 .audience-grid article{border:1px solid var(--line);border-radius:12px;padding:24px;background:rgba(var(--fg-rgb),.02)}
 .audience-grid h2{font-size:clamp(22px,2.4vw,30px);margin:6px 0 10px}
 @media (max-width:760px){.audience-grid{grid-template-columns:1fr}}
+.league-own-clubs h2{font-size:clamp(22px,2.4vw,28px)}

@@ -130,6 +130,26 @@ const SOURCES = {
   itWork: {
     label: { en: "EU Immigration Portal: employed worker in Italy", ru: "Иммиграционный портал ЕС: работа по найму в Италии" },
     url: "https://home-affairs.ec.europa.eu/policies/migration-and-asylum/eu-immigration-portal/employed-worker-italy_en"
+  },
+  icehlGameMode: {
+    label: { en: "ICE Hockey League: game mode 2026/27", ru: "ICE Hockey League: формат сезона 2026/27" },
+    url: "https://www.ice.hockey/en/league/game-mode"
+  },
+  laolaRules2022: {
+    label: { en: "LAOLA1: the new ICE roster rules explained (2022, press)", ru: "LAOLA1: новые правила составов ICE (2022, пресса)" },
+    url: "https://www.laola1.at/de/red/wintersport/eishockey/ice-hockey-league/ice-scout/ice---legionaere-und-nachwuchsspieler--neue-kaderregeln-erklaert/"
+  },
+  laolaRules2023: {
+    label: { en: "LAOLA1: which ICE roster rules missed their aim (2024, press)", ru: "LAOLA1: какие правила составов ICE не сработали (2024, пресса)" },
+    url: "https://www.laola1.at/de/red/wintersport/eishockey/ice-hockey-league/ice-scout/eishockey---ice--welche-kader-regelungen-ihre-wirkung-verfehlt-/"
+  },
+  hnEuProposal: {
+    label: { en: "Hockey-News.info: KAC president proposes counting EU players as domestic (November 2026, press)", ru: "Hockey-News.info: президент KAC предлагает считать игроков ЕС местными (ноябрь 2026, пресса)" },
+    url: "https://www.hockey-news.info/neue-kaderregel-koennte-icehl-auf-den-kopf-stellen-kac-praesident-schwaiger-macht-druck/"
+  },
+  ehaIcehlSalaries: {
+    label: { en: "EHA: ICEHL and Alps Hockey League salaries (approximate EHA estimate)", ru: "EHA: зарплаты в ICEHL и Alps Hockey League (приблизительная оценка EHA)" },
+    url: "https://eurohockeyagency.com/guides/icehl-and-alps-hockey-league-salaries"
   }
 };
 
@@ -1634,6 +1654,164 @@ const PROFILES = [
       ru: ["Точные определения категорий A и B по FISG на 2026/27 (здесь в пересказе, без цитаты).", "Надёжная выборка зарплат."]
     },
     sources: ["fisgNofa", "itWork", "iihf"]
+  },
+
+  {
+    id: "at-icehl",
+    country: { code: "AT", en: "Austria", ru: "Австрия" },
+    data: { name: "ICE Hockey League", country: "Austria" },
+    names: {
+      display: { en: "ICE Hockey League (ICEHL)", ru: "ICE Hockey League (ICEHL)" },
+      short: "ICEHL",
+      aliases: ["ICEHL", "win2day ICE Hockey League", "ICE", "EBEL", "Austrian Hockey League"],
+      note: {
+        en: "Official name: win2day ICE Hockey League (ICEHL), a multinational top league with clubs from Austria, Italy, Slovenia and Hungary. win2day is the title sponsor; the league was formerly known as the EBEL.",
+        ru: "Официальное название — win2day ICE Hockey League (ICEHL), международная высшая лига с клубами из Австрии, Италии, Словении и Венгрии. win2day — титульный спонсор; раньше лига называлась EBEL."
+      }
+    },
+    paths: { en: "/leagues/austria-ice-hockey-league", ru: "/ligi/avstriya-ice-hockey-league" },
+    guide: { en: "/guides/hockey-in-austria", ru: "/guides/hokkej-v-avstrii" },
+    season: "2026/27",
+    checkedAt: "2026-11-18",
+    question: {
+      en: "What do ICEHL players earn, and how many imports can a team dress?",
+      ru: "Сколько зарабатывают в ICEHL и сколько легионеров может заявить команда?"
+    },
+    answer: {
+      en: "By EHA's approximate estimate an ICEHL player earns about €35,000–150,000+ per season; there is no official salary scale, so the contract decides. Imports: under the roster rule introduced in 2022, a 22-player game sheet must include at least 12 domestic players (two of them under 24), which leaves up to 10 places for imports, and a club may register at most 26 players over 24 in a season. A step-down to 8 imports per game from 2026/27 was announced in 2022; EHA has not seen a 2026/27 league document confirming whether it applies, so ask the club for the current number.",
+      ru: "По приблизительной оценке EHA, игрок ICEHL получает около 35 000–150 000+ евро за сезон; официальной шкалы нет, сумму определяет контракт. Легионеры: по правилу, введённому в 2022 году, в протоколе на 22 игрока должно быть не меньше 12 местных игроков (двое из них моложе 24 лет), то есть легионерам остаётся до 10 мест, а за сезон клуб может зарегистрировать не больше 26 игроков старше 24 лет. В 2022 году объявляли снижение до 8 легионеров на матч с сезона 2026/27; документа лиги на 2026/27, который бы это подтверждал, EHA не видела — уточняйте текущее число у клуба."
+    },
+    fitFor: {
+      en: "It fits an import who can play a top-six forward, top-four defence or starting-goaltender role in a 14-team professional league. For a North American player that usually means a solid AHL or strong ECHL record; for a European, a regular role in a top division or a leading role in a strong second division. Younger players often get more from the Alps Hockey League's ice time than from a fourth-line ICEHL spot.",
+      ru: "Лига подходит легионеру, который может играть в первых двух звеньях, первой четвёрке защиты или основным вратарём в профессиональной лиге из 14 команд. Для игрока из Северной Америки это обычно уверенный уровень AHL или сильный ECHL; для европейца — регулярная роль в высшем дивизионе или ведущая во втором сильном. Молодым игрокам игровое время в Alps Hockey League часто полезнее, чем место в четвёртом звене ICEHL."
+    },
+    position: {
+      en: "ICEHL is the top level for its Austrian clubs and a cross-border league with teams from Italy, Slovenia and Hungary. In 2026/27 the 14 clubs play each opponent four times — 52 games each — from 18 September 2026; the top six go straight to the quarterfinals and places 7–10 play best-of-three pre-playoffs. Quarterfinals, semifinals and the final are best-of-seven.",
+      ru: "ICEHL — высший уровень для австрийских клубов и международная лига с командами из Италии, Словении и Венгрии. В сезоне 2026/27 14 клубов играют друг с другом по четыре раза — по 52 матча — с 18 сентября 2026; шесть лучших сразу выходят в четвертьфинал, места 7–10 играют предварительный раунд до двух побед. Четвертьфиналы, полуфиналы и финал — до четырёх побед."
+    },
+    expectations: {
+      en: [
+        "Experience: recent professional seasons; clubs compare the level where the points were scored, not the total.",
+        "Role: with about ten import places, an import is signed to play in the top lines or on special teams.",
+        "Video: a recent full game plus role clips.",
+        "Status: say whether you may count as domestic for a club's country (citizenship, dual citizenship, years played there) — it decides whether you use an import place."
+      ],
+      ru: [
+        "Опыт: свежие профессиональные сезоны; клубы сравнивают уровень, где набраны очки, а не их сумму.",
+        "Роль: при примерно десяти местах легионеров иностранца берут в первые звенья или спецбригады.",
+        "Видео: свежая полная игра и нарезка по роли.",
+        "Статус: сообщите, можете ли вы считаться местным для страны клуба (гражданство, двойное гражданство, годы игры там) — от этого зависит, займёте ли вы место легионера."
+      ]
+    },
+    rules: [
+      {
+        id: "at-icehl-gamesheet",
+        season: "Rule introduced 2022/23 (press)",
+        scope: "game_sheet",
+        category: { en: "Non-domestic players (imports)", ru: "Неместные игроки (легионеры)" },
+        value: {
+          en: "Up to 22 players on the game sheet; at least 12 must be domestic players, including at least two domestic players under 24. The other places — up to 10 — may be imports. If 12 domestic players are not available, the sheet gets shorter; imports cannot fill the gap.",
+          ru: "В протоколе до 22 игроков; не меньше 12 из них — местные, включая минимум двух местных моложе 24 лет. Остальные места — до 10 — могут занять легионеры. Если 12 местных нет, протокол сокращается; легионерами недостачу не закрыть."
+        },
+        exceptions: {
+          en: "A dual citizen who is not yet eligible to play for that country counts as non-domestic. A 2022 announcement planned a reduction to 9 imports for 2024/25–2025/26 and 8 from 2026/27; EHA has not seen a league document confirming the 2026/27 number. In November 2026 a club president publicly proposed counting EU players as domestic; that is a proposal, not a rule.",
+          ru: "Игрок с двойным гражданством, который ещё не имеет права играть за эту страну, считается неместным. В 2022 году объявляли снижение до 9 легионеров в 2024/25–2025/26 и до 8 с 2026/27; документа лиги с числом на 2026/27 EHA не видела. В ноябре 2026 года президент одного из клубов публично предложил считать игроков из ЕС местными — это предложение, а не правило."
+        },
+        ref: null,
+        status: "press",
+        source: "laolaRules2022",
+        checkedAt: "2026-11-18"
+      },
+      {
+        id: "at-icehl-season",
+        season: "Rule introduced 2022/23 (press)",
+        scope: "registration",
+        category: { en: "Players over 24 per season", ru: "Игроки старше 24 лет за сезон" },
+        value: {
+          en: "A club may register at most 26 players over 24 during the season, domestic and imports together; domestic players under 24 are unlimited.",
+          ru: "За сезон клуб может зарегистрировать не больше 26 игроков старше 24 лет — местных и легионеров вместе; местные моложе 24 лет не ограничены."
+        },
+        exceptions: null,
+        ref: null,
+        status: "press",
+        source: "laolaRules2023",
+        checkedAt: "2026-11-18"
+      }
+    ],
+    permits: {
+      sport: {
+        en: "Sport eligibility comes from the league and the federation of the club's country (Austria, Italy, Slovenia or Hungary): registration within the roster rules plus the IIHF transfer for a player from another federation.",
+        ru: "Спортивный допуск дают лига и федерация страны клуба (Австрия, Италия, Словения или Венгрия): регистрация в рамках правил состава плюс трансфер IIHF для игрока из другой федерации."
+      },
+      residence: {
+        en: "EU, EEA and Swiss citizens can live in all four countries without a visa. Other players need a residence permit of the club's country; the four countries have different procedures.",
+        ru: "Граждане ЕС, ЕЭЗ и Швейцарии живут во всех четырёх странах без визы. Остальным нужен вид на жительство страны клуба; процедуры в четырёх странах разные."
+      },
+      work: {
+        en: "A non-EU player needs permission to work in the club's country before the first game; the route and fees depend on whether the club is in Austria, Italy, Slovenia or Hungary. A league registration does not give a work permit.",
+        ru: "Игроку не из ЕС до первого матча нужно разрешение на работу в стране клуба; путь и сборы зависят от того, где клуб — в Австрии, Италии, Словении или Венгрии. Регистрация в лиге разрешения на работу не даёт."
+      },
+      sources: ["euPortal", "iihfTransfer2026"]
+    },
+    windows: [
+      { kind: "official", label: { en: "IIHF transfer period (18+)", ru: "Период переходов IIHF (18+)" }, dates: { en: "1 July 2026 – 15 February 2027", ru: "1 июля 2026 – 15 февраля 2027" }, ref: "IIHF International Transfer Regulations 2026", source: "iihfTransfer2026" },
+      { kind: "official", label: { en: "Regular season", ru: "Регулярный чемпионат" }, dates: { en: "From 18 September 2026, 52 games per club", ru: "С 18 сентября 2026, 52 матча на клуб" }, ref: "ICEHL game mode", source: "icehlGameMode" },
+      { kind: "guide", label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" }, dates: { en: "March to July; in-season signings replace injured or released imports", ru: "С марта по июль; по ходу сезона подписывают замену травмированным или отчисленным легионерам" }, ref: null, source: null }
+    ],
+    money: {
+      status: "eha_estimate",
+      summary: {
+        en: "There is no official ICEHL salary scale. EHA's approximate estimate is about €35,000–150,000+ per season; the low end is a young or depth player at a small-budget club, the high end a top-line import at a large-budget club. Clubs quote gross or net differently — always ask which.",
+        ru: "Официальной шкалы зарплат ICEHL нет. Приблизительная оценка EHA — около 35 000–150 000+ евро за сезон; нижняя граница — молодой игрок или игрок глубины в небогатом клубе, верхняя — легионер первых звеньев в клубе с большим бюджетом. Клубы называют суммы по-разному — всегда уточняйте, брутто это или нетто."
+      },
+      examples: [
+        {
+          value: { en: "EUR 35,000–150,000+ per season (EHA estimate)", ru: "35 000–150 000+ евро за сезон (оценка EHA)" },
+          note: { en: "Approximate market range from EHA, not contract data; gross or net not specified.", ru: "Приблизительный рыночный диапазон EHA, не данные контрактов; брутто или нетто не уточняется." },
+          source: "ehaIcehlSalaries",
+          checkedAt: "2026-11-16"
+        },
+        {
+          value: { en: "EUR 40,000–150,000+", ru: "40 000–150 000+ евро" },
+          note: { en: "Third-party range. The source does not say gross or net, per year or per season, or what is included.", ru: "Диапазон стороннего сайта. Источник не уточняет брутто или нетто, за год или за сезон и что входит." },
+          source: "phieSalaries",
+          checkedAt: "2026-11-15"
+        }
+      ]
+    },
+    steps: {
+      en: [
+        "Check whether you can count as domestic for any club country (citizenship, dual citizenship, years played).",
+        "Prepare a recent full game, role clips and verified statistics.",
+        "Check your level with the calculator on this page; compare with the Alps Hockey League one step below.",
+        "Shortlist clubs by position needs and how many import places they already use.",
+        "Agree the full package in writing: gross or net, months paid, housing, car, flights, insurance.",
+        "Confirm the work permit route for the club's country and finish the IIHF transfer before 15 February."
+      ],
+      ru: [
+        "Проверьте, можете ли вы считаться местным в какой-либо стране клуба (гражданство, двойное гражданство, годы игры).",
+        "Подготовьте свежую полную игру, нарезку по роли и проверяемую статистику.",
+        "Оцените уровень в калькуляторе на этой странице; сравните с Alps Hockey League ступенью ниже.",
+        "Составьте список клубов по потребностям в позиции и по тому, сколько мест легионеров уже занято.",
+        "Согласуйте весь пакет письменно: брутто или нетто, число оплачиваемых месяцев, жильё, машина, перелёты, страховка.",
+        "Подтвердите путь к разрешению на работу в стране клуба и завершите трансфер IIHF до 15 февраля."
+      ]
+    },
+    calcChecks: {
+      en: ["EHA estimate: €35,000–150,000+ per season; ask gross or net.", "Up to 10 imports on a 22-player sheet under the 2022 rule; the 2026/27 number is not confirmed.", "Work permit depends on the club's country (AT, IT, SI, HU)."],
+      ru: ["Оценка EHA: 35 000–150 000+ евро за сезон; уточняйте брутто или нетто.", "До 10 легионеров в протоколе на 22 игрока по правилу 2022 года; число на 2026/27 не подтверждено.", "Разрешение на работу зависит от страны клуба (AT, IT, SI, HU)."]
+    },
+    faq: [
+      { q: { en: "What is the average ICEHL salary?", ru: "Какая средняя зарплата в ICEHL?" }, a: { en: "There is no official average or scale. EHA's approximate range is €35,000–150,000+ per season, depending on role, club budget and country; always ask whether a figure is gross or net.", ru: "Официальной средней или шкалы нет. Приблизительный диапазон EHA — 35 000–150 000+ евро за сезон в зависимости от роли, бюджета клуба и страны; всегда уточняйте, брутто это или нетто." } },
+      { q: { en: "How many imports can play in the ICEHL?", ru: "Сколько легионеров может играть в ICEHL?" }, a: { en: "Under the 2022 rule, at least 12 domestic players on a 22-player sheet, so up to 10 imports. A reduction to 8 from 2026/27 was announced in 2022 but is not confirmed by a league document EHA has seen.", ru: "По правилу 2022 года в протоколе на 22 игрока не меньше 12 местных, то есть до 10 легионеров. Снижение до 8 с 2026/27 объявляли в 2022 году, но документом лиги, который видела EHA, это не подтверждено." } },
+      { q: { en: "Do EU players count as imports in the ICEHL?", ru: "Считаются ли игроки из ЕС легионерами в ICEHL?" }, a: { en: "Under the current rule, a player is domestic only for his club's country, so an EU citizen from another country counts as an import. Counting EU players as domestic was proposed in November 2026 but is not a rule.", ru: "По действующему правилу игрок считается местным только для страны своего клуба, поэтому гражданин ЕС из другой страны — легионер. Считать игроков ЕС местными предложили в ноябре 2026 года, но это не правило." } },
+      { q: { en: "How many teams play in 2026/27?", ru: "Сколько команд в 2026/27?" }, a: { en: "Fourteen clubs from Austria, Italy, Slovenia and Hungary, 52 regular-season games each.", ru: "Четырнадцать клубов из Австрии, Италии, Словении и Венгрии, по 52 матча регулярного чемпионата." } }
+    ],
+    missing: {
+      en: ["The ICEHL roster rule document for 2026/27 (import number, domestic definition).", "The import registration or trading deadline for 2026/27.", "Work permit procedures per club country."],
+      ru: ["Документ ICEHL о составах на 2026/27 (число легионеров, определение местного игрока).", "Срок регистрации или обмена легионеров на 2026/27.", "Процедуры разрешения на работу в каждой стране клубов."]
+    },
+    sources: ["icehlGameMode", "laolaRules2022", "laolaRules2023", "hnEuProposal", "ehaIcehlSalaries", "phieSalaries", "euPortal", "iihfTransfer2026"]
   }
 ];
 

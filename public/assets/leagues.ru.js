@@ -429,13 +429,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "mid",
       "note": "Международный высший дивизион",
-      "imports": "Актуальный лимит и допуск не подтверждены этой проверкой; уточняйте регламент сезона и статус игрока.",
+      "imports": "По правилу 2022 года: в протоколе на 22 игрока не меньше 12 местных (двое моложе 24), то есть до 10 легионеров; 26 игроков старше 24 лет за сезон. Число на 2026/27 не подтверждено документом лиги.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Press reports of the 2022 roster rule; no 2026/27 league document seen",
+        "status": "partial",
+        "sources": [
+          "https://www.laola1.at/de/red/wintersport/eishockey/ice-hockey-league/ice-scout/ice---legionaere-und-nachwuchsspieler--neue-kaderregeln-erklaert/"
+        ]
       }
     },
     {

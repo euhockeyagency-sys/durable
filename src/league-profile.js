@@ -10,6 +10,8 @@ const { PROFILES, SOURCES, profileById, profileForPath } = require("./league-pro
 const PROFILE_MARKER = "<!-- LEAGUE_PROFILE -->";
 const PROFILE_LD_MARKER = "<!-- LEAGUE_PROFILE_LD -->";
 const RULES_MARKER_RE = /<!-- LEAGUE_RULES:([a-z0-9-]+) -->/g;
+const CLUBS_BLOCK_RE = /<!-- LEAGUE_CLUBS:START -->([\s\S]*?)<!-- LEAGUE_CLUBS:END -->/;
+const RULES_ANCHOR = '<section class="league-profile-section" id="import-rules">';
 const WHATSAPP_URL = "https://wa.me/375297957818";
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -276,6 +278,13 @@ function applyLeagueProfiles(html, logicalPath, locale) {
   const hit = profileForPath(logicalPath);
   if (hit && hit.locale === locale) {
     if (html.includes(PROFILE_MARKER)) html = html.replace(PROFILE_MARKER, renderLeagueProfile(hit.profile, locale));
+    // A page may keep its own verified club list between LEAGUE_CLUBS markers;
+    // it is moved in front of the rules table so the page reads league →
+    // clubs → rules, as on pages whose club table comes from league-facts.
+    const clubs = html.match(CLUBS_BLOCK_RE);
+    if (clubs && html.includes(RULES_ANCHOR)) {
+      html = html.replace(clubs[0], "").replace(RULES_ANCHOR, `${clubs[1]}${RULES_ANCHOR}`);
+    }
     if (html.includes(PROFILE_LD_MARKER)) html = html.replace(PROFILE_LD_MARKER, faqJsonLd(hit.profile, locale));
   }
   if (html.includes("<!-- LEAGUE_RULES:")) {

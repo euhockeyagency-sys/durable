@@ -86,3 +86,10 @@ Polish 1 Liga — Regulamin 1 Ligi 2026/27 (PZHL list): §1.1 organiser PZHL; §
 Erste Liga and Italian Hockey League — facts reused from the pages verified on 2 October 2026 (MJSZ season announcement: 5 foreign per match, 11 per season, ten clubs, start 18 September, playoffs 12 March; FISG NOFA 2026/27: max 3 Category B, Category A goaltenders only, deadline 11 January 2027, 12 teams, start 19 September). Not re-read in this pass; profiles keep checkedAt 2026-10-02. Italian Hockey League added to `leagues.src.js` as a tier-2 record so the calculator can assess it.
 
 German-language page `/de/eishockey-in-deutschland`: DEL2 rule and Oberliga press note added, same sources as the DEL2/Oberliga profiles.
+
+## ICE Hockey League (checked 18 November 2026)
+
+- No 2026/27 ICEHL roster-rule document is public. Import rule from press: LAOLA1 (2022) — max 22 on the sheet, at least two domestic U24 (cut-off 1 January), max 10 non-national players, sheet shrinks if 12 national players are missing, max 26 over-24 registrations per season (domestic U24 unlimited); LAOLA1 (about February 2024) — rule introduced summer 2022 with the ÖEHV, dual citizens not yet eligible for their country count as non-domestic, remaining ten places can be imports; Hockey-News.info (2022) — planned step-down to 9 (2024/25–2025/26) and 8 from 2026/27; Hockey-News.info (November 2026) — KAC president proposes counting EU players as domestic. Whether 8 applies in 2026/27 is not confirmed; a fan forum lists some 2026/27 line-ups with 10 imports (not used as a source).
+- Format: ICEHL game mode page, checked 3 November 2026 (14 clubs, 52 games, start 18 September 2026, top six to quarterfinals, 7–10 pre-playoffs).
+- Salary: EHA approximate estimate €35,000–150,000+ per season (owner, 16 November 2026, see hockey-salaries-factcheck.md); third-party playhockeyineurope.com €40,000–150,000+.
+- The page keeps its own 2026/27 club list (`id="icehl-clubs"`) between `LEAGUE_CLUBS` markers; `src/league-profile.js` moves it in front of the rules table.

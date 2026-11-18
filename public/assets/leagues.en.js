@@ -429,13 +429,15 @@ window.EHA_LEAGUES = {
       "age": "senior",
       "open": "mid",
       "note": "International top division",
-      "imports": "Current quota and eligibility were not verified in this review; check the season rules and player status.",
+      "imports": "Under the 2022 rule: at least 12 domestic players (two under 24) on a 22-player sheet, so up to 10 imports; 26 over-24 players per season. The 2026/27 number is not confirmed by a league document.",
       "review": {
-        "reviewedAt": "2026-10-25",
+        "reviewedAt": "2026-11-18",
         "season": "2026/27",
-        "scope": "Import wording screened; current quota not verified",
-        "status": "pending",
-        "sources": []
+        "scope": "Press reports of the 2022 roster rule; no 2026/27 league document seen",
+        "status": "partial",
+        "sources": [
+          "https://www.laola1.at/de/red/wintersport/eishockey/ice-hockey-league/ice-scout/ice---legionaere-und-nachwuchsspieler--neue-kaderregeln-erklaert/"
+        ]
       }
     },
     {

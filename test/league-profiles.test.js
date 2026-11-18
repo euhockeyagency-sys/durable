@@ -142,3 +142,14 @@ test("free tools: Hockey CV and transfer-window checklist are copyable and downl
     assert.ok(!/>\s*\+?375[\d\s]{6,}</.test(html), `${url}: no phone as text`);
   }
 });
+
+test("ICEHL: salary answer first, own 2026/27 club list kept before the rules, import rule labelled as press", async () => {
+  for (const url of ["/leagues/austria-ice-hockey-league", "/ru/ligi/avstriya-ice-hockey-league"]) {
+    const html = (await get(url)).text;
+    const clubs = html.indexOf('id="icehl-clubs"');
+    assert.ok(clubs > 0 && clubs < html.indexOf('id="import-rules"'), `${url}: clubs before rules`);
+    assert.ok(!html.includes("LEAGUE_CLUBS"), "clubs markers removed");
+    assert.ok(/35[ ,]000–150[ ,]000\+/.test(html), "EHA salary estimate shown");
+    assert.ok(html.includes(url.startsWith("/ru") ? "сообщение прессы, не регламент" : "press report, not a regulation"));
+  }
+});
