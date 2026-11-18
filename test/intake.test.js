@@ -310,3 +310,27 @@ test("admin: detail view, override needs a reason and is stored with history, PD
   const list = await request(app).get("/admin").set("Cookie", cookie);
   assert.match(list.text, /Tier B/);
 });
+
+test("before the migration is applied, applications are still stored without the new columns", async () => {
+  const services = db();
+  const insert = services.supabase.from;
+  const known = new Set(["id", "reference_code", "status", "player_name", "birth_year", "is_minor", "citizenship", "current_club", "position", "height_cm", "weight_kg", "stick_hand", "available_from", "phone", "email", "elite_prospects_url", "video_urls", "message", "parent_name", "parent_contact", "data_consent_at", "parent_consent_at", "privacy_policy_version", "source", "retention_until", "created_at"]);
+  services.supabase.from = (table) => {
+    const t = insert(table);
+    if (table !== "applications") return t;
+    const original = t.insert;
+    t.insert = async (value) => {
+      const unknown = Object.keys(value).find((k) => !known.has(k));
+      if (unknown) return { error: { code: "PGRST204", message: `Could not find the '${unknown}' column of 'applications' in the schema cache` } };
+      return original(value);
+    };
+    return t;
+  };
+  const app = createApp({ config: config(), services, now: () => NOW });
+  const r = await submit(app);
+  assert.equal(r.status, 201);
+  assert.equal(r.body.ownerToken, null);
+  assert.equal(services.rows.applications.length, 1);
+  assert.equal(services.rows.applications[0].assessment, undefined);
+  assert.equal(services.sent.length, 1, "the agent is still notified");
+});

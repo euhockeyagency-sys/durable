@@ -135,8 +135,16 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
     });
 
     const uploadedPaths = [];
+    let legacyOnly = false;
     try {
-      const { error: insertError } = await services.supabase.from("applications").insert(application);
+      let { error: insertError } = await services.supabase.from("applications").insert(application);
+      // Until migration 20261118120000 is applied, the intake columns do not
+      // exist. Never lose the application: store the legacy columns only.
+      if (insertError && isMissingColumn(insertError)) {
+        console.error("Intake columns missing (apply migration 20261118120000); storing the application without them");
+        legacyOnly = true;
+        ({ error: insertError } = await services.supabase.from("applications").insert(legacyRow(application)));
+      }
       if (insertError) throw insertError;
 
       for (const file of files) {
@@ -172,8 +180,10 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
         });
         if (metadataError) throw metadataError;
         application.profile.photoPath = storagePath;
-        const { error: photoPatchError } = await services.supabase.from("applications").update({ profile: application.profile }).eq("id", applicationId);
-        if (photoPatchError) throw photoPatchError;
+        if (!legacyOnly) {
+          const { error: photoPatchError } = await services.supabase.from("applications").update({ profile: application.profile }).eq("id", applicationId);
+          if (photoPatchError) throw photoPatchError;
+        }
       }
     } catch (error) {
       console.error("Application persistence failed", error.message);
@@ -199,10 +209,22 @@ function createApplicationHandler({ config, services, now = () => new Date(), ra
       ok: true,
       applicationId,
       reference,
-      ownerToken,
+      ownerToken: legacyOnly ? null : ownerToken,
       feedback: playerFeedback({ position: validation.value.position }, assessment, locale)
     });
   };
+}
+
+const INTAKE_COLUMNS = ["birth_date", "profile", "assessment", "assessment_override", "agent_strengths", "public_photo_consent_at", "public_case_consent_at", "pdf_path", "pdf_generated_at", "owner_token_hash", "share_token_hash", "share_expires_at", "payload_hash", "previous_application_id", "review_requested_at"];
+
+function isMissingColumn(error) {
+  return error && (error.code === "PGRST204" || error.code === "42703" || /column .*(does not exist|could not find)|could not find the .* column/i.test(String(error.message || "")));
+}
+
+function legacyRow(application) {
+  const row = { ...application };
+  for (const key of INTAKE_COLUMNS) delete row[key];
+  return row;
 }
 
 function toDatabaseRow({ id, reference, value, createdAt, retentionUntil, privacyPolicyVersion }) {

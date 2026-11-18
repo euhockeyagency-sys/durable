@@ -228,7 +228,9 @@ function createApp({ config, services, now, randomUUID } = {}) {
       const filters = parseAdminFilters(req.query);
       try {
         const [allApplications, clubRequests] = await Promise.all([
-          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at, assessment, assessment_override, review_requested_at"),
+          // Falls back to the legacy columns until the intake migration is applied.
+          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at, assessment, assessment_override, review_requested_at")
+            .catch(() => fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at")),
           fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, created_at")
         ]);
         const today = adminToday(now);
