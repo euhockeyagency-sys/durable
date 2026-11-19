@@ -263,13 +263,22 @@ test("access: owner token opens only its own PDF; wrong token, other reference a
   const app = createApp({ config: config(), services, now: () => NOW });
   const a = await submit(app);
   const b = await submit(app, { email: "other@example.test", playerName: "Other Player" });
-  const ok = await request(app).get(`/api/applications/${a.body.reference}/pdf?token=${a.body.ownerToken}`);
+  const pdf = (ref, body) => request(app).post(`/api/applications/${ref}/pdf`).send(body);
+  const ok = await pdf(a.body.reference, { token: a.body.ownerToken });
   assert.equal(ok.status, 200);
   assert.equal(ok.headers["content-type"], "application/pdf");
-  assert.match(ok.headers["cache-control"], /no-store/);
-  assert.equal((await request(app).get(`/api/applications/${a.body.reference}/pdf?token=${"x".repeat(32)}`)).status, 404);
-  assert.equal((await request(app).get(`/api/applications/${b.body.reference}/pdf?token=${a.body.ownerToken}`)).status, 404);
-  assert.equal((await request(app).get(`/api/applications/${a.body.reference}/pdf`)).status, 404);
+  assert.match(ok.headers["cache-control"], /private, no-store/);
+  assert.equal(ok.headers["referrer-policy"], "no-referrer");
+  assert.equal((await pdf(a.body.reference, { token: "x".repeat(32) })).status, 404);
+  assert.equal((await pdf(b.body.reference, { token: a.body.ownerToken })).status, 404);
+  assert.equal((await pdf(a.body.reference, {})).status, 404);
+  // A token in the query string is not accepted on POST either.
+  assert.equal((await request(app).post(`/api/applications/${a.body.reference}/pdf?token=${a.body.ownerToken}`).send({})).status, 404);
+  // Old GET links: refused without reading the token, nothing cached, token not echoed.
+  const old = await request(app).get(`/api/applications/${a.body.reference}/pdf?token=${a.body.ownerToken}`);
+  assert.equal(old.status, 410);
+  assert.match(old.headers["cache-control"], /no-store/);
+  assert.ok(!old.text.includes(a.body.ownerToken));
   const review = await request(app).post(`/api/applications/${a.body.reference}/review`).send({ token: a.body.ownerToken });
   assert.equal(review.status, 200);
   assert.ok(services.rows.applications[0].review_requested_at);
@@ -333,4 +342,24 @@ test("before the migration is applied, applications are still stored without the
   assert.equal(services.rows.applications.length, 1);
   assert.equal(services.rows.applications[0].assessment, undefined);
   assert.equal(services.sent.length, 1, "the agent is still notified");
+});
+
+test("owner token never appears in URLs or server logs", async () => {
+  const fs = require("node:fs");
+  const script = fs.readFileSync(require("node:path").join(__dirname, "..", "public", "assets", "intake-form.js"), "utf8");
+  assert.doesNotMatch(script, /token=/, "the success page must not put the owner token in a URL");
+  const services = db();
+  const app = createApp({ config: config(), services, now: () => NOW });
+  const a = await submit(app);
+  const lines = [];
+  const original = { log: console.log, error: console.error, warn: console.warn, info: console.info };
+  for (const level of Object.keys(original)) console[level] = (...args) => lines.push(args.map(String).join(" "));
+  try {
+    await request(app).get(`/api/applications/${a.body.reference}/pdf?token=${a.body.ownerToken}`);
+    await request(app).post(`/api/applications/${a.body.reference}/pdf`).send({ token: a.body.ownerToken });
+    await request(app).post(`/api/applications/${a.body.reference}/pdf`).send({ token: "y".repeat(40) });
+  } finally {
+    Object.assign(console, original);
+  }
+  assert.ok(lines.every((line) => !line.includes(a.body.ownerToken) && !line.includes("y".repeat(40))));
 });

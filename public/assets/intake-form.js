@@ -165,7 +165,7 @@
       var pdf = q("#own-pdf", box);
       if (pdf) pdf.addEventListener("click", function (e) {
         e.preventDefault();
-        fetch("/api/applications/" + encodeURIComponent(ref) + "/pdf?download=1&token=" + encodeURIComponent(saved.ownerToken))
+        fetch("/api/applications/" + encodeURIComponent(ref) + "/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: saved.ownerToken }) })
           .then(function (r) { if (!r.ok) throw new Error("pdf"); return r.blob(); })
           .then(function (blob) { var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "EHA-player-card-" + ref + ".pdf"; document.body.append(a); a.click(); a.remove(); })
           .catch(function () { q("#own-status", box).textContent = T.unavailable; });

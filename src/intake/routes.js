@@ -86,7 +86,9 @@ function registerPublicIntakeRoutes(app, { config, services, now = () => new Dat
   // player's browser. Only its hash is stored.
   const owner = async (req, res) => {
     const ref = String(req.params.ref || "");
-    const token = String((req.query.token || (req.body || {}).token || "")).slice(0, 100);
+    // The token is accepted from the request body only: a secret in the URL
+    // ends up in proxy access logs, browser history and Referer headers.
+    const token = String(((req.body || {}).token) || "").slice(0, 100);
     if (!REF_RE.test(ref) || token.length < 20 || !services || !services.supabase) return null;
     const row = await loadBy(services.supabase, "reference_code", ref).catch(() => null);
     if (!row || !row.owner_token_hash) return null;
@@ -94,10 +96,16 @@ function registerPublicIntakeRoutes(app, { config, services, now = () => new Dat
     if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
     return row;
   };
-  app.get("/api/applications/:ref/pdf", ownerLimiter, async (req, res) => {
+  // Old clients asked with GET ?token=…; the query is never read or echoed.
+  app.get("/api/applications/:ref/pdf", (_req, res) => {
+    res.set("Cache-Control", "no-store");
+    res.status(410).json({ ok: false, code: "use_post", message: "Open the application success page again and use the PDF button, or ask EHA for the player card." });
+  });
+  app.post("/api/applications/:ref/pdf", ownerLimiter, express.json({ limit: "2kb" }), async (req, res) => {
+    res.set({ "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" });
     const row = await owner(req, res);
     if (!row) return res.status(404).json({ ok: false, code: "not_found" });
-    sendPdf(res, row, await storedOrFreshPdf(services.supabase, row, now), req.query.download !== "1");
+    sendPdf(res, row, await storedOrFreshPdf(services.supabase, row, now), false);
   });
   app.post("/api/applications/:ref/review", ownerLimiter, express.json({ limit: "2kb" }), async (req, res) => {
     const row = await owner(req, res);
