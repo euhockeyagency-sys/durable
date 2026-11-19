@@ -192,8 +192,8 @@ test("rendered pages preload the locale-specific Oswald subset", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
   const en = await request(app).get("/").set("Host", "eha.test").expect(200);
   const ru = await request(app).get("/ru/").set("Host", "eha.test").expect(200);
-  assert.match(en.text, /preload" as="font" href="\/assets\/fonts\/oswald-700-latin\.woff2/);
-  assert.match(ru.text, /preload" as="font" href="\/assets\/fonts\/oswald-700-cyrillic\.woff2/);
+  assert.match(en.text, /preload" as="font" href="\/assets\/fonts\/oswald-latin\.woff2/);
+  assert.match(ru.text, /preload" as="font" href="\/assets\/fonts\/oswald-cyrillic\.woff2/);
 });
 
 test("rendered HTML sets the theme before first paint and ships both palettes", async () => {
@@ -1255,4 +1255,19 @@ test("routes: one URL per page, real 404s, no invented hubs", async () => {
   // search-engine verification files are still served as files
   await get("/google2328f263711f16e8.html").expect(200);
   await get("/ru/").expect(200);
+});
+
+test("fonts: one variable-font file per family and subset, no byte-identical duplicates", () => {
+  const fontsDir = path.join(__dirname, "..", "public", "assets", "fonts");
+  const files = fs.readdirSync(fontsDir).filter((f) => f.endsWith(".woff2"));
+  const hashes = files.map((f) => require("node:crypto").createHash("sha256").update(fs.readFileSync(path.join(fontsDir, f))).digest("hex"));
+  assert.equal(new Set(hashes).size, files.length, "duplicate font files");
+  const css = fs.readFileSync(path.join(__dirname, "..", "public", "styles.css"), "utf8");
+  const faces = css.match(/@font-face\s*\{[^}]*\}/g) || [];
+  assert.equal(faces.length, 6);
+  for (const f of faces) {
+    const file = /url\(\/assets\/fonts\/([^)]+)\)/.exec(f)[1];
+    assert.ok(files.includes(file), file);
+    assert.match(f, /font-weight: \d{3} \d{3};/);
+  }
 });

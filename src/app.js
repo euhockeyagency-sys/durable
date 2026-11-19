@@ -1009,8 +1009,8 @@ function renderBody(data, extension, config, context) {
     const pageUrl = joinUrl(baseUrl, logicalPath);
     const isArticle = logicalPath.startsWith("/guides/");
     const social = buildSocialTags(html, pageUrl, isArticle, coverFor(config, logicalPath, baseUrl), locale);
-    const fontSubset = locale === "ru" ? "oswald-700-cyrillic" : "oswald-700-latin"; // h1–h3 render in Oswald 700
-    const bodyFontSubset = locale === "ru" ? "manrope-400-cyrillic" : "manrope-400-latin";
+    const fontSubset = locale === "ru" ? "oswald-cyrillic" : "oswald-latin"; // h1–h3 render in Oswald 700
+    const bodyFontSubset = locale === "ru" ? "manrope-cyrillic" : "manrope-latin";
     const fontPreload = `<link rel="preload" as="font" href="/assets/fonts/${fontSubset}.woff2" type="font/woff2" crossorigin><link rel="preload" as="font" href="/assets/fonts/${bodyFontSubset}.woff2" type="font/woff2" crossorigin>`;
     const isCoverPage = logicalPath.startsWith("/guides/") || logicalPath.startsWith("/leagues/") || logicalPath.startsWith("/ligi/");
     const coverWebp = isCoverPage ? coverWebpFor(config, logicalPath) : null;
