@@ -1152,3 +1152,16 @@ h2{font-size:clamp(34px,10vw,48px)}
    darker shade of the same blue (4.9:1; hover 6.5:1). WhatsApp green likewise. */
 .primary,.cookie-actions [data-cookie="accept"]{--accent:#0b6fd6;--accent-hover:#0a5cc0}
 .whatsapp-float{background:#0f7a40}
+/* Transfer calendar: month / open-now filters, quick chips, empty state, now-state */
+.calendar-check{flex-direction:row!important;align-items:center;gap:8px!important;min-width:0!important;min-height:44px}
+.calendar-check input{width:20px;height:20px}
+.calendar-quick{display:flex;flex-wrap:wrap;gap:8px;width:100%}
+.calendar-chip,.calendar-reset{min-height:44px;padding:0 14px;border:1px solid var(--line);background:transparent;color:var(--text);font:inherit;font-size:14px;border-radius:999px;cursor:pointer}
+.calendar-chip[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:transparent;--accent:#0b6fd6}
+.calendar-reset{border-radius:6px}
+.calendar-count{width:100%}
+.calendar-empty{margin:12px 0;padding:14px 16px;border:1px dashed var(--line)}
+.cal-state{display:inline-block;margin-top:4px;font-size:12px;font-weight:700}
+.cal-state-open{color:#2e7d4f}.cal-state-closed{color:var(--text-2)}.cal-state-ahead,.cal-state-opens{color:var(--text-2);font-weight:600}
+:root:not([data-theme="light"]) .cal-state-open{color:#6fd39b}
+@media(max-width:600px){.calendar-filters label{min-width:0;width:100%}.calendar-filters select{width:100%;min-height:44px}}

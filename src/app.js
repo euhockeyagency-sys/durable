@@ -775,7 +775,7 @@ const YANDEX_METRIKA = `<!-- Yandex.Metrika counter --><script type="text/javasc
 // localStorage — either just now or from a previous visit. Must run before
 // the gtag.js script tag so no event fires with an undefined consent state.
 // Page scripts whose URLs get a ?v= content version (see renderBody).
-const VERSIONED_SCRIPTS = ["assets/level-calculator.js", "assets/cost-calculator.js", "assets/season-cost-data.js", "assets/season-cost-estimator.js", "assets/readiness-checklist.js", "assets/available-players.js", "assets/club-brief.js", "assets/intake-form.js", "assets/leagues.ru.js", "assets/leagues.en.js"];
+const VERSIONED_SCRIPTS = ["assets/level-calculator.js", "assets/transfer-calendar.js", "assets/cost-calculator.js", "assets/season-cost-data.js", "assets/season-cost-estimator.js", "assets/readiness-checklist.js", "assets/available-players.js", "assets/club-brief.js", "assets/intake-form.js", "assets/leagues.ru.js", "assets/leagues.en.js"];
 
 const GOOGLE_ANALYTICS = `<!-- Google tag (gtag.js) --><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{analytics_storage:'denied'});</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-TPD2W77SZ3"></script><script>gtag('js',new Date());(function(){var u=new URL(location.href);u.searchParams.delete('ref');u.searchParams.delete('token');gtag('config','G-TPD2W77SZ3',{page_location:u.href})})();</script><!-- /Google tag -->`;
 

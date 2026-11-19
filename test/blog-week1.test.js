@@ -32,8 +32,8 @@ test("week 1 article (AlpsHL vs Oberliga) follows the blog template in EN and RU
     assert.ok(!/Search demand|Спрос в поиске/.test(html), `${url}: no internal search-demand notes`);
     const faqLd = JSON.parse(html.match(/<script type="application\/ld\+json">(\{"@context":"https:\/\/schema.org","@type":"FAQPage".*?)<\/script>/)[1]);
     const visible = (html.slice(faqAt).match(/<summary>[^<]+<\/summary>/g) || []).map((s) => s.replace(/<\/?summary>/g, ""));
-    assert.equal(faqLd.mainEntity.length, 4);
-    assert.deepEqual(faqLd.mainEntity.map((q) => q.name), visible.slice(0, 4), `${url}: FAQ JSON-LD matches the visible questions`);
+    assert.ok(faqLd.mainEntity.length >= 4);
+    assert.deepEqual(faqLd.mainEntity.map((q) => q.name), visible.slice(0, faqLd.mainEntity.length), `${url}: FAQ JSON-LD matches the visible questions`);
     const sources = html.slice(html.indexOf('id="sources"')).match(/<li><a href="https:/g) || [];
     assert.ok(sources.length >= 5, `${url}: sources block`);
     const internal = ["/leagues/alps-hockey-league", "/leagues/germany-oberliga", "/guides/hockey-in-austria", "/guides/hockey-in-germany", "/ligi/alps-hockey-league", "/ligi/germaniya-oberliga", "/guides/hokkej-v-avstrii", "/guides/hokkej-v-germanii"].filter((p) => html.includes(`${p}"`));

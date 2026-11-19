@@ -830,6 +830,47 @@ module.exports = {
     "Не опубликовано. Расширенные сниппеты как результат не оцениваются (их нет по решению Google)."
   ],
   "next_step": "После деплоя — выборочно Schema Markup Validator для двух HowTo-страниц."
+},
+{
+  "id": "SEO-GEO-CALENDAR-COMPARISONS-SYMMETRY-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "src/transfer-calendar.js",
+    "public/assets/transfer-calendar.js",
+    "public/styles.css",
+    "src/app.js",
+    "public/en/guides/transfer-calendar-2026-27.html",
+    "public/ru/guides/kalendar-transfernyh-okon-2026-27.html",
+    "public/en/guides/alps-hockey-league-vs-oberliga.html",
+    "public/ru/guides/alps-hockey-league-ili-oberliga.html",
+    "58 EN/RU страниц (переключатель языка)",
+    "test/transfer-calendar.test.js",
+    "test/blog-week1.test.js",
+    "docs/seo-geo-2026-11-19.md",
+    "PROJECT_STATUS.md"
+  ],
+  "urls": [
+    "/guides/transfer-calendar-2026-27",
+    "/ru/guides/kalendar-transfernyh-okon-2026-27",
+    "/guides/alps-hockey-league-vs-oberliga",
+    "/ru/guides/alps-hockey-league-ili-oberliga"
+  ],
+  "changes": [
+    "Проверено и уже было на сайте: «Three free tools»/«Три бесплатных инструмента» — 3 карточки, 3 рабочие ссылки; «For parents»/«Родителям» в футере ведут на рабочие страницы (production 19.11).",
+    "Календарь: фильтры месяца дедлайна и «Открыто сейчас», быстрые «Январь»/«Февраль»/«Открыто сейчас», сброс, пустое состояние EN/RU, синхронизация с URL без влияния на canonical/sitemap; окна windows только по источнику; «Дата не найдена в опубликованных источниках» отдельно от «Окно закрыто»; колонка сезона; ссылки на гайды стран, лиги и IIHF. Охват: 28 стран, 10 с подтверждёнными сроками + окно IIHF.",
+    "Сравнения: AlpsHL vs Oberliga доработана (10 критериев с метками официально/пресса/оценка EHA, выбор по возрасту/лиге/роли/цели, родительский CTA, ссылки на справочник и календарь, FAQ о лимите U23); PHL vs Ligue Magnus и Hockeyettan vs Mestis — оставить; USPHL Premier vs European U20 — отложено (разные системы U20). Спрос по сравнительным запросам в GSC не найден — редакционные гипотезы.",
+    "Языковая симметрия: 44 пары — все есть, 200, canonical, взаимный hreflang, x-default (EN), sitemap; переключатель языка на 58 страницах переведён с жёсткого production-URL на {{ALT_URL}}, 158 переключателям добавлены hreflang/lang."
+  ],
+  "evidence": [
+    "test/transfer-calendar.test.js (10 тестов): HTML до JS, охват, январь/февраль, 31 декабря, граница закрытия, непроверенная дата, пустая выдача, юниоры/взрослые, статусы, RU, структура пары AlpsHL/Oberliga.",
+    "Puppeteer 320/390 px: фильтры, чипы 44 px, без горизонтальной прокрутки, сброс, URL-параметры, пустое состояние RU, 41 строка без JS.",
+    "npm test зелёный; проверка FAQ/HowTo против видимого текста — 0 расхождений."
+  ],
+  "limits": [
+    "Не опубликовано: изменения в Pull Request, публикация после Merge владельцем. «Открыто сейчас» на сервере считается по дате Europe/Zurich, в браузере — по дате посетителя."
+  ],
+  "next_step": "После Merge: проверить на production фильтры, пару AlpsHL/Oberliga и переключатели; через 4 недели — GSC по сравнениям."
 }
   ],
   "historical": [
