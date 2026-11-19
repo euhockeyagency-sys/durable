@@ -644,6 +644,38 @@ module.exports = {
     "Не опубликовано. Остальные цены таблицы повторно не проверялись (сохраняют свои даты)."
   ],
   "next_step": "При следующем обзоре — повторная проверка Kent, Culver, Tabor, Berkshire, CIHA на 2027/28."
+},
+{
+  "id": "AUDIT-P1-ROUTES-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "src/app.js",
+    "test/app.test.js",
+    "test/agent-profile.test.js"
+  ],
+  "urls": [
+    "/index.html",
+    "/ru/index.html",
+    "/ru",
+    "/404",
+    "/ru/404",
+    "/leagues",
+    "/ru/ligi"
+  ],
+  "changes": [
+    "301: /index.html → /, /ru/index.html → /ru/, /ru → /ru/ (query сохраняется), /<страница>.html → /<страница>. Файлы подтверждения Google/Яндекс не затронуты.",
+    "/404 и /ru/404 отвечают статусом 404 (раньше 200 + noindex).",
+    "/leagues и /ru/ligi оставлены 404: нет внутренних ссылок и нет показов в Search Console — основания для хаба или редиректа нет."
+  ],
+  "evidence": [
+    "test/app.test.js «routes: one URL per page, real 404s, no invented hubs».",
+    "Проверка отрисованных EN/RU страниц: внутренних ссылок на /ru без слэша и на .html нет. GSC: 0 строк по этим URL."
+  ],
+  "limits": [
+    "Не опубликовано. Если Caddy когда-либо будет обслуживать эти пути сам, правило нужно продублировать там."
+  ],
+  "next_step": "После деплоя: curl -I для 7 URL на production."
 }
   ],
   "historical": [

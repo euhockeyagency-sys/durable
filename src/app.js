@@ -870,6 +870,17 @@ function servePublic(req, res, config, now, schemaState) {
     return res.redirect(resolved.redirect.status, resolved.redirect.location + (qi >= 0 ? req.originalUrl.slice(qi) : ""));
   }
   const { locale, root, logicalPath, urlPrefix = "" } = resolved;
+  const queryString = req.originalUrl.includes("?") ? req.originalUrl.slice(req.originalUrl.indexOf("?")) : "";
+
+  // One URL per page: /index.html, /ru/index.html and /<page>.html are 301s to
+  // the clean URL, and the bare /ru prefix to /ru/ (the canonical RU home).
+  if (urlPrefix && req.path === urlPrefix) return res.redirect(301, `${urlPrefix}/${queryString}`);
+  if (/\.html$/i.test(logicalPath) && !SHARED_ROOT_ALLOW.test(logicalPath)) {
+    const clean = logicalPath.replace(/\.html$/i, "").replace(/\/index$/i, "/");
+    if (clean !== "/404" && !clean.startsWith("//")) return res.redirect(301, `${urlPrefix}${clean === "/" && urlPrefix ? "/" : clean}${queryString}`);
+  }
+  // The error page itself is not a page: a real 404 status, not 200 + noindex.
+  if (/^\/404(\.html)?$/i.test(logicalPath)) return serveNotFound(req, res, config, locale, root);
 
   const requested = logicalPath === "/" ? "/index.html"
     : (path.extname(logicalPath) ? logicalPath : `${logicalPath}.html`);

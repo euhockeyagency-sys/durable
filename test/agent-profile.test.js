@@ -50,7 +50,7 @@ for (const [url, name, alt] of [["/agent", "Viachaslau Marshchonak", "https://eh
 }
 
 test("agency profiles are on the Organization, the personal profile is not", async () => {
-  for (const url of ["/", "/ru"]) {
+  for (const url of ["/", "/ru/"]) {
     const org = jsonLd((await get(url)).text).find((n) => n["@id"] === "https://eha.test/#organization");
     assert.ok(org, url);
     assert.ok(org.sameAs.includes(IG_EHA) && org.sameAs.includes(TT_EHA), url);

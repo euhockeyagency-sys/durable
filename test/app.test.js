@@ -1240,3 +1240,19 @@ test("admin queue: unprocessed count, age, oldest first and records held past re
   const order = [...queue.matchAll(/Player (Oldest|Newer|Done)/g)].map((m) => m[1]).filter((n, i, all) => all.indexOf(n) === i);
   assert.deepEqual(order, ["Oldest", "Newer"]);
 });
+
+test("routes: one URL per page, real 404s, no invented hubs", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const get = (url) => request(app).get(url).set("Host", "eha.test");
+  for (const [from, to] of [["/index.html", "/"], ["/ru/index.html", "/ru/"], ["/ru", "/ru/"], ["/ru?utm_source=x", "/ru/?utm_source=x"], ["/services.html", "/services"], ["/ru/services.html?a=1", "/ru/services?a=1"]]) {
+    const res = await get(from).expect(301);
+    assert.equal(res.headers.location, to, from);
+  }
+  for (const url of ["/404", "/ru/404", "/404.html", "/no-such-page", "/leagues", "/ru/ligi"]) {
+    const res = await get(url).expect(404);
+    assert.match(res.text, /noindex/, url);
+  }
+  // search-engine verification files are still served as files
+  await get("/google2328f263711f16e8.html").expect(200);
+  await get("/ru/").expect(200);
+});
