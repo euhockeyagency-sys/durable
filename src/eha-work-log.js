@@ -754,6 +754,39 @@ module.exports = {
     "Не опубликовано. Цвет кнопок немного темнее фирменного — согласовать с владельцем при желании оставить #1687ff (тогда нужен тёмный текст). Скринридером вручную не проверялось."
   ],
   "next_step": "После деплоя: Lighthouse a11y на production для 4 страниц."
+},
+{
+  "id": "AUDIT-P2-DATA-DUP-CH-DEADLINE-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "src/deadlines.js",
+    "src/league-profiles.js",
+    "src/transfer-calendar.js",
+    "src/app.js",
+    "public/en/leagues/switzerland-national-league.html",
+    "public/ru/ligi/shvejcariya-national-league.html",
+    "test/deadlines.test.js",
+    "docs/data-duplication.md"
+  ],
+  "urls": [
+    "/leagues/switzerland-national-league",
+    "/ru/ligi/shvejcariya-national-league",
+    "/guides/transfer-calendar-2026-27",
+    "/ru/guides/kalendar-transfernyh-okon-2026-27"
+  ],
+  "changes": [
+    "Срок переходов Swiss National League 2026/27 (иностранцы 15.02.2027 24:00, швейцарцы 01.02.2027 24:00) перепроверен по Weisungen 1.3.2 и вынесен в одну запись src/deadlines.js; профиль лиги, календарь трансферов и meta страниц берут дату оттуда.",
+    "Правила с другой областью действия (окна SIHF, период IIHF) оставлены отдельно."
+  ],
+  "evidence": [
+    "test/deadlines.test.js: изменение записи в дочернем процессе меняет все потребители, старой даты не остаётся.",
+    "Отрисовка EN/RU страниц лиги и календаря: токенов не осталось, даты корректны."
+  ],
+  "limits": [
+    "Не опубликовано. Таблица /open-hockey-leagues-for-imports и сроки PHL/DEL2 — следующие кандидаты (docs/data-duplication.md), не менялись."
+  ],
+  "next_step": "После проверки этой связки на production — перевести сроки PHL и DEL2 и таблицу открытых лиг на общий источник."
 }
   ],
   "historical": [

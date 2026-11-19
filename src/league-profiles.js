@@ -14,6 +14,9 @@
 //   a reader knows what to ask the club.
 // Text fields are { en, ru }. Paths are logical (no /ru prefix).
 
+const { deadline, pair } = require("./deadlines");
+const CH = (part, locale, opts) => deadline("ch-nl-2026-27", part, locale, opts);
+
 const SOURCES = {
   ffhgAs: {
     label: { en: "FFHG: sporting activities regulation 2026/27 (Règlement AS)", ru: "FFHG: регламент спортивной деятельности 2026/27 (Règlement AS)" },
@@ -1896,8 +1899,8 @@ const PROFILES = [
       ru: "Сколько иностранцев может использовать команда Swiss National League в 2026/27?"
     },
     answer: {
-      en: "Six per game and ten per club over the season (four per game in the NL/SL qualification), according to the National League's 2026/27 game-operations directive. Dual citizens and players with “like a Swiss” (Wie Schweizer) status do not count; players with S status do. Club changes for foreign players close on 15 February 2027 at 24:00, and international transfers must be approved in the IIHF system by then. There is no official salary scale and EHA has no reliable sample for this league.",
-      ru: "Шесть на матч и десять на клуб за сезон (четыре на матч в квалификации NL/SL) — по директиве National League на сезон 2026/27. Игроки с двойным гражданством и со статусом «как швейцарец» (Wie Schweizer) не считаются; игроки со статусом S — считаются. Переходы иностранцев закрываются 15 февраля 2027 года в 24:00, и международный трансфер должен быть одобрен в системе IIHF к этому сроку. Официальной шкалы зарплат нет, надёжной выборки по этой лиге у EHA тоже."
+      en: `Six per game and ten per club over the season (four per game in the NL/SL qualification), according to the National League's 2026/27 game-operations directive. Dual citizens and players with “like a Swiss” (Wie Schweizer) status do not count; players with S status do. Club changes for foreign players close on ${CH("foreign", "en", { time: false })} at 24:00, and international transfers must be approved in the IIHF system by then. There is no official salary scale and EHA has no reliable sample for this league.`,
+      ru: `Шесть на матч и десять на клуб за сезон (четыре на матч в квалификации NL/SL) — по директиве National League на сезон 2026/27. Игроки с двойным гражданством и со статусом «как швейцарец» (Wie Schweizer) не считаются; игроки со статусом S — считаются. Переходы иностранцев закрываются ${CH("foreign", "ru", { time: false })} года в 24:00, и международный трансфер должен быть одобрен в системе IIHF к этому сроку. Официальной шкалы зарплат нет, надёжной выборки по этой лиге у EHA тоже.`
     },
     fitFor: {
       en: "It fits an established professional who would be one of a club's six best imports: a proven top-league or AHL scorer, a top-pair defender or a starting goaltender. With six places per game, Swiss clubs rarely sign imports for depth; for most players the realistic first step in Switzerland is the Sky Swiss League or another strong league.",
@@ -1961,8 +1964,8 @@ const PROFILES = [
         scope: "transfer",
         category: { en: "Club-change deadlines", ru: "Сроки переходов" },
         value: {
-          en: "Foreign players: 15 February 2027, 24:00. Swiss players, dual citizens and “like a Swiss” players: 1 February 2027, 24:00. The T3 form must be complete and signed by then, and an international transfer must be approved in the IIHF online system by 15 February, 24:00 — the releasing federation has seven days to decide.",
-          ru: "Иностранцы: 15 февраля 2027, 24:00. Швейцарцы, игроки с двойным гражданством и «как швейцарцы»: 1 февраля 2027, 24:00. К этому сроку форма T3 должна быть заполнена и подписана, а международный трансфер — одобрен в системе IIHF до 15 февраля, 24:00; у отпускающей федерации есть семь дней на решение."
+          en: `Foreign players: ${CH("foreign", "en")}. Swiss players, dual citizens and “like a Swiss” players: ${CH("swiss", "en")}. The T3 form must be complete and signed by then, and an international transfer must be approved in the IIHF online system by ${CH("foreign", "en", { dayMonth: true })} — the releasing federation has seven days to decide.`,
+          ru: `Иностранцы: ${CH("foreign", "ru")}. Швейцарцы, игроки с двойным гражданством и «как швейцарцы»: ${CH("swiss", "ru")}. К этому сроку форма T3 должна быть заполнена и подписана, а международный трансфер — одобрен в системе IIHF до ${CH("foreign", "ru", { dayMonth: true })}; у отпускающей федерации есть семь дней на решение.`
         },
         exceptions: {
           en: "Each player may change club only once per season within the National League and the Sky Swiss League.",
@@ -1976,8 +1979,8 @@ const PROFILES = [
     ],
     permits: {
       sport: {
-        en: "Sport eligibility comes from the National League and SIHF: registration and the T3 transfer form, the foreign-player quota and, for a player from abroad, IIHF approval by 15 February.",
-        ru: "Спортивный допуск дают National League и SIHF: регистрация и форма перехода T3, квота иностранцев и, для игрока из-за рубежа, одобрение IIHF до 15 февраля."
+        en: `Sport eligibility comes from the National League and SIHF: registration and the T3 transfer form, the foreign-player quota and, for a player from abroad, IIHF approval by ${CH("foreign", "en", { time: false, dayMonth: true })}.`,
+        ru: `Спортивный допуск дают National League и SIHF: регистрация и форма перехода T3, квота иностранцев и, для игрока из-за рубежа, одобрение IIHF до ${CH("foreign", "ru", { time: false, dayMonth: true })}.`
       },
       residence: {
         en: "EU/EFTA citizens are handled by the cantons under the free-movement framework. Other players need a residence permit linked to the job.",
@@ -1990,8 +1993,8 @@ const PROFILES = [
       sources: ["semEu", "semNonEu", "iihfTransfer2026"]
     },
     windows: [
-      { kind: "official", label: { en: "Swiss, dual-citizen and “like a Swiss” players", ru: "Швейцарцы, двойное гражданство и «как швейцарцы»" }, dates: { en: "Until 1 February 2027, 24:00", ru: "До 1 февраля 2027, 24:00" }, ref: "Weisungen 2026/27, sec. 1.3.2", source: "nlWeisungen2627" },
-      { kind: "official", label: { en: "Foreign players and IIHF approval", ru: "Иностранцы и одобрение IIHF" }, dates: { en: "Until 15 February 2027, 24:00", ru: "До 15 февраля 2027, 24:00" }, ref: "Weisungen 2026/27, sec. 1.3.2", source: "nlWeisungen2627" },
+      { kind: "official", label: { en: "Swiss, dual-citizen and “like a Swiss” players", ru: "Швейцарцы, двойное гражданство и «как швейцарцы»" }, dates: pair((l) => `${l === "ru" ? "До" : "Until"} ${CH("swiss", l)}`), ref: "Weisungen 2026/27, sec. 1.3.2", source: "nlWeisungen2627" },
+      { kind: "official", label: { en: "Foreign players and IIHF approval", ru: "Иностранцы и одобрение IIHF" }, dates: pair((l) => `${l === "ru" ? "До" : "Until"} ${CH("foreign", l)}`), ref: "Weisungen 2026/27, sec. 1.3.2", source: "nlWeisungen2627" },
       { kind: "guide", label: { en: "Main roster building (EHA guide, not a rule)", ru: "Основное комплектование (ориентир EHA, не правило)" }, dates: { en: "Often a season ahead for top imports; in-season moves mostly replace injured imports", ru: "Для лучших легионеров часто за сезон вперёд; по ходу сезона в основном заменяют травмированных" }, ref: null, source: null }
     ],
     money: {
@@ -2009,7 +2012,7 @@ const PROFILES = [
         "Prepare recent full games, role clips and verified statistics.",
         "Shortlist clubs by position needs and how many of their ten quota places are used.",
         "Agree the contract in CHF with gross/net, tax, housing and insurance in writing.",
-        "Start the permit process early and finish the T3 form and IIHF approval before 15 February."
+        `Start the permit process early and finish the T3 form and IIHF approval before ${CH("foreign", "en", { time: false, dayMonth: true })}.`
       ],
       ru: [
         "Проверьте статус: швейцарское или двойное гражданство, годы в швейцарском детско-юношеском хоккее («как швейцарец»), статус S.",
@@ -2017,17 +2020,17 @@ const PROFILES = [
         "Подготовьте свежие полные игры, нарезку по роли и проверяемую статистику.",
         "Составьте список клубов по потребностям в позиции и по тому, сколько из десяти мест квоты занято.",
         "Согласуйте контракт в CHF с брутто/нетто, налогами, жильём и страховкой — письменно.",
-        "Рано начните оформление разрешений и завершите форму T3 и одобрение IIHF до 15 февраля."
+        `Рано начните оформление разрешений и завершите форму T3 и одобрение IIHF до ${CH("foreign", "ru", { time: false, dayMonth: true })}.`
       ]
     },
     calcChecks: {
-      en: ["6 foreign players per game, 10 per club and season (2026/27 directive).", "Dual citizens and “like a Swiss” players do not count; S status does.", "Foreign players' deadline 15 February 2027, including IIHF approval."],
-      ru: ["6 иностранцев на матч, 10 на клуб за сезон (директива 2026/27).", "Двойное гражданство и «как швейцарец» не считаются; статус S считается.", "Срок для иностранцев — 15 февраля 2027, включая одобрение IIHF."]
+      en: ["6 foreign players per game, 10 per club and season (2026/27 directive).", "Dual citizens and “like a Swiss” players do not count; S status does.", `Foreign players' deadline ${CH("foreign", "en", { time: false })}, including IIHF approval.`],
+      ru: ["6 иностранцев на матч, 10 на клуб за сезон (директива 2026/27).", "Двойное гражданство и «как швейцарец» не считаются; статус S считается.", `Срок для иностранцев — ${CH("foreign", "ru", { time: false })}, включая одобрение IIHF.`]
     },
     faq: [
       { q: { en: "How many imports can play in the Swiss National League?", ru: "Сколько легионеров может играть в Swiss National League?" }, a: { en: "Six per game and ten per club over the 2026/27 season (four per game in the NL/SL qualification), under the league's game-operations directive.", ru: "Шесть на матч и десять на клуб за сезон 2026/27 (четыре на матч в квалификации NL/SL) — по директиве лиги." } },
       { q: { en: "Who does not count as a foreign player?", ru: "Кто не считается иностранцем?" }, a: { en: "Dual citizens and players with “like a Swiss” status. Players with S status do count as foreign.", ru: "Игроки с двойным гражданством и со статусом «как швейцарец». Игроки со статусом S считаются иностранцами." } },
-      { q: { en: "When is the transfer deadline in 2026/27?", ru: "Когда срок переходов в 2026/27?" }, a: { en: "15 February 2027 at 24:00 for foreign players, including IIHF approval; 1 February 2027 for Swiss, dual-citizen and “like a Swiss” players.", ru: "15 февраля 2027 в 24:00 для иностранцев, включая одобрение IIHF; 1 февраля 2027 для швейцарцев, игроков с двойным гражданством и «как швейцарцев»." } },
+      { q: { en: "When is the transfer deadline in 2026/27?", ru: "Когда срок переходов в 2026/27?" }, a: { en: `${CH("foreign", "en", { time: false })} at 24:00 for foreign players, including IIHF approval; ${CH("swiss", "en", { time: false })} for Swiss, dual-citizen and “like a Swiss” players.`, ru: `${CH("foreign", "ru", { time: false })} в 24:00 для иностранцев, включая одобрение IIHF; ${CH("swiss", "ru", { time: false })} для швейцарцев, игроков с двойным гражданством и «как швейцарцев».` } },
       { q: { en: "What do Swiss National League players earn?", ru: "Сколько зарабатывают в Swiss National League?" }, a: { en: "There is no official salary scale and EHA has no reliable sample, so we do not quote a figure. Compare offers in CHF, gross and net, with housing, car and insurance listed.", ru: "Официальной шкалы нет, надёжной выборки у EHA тоже, поэтому цифру мы не называем. Сравнивайте предложения в CHF, брутто и нетто, с перечнем жилья, машины и страховки." } }
     ],
     missing: {

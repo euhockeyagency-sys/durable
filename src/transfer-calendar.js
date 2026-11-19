@@ -7,6 +7,9 @@
 // found no published date). Rendered by <!-- TRANSFER_CALENDAR --> in
 // src/article-blocks.js. Add a row only with a source; update checkedAt.
 
+const { deadline } = require("./deadlines");
+const CH = (part, locale) => deadline("ch-nl-2026-27", part, locale);
+
 const S = {
   iihf: { label: "IIHF International Transfer Regulations 2026", url: "https://blob.iihf.com/iihf-media/iihfmvc/media/downloads/regulations/2026/2026_iihf_international_transfer_regulations.pdf" },
   alps: { label: "Alps Hockey League Game Book 2026/27", url: "https://gamebook.alps.hockey/documents/gamebooks/alps/ALPS_2627_Game_Book_260901.pdf" },
@@ -70,7 +73,7 @@ const ROWS = [
   { country: C("Spain", "Испания"), league: "Liga Nacional", category: "senior", type: "registration", date: C("—", "—"), status: "needs_check", source: null, checkedAt: "2026-11-18" },
   { country: C("Sweden", "Швеция"), league: "SIF (all competitions)", category: "all", type: "international", date: C("Move from a foreign club: 1 June – 31 January", "Переход из зарубежного клуба: 1 июня – 31 января"), note: C("Competition-specific deadlines can differ.", "Сроки отдельных соревнований могут отличаться."), status: "confirmed", source: "sif", checkedAt: "2026-11-18" },
   { country: C("Switzerland", "Швейцария"), league: "SIHF (all competitions)", category: "all", type: "domestic", date: C("15 April – 15 September and 1 November – 31 December", "15 апреля – 15 сентября и 1 ноября – 31 декабря"), note: C("31 December is also the deadline for international transfers into youth and amateur hockey.", "31 декабря — также срок международных переходов в юношеский и любительский хоккей."), status: "confirmed", source: "sihf", checkedAt: "2026-11-18" },
-  { country: C("Switzerland", "Швейцария"), league: "National League", category: "senior", type: "registration", date: C("Swiss players until 1 February 2027, 24:00; foreign players and IIHF approval until 15 February 2027, 24:00", "Швейцарские игроки — до 1 февраля 2027, 24:00; иностранцы и одобрение IIHF — до 15 февраля 2027, 24:00"), status: "confirmed", source: "nl", checkedAt: "2026-11-18" },
+  { country: C("Switzerland", "Швейцария"), league: "National League", category: "senior", type: "registration", date: C(`Swiss players until ${CH("swiss", "en")}; foreign players and IIHF approval until ${CH("foreign", "en")}`, `Швейцарские игроки — до ${CH("swiss", "ru")}; иностранцы и одобрение IIHF — до ${CH("foreign", "ru")}`), status: "confirmed", source: "nl", checkedAt: "2026-11-18" },
   { country: C("United Kingdom", "Великобритания"), league: "EIHL", category: "senior", type: "international", date: C("1 August – 15 February, 23:59 CET (2025/26 policy)", "1 августа – 15 февраля, 23:59 CET (политика 2025/26)"), note: C("2026/27 dates to be confirmed with Ice Hockey UK.", "Даты 2026/27 уточняйте в Ice Hockey UK."), status: "needs_check", source: "ihuk", checkedAt: "2026-11-18" },
   { country: C("United Kingdom", "Великобритания"), league: "England and Scotland leagues (NIHL and others)", category: "senior", type: "international", date: C("1 August – 31 January, 23:59 CET (2025/26 policy)", "1 августа – 31 января, 23:59 CET (политика 2025/26)"), note: C("2026/27 dates to be confirmed.", "Даты 2026/27 уточняйте."), status: "needs_check", source: "ihuk", checkedAt: "2026-11-18" },
   { country: C("USA", "США"), league: "NCAA / ECHL / NCDC", category: "senior", type: "registration", date: C("—", "—"), status: "needs_check", source: null, checkedAt: "2026-11-18" }

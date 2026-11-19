@@ -8,6 +8,7 @@ const { createApplicationHandler } = require("./applications");
 const { createServices } = require("./services");
 const { validateClubRequest } = require("./validation");
 const { leagueLabel, labelsFor } = require("./attribution");
+const { deadline } = require("./deadlines");
 const { messages, normalizeLocale } = require("./messages");
 const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales");
 const { leagueEditorial } = require("./league-editorial");
@@ -970,6 +971,8 @@ function renderBody(data, extension, config, context) {
   // Short application form: height, weight and stick hand live in the optional
   // details block; while the database still requires them they are moved back
   // into the main fields and marked required.
+  // {{DEADLINE:<id>:<part>}} renders a shared deadline (src/deadlines.js) as a date in the page language.
+  if (extension === ".html" && html.includes("{{DEADLINE:")) html = html.replace(/\{\{DEADLINE:([a-z0-9-]+):([a-z]+)\}\}/g, (_m, id, part) => deadline(id, part, locale, { time: false }));
   if (extension === ".html" && html.includes("{{ATTRIBUTION_LABELS}}")) html = html.replace("{{ATTRIBUTION_LABELS}}", JSON.stringify(labelsFor(locale)).replace(/</g, "\\u003c"));
   if (extension === ".html" && html.includes("{{MEASUREMENTS}}")) html = applyMeasurements(html, true); // owner decision 18.11.2026: height, weight and stick hand stay required in the main form
   // League profiles (src/league-profiles.js): league page body, FAQ JSON-LD and
