@@ -498,6 +498,38 @@ module.exports = {
     "События GA пока получают intent из URL как есть; старые ссылки из кэша дадут старое значение в GA, CRM нормализует."
   ],
   "next_step": "После деплоя: dry-run истории CRM, решение владельца о применении."
+},
+{
+  "id": "AUDIT-P1-WHATSAPP-EVENTS-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "public/site.js",
+    "public/assets/intake-form.js",
+    "src/app.js",
+    "test/analytics-events.test.js",
+    "docs/analytics-events.md"
+  ],
+  "urls": [
+    "/application-success",
+    "/ru/application-success",
+    "все страницы с WhatsApp"
+  ],
+  "changes": [
+    "Причина 0: whatsapp_click есть в GA4 (3 с 16.11, совпадает с outbound click на wa.me), но не собирается в таблицу EHA CONTROL ga4_events.",
+    "whatsapp_click только после согласия, один раз на клик, без номера и текста.",
+    "Номер заявки убран из href WhatsApp на странице успеха и из page_location (GA) и адреса до запуска Метрики.",
+    "application_sent дедуплицируется по номеру заявки и в localStorage."
+  ],
+  "evidence": [
+    "test/analytics-events.test.js (4 теста, в т.ч. исполнение обработчика в vm).",
+    "GA4 Data API 19.11: whatsapp_click 17.11=2, 18.11=1; click wa.me 2 и 1. CRM 33 vs GA application_sent 28 за 01.10–18.11."
+  ],
+  "limits": [
+    "Не опубликовано. Сборщик EHA CONTROL не в этом репозитории — добавить события должен владелец.",
+    "Исторические link_url/page_location с номерами заявок в GA4 удаляются только через Data deletion request владельцем."
+  ],
+  "next_step": "После деплоя: проверить в GA DebugView отсутствие ref в page_location; владелец — удаление данных в GA4 и расширение списка событий EHA CONTROL."
 }
   ],
   "historical": [

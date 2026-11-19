@@ -97,6 +97,9 @@ const wa=document.createElement('a');wa.className='whatsapp-float';wa.href='http
 // Consent Mode default (set server-side in <head>, before gtag.js loads) is
 // analytics_storage: denied. A stored "granted" choice from an earlier visit
 // must be re-applied every load, since the default resets on each page.
+// The application reference must not reach analytics in the page URL: read it,
+// keep it for this tab, and drop it from the address before Metrica starts.
+let successRef='';if(q('[data-application-reference]')){try{const u=new URL(location.href);successRef=u.searchParams.get('ref')||'';if(successRef){u.searchParams.delete('ref');history.replaceState(history.state,'',u.pathname+u.search+u.hash);sessionStorage.setItem('eha-success-ref',successRef)}else successRef=sessionStorage.getItem('eha-success-ref')||''}catch(error){}}
 const CONSENT_KEY='eha-cookie-consent';
 const updateConsent=granted=>{if(typeof gtag==='function')gtag('consent','update',{analytics_storage:granted?'granted':'denied'})};
 const initYandex=()=>{if(typeof ym==='function')ym(110889446,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:'dataLayer',accurateTrackBounce:true,trackLinks:true})};
@@ -217,7 +220,9 @@ if(clubForm){
 const track=(name,params={})=>{try{if(typeof ym==='function')ym(110889446,'reachGoal',name,params);if(typeof gtag==='function')gtag('event',name,params)}catch(error){}};
 window.ehaTrack=track;
 // WhatsApp clicks (floating button and any wa.me link). Only the page path is sent, never the number or message text.
-document.addEventListener('click',event=>{const link=event.target.closest&&event.target.closest('a[href*="wa.me/"]');if(link)track('whatsapp_click',{entry_page:location.pathname,placement:link.classList.contains('whatsapp-float')?'float':'inline'})});
+// whatsapp_click: one event per click, only after analytics consent, and only
+// the page path and placement — never the phone number or the message text.
+let lastWa=0;document.addEventListener('click',event=>{const link=event.target.closest&&event.target.closest('a[href*="wa.me/"],[data-success-whatsapp]');if(!link)return;let granted=false;try{granted=localStorage.getItem(CONSENT_KEY)==='granted'}catch(error){}const now=Date.now();if(!granted||now-lastWa<1000)return;lastWa=now;track('whatsapp_click',{entry_page:location.pathname,placement:link.classList.contains('whatsapp-float')?'float':link.hasAttribute('data-success-whatsapp')?'success':'inline'})});
 const isParentHub=location.pathname.endsWith('/junior-hockey-for-parents')||location.pathname.endsWith('/yuniorskij-hokkej-roditelyam');
 if(isParentHub)track('parent_hub_view',{entry_page:location.pathname});
 document.addEventListener('click',event=>{const link=event.target.closest('a[href*="/contact?"]');if(!link)return;let url;try{url=new URL(link.href,location.href)}catch(error){return}const type=url.searchParams.get('type'),intent=url.searchParams.get('intent')||'';if(type==='parent'||type==='parent_guardian')track('parent_cta_click',{entry_page:location.pathname,intent,destination:url.pathname})});
@@ -229,7 +234,7 @@ document.addEventListener('click',event=>{const link=event.target.closest('a[hre
 addEventListener('pageshow',event=>{if(event.persisted&&window.turnstile&&q('.cf-turnstile'))turnstile.reset()});
 
 const reference=q('[data-application-reference]');
-if(reference){const value=new URLSearchParams(location.search).get('ref')||'';if(/^EHA-\d{6}-[A-F0-9]{6}$/.test(value)){reference.textContent=value;try{const key=`eha-sent-${value}`;if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');let context={from_calculator:sessionStorage.getItem('eha-from-calc')==='1'};try{context={...context,...JSON.parse(sessionStorage.getItem('eha-last-funnel')||'{}')}}catch(error){}track('application_sent',context);sessionStorage.removeItem('eha-last-funnel')}}catch(error){track('application_sent')}const link=q('[data-success-whatsapp]');if(link)link.href=`https://wa.me/375297957818?text=${encodeURIComponent(T.waGreeting(value))}`}else reference.textContent=T.notFound}
+if(reference){const value=successRef;if(/^EHA-\d{6}-[A-F0-9]{6}$/.test(value)){reference.textContent=value;try{const key=`eha-sent-${value}`;if(!localStorage.getItem(key)&&!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');try{localStorage.setItem(key,'1')}catch(error){}let context={from_calculator:sessionStorage.getItem('eha-from-calc')==='1'};try{context={...context,...JSON.parse(sessionStorage.getItem('eha-last-funnel')||'{}')}}catch(error){}track('application_sent',context);sessionStorage.removeItem('eha-last-funnel')}}catch(error){track('application_sent')}const link=q('[data-success-whatsapp]');if(link)link.addEventListener('click',event=>{event.preventDefault();window.open(`https://wa.me/375297957818?text=${encodeURIComponent(T.waGreeting(value))}`,'_blank','noopener')})}else reference.textContent=T.notFound}
 
 // Copy buttons for free templates (guides): copies the <pre> named in data-copy
 // and announces the result in its role=status element.

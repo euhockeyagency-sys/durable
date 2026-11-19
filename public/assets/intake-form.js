@@ -150,6 +150,7 @@
   var box = q("#application-feedback");
   if (box) {
     var ref = new URLSearchParams(location.search).get("ref") || "";
+    if (!ref) { try { ref = sessionStorage.getItem("eha-success-ref") || ""; } catch (e) { ref = ""; } }
     var saved = null;
     try { saved = JSON.parse(sessionStorage.getItem("eha-last-application") || "null"); } catch (e) { saved = null; }
     if (saved && saved.reference === ref && /^EHA-\d{6}-[A-F0-9]{6}$/.test(ref)) {
