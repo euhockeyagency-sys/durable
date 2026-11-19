@@ -701,6 +701,31 @@ module.exports = {
     "Не опубликовано. Визуальная проверка начертаний в браузере не проводилась; отображение должно совпасть, так как файлы те же."
   ],
   "next_step": "После деплоя: вкладка Network на главной EN/RU — по одному файлу на семейство и подмножество."
+},
+{
+  "id": "AUDIT-P2-LCP-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "public/styles.css",
+    "test/app.test.js",
+    "docs/performance-lcp-fonts.md"
+  ],
+  "urls": [
+    "/",
+    "/ru/"
+  ],
+  "changes": [
+    "Причина задержки LCP: текст hero начинался с opacity:0 (и clip-path) и появлялся анимацией с задержками; LCP приходился на поздно проявленный абзац или на маленький логотип «EHA». Анимация теперь только сдвигает текст и не скрывает его."
+  ],
+  "evidence": [
+    "Lighthouse 13.6, mobile, devtools-throttling, локально: LCP до 2,92–3,23 с (5 прогонов), после 1,87–1,97 с (3 прогона); LCP = FCP.",
+    "test/app.test.js: в keyframes hero-in нет opacity/clip-path."
+  ],
+  "limits": [
+    "Production не замерен: прокси контейнера 403, PageSpeed API 429. Полевых данных CrUX нет. Дальнейший выигрыш — критический CSS (решение отдельно). Не опубликовано."
+  ],
+  "next_step": "После деплоя: PageSpeed Insights mobile 3 прогона на главной EN/RU."
 }
   ],
   "historical": [

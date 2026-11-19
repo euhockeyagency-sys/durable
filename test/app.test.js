@@ -1295,3 +1295,11 @@ test("attribution chain: RU CTA → form → server → storage → admin, note 
   assert.match(admin.text, /target: SE · U20 Nationell \(J20\)/);
   assert.match(admin.text, /page: \/ru\/guides\/hokkej-v-shvecii/);
 });
+
+test("LCP: hero text is visible from the first paint (animation moves it, never hides it)", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "public", "styles.css"), "utf8");
+  const frames = css.match(/@keyframes hero-in\{[\s\S]*?\}\s*\}/g) || [];
+  assert.ok(frames.length >= 1);
+  for (const f of frames) assert.doesNotMatch(f, /opacity|clip-path/, f);
+  assert.doesNotMatch(css, /\.hero \.kicker,\.hero h1 span,\.hero \.lead,\.hero \.actions,\.hero \.note\{opacity:0/);
+});
