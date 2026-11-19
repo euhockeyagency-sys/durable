@@ -530,6 +530,35 @@ module.exports = {
     "Исторические link_url/page_location с номерами заявок в GA4 удаляются только через Data deletion request владельцем."
   ],
   "next_step": "После деплоя: проверить в GA DebugView отсутствие ref в page_location; владелец — удаление данных в GA4 и расширение списка событий EHA CONTROL."
+},
+{
+  "id": "AUDIT-P1-SALARY-INTENT-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "public/en/guides/hockey-player-salaries-in-europe.html",
+    "public/ru/guides/zarplaty-hokkeistov-v-evrope.html",
+    "test/salary-pages.test.js",
+    "docs/hockey-salaries-factcheck.md"
+  ],
+  "urls": [
+    "/guides/hockey-player-salaries-in-europe",
+    "/ru/guides/zarplaty-hokkeistov-v-evrope",
+    "/guides/icehl-and-alps-hockey-league-salaries",
+    "/ru/guides/zarplaty-icehl-i-alps-hockey-league"
+  ],
+  "changes": [
+    "Хаб — сравнение лиг: ICEHL убрана из title/og/twitter. Вопрос FAQ про ICEHL больше не противоречит отдельному гайду (оценка EHA €35–150k+, сторонняя €40–150k+, gross/net не указан) и ведёт на него.",
+    "Диапазоны €35–150k+ и €15–45k подтверждены как приблизительная оценка владельца (16.11) и везде подписаны как оценка EHA."
+  ],
+  "evidence": [
+    "test/salary-pages.test.js: title, отсутствие противоречия, ссылка, подпись каждого упоминания диапазона на EN/RU.",
+    "GSC 20.10–18.11: запросы о зарплатах ICEHL/AlpsHL — хаб 359 показов, поз. 7,3; отдельный гайд — 1 показ."
+  ],
+  "limits": [
+    "Не опубликовано. Риск временной потери показов хаба по запросам ICEHL до роста отдельного гайда. Цифры не проверялись заново — это оценка владельца."
+  ],
+  "next_step": "После публикации 4 недели наблюдать распределение показов ICEHL-запросов между двумя страницами."
 }
   ],
   "historical": [

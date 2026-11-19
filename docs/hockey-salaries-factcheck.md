@@ -71,3 +71,16 @@ New guide: EN `icehl-and-alps-hockey-league-salaries`, RU `zarplaty-icehl-i-alps
 Owner-supplied figures (chat, 16 November 2026), described by the owner as approximate salaries: ICEHL 35,000–150,000+ EUR per season; Alps Hockey League 15,000–45,000 EUR per season. They are published as "approximate EHA estimate", not as contract data. Gross or net was not specified, so the page tells the reader to confirm it with the club. No official league or union scale exists for either league; none is claimed.
 
 Other facts on the page are reused, not re-verified on this date: club and game counts (ICEHL 14 clubs, 52 games; Alps Hockey League 13 clubs, 36 games) from the league pages checked 3 November 2026; the playhockeyineurope.com comparison from the 15 November 2026 entry above. Editorial statements without a source (what drives a salary, typical contract extras, housing and meals as part of an Alps Hockey League package) are EHA guidance wording, not verified facts.
+
+## 2026-11-19 — Hub and ICEHL guide separated by intent
+
+- The hub (`hockey-player-salaries-in-europe` / `zarplaty-hokkeistov-v-evrope`) is now the cross-league comparison. "ICEHL" is removed from its title, og:title and twitter:title.
+- ICEHL and Alps Hockey League pay is answered by `icehl-and-alps-hockey-league-salaries` / `zarplaty-icehl-i-alps-hockey-league`.
+- The hub FAQ "How much do ICEHL players make?" used to say "not verified". That contradicted the 16.11 owner estimate. It now states, in both languages:
+  - there is no official scale;
+  - EHA's approximate estimate is €35,000–150,000+;
+  - a third-party source lists €40,000–150,000+;
+  - neither says gross or net.
+  It links to the dedicated guide.
+- Ranges: €35,000–150,000+ (ICEHL) and €15,000–45,000 (AlpsHL) are the owner's approximate estimates from 16.11.2026, not contract data. Every occurrence on the site is labelled as an EHA estimate; `test/salary-pages.test.js` enforces this. No new verification of the figures was done.
+- Search Console (20.10–18.11): ICEHL/AlpsHL salary queries mostly landed on the hub (359 impressions, average position 7.3). Watch for impressions moving to the dedicated guide after publication.
