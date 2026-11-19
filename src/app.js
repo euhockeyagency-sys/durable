@@ -21,6 +21,8 @@ const { leaguesItemList } = require("./league-list");
 const { createAdminAuth } = require("./admin-auth");
 const { MARKER: CLUB_NEEDS_MARKER, renderClubNeeds, clubNeedsLocaleFor } = require("./club-needs");
 const { registerPublicIntakeRoutes, registerAdminIntakeRoutes } = require("./intake/routes");
+const { registerScoutingRoutes } = require("./scouting-sheet");
+const { channelCta, wantsChannelCta } = require("./channel-cta");
 const { CATEGORY_LABELS, effectiveCategory } = require("./intake/assessment");
 
 const PRIORITY_LEAGUE_LINKS = [
@@ -125,7 +127,7 @@ const LEGACY_PATHS = new Map([
   ["/blog/new-post", "/guides"]
 ]);
 
-function createApp({ config, services, now, randomUUID, schemaState } = {}) {
+function createApp({ config, services, now, randomUUID, schemaState, scoutingClient } = {}) {
   if (!config) throw new Error("createApp requires config");
   const app = express();
   if (config.trustProxy !== false) app.set("trust proxy", config.trustProxy);
@@ -182,6 +184,8 @@ function createApp({ config, services, now, randomUUID, schemaState } = {}) {
     schemaState: schema
   }));
   registerPublicIntakeRoutes(app, { config, services: appServices, now: now || (() => new Date()), createRateLimiter });
+  // Closed Scouting Sheet for clubs (src/scouting-sheet.js), read from the CRM.
+  registerScoutingRoutes(app, { config, client: scoutingClient, now: now ? () => now().getTime() : undefined });
   app.all("/api/applications", (_req, res) => {
     res.set("Allow", "POST").status(405).json({ ok: false, code: "method_not_allowed" });
   });
@@ -992,6 +996,8 @@ function renderBody(data, extension, config, context) {
     }
     const editorial = leagueEditorial(logicalPath, locale);
     if (editorial) html = html.replace('<section data-country-section="11"', `${editorial}<section data-country-section="11"`);
+    // Telegram channel with club vacancies and deadlines (src/channel-cta.js).
+    if (wantsChannelCta(logicalPath)) html = html.replace("</main>", `${channelCta(locale)}</main>`);
     if (logicalPath === "/guides") html = html.replace('<section class="cta"', `${guideIndex(locale)}<section class="cta"`);
     else if (logicalPath.startsWith("/guides/")) html = html.replace("</main>", `${relatedGuides(logicalPath, locale)}</main>`);
     else if (logicalPath.startsWith("/leagues/") || logicalPath.startsWith("/ligi/")) html = html.replace("</main>", `${leagueRelatedLinks(logicalPath, locale)}</main>`);

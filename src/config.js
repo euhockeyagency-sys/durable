@@ -76,6 +76,11 @@ function loadConfig(env = process.env) {
     // The admin view is protected by a password login (src/admin-auth.js). A
     // short or missing password disables the route entirely.
     adminPassword: env.ADMIN_PASSWORD || "",
+    // Scouting Sheet (/s/<token>) reads the CRM project with its publishable
+    // key; both have safe defaults in src/scouting-sheet.js.
+    crmSupabaseUrl: env.CRM_SUPABASE_URL || "",
+    crmSupabaseKey: env.CRM_SUPABASE_PUBLISHABLE_KEY || "",
+    agentWhatsapp: env.AGENT_WHATSAPP || "",
     // Intake automation. Elite Prospects data only via the official, licensed
     // API (organisation key); without it the form is filled in manually.
     eliteProspectsApiKey: env.EP_API_KEY || "",
