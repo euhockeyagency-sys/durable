@@ -833,7 +833,7 @@ module.exports = {
 },
 {
   "id": "SEO-GEO-CALENDAR-COMPARISONS-SYMMETRY-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "src/transfer-calendar.js",
@@ -863,6 +863,7 @@ module.exports = {
     "Языковая симметрия: 44 пары — все есть, 200, canonical, взаимный hreflang, x-default (EN), sitemap; переключатель языка на 58 страницах переведён с жёсткого production-URL на {{ALT_URL}}, 158 переключателям добавлены hreflang/lang."
   ],
   "evidence": [
+    "Production 19.11 после Merge PR #12 и #13 (деплой ce8d0e2 успешен): календарь EN — 41 строка, ?month=1 → 6, «Открыто сейчас» → 4 (IIHF, ČSLH, SIF, SIHF), сброс → 41, скрипт версионирован, canonical без параметров, в sitemap нет URL с параметрами; RU — подписи и пустое состояние для Финляндия+январь; AlpsHL/Oberliga EN/RU — 10 критериев, родительский CTA, новый FAQ; переключатели языка с hreflang/lang.",
     "test/transfer-calendar.test.js (10 тестов): HTML до JS, охват, январь/февраль, 31 декабря, граница закрытия, непроверенная дата, пустая выдача, юниоры/взрослые, статусы, RU, структура пары AlpsHL/Oberliga.",
     "Puppeteer 320/390 px: фильтры, чипы 44 px, без горизонтальной прокрутки, сброс, URL-параметры, пустое состояние RU, 41 строка без JS.",
     "npm test зелёный; проверка FAQ/HowTo против видимого текста — 0 расхождений."
