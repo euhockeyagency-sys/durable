@@ -474,7 +474,7 @@ module.exports = {
     "scripts/attribution-history-dry-run.js",
     "test/attribution.test.js",
     "docs/attribution-runbook.md",
-    "221 EN/RU страницы с CTA /contact"
+    "226 EN/RU страниц с CTA /contact"
   ],
   "urls": [
     "/contact",
