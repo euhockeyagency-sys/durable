@@ -51,41 +51,41 @@
 </div>
 <p class="legal-note">Отправка запроса не гарантирует наличие игрока, одобрение регистрации или заключение контракта.</p>
 </div>
-<form id="club-request-form" class="club-brief" action="/api/club-request" method="post">
+<form id="club-request-form" class="club-brief ym-hide-content ym-disable-keys" action="/api/club-request" method="post">
 <div class="form-status" id="club-form-status" role="status" aria-live="polite"></div>
 <div class="two">
-<label>Название клуба<input name="clubName" maxlength="160" autocomplete="organization" required>
+<label>Название клуба<input class="ym-disable-keys" name="clubName" maxlength="160" autocomplete="organization" required>
 <span class="field-error" data-error-for="clubName"></span></label>
-<label>Страна<input name="country" maxlength="100" autocomplete="country-name" required>
+<label>Страна<input class="ym-disable-keys" name="country" maxlength="100" autocomplete="country-name" required>
 <span class="field-error" data-error-for="country"></span></label>
 </div>
 <div class="two">
-<label>Лига или уровень команды<input name="level" maxlength="160" placeholder="Лига, дивизион, взрослая или юниорская" required>
+<label>Лига или уровень команды<input class="ym-disable-keys" name="level" maxlength="160" placeholder="Лига, дивизион, взрослая или юниорская" required>
 <span class="field-error" data-error-for="level"></span></label>
-<label>Сезон или срок присоединения <small>(необязательно)</small><input name="briefTiming" maxlength="120" placeholder="Например: 2026/27, с 1 декабря"></label>
+<label>Сезон или срок присоединения <small>(необязательно)</small><input class="ym-disable-keys" name="briefTiming" maxlength="120" placeholder="Например: 2026/27, с 1 декабря"></label>
 </div>
 <fieldset class="brief-tags"><legend>Позиция</legend><div class="chips"><label class="chip"><input type="checkbox" name="briefPos" value="C"><span>C</span></label><label class="chip"><input type="checkbox" name="briefPos" value="LW"><span>LW</span></label><label class="chip"><input type="checkbox" name="briefPos" value="RW"><span>RW</span></label><label class="chip"><input type="checkbox" name="briefPos" value="D"><span>D</span></label><label class="chip"><input type="checkbox" name="briefPos" value="G"><span>G</span></label><label class="chip"><input type="checkbox" name="briefPos" value="any"><span>Любая</span></label></div><span class="field-error" data-error-for="positionNeeded"></span></fieldset>
 <input type="hidden" name="positionNeeded">
 <fieldset class="brief-tags"><legend>Хват</legend><div class="chips"><label class="chip"><input type="radio" name="briefHand" value="L"><span>Левый</span></label><label class="chip"><input type="radio" name="briefHand" value="R"><span>Правый</span></label><label class="chip"><input type="radio" name="briefHand" value="any"><span>Любой</span></label></div></fieldset>
 <fieldset class="brief-tags"><legend>Паспорт или критерий допуска</legend><div class="chips"><label class="chip"><input type="radio" name="briefElig" value="EU"><span>ЕС</span></label><label class="chip"><input type="radio" name="briefElig" value="nonEU"><span>Non-EU, если есть свободное место легионера</span></label><label class="chip"><input type="radio" name="briefElig" value="any"><span>Любой</span></label><label class="chip"><input type="radio" name="briefElig" value="other"><span>Другое</span></label></div>
-<label>Конкретное ограничение <small>(необязательно)</small><input name="briefEligNote" maxlength="200" placeholder="Например: швейцарская лицензия, не больше 2 легионеров, 2006 г. р. и младше"></label></fieldset>
+<label>Конкретное ограничение <small>(необязательно)</small><input class="ym-disable-keys" name="briefEligNote" maxlength="200" placeholder="Например: швейцарская лицензия, не больше 2 легионеров, 2006 г. р. и младше"></label></fieldset>
 <fieldset class="brief-tags"><legend>Условия</legend>
-<div class="three"><label>Бюджет<input name="briefBudget" maxlength="40" inputmode="decimal"></label><label>Валюта<select name="briefCurrency"><option>EUR</option><option>CHF</option><option>SEK</option><option>CZK</option><option>PLN</option><option>GBP</option><option>NOK</option><option>DKK</option><option>HUF</option><option>USD</option></select></label><label>Период оплаты<select name="briefPeriod"><option value="">—</option><option value="month">В месяц</option><option value="season">За сезон</option><option value="discuss">Обсуждается</option></select></label></div>
-<div class="two"><label>Жильё<select name="briefHousing"><option value="">—</option><option value="provided">Предоставляется</option><option value="partly">Частично</option><option value="none">Не предоставляется</option><option value="discuss">Обсуждается</option></select></label><label>Транспорт<select name="briefTransport"><option value="">—</option><option value="car">Автомобиль</option><option value="public">Общественный транспорт / велосипед</option><option value="none">Не предоставляется</option><option value="discuss">Обсуждается</option></select></label></div>
-<label>Другие условия <small>(необязательно)</small><input name="briefOther" maxlength="300" placeholder="Питание, страховка, перелёты, работа или учёба, бонусы"></label></fieldset>
-<label>Дополнительный комментарий <small>(необязательно)</small><textarea name="briefComment" rows="3" maxlength="1500" placeholder="Тип игрока, роль, приоритетные навыки"></textarea></label>
+<div class="three"><label>Бюджет<input class="ym-disable-keys" name="briefBudget" maxlength="40" inputmode="decimal"></label><label>Валюта<select class="ym-disable-keys" name="briefCurrency"><option>EUR</option><option>CHF</option><option>SEK</option><option>CZK</option><option>PLN</option><option>GBP</option><option>NOK</option><option>DKK</option><option>HUF</option><option>USD</option></select></label><label>Период оплаты<select class="ym-disable-keys" name="briefPeriod"><option value="">—</option><option value="month">В месяц</option><option value="season">За сезон</option><option value="discuss">Обсуждается</option></select></label></div>
+<div class="two"><label>Жильё<select class="ym-disable-keys" name="briefHousing"><option value="">—</option><option value="provided">Предоставляется</option><option value="partly">Частично</option><option value="none">Не предоставляется</option><option value="discuss">Обсуждается</option></select></label><label>Транспорт<select class="ym-disable-keys" name="briefTransport"><option value="">—</option><option value="car">Автомобиль</option><option value="public">Общественный транспорт / велосипед</option><option value="none">Не предоставляется</option><option value="discuss">Обсуждается</option></select></label></div>
+<label>Другие условия <small>(необязательно)</small><input class="ym-disable-keys" name="briefOther" maxlength="300" placeholder="Питание, страховка, перелёты, работа или учёба, бонусы"></label></fieldset>
+<label>Дополнительный комментарий <small>(необязательно)</small><textarea class="ym-disable-keys" name="briefComment" rows="3" maxlength="1500" placeholder="Тип игрока, роль, приоритетные навыки"></textarea></label>
 <input type="hidden" name="message">
 <span class="field-error" data-error-for="message"></span>
 <div class="brief-preview-box"><p class="brief-preview-label">Предпросмотр сообщения</p><pre id="brief-preview" tabindex="-1" aria-live="polite"></pre><p class="form-note">Пустые необязательные поля в сообщение не попадают.</p></div>
 <fieldset class="brief-channel"><legend>Как отправить бриф</legend><label class="channel-option"><input type="radio" name="briefChannel" value="wa" checked><span><b>WhatsApp</b><small>Откроется чат с EHA с этим сообщением; отправку вы подтверждаете сами.</small></span></label><label class="channel-option"><input type="radio" name="briefChannel" value="site"><span><b>Email / Telegram</b><small>Бриф уйдёт через сайт сразу на email и в Telegram EHA. Оставьте контакт для ответа.</small></span></label></fieldset>
 <div class="brief-send" data-channel="wa"><a class="btn primary" id="brief-wa" href="https://wa.me/375297957818" target="_blank" rel="noopener">Отправить бриф в WhatsApp</a></div>
 <div class="brief-send" data-channel="site" hidden>
-<label>Контактное лицо<input name="contactName" maxlength="120" autocomplete="name" required>
+<label>Контактное лицо<input class="ym-disable-keys" name="contactName" maxlength="120" autocomplete="name" required>
 <span class="field-error" data-error-for="contactName"></span></label>
 <div class="two">
-<label>Email<input name="email" type="email" maxlength="160" autocomplete="email">
+<label>Email<input class="ym-disable-keys" name="email" type="email" maxlength="160" autocomplete="email">
 <span class="field-error" data-error-for="email"></span></label>
-<label>Телефон / WhatsApp<input name="phone" type="tel" maxlength="60" autocomplete="tel">
+<label>Телефон / WhatsApp<input class="ym-disable-keys" name="phone" type="tel" maxlength="60" autocomplete="tel">
 <span class="field-error" data-error-for="phone"></span></label>
 </div>
 <small class="form-help">Укажите хотя бы один способ связи: email или телефон.</small>
@@ -93,7 +93,7 @@
 <span class="field-error" data-error-for="dataConsent"></span>
 <div class="cf-turnstile" data-sitekey="{{TURNSTILE_SITE_KEY}}" data-action="club_request" data-theme="dark"></div>
 <span class="field-error" data-error-for="turnstile"></span>
-<label class="honeypot" aria-hidden="true">Ваш сайт<input name="website" tabindex="-1" autocomplete="off"></label>
+<label class="honeypot" aria-hidden="true">Ваш сайт<input class="ym-disable-keys" name="website" tabindex="-1" autocomplete="off"></label>
 <input type="hidden" name="locale" value="ru">
 <button class="btn primary" type="submit">Отправить бриф в EHA</button>
 </div>
