@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2.100.0";
+import { runCleanup } from "./cleanup.mjs";
 
 const headers = { "Content-Type": "application/json" };
 
@@ -26,62 +27,17 @@ Deno.serve(async (request) => {
   }
 
   const supabase = createClient(url, secretKey, { auth: { persistSession: false } });
-  // An application with a planned contact date (today or later) is being worked
-  // on, even if its status is still "new": keep it until that date has passed.
-  const today = new Date().toISOString().slice(0, 10);
-  const { data: applications, error } = await supabase
-    .from("applications")
-    .select("id, application_files(storage_path)")
-    .lt("retention_until", new Date().toISOString())
-    .in("status", ["new", "rejected", "archived"])
-    .or(`next_contact_at.is.null,next_contact_at.lt.${today}`)
-    .limit(100);
-
-  if (error) return responseError("query_failed", error.message);
-  let deleted = 0;
-  const failures: Array<{ id: string; error: string }> = [];
-
-  for (const application of applications || []) {
-    const paths = (application.application_files || []).map((file: { storage_path: string }) => file.storage_path);
-    if (paths.length) {
-      const { error: storageError } = await supabase.storage.from("application-files").remove(paths);
-      if (storageError) {
-        failures.push({ id: application.id, error: storageError.message });
-        continue;
-      }
-    }
-    const { error: deleteError } = await supabase.from("applications").delete().eq("id", application.id);
-    if (deleteError) failures.push({ id: application.id, error: deleteError.message });
-    else deleted += 1;
+  // {"dryRun": true} reports what would be deleted or held without changing anything.
+  let dryRun = false;
+  try {
+    const body = await request.json();
+    dryRun = body && body.dryRun === true;
+  } catch {
+    // The daily cron sends "{}"; an empty or invalid body means a normal run.
   }
-
-  // Club leads carry no file attachments, so this is a plain retention sweep.
-  const { data: clubRequests, error: clubRequestsError } = await supabase
-    .from("club_requests")
-    .select("id")
-    .lt("retention_until", new Date().toISOString())
-    .in("status", ["new", "rejected", "archived"])
-    .limit(100);
-
-  if (clubRequestsError) return responseError("query_failed", clubRequestsError.message);
-  let clubRequestsDeleted = 0;
-  const clubRequestFailures: Array<{ id: string; error: string }> = [];
-
-  for (const clubRequest of clubRequests || []) {
-    const { error: deleteError } = await supabase.from("club_requests").delete().eq("id", clubRequest.id);
-    if (deleteError) clubRequestFailures.push({ id: clubRequest.id, error: deleteError.message });
-    else clubRequestsDeleted += 1;
-  }
-
-  const ok = failures.length === 0 && clubRequestFailures.length === 0;
-  return new Response(JSON.stringify({
-    ok,
-    applications: { scanned: applications?.length || 0, deleted, failures },
-    clubRequests: { scanned: clubRequests?.length || 0, deleted: clubRequestsDeleted, failures: clubRequestFailures }
-  }), {
-    status: ok ? 200 : 207,
-    headers
-  });
+  const result = await runCleanup({ supabase, now: new Date(), dryRun });
+  if (result.code) return responseError(result.code, result.message);
+  return new Response(JSON.stringify(result), { status: result.ok ? 200 : 207, headers });
 });
 
 function responseError(code: string, message: string) {

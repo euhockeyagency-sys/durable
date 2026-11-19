@@ -1212,3 +1212,25 @@ test("the RU leagues hub never emits a doubled /ru/ru/ link", async () => {
   const res = await request(app).get("/ru/ligi-evropy").set("Host", "eha.test").expect(200);
   assert.doesNotMatch(res.text, /href="\/ru\/ru\//);
 });
+test("admin queue: unprocessed count, age, oldest first and records held past retention", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2027-07-25T12:00:00Z") });
+  for (const name of ["Player Newer", "Player Oldest", "Player Done"]) await validRequest(request(app), { playerName: name }).expect(201);
+  const [newer, oldest, done] = services.rows.applications;
+  Object.assign(newer, { created_at: "2027-07-20T09:00:00Z", retention_until: "2028-07-20T09:00:00Z" });
+  Object.assign(oldest, { created_at: "2026-07-23T09:00:00Z", retention_until: "2027-07-23T09:00:00Z" });
+  Object.assign(done, { created_at: "2026-07-01T09:00:00Z", retention_until: "2027-07-01T09:00:00Z", status: "rejected" });
+  const { cookie } = await adminLogin(app);
+
+  const page = (await request(app).get("/admin").set("Cookie", cookie).expect(200)).text;
+  assert.match(page, /<b>2<\/b><span><a href="\/admin\?status=new">unprocessed \(new\)<\/a>/);
+  assert.match(page, /<b>367 d<\/b><span>oldest unprocessed/);
+  assert.match(page, /<b>1<\/b><span>past retention, held until processed/);
+  assert.match(page, /1 unprocessed record\(s\) are past the 12-month retention date/);
+  assert.match(page, /367 d · waiting/);
+  assert.doesNotMatch(page, /5 d · waiting/);
+
+  const queue = (await request(app).get("/admin?status=new").set("Cookie", cookie).expect(200)).text;
+  const order = [...queue.matchAll(/Player (Oldest|Newer|Done)/g)].map((m) => m[1]).filter((n, i, all) => all.indexOf(n) === i);
+  assert.deepEqual(order, ["Oldest", "Newer"]);
+});

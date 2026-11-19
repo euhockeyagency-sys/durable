@@ -242,9 +242,9 @@ function createApp({ config, services, now, randomUUID, schemaState } = {}) {
       try {
         const [allApplications, clubRequests] = await Promise.all([
           // Falls back to the legacy columns until the intake migration is applied.
-          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at, assessment, assessment_override, review_requested_at")
-            .catch(() => fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at")),
-          fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, created_at")
+          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at, retention_until, assessment, assessment_override, review_requested_at")
+            .catch(() => fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at, retention_until")),
+          fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, created_at, retention_until")
         ]);
         const today = adminToday(now);
         const applications = filterAdminApplications(allApplications, filters, today);
@@ -602,11 +602,38 @@ function filterAdminApplications(applications, filters, today = adminToday()) {
     return [a.player_name, a.current_club, a.reference_code, a.email, a.phone, a.internal_note, a.source?.intent, a.source?.source_page, a.source?.referrer]
       .some((field) => String(field || "").toLowerCase().includes(needle));
   });
+  // The unprocessed queue is worked oldest first.
+  if (filters.status === "new" && !filters.followup) {
+    filtered.sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  }
   // The most overdue contact first when working the follow-up queue.
   if (filters.followup === "due" || filters.followup === "upcoming") {
     filtered.sort((a, b) => String(a.next_contact_at).localeCompare(String(b.next_contact_at)));
   }
   return filtered;
+}
+
+// Whole days since the record was created, by calendar date (UTC).
+function adminAgeDays(createdAt, today) {
+  const created = String(createdAt || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(created)) return null;
+  return Math.max(0, Math.round((Date.parse(`${today}T00:00:00Z`) - Date.parse(`${created}T00:00:00Z`)) / 86400000));
+}
+
+const ADMIN_STALE_DAYS = 7;
+
+// What the owner needs to see first: unprocessed records, how old the oldest
+// is, and which ones the retention sweep is holding back (see
+// supabase/functions/cleanup-applications/cleanup.mjs).
+function adminQueueSummary(rows, today) {
+  const unprocessed = rows.filter((row) => row.status === "new");
+  const ages = unprocessed.map((row) => adminAgeDays(row.created_at, today)).filter((age) => age !== null);
+  return {
+    count: unprocessed.length,
+    oldest: ages.length ? Math.max(...ages) : null,
+    stale: ages.filter((age) => age > ADMIN_STALE_DAYS).length,
+    held: unprocessed.filter((row) => row.retention_until && String(row.retention_until).slice(0, 10) < today).length
+  };
 }
 
 function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length, allApplications = applications, csrf = "", today = adminToday() } = {}) {
@@ -632,6 +659,21 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
   const parentQualified = parentLeads.filter((a) => a.status === "qualified");
   const rejected = allApplications.filter((a) => a.status === "rejected");
   const pct = (part, whole) => whole ? `${Math.round(part / whole * 100)}%` : "—";
+  const queue = adminQueueSummary(allApplications, today);
+  const clubQueue = adminQueueSummary(clubRequests, today);
+  const queueSummary = `<div class="summary queue"><div><b>${queue.count}</b><span><a href="${adminPath}?status=new">unprocessed (new)</a></span></div>` +
+    `<div><b>${queue.oldest === null ? "—" : `${queue.oldest} d`}</b><span>oldest unprocessed</span></div>` +
+    `<div${queue.stale ? ' class="due"' : ""}><b>${queue.stale}</b><span>new &gt; ${ADMIN_STALE_DAYS} days</span></div>` +
+    `<div${queue.held ? ' class="due"' : ""}><b>${queue.held}</b><span>past retention, held until processed</span></div>` +
+    `<div><b>${clubQueue.count}</b><span>club requests new</span></div>` +
+    `<div><b>${clubQueue.oldest === null ? "—" : `${clubQueue.oldest} d`}</b><span>oldest club request</span></div></div>` +
+    (queue.held || clubQueue.held ? `<p class="due"><strong>Retention:</strong> ${queue.held + clubQueue.held} unprocessed record(s) are past the 12-month retention date. They are not deleted automatically while "new": open each one, then set contacted/qualified to keep it, or rejected/archived to let the next cleanup delete it with its files.</p>` : "");
+  const ageCell = (row) => {
+    const age = adminAgeDays(row.created_at, today);
+    if (age === null) return htmlEscape(row.created_at);
+    const stale = row.status === "new" && age > ADMIN_STALE_DAYS;
+    return `${htmlEscape(String(row.created_at).slice(0, 10))}<br><small${stale ? ' class="due"' : ""}>${age} d${stale ? " · waiting" : ""}</small>`;
+  };
   const qualitySummary = `<div class="summary"><div><b>${allApplications.length}</b><span>loaded leads</span></div><div><b>${parentLeads.length}</b><span>parent leads</span></div><div><b>${qualified.length}</b><span>qualified</span></div><div><b>${pct(qualified.length, allApplications.length)}</b><span>qualified rate</span></div><div><b>${pct(parentQualified.length, parentLeads.length)}</b><span>parent qualified rate</span></div><div><b>${rejected.length}</b><span>rejected</span></div></div>`;
   // Calculator data is what the player's browser sent, not something verified.
   const calculatorCell = (calculator) => calculator
@@ -660,18 +702,18 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
     `<td>${sourceCell(a.source)}</td>` +
     `<td>${calculatorCell(a.source?.calculator)}</td>` +
     `<td>${followupForm(a)}</td>` +
-    `<td>${htmlEscape(a.created_at)}</td><td>${statusForm("applications", a.id, a.status)}</td></tr>`).join("");
+    `<td>${ageCell(a)}</td><td>${statusForm("applications", a.id, a.status)}</td></tr>`).join("");
   const clubRequestRows = clubRequests.map((c) => `<tr><td>${htmlEscape(c.reference_code)}</td>` +
     `<td>${htmlEscape(c.club_name)}</td><td>${htmlEscape(c.contact_name)}</td>` +
     `<td>${c.phone ? htmlEscape(c.phone) : ""}${c.email ? `<br>${htmlEscape(c.email)}` : ""}</td>` +
-    `<td>${htmlEscape(c.created_at)}</td><td>${statusForm("club_requests", c.id, c.status)}</td></tr>`).join("");
+    `<td>${ageCell(c)}</td><td>${statusForm("club_requests", c.id, c.status)}</td></tr>`).join("");
   return `<!doctype html><html><head><meta charset="utf-8"><title>EHA admin</title>` +
     `<style>body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#0b1520}table{border-collapse:collapse;width:100%;margin-bottom:40px}` +
     `th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f2f4f6}` +
     `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}.summary{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:8px;margin:0 0 18px}.summary>div{border:1px solid #ccd3d9;padding:10px;background:#f8fafb}.summary b{display:block;font-size:22px}.summary span{color:#5a6673;font-size:12px}small{color:#5a6673}.logout{float:right}.followup{display:grid;gap:6px;min-width:220px}.followup textarea{width:100%;box-sizing:border-box}.due{color:#b00020}@media(max-width:900px){.summary{grid-template-columns:repeat(2,1fr)}}</style></head><body>` +
     `<form method="post" action="${adminPath}/logout" class="logout"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}"><button type="submit">Log out</button></form>` +
-    `<h1>Applications</h1>${qualitySummary}${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Source</th><th>Calculator (self-reported)</th><th>Follow-up</th><th>Created</th><th>Status</th></tr>${applicationRows}</table>` +
-    `<h1>Club requests</h1><table><tr><th>Ref</th><th>Club</th><th>Contact</th><th>Contact info</th><th>Created</th><th>Status</th></tr>${clubRequestRows}</table>` +
+    `<h1>Applications</h1>${queueSummary}${qualitySummary}${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Source</th><th>Calculator (self-reported)</th><th>Follow-up</th><th>Created / age</th><th>Status</th></tr>${applicationRows}</table>` +
+    `<h1>Club requests</h1><table><tr><th>Ref</th><th>Club</th><th>Contact</th><th>Contact info</th><th>Created / age</th><th>Status</th></tr>${clubRequestRows}</table>` +
     `</body></html>`;
 }
 
