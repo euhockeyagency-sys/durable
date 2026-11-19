@@ -7,6 +7,7 @@ const multer = require("multer");
 const { createApplicationHandler } = require("./applications");
 const { createServices } = require("./services");
 const { validateClubRequest } = require("./validation");
+const { leagueLabel, labelsFor } = require("./attribution");
 const { messages, normalizeLocale } = require("./messages");
 const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales");
 const { leagueEditorial } = require("./league-editorial");
@@ -670,7 +671,7 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
     (queue.held || clubQueue.held ? `<p class="due"><strong>Retention:</strong> ${queue.held + clubQueue.held} unprocessed record(s) are past the 12-month retention date. They are not deleted automatically while "new": open each one, then set contacted/qualified to keep it, or rejected/archived to let the next cleanup delete it with its files.</p>` : "");
   const ageCell = (row) => {
     const age = adminAgeDays(row.created_at, today);
-    if (age === null) return htmlEscape(row.created_at);
+    if (age === null) return htmlEscape(row.created_at || "—");
     const stale = row.status === "new" && age > ADMIN_STALE_DAYS;
     return `${htmlEscape(String(row.created_at).slice(0, 10))}<br><small${stale ? ' class="due"' : ""}>${age} d${stale ? " · waiting" : ""}</small>`;
   };
@@ -689,7 +690,7 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
       (overdue ? ` <strong class="due">due</strong>` : "") +
       `<button type="submit">Save</button></form>`;
   };
-  const sourceCell = (source) => { const s = source || {}; const bits = []; if (s.applicant_type) bits.push(`<b>${htmlEscape(s.applicant_type)}</b>`); if (s.intent) bits.push(`intent: ${htmlEscape(s.intent)}`); if (s.source_page) bits.push(`page: ${htmlEscape(s.source_page)}`); if (s.utm_source) bits.push(`utm: ${htmlEscape(s.utm_source)}${s.utm_campaign ? ` / ${htmlEscape(s.utm_campaign)}` : ""}`); if (!s.source_page && s.referrer) bits.push(`ref: ${htmlEscape(s.referrer)}`); return bits.join("<br>"); };
+  const sourceCell = (source) => { const s = source || {}; const bits = []; if (s.applicant_type) bits.push(`<b>${htmlEscape(s.applicant_type)}</b>`); if (s.intent) bits.push(`intent: ${htmlEscape(s.intent)}`); if (s.country || s.league) bits.push(`target: ${[s.country, s.league ? leagueLabel(s.league) : null].filter(Boolean).map(htmlEscape).join(" · ")}`); if (s.source_page) bits.push(`page: ${htmlEscape(s.source_page)}`); if (s.landing_page && s.landing_page !== s.source_page) bits.push(`landing: ${htmlEscape(s.landing_page)}`); if (s.from_calculator) bits.push("from calculator"); if (s.utm_source) bits.push(`utm: ${htmlEscape(s.utm_source)}${s.utm_campaign ? ` / ${htmlEscape(s.utm_campaign)}` : ""}`); if (!s.source_page && s.referrer) bits.push(`ref: ${htmlEscape(s.referrer)}`); return bits.join("<br>"); };
   const categoryCell = (a) => {
     if (!a.assessment && !a.assessment_override) return "";
     const cat = effectiveCategory(a.assessment, a.assessment_override);
@@ -958,6 +959,7 @@ function renderBody(data, extension, config, context) {
   // Short application form: height, weight and stick hand live in the optional
   // details block; while the database still requires them they are moved back
   // into the main fields and marked required.
+  if (extension === ".html" && html.includes("{{ATTRIBUTION_LABELS}}")) html = html.replace("{{ATTRIBUTION_LABELS}}", JSON.stringify(labelsFor(locale)).replace(/</g, "\\u003c"));
   if (extension === ".html" && html.includes("{{MEASUREMENTS}}")) html = applyMeasurements(html, true); // owner decision 18.11.2026: height, weight and stick hand stay required in the main form
   // League profiles (src/league-profiles.js): league page body, FAQ JSON-LD and
   // rule summaries on country guides, all from one record per league.

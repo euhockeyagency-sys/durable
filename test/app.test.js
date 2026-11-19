@@ -544,7 +544,7 @@ test("admin shows and filters applicant source context", async () => {
   assert.match(parent.text, /Parent Lead/);
   assert.doesNotMatch(parent.text, /Player Lead/);
   assert.match(parent.text, /\/junior-hockey-for-parents/);
-  assert.match(parent.text, /intent: assessment/);
+  assert.match(parent.text, /intent: free_assessment/); // legacy alias "assessment" is stored under the canonical value
   assert.match(parent.text, /parent qualified rate/);
 });
 

@@ -52,7 +52,7 @@ for (const [lang, file, calc] of [["en", "en/index.html", "{{EN}}/level-calculat
   test(`${lang} home hero has one H1, the find-a-club CTA, the calculator link and counters in the HTML`, () => {
     const html = fs.readFileSync(path.join(PUBLIC, file), "utf8");
     assert.equal((html.match(/<h1[\s>]/g) || []).length, 1);
-    assert.match(html, /<a class="btn primary" href="[^"]*\/contact\?intent=find_club[^"]*">/);
+    assert.match(html, /<a class="btn primary" href="[^"]*\/contact\?intent=free_assessment[^"]*">/);
     assert.ok(html.includes(`<a class="btn ghost" href="${calc}">`), "secondary hero button must open the level calculator");
     for (const value of ["100+", "10+"]) assert.ok(html.includes(`>${value}</strong>`), `counter ${value} must be present without JavaScript`);
   });

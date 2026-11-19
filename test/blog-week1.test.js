@@ -18,8 +18,8 @@ const get = (url) => request(app).get(url).set("Host", "eha.test").expect(200);
 
 test("week 1 article (AlpsHL vs Oberliga) follows the blog template in EN and RU", async () => {
   for (const [url, other, quick, calc, cta] of [
-    ["/guides/alps-hockey-league-vs-oberliga", "/ru/guides/alps-hockey-league-ili-oberliga", "Quick answer", "/level-calculator", "/contact?intent=alpshl_vs_oberliga"],
-    ["/ru/guides/alps-hockey-league-ili-oberliga", "/guides/alps-hockey-league-vs-oberliga", "Короткий ответ", "/ru/kalkulyator-urovnya", "/ru/contact?intent=alpshl_vs_oberliga"]
+    ["/guides/alps-hockey-league-vs-oberliga", "/ru/guides/alps-hockey-league-ili-oberliga", "Quick answer", "/level-calculator", "/contact?intent=league_comparison"],
+    ["/ru/guides/alps-hockey-league-ili-oberliga", "/guides/alps-hockey-league-vs-oberliga", "Короткий ответ", "/ru/kalkulyator-urovnya", "/ru/contact?intent=league_comparison"]
   ]) {
     const html = (await get(url)).text;
     assert.equal((html.match(/<h1[ >]/g) || []).length, 1, `${url}: one H1`);

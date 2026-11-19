@@ -336,6 +336,8 @@
   // reference data and are joined with "|" (no league name contains one).
   function buildCtaQuery(input, r, note) {
     var params = [
+      ["intent", "calculator_result"],
+      ["from_calculator", "1"],
       ["note", note],
       ["goal", input.goal || ""],
       ["pos", input.pos],
@@ -420,13 +422,9 @@
       if (root.ehaTrack) root.ehaTrack("calculator_start");
     });
 
-    // Where the visitor came from before the calculator (same-origin path
-    // only), so the agent sees e.g. "/european-leagues → /level-calculator".
-    var sourceTrail = function () {
-      var from = "";
-      try { var ref = new URL(document.referrer); if (ref.origin === location.origin && ref.pathname !== location.pathname) from = ref.pathname; } catch (e) {}
-      return (from ? from + " → " : "") + location.pathname;
-    };
+    // source_page is the page with the CTA (this calculator page, /ru kept);
+    // the first landing page is recorded separately by site.js after consent.
+    var sourceTrail = function () { return location.pathname; };
 
     // CTA click: only the band, whether an EP link was given and the page
     // type are sent, never the link itself or any contact data.

@@ -32,7 +32,7 @@ test("priority country landings carry the full block set in both languages", () 
         assert.ok(html.includes(`id="${id}"`), `${file} missing #${id}`);
       }
       assert.ok(html.includes(`?country=${key}`), `${file} missing calculator link`);
-      assert.ok(html.includes(`/contact?intent=country_${key}`), `${file} missing profile link`);
+      assert.ok(html.includes("/contact?intent=country_assessment&amp;") && /[?&;]country=[A-Z]{2}\b/.test(html), `${file} missing profile link`);
       assert.ok(html.includes('href="https://wa.me/'), `${file} missing WhatsApp link`);
       assert.ok(!/\+375\s?\d/.test(html.replace(/https:\/\/wa\.me\/\d+/g, "")), `${file} shows a phone number`);
     }

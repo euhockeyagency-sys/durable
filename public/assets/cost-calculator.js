@@ -335,7 +335,7 @@
 
       if (ctaEl) {
         var base = ctaEl.getAttribute("href").split("?")[0];
-        var query = "type=parent&intent=season_cost&source_page=" + encodeURIComponent(location.pathname.replace(/^\/ru(?=\/)/, "")) +
+        var query = "type=parent&intent=season_cost&source_page=" + encodeURIComponent(location.pathname) +
           "&note=" + encodeURIComponent(strings.ctaNote);
         ctaEl.href = base + "?" + query;
       }

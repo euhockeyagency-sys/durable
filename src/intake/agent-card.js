@@ -1,6 +1,7 @@
 // Notification card for the AGENT (Telegram / email / WhatsApp). Contains the
 // internal category; it is never sent to the player.
 const { CATEGORY_LABELS, effectiveCategory, latestRegular } = require("./assessment");
+const { leagueLabel } = require("../attribution");
 
 const POS = { forward: "Нападающий", defense: "Защитник", goalie: "Вратарь" };
 const MISSING = {
@@ -45,6 +46,7 @@ function agentCard(app, { adminUrl, pdfStatus = "не создан" } = {}) {
     a.reasons && a.reasons.length ? `Причины: ${a.reasons.join("; ")}` : null,
     a.missing && a.missing.length ? `Не хватает: ${a.missing.map((k) => MISSING[k] || k).join(", ")}` : "Не хватает: —",
     app.source?.source_page ? `Источник: ${app.source.source_page}` : null,
+    app.source?.country || app.source?.league ? `Цель: ${[app.source.country, app.source.league ? leagueLabel(app.source.league, "ru") : null].filter(Boolean).join(" · ")}` : null,
     app.source?.calculator ? `Калькулятор (со слов игрока): ${calculatorLine(app.source.calculator)}` : null,
     adminUrl ? `Заявка в панели: ${adminUrl}` : null,
     `PDF: ${pdfStatus}`,

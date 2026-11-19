@@ -3,7 +3,7 @@
 module.exports = {
   "title": "EHA — единый журнал работ сайта",
   "scope": "Только eurohockeyagency.com и его EN/RU страницы. Внутренняя документация, не публичная статья.",
-  "last_reviewed": "2026-11-14",
+  "last_reviewed": "2026-11-19",
   "how_to_use": [
     "Перед работой прочитать этот файл через EHA1990 read_project_file с path='src/eha-work-log.js'. Затем прочитать нужные страницы и проверить актуальное состояние.",
     "Перед повторным предложением задачи проверить записи completed, historical и open_issues. Повторять выполненную задачу только при новой ошибке, устаревании или новых данных.",
@@ -367,7 +367,138 @@ module.exports = {
         "Отправка заявки не выполнялась. Поисковый спрос на конкретный переход не подтверждён, позиции после публикации не оценивались."
       ],
       "next_step": "Отслеживать обе версии статьи в Search Console."
-    }
+    },
+{
+  "id": "AUDIT-P0-RETENTION-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "supabase/functions/cleanup-applications/cleanup.mjs",
+    "supabase/functions/cleanup-applications/index.ts",
+    "src/app.js",
+    "test/cleanup-retention.test.js",
+    "test/app.test.js",
+    "docs/retention-runbook.md"
+  ],
+  "urls": [
+    "/admin"
+  ],
+  "changes": [
+    "Очистка удаляет по сроку только заявки со статусом rejected/archived и без будущего follow-up; new удерживаются и считаются как heldUnprocessed. Добавлен dryRun.",
+    "В админке: очередь необработанных, возраст, сортировка старых первыми, счётчик удержанных после срока хранения."
+  ],
+  "evidence": [
+    "test/cleanup-retention.test.js: граница срока, все статусы, файлы, dry-run, повторный запуск, удаление после отклонения владельцем.",
+    "npm test 275/275 на ветке fix/audit-2026-11-19."
+  ],
+  "limits": [
+    "Не опубликовано: Edge Function и сайт не задеплоены. Состояние pg_cron и базы production не проверено (нет доступа коннектора).",
+    "Формулировку политики приватности о 12 месяцах должен решить владелец (docs/retention-runbook.md)."
+  ],
+  "next_step": "Деплой функции и сайта по docs/retention-runbook.md после разрешения владельца, затем dry-run на production."
+},
+{
+  "id": "AUDIT-P0-PDF-TOKEN-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "src/intake/routes.js",
+    "public/assets/intake-form.js",
+    "test/intake.test.js",
+    "docs/owner-token-runbook.md"
+  ],
+  "urls": [
+    "/api/applications/:ref/pdf"
+  ],
+  "changes": [
+    "PDF владельца выдаётся только через POST с токеном в теле, no-store и no-referrer. Старый GET с ?token отвечает 410 и не читает query."
+  ],
+  "evidence": [
+    "test/intake.test.js: неверный токен/ref → 404, токен в query на POST не принимается, GET → 410, токен не попадает в URL и логи сервера."
+  ],
+  "limits": [
+    "Не опубликовано. Оценка старых логов Caddy/journald и ротация токенов — только процедура (docs/owner-token-runbook.md), выполняется владельцем."
+  ],
+  "next_step": "После деплоя: подсчёт запросов с token= в логах и обнуление owner_token_hash для затронутых заявок по runbook."
+},
+{
+  "id": "AUDIT-P0-WEBVISOR-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "public/en/contact.html",
+    "public/ru/contact.html",
+    "public/en/for-clubs.html",
+    "public/ru/for-clubs.html",
+    "public/en/level-calculator.html",
+    "public/ru/kalkulyator-urovnya.html",
+    "public/en/application-success.html",
+    "public/ru/application-success.html",
+    "test/webvisor-masking.test.js",
+    "docs/webvisor-check.md"
+  ],
+  "urls": [
+    "/contact",
+    "/ru/contact",
+    "/for-clubs",
+    "/ru/for-clubs",
+    "/level-calculator",
+    "/ru/kalkulyator-urovnya"
+  ],
+  "changes": [
+    "Формы заявки и запроса клуба: ym-hide-content и ym-disable-keys; поля ввода и номер заявки на странице успеха замаскированы."
+  ],
+  "evidence": [
+    "test/webvisor-masking.test.js (6 тестов). Проверка production до согласия: Метрика не отправляет hit до согласия."
+  ],
+  "limits": [
+    "После согласия запись Вебвизора в браузере не наблюдалась за 20 с — проверка неокончательная без доступа к счётчику. Не опубликовано."
+  ],
+  "next_step": "После деплоя владелец проверяет записи Вебвизора в Метрике по docs/webvisor-check.md."
+},
+{
+  "id": "AUDIT-P1-ATTRIBUTION-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "src/attribution.js",
+    "src/validation.js",
+    "src/app.js",
+    "src/intake/agent-card.js",
+    "public/site.js",
+    "public/assets/level-calculator.js",
+    "public/assets/cost-calculator.js",
+    "public/en/contact.html",
+    "public/ru/contact.html",
+    "scripts/normalize-cta-links.js",
+    "scripts/attribution-history-dry-run.js",
+    "test/attribution.test.js",
+    "docs/attribution-runbook.md",
+    "221 EN/RU страницы с CTA /contact"
+  ],
+  "urls": [
+    "/contact",
+    "/ru/contact",
+    "/level-calculator",
+    "/ru/kalkulyator-urovnya",
+    "/junior-season-cost-calculator"
+  ],
+  "changes": [
+    "Единый набор intent с алиасами (league-assessment → league_assessment; assessment/free-assessment/player_assessment → free_assessment; player-analysis → player_analysis отдельно).",
+    "source_page = страница CTA с /ru для RU; landing_page хранится отдельно. Калькулятор стоимости больше не срезает /ru.",
+    "country (ISO) и league (slug страницы лиги) — отдельные поля; offer-review и сравнения убраны из league. RU форма показывает русские подписи, note не теряется.",
+    "CTA калькулятора уровня передаёт goal, intent=calculator_result, source_page, from_calculator."
+  ],
+  "evidence": [
+    "test/attribution.test.js (9 тестов): все 336 ссылок /contact канонические, source_page совпадает со страницей, dry-run истории CRM включая /guides/hokkej-v-rumynii.",
+    "scripts/normalize-cta-links.js --check: 0 изменений."
+  ],
+  "limits": [
+    "Не опубликовано. Dry-run истории CRM на production не запускался (нет доступа к базе); применение — только с разрешения владельца (docs/attribution-runbook.md).",
+    "События GA пока получают intent из URL как есть; старые ссылки из кэша дадут старое значение в GA, CRM нормализует."
+  ],
+  "next_step": "После деплоя: dry-run истории CRM, решение владельца о применении."
+}
   ],
   "historical": [
     {

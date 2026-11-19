@@ -40,7 +40,7 @@ for (const [url, name, alt] of [["/agent", "Viachaslau Marshchonak", "https://eh
     assert.deepEqual(person.sameAs, [IG_AGENT], "only the personal profile belongs to the Person");
     for (const link of [IG_AGENT, IG_EHA, TT_EHA]) assert.ok(html.includes(`href="${link}"`), link);
     assert.match(html, /href="https:\/\/wa\.me\/375297957818"/);
-    assert.match(html, /intent=player_profile&amp;source_page=\/agent/);
+    assert.match(html, /intent=free_assessment&amp;source_page=\/(ru\/)?agent/);
     assert.doesNotMatch(html, /verified (account|profile)|верифицированн/i);
     assert.doesNotMatch(html.replace(/<script[\s\S]*?<\/script>/g, ""), /\+375|795-78-18/);
     assert.match(html, /src="\/assets\/viachaslau-marshchonak-fixed\.webp"/);

@@ -53,11 +53,14 @@ test("calculator guide is built only from the shortlist and asks for stats when 
   assert.equal(calc.guideFor({ candidates: [] }, input, "en").status, "none");
 });
 
-test("CTA query carries a valid EP link and the source trail, nothing else from the EP field", () => {
+test("CTA query carries a valid EP link, the CTA page, goal and calculator intent, nothing else from the EP field", () => {
   const r = { bandKey: "mid", score: 73, candidates: [{ name: "Division 1" }] };
-  const q = new URLSearchParams(calc.buildCtaQuery({ pos: "forward", year: 2001, goal: "", ep: "https://www.eliteprospects.com/player/1/x", source: "/european-leagues → /level-calculator" }, r, "note"));
+  const q = new URLSearchParams(calc.buildCtaQuery({ pos: "forward", year: 2001, goal: "study", ep: "https://www.eliteprospects.com/player/1/x", source: "/ru/kalkulyator-urovnya" }, r, "note"));
   assert.equal(q.get("ep"), "https://www.eliteprospects.com/player/1/x");
-  assert.equal(q.get("source_page"), "/european-leagues → /level-calculator");
+  assert.equal(q.get("source_page"), "/ru/kalkulyator-urovnya");
+  assert.equal(q.get("goal"), "study");
+  assert.equal(q.get("intent"), "calculator_result");
+  assert.equal(q.get("from_calculator"), "1");
   const bad = new URLSearchParams(calc.buildCtaQuery({ pos: "forward", year: 2001, ep: "https://evil.test/player/1" }, r, "n"));
   assert.equal(bad.get("ep"), null);
 });

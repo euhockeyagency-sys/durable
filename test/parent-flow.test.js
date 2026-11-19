@@ -50,7 +50,8 @@ test("parent applicant can send an adult player's first enquiry without measurem
   assert.equal(result.value.weightKg, null);
   assert.equal(result.value.stickHand, null);
   assert.equal(result.value.source.applicant_type, "parent_guardian");
-  assert.equal(result.value.source.intent, "assessment");
+  assert.equal(result.value.source.intent, "free_assessment");
+  assert.equal(result.value.source.intent_input, "assessment");
   assert.equal(result.value.source.source_page, "/junior-hockey-for-parents");
 });
 

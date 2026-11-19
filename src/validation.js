@@ -1,5 +1,8 @@
 const path = require("node:path");
 const { messages, normalizeLocale } = require("./messages");
+const { normalizeIntent, normalizeCountry, normalizeLeague, normalizeSourcePage } = require("./attribution");
+
+const GOALS = new Set(["pro", "development", "study"]);
 
 const POSITION_VALUES = new Set(["forward", "defense", "goalie"]);
 const STICK_VALUES = new Set(["left", "right"]);
@@ -42,6 +45,31 @@ function calculatorContext(body) {
   return { band, score, leagues };
 }
 
+// Attribution: canonical intent, CTA page with /ru kept for Russian pages,
+// country (ISO alpha-2) and league (league page slug) as stable identifiers.
+// All fields are optional so older cached pages keep working; an unknown value
+// is kept in *_input so nothing the visitor sent is silently dropped.
+function attributionContext(body, locale) {
+  const intent = normalizeIntent(body.intent);
+  const page = normalizeSourcePage(body.sourcePage, normalizeLocale(locale));
+  const country = normalizeCountry(body.country);
+  const league = normalizeLeague(body.league);
+  const goal = text(body.goal, 20);
+  const out = {
+    intent: intent.intent,
+    source_page: page.sourcePage,
+    country: country.country,
+    league: league.league,
+    goal: GOALS.has(goal) ? goal : null,
+    from_calculator: body.fromCalculator === "1" || body.fromCalculator === "true"
+  };
+  if (intent.original) out.intent_input = intent.original;
+  if (page.input) { out.source_page_input = page.input; out.source_page_resolution = page.resolution; }
+  if (country.input) out.country_input = country.input;
+  if (league.input) out.league_input = league.input;
+  return out;
+}
+
 function validateApplication(body, files, now = new Date(), requireTurnstile = true, locale = "ru", { measurementsRequired = true } = {}) {
   const m = messages(locale);
   const errors = {};
@@ -58,7 +86,6 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   const stickHand = text(body.stickHand, 20);
   const applicantTypeRaw = text(body.applicantType, 30);
   const applicantType = APPLICANT_TYPES.has(applicantTypeRaw) ? applicantTypeRaw : "player";
-  const intent = text(body.intent, 60) || null;
   const eliteProspectsInput = text(body.eliteProspectsUrl, 500);
   const eliteProspectsUrl = eliteProspectsInput ? httpUrl(eliteProspectsInput, { hostname: "eliteprospects.com" }) : null;
   const videoInputs = asArray(body.videoUrls).map((value) => text(value, 500)).filter(Boolean);
@@ -129,8 +156,7 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
     source: {
       locale: normalizeLocale(locale),
       applicant_type: applicantType,
-      intent,
-      source_page: text(body.sourcePage, 300) || null,
+      ...attributionContext(body, body.locale || locale),
       landing_page: /^\/(?!\/)[^?#\\]*$/.test(text(body.landingPage, 300)) ? text(body.landingPage, 300) : null,
       initial_referrer_host: /^[a-z0-9.-]+$/i.test(text(body.initialReferrerHost, 200)) ? text(body.initialReferrerHost, 200) : null,
       utm_source: text(body.utmSource, 120) || null,

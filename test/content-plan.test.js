@@ -29,7 +29,7 @@ test("content-plan articles: byline, calculator link mid-article and at the end,
       const html = (await get(url)).text;
       assert.ok(html.includes('class="article-byline"') && /href="(\/ru)?\/agent"/.test(html), `${url}: byline links to the agent`);
       assert.ok(html.includes('class="calc-cta"') && html.includes('id="next-step"'), `${url}: calculator mid and end`);
-      assert.ok(/\/contact\?intent=[a-z_]+&amp;source_page=/.test(html) && html.includes("wa.me/375297957818"), `${url}: submit profile and WhatsApp`);
+      assert.ok(/\/contact\?intent=[a-z0-9_]+&amp;source_page=/.test(html) && html.includes("wa.me/375297957818"), `${url}: submit profile and WhatsApp`);
       assert.ok(!/>\s*\+?375[\d\s-]{6,}</.test(html), `${url}: no phone as text`);
       assert.ok(!html.includes("<!-- LEAGUE_") && !html.includes("<!-- EHA_BYLINE"), `${url}: markers replaced`);
       const other = pair.find((u) => u !== url);
