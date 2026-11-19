@@ -370,7 +370,7 @@ module.exports = {
     },
 {
   "id": "AUDIT-P0-RETENTION-20261119",
-  "status": "saved",
+  "status": "blocked",
   "date": "2026-11-19",
   "files": [
     "supabase/functions/cleanup-applications/cleanup.mjs",
@@ -388,6 +388,7 @@ module.exports = {
     "В админке: очередь необработанных, возраст, сортировка старых первыми, счётчик удержанных после срока хранения."
   ],
   "evidence": [
+    "Сайт с очередью new в админке опубликован 19.11 (deploy e5fafce/последующий). Защита при очистке живёт в Edge Function cleanup-applications, которую GitHub Actions не деплоит; доступа к Supabase production у сессии нет — функция НЕ задеплоена, cron работает по старой логике до деплоя по docs/retention-runbook.md.",
     "test/cleanup-retention.test.js: граница срока, все статусы, файлы, dry-run, повторный запуск, удаление после отклонения владельцем.",
     "npm test 275/275 на ветке fix/audit-2026-11-19."
   ],
@@ -399,7 +400,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P0-PDF-TOKEN-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "src/intake/routes.js",
@@ -414,6 +415,7 @@ module.exports = {
     "PDF владельца выдаётся только через POST с токеном в теле, no-store и no-referrer. Старый GET с ?token отвечает 410 и не читает query."
   ],
   "evidence": [
+    "Production 19.11: GET /api/applications/<синтетический ref>/pdf?token=… → 410, токен в ответе не возвращается. Остаётся: оценка логов и ротация (docs/owner-token-runbook.md).",
     "test/intake.test.js: неверный токен/ref → 404, токен в query на POST не принимается, GET → 410, токен не попадает в URL и логи сервера."
   ],
   "limits": [
@@ -423,7 +425,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P0-WEBVISOR-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "public/en/contact.html",
@@ -449,6 +451,7 @@ module.exports = {
     "Формы заявки и запроса клуба: ym-hide-content и ym-disable-keys; поля ввода и номер заявки на странице успеха замаскированы."
   ],
   "evidence": [
+    "Production 19.11: форма заявки отдаётся с ym-hide-content ym-disable-keys. Проверка записи в Метрике — за владельцем.",
     "test/webvisor-masking.test.js (6 тестов). Проверка production до согласия: Метрика не отправляет hit до согласия."
   ],
   "limits": [
@@ -458,7 +461,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P1-ATTRIBUTION-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "src/attribution.js",
@@ -490,6 +493,7 @@ module.exports = {
     "CTA калькулятора уровня передаёт goal, intent=calculator_result, source_page, from_calculator."
   ],
   "evidence": [
+    "Production 19.11: /ru/contact содержит скрытые поля country/league/goal/fromCalculator и русские подписи (SE → Швеция); ссылки гайдов канонические; калькулятор передаёт intent=calculator_result и from_calculator. История CRM не изменялась.",
     "test/attribution.test.js (9 тестов): все 336 ссылок /contact канонические, source_page совпадает со страницей, dry-run истории CRM включая /guides/hokkej-v-rumynii.",
     "scripts/normalize-cta-links.js --check: 0 изменений."
   ],
@@ -501,7 +505,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P1-WHATSAPP-EVENTS-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "public/site.js",
@@ -522,6 +526,7 @@ module.exports = {
     "application_sent дедуплицируется по номеру заявки и в localStorage."
   ],
   "evidence": [
+    "Production 19.11: site.js с отправкой whatsapp_click только после согласия; ссылка WhatsApp на странице успеха без текста; GA page_location без ref. Удаление исторических данных GA4 и сборщик EHA CONTROL — за владельцем.",
     "test/analytics-events.test.js (4 теста, в т.ч. исполнение обработчика в vm).",
     "GA4 Data API 19.11: whatsapp_click 17.11=2, 18.11=1; click wa.me 2 и 1. CRM 33 vs GA application_sent 28 за 01.10–18.11."
   ],
@@ -533,7 +538,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P1-SALARY-INTENT-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "public/en/guides/hockey-player-salaries-in-europe.html",
@@ -552,6 +557,7 @@ module.exports = {
     "Диапазоны €35–150k+ и €15–45k подтверждены как приблизительная оценка владельца (16.11) и везде подписаны как оценка EHA."
   ],
   "evidence": [
+    "Production 19.11: title хаба «European Hockey Salaries by League: SHL, Liiga, DEL, DEL2».",
     "test/salary-pages.test.js: title, отсутствие противоречия, ссылка, подпись каждого упоминания диапазона на EN/RU.",
     "GSC 20.10–18.11: запросы о зарплатах ICEHL/AlpsHL — хаб 359 показов, поз. 7,3; отдельный гайд — 1 показ."
   ],
@@ -562,7 +568,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P1-SITEMAP-LASTMOD-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "scripts/generate-lastmod.js",
@@ -581,6 +587,7 @@ module.exports = {
     "lastmod теперь — дата последнего изменения видимого текста внутри <main>, без разметки, ссылок, хлебных крошек, CTA, блока проверяющего и связанных материалов. Без такой даты <lastmod> не выводится (раньше подставлялось время деплоя)."
   ],
   "evidence": [
+    "Production 19.11 после второго деплоя: /sitemap.xml и /ru/sitemap.xml по 172 URL, у всех lastmod, даты распределены (18.11: 53, 17.11: 31, 15.11: 20, 02.10: 11–12, 19.11: 7). Первый деплой показал 60 URL с 19.11 из-за удаления редакционных дат — исправлено (штампы дат не считаются изменением).",
     "test/lastmod.test.js: отпечаток не меняется от ссылок/разметки/сквозных блоков; коммит только с CTA-ссылками не двигает дату (реальная история /agent).",
     "Локальная генерация: 348 страниц, даты распределены (18.11: 108, 15.10: 102, 17.11: 64, 15.11: 44 …) вместо одной."
   ],
@@ -592,7 +599,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P1-EDITORIAL-DATES-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "~120 EN/RU страниц в public/en и public/ru",
@@ -609,6 +616,7 @@ module.exports = {
     "Оставлены даты проверки фактов (checked/verified/проверено …), сезоны, даты документов-источников и schema.org dateModified. Формулировки, ссылавшиеся на «editorial update», переписаны без даты правки."
   ],
   "evidence": [
+    "Production 19.11: /guides/hockey-agent-in-denmark и /ru/guides/hokkejnyj-agent-v-shvejcarii без «updated/обновлено …».",
     "test/editorial-dates.test.js: запрещённые шаблоны на всех EN/RU страницах, контроль сохранения дат проверки.",
     "npm test зелёный."
   ],
@@ -619,7 +627,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P1-ACADEMIES-NA-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "public/en/guides/hockey-academies-in-north-america.html",
@@ -637,6 +645,7 @@ module.exports = {
     "Shattuck: $73 000 / $65 000 + $11 000 подтверждены на странице школы 19.11.2026."
   ],
   "evidence": [
+    "Production 19.11: одна таблица цен, раздела-дубля нет, NTDP не называется бесплатной.",
     "test/academies-guide.test.js (3 теста).",
     "WebFetch s-sm.org/admissions/affording-ssm и usahockeyntdp.com/faq 19.11.2026; запись в docs/north-america-hockey-academies-factcheck.md."
   ],
@@ -647,7 +656,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P1-ROUTES-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "src/app.js",
@@ -669,6 +678,7 @@ module.exports = {
     "/leagues и /ru/ligi оставлены 404: нет внутренних ссылок и нет показов в Search Console — основания для хаба или редиректа нет."
   ],
   "evidence": [
+    "Production 19.11: /index.html → /, /ru/index.html и /ru → /ru/ (query сохраняется), /services.html → /services; /404, /ru/404, /leagues, /ru/ligi, неизвестный путь → 404.",
     "test/app.test.js «routes: one URL per page, real 404s, no invented hubs».",
     "Проверка отрисованных EN/RU страниц: внутренних ссылок на /ru без слэша и на .html нет. GSC: 0 строк по этим URL."
   ],
@@ -679,7 +689,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P2-FONTS-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "public/styles.css",
@@ -694,6 +704,7 @@ module.exports = {
     "Manrope и Oswald — вариативные шрифты (ось wght 200–800 и 400–700, проверено fontTools). Вместо 24 @font-face и 24 файлов (байт-в-байт дубли по весам) — 6 правил с диапазонами весов и 6 файлов. Preload указывает на новые файлы."
   ],
   "evidence": [
+    "Production 19.11: в styles.css 6 @font-face, preload oswald-latin и manrope-latin.",
     "test/app.test.js: нет одинаковых файлов шрифтов, 6 @font-face с диапазоном весов, все url существуют.",
     "Размер папки шрифтов: ~456 KB → ~108 KB; браузер больше не скачивает один и тот же файл под разными URL для разных весов."
   ],
@@ -704,7 +715,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P2-LCP-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "public/styles.css",
@@ -719,6 +730,7 @@ module.exports = {
     "Причина задержки LCP: текст hero начинался с opacity:0 (и clip-path) и появлялся анимацией с задержками; LCP приходился на поздно проявленный абзац или на маленький логотип «EHA». Анимация теперь только сдвигает текст и не скрывает его."
   ],
   "evidence": [
+    "Production 19.11: styles.css без opacity в keyframes hero-in. Замер PageSpeed на production не выполнен (API 429) — лабораторные цифры только локальные.",
     "Lighthouse 13.6, mobile, devtools-throttling, локально: LCP до 2,92–3,23 с (5 прогонов), после 1,87–1,97 с (3 прогона); LCP = FCP.",
     "test/app.test.js: в keyframes hero-in нет opacity/clip-path."
   ],
@@ -729,7 +741,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P2-A11Y-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "public/styles.css",
@@ -746,6 +758,7 @@ module.exports = {
     "Переключатель языка и кнопка WhatsApp: доступное имя содержит видимый текст (EN/RU/WA)."
   ],
   "evidence": [
+    "Production 19.11: новые цвета кнопок в styles.css, заголовки футера h2. Lighthouse a11y на production не запускался (нет доступа из контейнера).",
     "Lighthouse a11y mobile, локально: /, /ru/, /contact, /ru/contact, гайд, лига — 95 → 100.",
     "Puppeteer 320 и 390 px: нет горизонтальной прокрутки; цели в меню (открытом) и футере проходят WCAG 2.2 2.5.8 (24 px или исключение по отступу); Tab по /contact — видимый outline у каждого элемента.",
     "test/accessibility.test.js."
@@ -757,7 +770,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P2-DATA-DUP-CH-DEADLINE-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "src/deadlines.js",
@@ -780,6 +793,7 @@ module.exports = {
     "Правила с другой областью действия (окна SIHF, период IIHF) оставлены отдельно."
   ],
   "evidence": [
+    "Production 19.11: страница Swiss NL без токенов, meta содержит «deadline 15 February 2027» из общего источника.",
     "test/deadlines.test.js: изменение записи в дочернем процессе меняет все потребители, старой даты не остаётся.",
     "Отрисовка EN/RU страниц лиги и календаря: токенов не осталось, даты корректны."
   ],
@@ -790,7 +804,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-P2-FAQ-HOWTO-20261119",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-19",
   "files": [
     "public/en/guides/how-to-verify-a-hockey-club-offer.html",
@@ -808,6 +822,7 @@ module.exports = {
     "Сверка разметки с видимым текстом: 1 198 вопросов FAQPage на 272 страницах (1 284 на 296 после серверной отрисовки) совпадают. HowTo в гайде проверки предложения EN/RU называл шаги иначе, чем видимый чек-лист — шаги разметки приведены к видимым пунктам."
   ],
   "evidence": [
+    "Production 19.11: HowTo на /guides/how-to-verify-a-hockey-club-offer со шагами «Club and contact» …",
     "test/structured-data-visible.test.js: каждый вопрос/ответ FAQPage и каждый шаг HowTo присутствует в видимом тексте.",
     "Проверка отрисованных локальным сервером 344 страниц: 0 расхождений."
   ],
