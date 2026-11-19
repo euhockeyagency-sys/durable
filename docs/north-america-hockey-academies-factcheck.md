@@ -71,3 +71,10 @@ academy tuition", "mountain kings academy tuition" (no figure on the page).
 
 Rejected: hockeybudget.com estimates (modelled, no family reports).
 Also fixed a literal "undefined" in the RU verification-date paragraph.
+
+## 2026-11-19 — One price block, NTDP wording aligned
+
+- **Shattuck-St Mary's**, re-read on the school's own page (s-sm.org/admissions/affording-ssm) on 19 November 2026. 2026-27 figures: domestic boarding $65,000, domestic day $46,000, international boarding $73,000, hockey programme fee $11,000. The $11,000 fee is confirmed.
+- **NTDP**: USA Hockey's own FAQ (usahockeyntdp.com/faq) was read on 19 November 2026. It does not say whether players pay fees or tuition. The page therefore does not call the NTDP free, and the text, the visible FAQ and the FAQPage JSON-LD now carry the same answer: players are selected, not enrolled for a fee; confirm costs with USA Hockey.
+- **Prices**: the table is the single price block. The prose section "US boarding prep schools: what they actually charge" was removed because it duplicated the table and included Salisbury's older 2025-26 rate. Ontario Hockey Academy moved into the table with its 10 August 2026 check date, and the CIHA figures stay only in the table.
+- **Prep-school FAQ range**: the $65,000–$84,000 range now refers to the five US schools in the table.

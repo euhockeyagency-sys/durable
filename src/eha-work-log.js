@@ -616,6 +616,34 @@ module.exports = {
     "Не опубликовано. «Сравнение составлено: дата» и «версия методологии от июля 2026» оставлены как даты данных/версии документа — решение владельца, если их тоже скрыть."
   ],
   "next_step": "После деплоя выборочно открыть 5 страниц EN/RU и убедиться, что дат правки нет."
+},
+{
+  "id": "AUDIT-P1-ACADEMIES-NA-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "public/en/guides/hockey-academies-in-north-america.html",
+    "public/ru/guides/hokkejnye-akademii-severnoj-ameriki.html",
+    "test/academies-guide.test.js",
+    "docs/north-america-hockey-academies-factcheck.md"
+  ],
+  "urls": [
+    "/guides/hockey-academies-in-north-america",
+    "/ru/guides/hokkejnye-akademii-severnoj-ameriki"
+  ],
+  "changes": [
+    "Один блок цен: дублирующий раздел цен prep-школ удалён, цены CIHA/OHA только в таблице (OHA перенесена в таблицу со своей датой проверки).",
+    "NTDP: текст, видимый FAQ и FAQPage JSON-LD дают один ответ — игроков отбирают, а не зачисляют за плату; бесплатность не утверждается, стоимость уточнять в USA Hockey.",
+    "Shattuck: $73 000 / $65 000 + $11 000 подтверждены на странице школы 19.11.2026."
+  ],
+  "evidence": [
+    "test/academies-guide.test.js (3 теста).",
+    "WebFetch s-sm.org/admissions/affording-ssm и usahockeyntdp.com/faq 19.11.2026; запись в docs/north-america-hockey-academies-factcheck.md."
+  ],
+  "limits": [
+    "Не опубликовано. Остальные цены таблицы повторно не проверялись (сохраняют свои даты)."
+  ],
+  "next_step": "При следующем обзоре — повторная проверка Kent, Culver, Tabor, Berkshire, CIHA на 2027/28."
 }
   ],
   "historical": [
