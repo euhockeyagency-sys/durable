@@ -230,7 +230,7 @@ main>section:not(.hero):not(.cta),.article-body{position:relative}
 
 footer{padding:64px 0 34px;display:grid;grid-template-columns:1.7fr 1fr 1fr;gap:40px;color:var(--muted)}
 footer .footer-brand p{font-size:13px;line-height:1.7;max-width:300px;margin:20px 0 0}
-footer h4{color:var(--text);font:600 15px Oswald;text-transform:uppercase;letter-spacing:.06em;margin:0 0 18px}
+footer .footer-heading{color:var(--text);font:600 15px Oswald;text-transform:uppercase;letter-spacing:.06em;margin:0 0 18px}
 footer .footer-links{display:flex;flex-direction:column;gap:12px;font-size:13px}
 footer .footer-links a{transition:color .2s,transform .2s}
 footer .footer-links a:hover{color:var(--accent-text);transform:translateX(4px)}
@@ -833,7 +833,7 @@ to{transform:none}
 
 /* --- footer and floating pieces --- */
 footer{color:var(--muted)}
-footer h4{color:var(--text)}
+footer .footer-heading{color:var(--text)}
 footer .footer-links a{transition:color var(--t-fast) var(--ease),transform var(--t) var(--ease)}
 footer .footer-links a:hover{color:var(--text);transform:translateX(6px)}
 .whatsapp-float{color:#fff;box-shadow:none;transition:transform var(--t) var(--ease)}
@@ -1146,3 +1146,9 @@ h2{font-size:clamp(34px,10vw,48px)}
 .brief-channel .channel-option span{display:grid;gap:4px}.brief-channel .channel-option b{font-size:15px}.brief-channel .channel-option small{color:var(--muted);font-weight:400;font-size:13px;line-height:1.5}
 .brief-channel .channel-option:has(input:checked){border-color:var(--accent);background:rgba(var(--fg-rgb),.06)}
 .brief-send{margin-bottom:12px}.brief-send[hidden]{display:none!important}
+
+/* Accessibility (audit 19.11.2026): text on filled buttons needs 4.5:1.
+   White on the brand blue #1687ff is 3.5:1, so filled text buttons use a
+   darker shade of the same blue (4.9:1; hover 6.5:1). WhatsApp green likewise. */
+.primary,.cookie-actions [data-cookie="accept"]{--accent:#0b6fd6;--accent-hover:#0a5cc0}
+.whatsapp-float{background:#0f7a40}

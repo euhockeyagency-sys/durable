@@ -92,7 +92,7 @@ if(heroEl&&!reduce&&matchMedia('(min-width: 851px)').matches){
 if('IntersectionObserver' in window){const loopIO=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('fx-on',e.isIntersecting)));qa('.cta,.hero').forEach(el=>loopIO.observe(el))}
 // Counters: the final value is in the HTML and is never rewritten (a count-up from 0 froze at "0+" whenever rAF was paused: background tabs, previews, slow devices). The only motion is a one-off CSS accent, skipped with reduced motion.
 if(!reduce&&'IntersectionObserver' in window){const cio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('count-in');cio.unobserve(e.target)}}),{threshold:.6});qa('[data-count]').forEach(el=>cio.observe(el))}
-const wa=document.createElement('a');wa.className='whatsapp-float';wa.href='https://wa.me/375297957818';wa.target='_blank';wa.rel='noopener';wa.setAttribute('aria-label',T.waAria);wa.textContent='WA';document.body.append(wa);
+const wa=document.createElement('a');wa.className='whatsapp-float';wa.href='https://wa.me/375297957818';wa.target='_blank';wa.rel='noopener';wa.setAttribute('aria-label',`WA — ${T.waAria}`);wa.textContent='WA';document.body.append(wa);
 
 // Consent Mode default (set server-side in <head>, before gtag.js loads) is
 // analytics_storage: denied. A stored "granted" choice from an earlier visit
