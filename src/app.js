@@ -1129,11 +1129,11 @@ const SITEMAP_EXCLUDED = /^(404|application-success|google[0-9a-f]+|yandex_[0-9a
 // excluding utility pages, with its git-based modification date when the
 // deployment generated public/assets/lastmod.json. Slugs are language-neutral
 // logical paths (the locale directory is not part of the URL).
-function collectPages(publicDir, locale = "ru") {
+function collectPages(publicDir, locale = "ru", lastmodPath = path.join(publicDir, "assets", "lastmod.json")) {
   const pages = [];
   const root = path.join(publicDir, locale);
   let lastmod = {};
-  try { lastmod = JSON.parse(fs.readFileSync(path.join(publicDir, "assets", "lastmod.json"), "utf8")); } catch { /* local checkout before deploy */ }
+  try { lastmod = JSON.parse(fs.readFileSync(lastmodPath, "utf8")); } catch { /* local checkout before deploy */ }
   const walk = (dir, prefix) => {
     let entries = [];
     try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
@@ -1143,11 +1143,12 @@ function collectPages(publicDir, locale = "ru") {
         if (entry.name !== "assets") walk(full, `${prefix}${entry.name}/`);
       } else if (entry.name.endsWith(".html") && !SITEMAP_EXCLUDED.test(entry.name)) {
         const slug = entry.name === "index.html" && prefix === "" ? "/" : `/${prefix}${entry.name.replace(/\.html$/, "")}`;
-        let mtime = new Date();
-        try { mtime = fs.statSync(full).mtime; } catch { /* keep default */ }
+        // Only a date from the content-change map (scripts/generate-lastmod.js)
+        // is used; without one the page has no lastmod rather than a guess
+        // such as the deploy time.
         const relative = path.relative(path.join(publicDir, ".."), full).split(path.sep).join("/");
         const gitDate = lastmod[relative];
-        if (gitDate) mtime = new Date(`${gitDate}T00:00:00Z`);
+        const mtime = /^\d{4}-\d{2}-\d{2}$/.test(gitDate || "") ? new Date(`${gitDate}T00:00:00Z`) : null;
         pages.push({ slug, mtime, file: full });
       }
     }
@@ -1166,10 +1167,10 @@ function buildSitemap(config, locale = "ru") {
   // No <changefreq>/<priority>: Google ignores both and Yandex barely uses them,
   // so they are pure noise. <lastmod> (from the git commit map) is the only hint
   // the crawlers actually act on.
-  const rows = collectPages(config.publicDir, locale)
+  const rows = collectPages(config.publicDir, locale, config.lastmodPath)
     .sort((a, b) => a.slug.localeCompare(b.slug))
     .map(({ slug, mtime }) =>
-      `  <url><loc>${xmlEscape(joinUrl(base, slug))}</loc><lastmod>${mtime.toISOString().slice(0, 10)}</lastmod></url>`);
+      `  <url><loc>${xmlEscape(joinUrl(base, slug))}</loc>${mtime ? `<lastmod>${mtime.toISOString().slice(0, 10)}</lastmod>` : ""}</url>`);
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${rows.join("\n")}\n</urlset>\n`;
 }
 
@@ -1191,9 +1192,9 @@ const FEED_META = {
 function buildFeed(config, locale = "ru") {
   const base = baseUrlFor(locale, config);
   const meta = FEED_META[locale] || FEED_META.ru;
-  const items = collectPages(config.publicDir, locale)
+  const items = collectPages(config.publicDir, locale, config.lastmodPath)
     .filter(({ slug }) => slug.startsWith("/guides/") || slug.startsWith("/leagues/") || slug.startsWith("/ligi/") || slug.startsWith("/news/") || slug.startsWith("/novosti/"))
-    .sort((a, b) => b.mtime - a.mtime)
+    .sort((a, b) => (b.mtime ? b.mtime.getTime() : 0) - (a.mtime ? a.mtime.getTime() : 0))
     .map(({ slug, mtime, file }) => {
       let html = "";
       try { html = fs.readFileSync(file, "utf8"); } catch { /* skip content */ }
@@ -1201,7 +1202,7 @@ function buildFeed(config, locale = "ru") {
       const description = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1] || "";
       const url = joinUrl(base, slug);
       return `    <item>\n      <title>${xmlEscape(title)}</title>\n      <link>${xmlEscape(url)}</link>\n` +
-        `      <guid isPermaLink="true">${xmlEscape(url)}</guid>\n      <pubDate>${mtime.toUTCString()}</pubDate>\n` +
+        `      <guid isPermaLink="true">${xmlEscape(url)}</guid>\n${mtime ? `      <pubDate>${mtime.toUTCString()}</pubDate>\n` : ""}` +
         `      <description>${xmlEscape(description)}</description>\n    </item>`;
     });
   return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0">\n  <channel>\n` +

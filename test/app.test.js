@@ -219,10 +219,16 @@ test("rendered HTML inlines critical CSS and loads the full stylesheet without a
   assert.doesNotMatch(response.text, /media="print" onload=/);
 });
 
-test("the sitemap carries lastmod but no changefreq or priority noise", async () => {
-  const app = createApp({ config: config(), services: serviceMock() });
+test("the sitemap carries lastmod from the content-change map only, and no changefreq or priority noise", async () => {
+  const os = require("node:os");
+  const lastmodPath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "lastmod-")), "lastmod.json");
+  fs.writeFileSync(lastmodPath, JSON.stringify({ "public/en/agent.html": "2026-11-17" }));
+  const app = createApp({ config: config({ lastmodPath }), services: serviceMock() });
   const res = await request(app).get("/sitemap.xml").set("Host", "eha.test").expect(200);
-  assert.match(res.text, /<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/);
+  assert.match(res.text, /<loc>https:\/\/eha\.test\/agent<\/loc><lastmod>2026-11-17<\/lastmod><\/url>/);
+  // a page without a content date gets no lastmod instead of the deploy time
+  assert.match(res.text, /<loc>https:\/\/eha\.test\/services<\/loc><\/url>/);
+  assert.equal((res.text.match(/<lastmod>/g) || []).length, 1);
   assert.doesNotMatch(res.text, /<changefreq>/);
   assert.doesNotMatch(res.text, /<priority>/);
 });
