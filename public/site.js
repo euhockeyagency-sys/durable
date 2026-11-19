@@ -223,6 +223,8 @@ window.ehaTrack=track;
 // whatsapp_click: one event per click, only after analytics consent, and only
 // the page path and placement — never the phone number or the message text.
 let lastWa=0;document.addEventListener('click',event=>{const link=event.target.closest&&event.target.closest('a[href*="wa.me/"],[data-success-whatsapp]');if(!link)return;let granted=false;try{granted=localStorage.getItem(CONSENT_KEY)==='granted'}catch(error){}const now=Date.now();if(!granted||now-lastWa<1000)return;lastWa=now;track('whatsapp_click',{entry_page:location.pathname,placement:link.classList.contains('whatsapp-float')?'float':link.hasAttribute('data-success-whatsapp')?'success':'inline'})});
+// telegram_channel_click: consent-gated like whatsapp_click; only the page path is sent.
+document.addEventListener('click',event=>{const link=event.target.closest&&event.target.closest('[data-channel-cta]');if(!link)return;let granted=false;try{granted=localStorage.getItem(CONSENT_KEY)==='granted'}catch(error){}if(granted)track('telegram_channel_click',{entry_page:location.pathname})});
 const isParentHub=location.pathname.endsWith('/junior-hockey-for-parents')||location.pathname.endsWith('/yuniorskij-hokkej-roditelyam');
 if(isParentHub)track('parent_hub_view',{entry_page:location.pathname});
 document.addEventListener('click',event=>{const link=event.target.closest('a[href*="/contact?"]');if(!link)return;let url;try{url=new URL(link.href,location.href)}catch(error){return}const type=url.searchParams.get('type'),intent=url.searchParams.get('intent')||'';if(type==='parent'||type==='parent_guardian')track('parent_cta_click',{entry_page:location.pathname,intent,destination:url.pathname})});
