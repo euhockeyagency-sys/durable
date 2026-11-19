@@ -1,0 +1,38 @@
+name: Tests
+
+# Every pull request into main runs the same checks as the deploy, so a change
+# is green before anyone presses Merge. Branch protection on main requires the
+# "checks" job below. Nothing is deployed from here.
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # lastmod tests read the git history
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Syntax check
+        run: npm run check
+
+      - name: Run tests
+        run: npm test
+
+      - name: CTA links use canonical attribution values
+        run: node scripts/normalize-cta-links.js --check
