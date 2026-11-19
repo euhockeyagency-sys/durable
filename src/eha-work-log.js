@@ -787,6 +787,34 @@ module.exports = {
     "Не опубликовано. Таблица /open-hockey-leagues-for-imports и сроки PHL/DEL2 — следующие кандидаты (docs/data-duplication.md), не менялись."
   ],
   "next_step": "После проверки этой связки на production — перевести сроки PHL и DEL2 и таблицу открытых лиг на общий источник."
+},
+{
+  "id": "AUDIT-P2-FAQ-HOWTO-20261119",
+  "status": "saved",
+  "date": "2026-11-19",
+  "files": [
+    "public/en/guides/how-to-verify-a-hockey-club-offer.html",
+    "public/ru/guides/kak-proverit-predlozhenie-hokkejnogo-kluba.html",
+    "public/en/guides/hockey-player-salaries-in-europe.html",
+    "public/ru/guides/zarplaty-hokkeistov-v-evrope.html",
+    "test/structured-data-visible.test.js"
+  ],
+  "urls": [
+    "/guides/how-to-verify-a-hockey-club-offer",
+    "/ru/guides/kak-proverit-predlozhenie-hokkejnogo-kluba"
+  ],
+  "changes": [
+    "Документация Google (май 2026): FAQ rich results больше не показываются, разметка FAQPage остаётся допустимой; HowTo rich results сняты в 2023. Массового удаления разметки нет — оснований нет.",
+    "Сверка разметки с видимым текстом: 1 198 вопросов FAQPage на 272 страницах (1 284 на 296 после серверной отрисовки) совпадают. HowTo в гайде проверки предложения EN/RU называл шаги иначе, чем видимый чек-лист — шаги разметки приведены к видимым пунктам."
+  ],
+  "evidence": [
+    "test/structured-data-visible.test.js: каждый вопрос/ответ FAQPage и каждый шаг HowTo присутствует в видимом тексте.",
+    "Проверка отрисованных локальным сервером 344 страниц: 0 расхождений."
+  ],
+  "limits": [
+    "Не опубликовано. Расширенные сниппеты как результат не оцениваются (их нет по решению Google)."
+  ],
+  "next_step": "После деплоя — выборочно Schema Markup Validator для двух HowTo-страниц."
 }
   ],
   "historical": [
