@@ -1271,3 +1271,27 @@ test("fonts: one variable-font file per family and subset, no byte-identical dup
     assert.match(f, /font-weight: \d{3} \d{3};/);
   }
 });
+
+test("attribution chain: RU CTA → form → server → storage → admin, note kept, ids stored", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-11-19T12:00:00Z") });
+  // what site.js submits for /ru/contact?intent=league-assessment&country=Sweden&league=Sweden%20U20&source_page=/guides/hokkej-v-shvecii&note=…
+  await validRequest(request(app), {
+    locale: "ru", intent: "league-assessment", country: "Sweden", league: "Sweden U20",
+    sourcePage: "/guides/hokkej-v-shvecii", message: "Интересующая страна: Швеция\nИнтересующая лига: U20 Nationell (J20)\nСинтетическая заметка",
+    goal: "development", fromCalculator: ""
+  }).expect(201);
+  const row = services.rows.applications[0];
+  assert.equal(row.source.intent, "league_assessment");
+  assert.equal(row.source.intent_input, "league-assessment");
+  assert.equal(row.source.country, "SE");
+  assert.equal(row.source.league, "sweden-j20");
+  assert.equal(row.source.source_page, "/ru/guides/hokkej-v-shvecii");
+  assert.equal(row.source.goal, "development");
+  assert.equal(row.source.from_calculator, false);
+  assert.match(row.message, /Синтетическая заметка/);
+  const { cookie } = await adminLogin(app);
+  const admin = await request(app).get("/admin").set("Cookie", cookie).expect(200);
+  assert.match(admin.text, /target: SE · U20 Nationell \(J20\)/);
+  assert.match(admin.text, /page: \/ru\/guides\/hokkej-v-shvecii/);
+});

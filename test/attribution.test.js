@@ -161,4 +161,8 @@ test("CRM history dry run proposes canonical values without writing, including /
   assert.equal(r3.patch.previous_page, "/european-leagues");
   assert.equal(result.byField.source_page_ru_prefix_added, 1);
   assert.deepEqual(result.unresolved, [{ id: "r4", source_page: "/gone" }]);
+  // r1 RU-only slug, r2 EN path, r3 EN-only calculator: exact; r4 unresolved
+  assert.deepEqual(result.sourcePageCertainty, { exact: 3, by_language: 0, token: 0, unresolved: 1 });
+  const shared = plan([{ id: "s1", source: { locale: "ru", source_page: "/agent" } }]);
+  assert.equal(shared.sourcePageCertainty.by_language, 1, "/agent exists in both languages: flagged for review");
 });

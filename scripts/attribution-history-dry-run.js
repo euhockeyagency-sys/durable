@@ -26,6 +26,7 @@ function planRow(row) {
   const locale = source.locale === "en" ? "en" : "ru";
   const patch = {};
   const notes = [];
+  let sourcePageResolution = null;
 
   if (source.intent) {
     const r = normalizeIntent(source.intent);
@@ -34,6 +35,7 @@ function planRow(row) {
   if (source.source_page) {
     const trail = splitTrail(source.source_page);
     const r = normalizeSourcePage(trail.page, locale);
+    sourcePageResolution = r.resolution;
     if (r.sourcePage && r.sourcePage !== source.source_page) {
       patch.source_page = r.sourcePage;
       patch.source_page_input = source.source_page;
@@ -47,7 +49,7 @@ function planRow(row) {
     if (r[field] && r[field] !== source[key]) { patch[key] = r[field]; patch[`${key}_input`] = source[key]; }
     else if (!r[field] && !r.input) { patch[key] = null; patch[`${key}_input`] = source[key]; notes.push(`${key} is not a ${key} — moved to ${key}_input`); }
   }
-  return { id: row.id, locale, before: pick(source), patch, notes };
+  return { id: row.id, locale, before: pick(source), patch, notes, sourcePageResolution };
 }
 
 function pick(source) {
@@ -70,6 +72,16 @@ function plan(rows) {
       source_page_ru_prefix_added: count((i) => i.patch.source_page && i.patch.source_page.startsWith("/ru") && !String(i.before.source_page).startsWith("/ru")),
       country: count((i) => "country" in i.patch),
       league: count((i) => "league" in i.patch)
+    },
+    // source_page by how certain the mapping is: exact = the stored path names
+    // one real route; by_language = a slug that exists in both languages,
+    // decided only by the form locale (review before applying); token = a
+    // legacy token mapped to its guide; unresolved = left as is.
+    sourcePageCertainty: {
+      exact: items.filter((i) => i.sourcePageResolution === "exact").length,
+      by_language: items.filter((i) => i.sourcePageResolution === "locale").length,
+      token: items.filter((i) => i.sourcePageResolution === "slug").length,
+      unresolved: items.filter((i) => i.sourcePageResolution === "unresolved").length
     },
     unresolved: items.filter((i) => i.notes.some((n) => n.includes("unresolved"))).map((i) => ({ id: i.id, source_page: i.before.source_page })),
     items: changed
