@@ -25,3 +25,12 @@ test("a CTA-link-only commit does not move the page's lastmod (real history)", (
   const date = lastContentChange("public/en/agent.html", commits);
   assert.notEqual(date, "2026-11-19");
 });
+
+test("adding or removing an editorial date stamp does not move lastmod", () => {
+  const p = (main) => `<html><body><main>${main}</main></body></html>`;
+  assert.equal(contentFingerprint(p("<p>Text. Updated 18 November 2026.</p>")), contentFingerprint(p("<p>Text.</p>")));
+  assert.equal(contentFingerprint(p('<p class="kicker">Рынок игроков · обновлено в сентябре 2026</p>')), contentFingerprint(p('<p class="kicker">Рынок игроков</p>')));
+  assert.equal(contentFingerprint(p("<p><strong>Editorial review:</strong> 8 August 2026. Re-check.</p>")), contentFingerprint(p("<p>Re-check.</p>")));
+  // ordinary words that look like months are still content
+  assert.notEqual(contentFingerprint(p("<p>Players may sign</p>")), contentFingerprint(p("<p>Players sign</p>")));
+});

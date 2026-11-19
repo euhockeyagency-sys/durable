@@ -41,6 +41,10 @@ function stripBlocks(html, classes = BOILERPLATE) {
   }
 }
 
+const MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December|январ[ьяе]|феврал[ьяе]|марта?|марте|апрел[ьяе]|ма[йяе]|июн[ьяе]|июл[ьяе]|августа?|августе|сентябр[ьяе]|октябр[ьяе]|ноябр[ьяе]|декабр[ьяе]";
+const DATES = new RegExp(`(?<!\\p{L})(?:в\\s+)?(?:\\d{1,2}\\s+(?:${MONTHS})(?!\\p{L})(?:\\s+20\\d\\d)?|(?:${MONTHS})(?!\\p{L})\\s+20\\d\\d)(?:\\s+года)?|\\b20\\d\\d-\\d\\d-\\d\\d\\b`, "giu");
+const EDITORIAL_WORDS = /(?<!\p{L})(?:last updated|updated|reviewed|editorial (?:update|review)|дата обновления|обновлено|редакционн(?:ое|ая) (?:обновление|проверка))(?!\p{L}):?/giu;
+
 function contentFingerprint(html) {
   const main = /<main\b[^>]*>([\s\S]*?)<\/main>/i.exec(html);
   const body = stripBlocks(main ? main[1] : html);
@@ -51,6 +55,13 @@ function contentFingerprint(html) {
     .replace(/<[^>]+>/g, " ")
     .replace(/\{\{[A-Z_]+\}\}/g, " ")
     .replace(/&nbsp;|&#160;/g, " ")
+    // Editorial date stamps ("Updated 18 November 2026", "обновлено в сентябре
+    // 2026", "Editorial review: …") are not content: adding or removing one
+    // must not move lastmod. Fact-check dates elsewhere in a sentence are also
+    // ignored, so only changes to the wording count.
+    .replace(EDITORIAL_WORDS, " ")
+    .replace(DATES, " ")
+    .replace(/[^\p{L}\p{N}]+/gu, " ") // words only: punctuation left behind by a removed stamp is not a change
     .replace(/\s+/g, " ")
     .trim();
   return crypto.createHash("sha256").update(text).digest("hex");
