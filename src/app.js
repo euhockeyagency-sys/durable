@@ -1183,9 +1183,18 @@ function buildSitemap(config, locale = "ru") {
   // the crawlers actually act on.
   const rows = collectPages(config.publicDir, locale, config.lastmodPath)
     .sort((a, b) => a.slug.localeCompare(b.slug))
-    .map(({ slug, mtime }) =>
-      `  <url><loc>${xmlEscape(joinUrl(base, slug))}</loc>${mtime ? `<lastmod>${mtime.toISOString().slice(0, 10)}</lastmod>` : ""}</url>`);
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${rows.join("\n")}\n</urlset>\n`;
+    .map(({ slug, mtime }) => {
+      // The same EN/RU pairs as the <link rel="alternate"> tags in the page head
+      // (hreflangFor reads the PAGES table), so the two signals never disagree.
+      const alts = locale === "en" || locale === "ru" ? hreflangFor(slug, locale, config) : null;
+      const links = alts
+        ? `<xhtml:link rel="alternate" hreflang="ru" href="${xmlEscape(alts.ru)}"/>` +
+          `<xhtml:link rel="alternate" hreflang="en" href="${xmlEscape(alts.en)}"/>` +
+          `<xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(alts.en)}"/>`
+        : "";
+      return `  <url><loc>${xmlEscape(joinUrl(base, slug))}</loc>${mtime ? `<lastmod>${mtime.toISOString().slice(0, 10)}</lastmod>` : ""}${links}</url>`;
+    });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${rows.join("\n")}\n</urlset>\n`;
 }
 
 const FEED_META = {

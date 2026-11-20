@@ -225,9 +225,9 @@ test("the sitemap carries lastmod from the content-change map only, and no chang
   fs.writeFileSync(lastmodPath, JSON.stringify({ "public/en/agent.html": "2026-11-17" }));
   const app = createApp({ config: config({ lastmodPath }), services: serviceMock() });
   const res = await request(app).get("/sitemap.xml").set("Host", "eha.test").expect(200);
-  assert.match(res.text, /<loc>https:\/\/eha\.test\/agent<\/loc><lastmod>2026-11-17<\/lastmod><\/url>/);
+  assert.match(res.text, /<loc>https:\/\/eha\.test\/agent<\/loc><lastmod>2026-11-17<\/lastmod><xhtml:link/);
   // a page without a content date gets no lastmod instead of the deploy time
-  assert.match(res.text, /<loc>https:\/\/eha\.test\/services<\/loc><\/url>/);
+  assert.match(res.text, /<loc>https:\/\/eha\.test\/services<\/loc><xhtml:link/);
   assert.equal((res.text.match(/<lastmod>/g) || []).length, 1);
   assert.doesNotMatch(res.text, /<changefreq>/);
   assert.doesNotMatch(res.text, /<priority>/);
@@ -1027,12 +1027,14 @@ test("serves English pages with translated slugs at the root", async () => {
 
 test("the RU sitemap contains only Russian slugs, the EN sitemap only English", async () => {
   const app = createApp({ config: config(), services: serviceMock() });
-  const ru = await request(app).get("/ru/sitemap.xml").set("Host", "eha.test").expect(200);
-  assert.match(ru.text, /https:\/\/eha\.test\/ru\/kalkulyator-urovnya/);
-  assert.doesNotMatch(ru.text, /for-players/);
-  const en = await request(app).get("/sitemap.xml").set("Host", "eha.test").expect(200);
-  assert.match(en.text, /https:\/\/eha\.test\/for-players/);
-  assert.doesNotMatch(en.text, /kalkulyator-urovnya/);
+  // <loc> entries only: the xhtml:link alternates name the other language by design.
+  const locs = (xml) => (xml.match(/<loc>[^<]+<\/loc>/g) || []).join("\n");
+  const ru = locs((await request(app).get("/ru/sitemap.xml").set("Host", "eha.test").expect(200)).text);
+  assert.match(ru, /https:\/\/eha\.test\/ru\/kalkulyator-urovnya/);
+  assert.doesNotMatch(ru, /for-players/);
+  const en = locs((await request(app).get("/sitemap.xml").set("Host", "eha.test").expect(200)).text);
+  assert.match(en, /https:\/\/eha\.test\/for-players/);
+  assert.doesNotMatch(en, /kalkulyator-urovnya/);
 });
 
 test("a Russian-only slug at the root 301s into the /ru/ tree", async () => {
@@ -1302,4 +1304,14 @@ test("LCP: hero text is visible from the first paint (animation moves it, never 
   assert.ok(frames.length >= 1);
   for (const f of frames) assert.doesNotMatch(f, /opacity|clip-path/, f);
   assert.doesNotMatch(css, /\.hero \.kicker,\.hero h1 span,\.hero \.lead,\.hero \.actions,\.hero \.note\{opacity:0/);
+});
+
+test("sitemaps carry the same ru/en/x-default alternates as the page head", async () => {
+  const app = createApp({ config: config(), services: serviceMock() });
+  const en = await request(app).get("/sitemap.xml").set("Host", "eha.test").expect(200);
+  assert.match(en.text, /xmlns:xhtml="http:\/\/www\.w3\.org\/1999\/xhtml"/);
+  assert.match(en.text, /<loc>https:\/\/eha\.test\/for-players<\/loc><xhtml:link rel="alternate" hreflang="ru" href="https:\/\/eha\.test\/ru\/players"\/><xhtml:link rel="alternate" hreflang="en" href="https:\/\/eha\.test\/for-players"\/><xhtml:link rel="alternate" hreflang="x-default" href="https:\/\/eha\.test\/for-players"\/><\/url>/);
+  const ru = await request(app).get("/ru/sitemap.xml").set("Host", "eha.test").expect(200);
+  assert.match(ru.text, /<loc>https:\/\/eha\.test\/ru\/players<\/loc><xhtml:link rel="alternate" hreflang="ru" href="https:\/\/eha\.test\/ru\/players"\/>/);
+  assert.equal((en.text.match(/<url>/g) || []).length, (en.text.match(/hreflang="x-default"/g) || []).length, "every EN page has a pair");
 });
