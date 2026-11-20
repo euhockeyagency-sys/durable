@@ -389,7 +389,7 @@ h2{font-size:clamp(36px,11vw,52px)}
 .proof{margin-top:0}
 .proof div{border-right:0;border-bottom:1px solid var(--line);padding:21px 24px;display:grid;grid-template-columns:82px 1fr;align-items:center;gap:12px}
 .proof strong{font-size:34px}
-.split,.feature,.checklist,.contact-grid{grid-template-columns:1fr;gap:35px}
+.split,.feature,.checklist,.contact-grid{grid-template-columns:minmax(0,1fr);gap:35px}
 .split{padding:90px 0 55px}
 .process{padding:50px 0 90px}
 .process:before{left:35px;right:auto;top:60px;bottom:100px;width:1px;height:auto}
@@ -1185,3 +1185,8 @@ h2{font-size:clamp(34px,10vw,48px)}
 }
 .proof span a,.fact-grid strong a{color:var(--accent-text);text-decoration:underline;text-underline-offset:3px}
 #contact-hint{margin:6px 0 10px}
+/* 320 px: long single words (player names, "MARSHCHONAK") must wrap instead of
+   widening the page; grid tracks may shrink below their content width. */
+@media(max-width:850px){.case-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:850px){.fact-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:420px){h1,h2,h3,p,li,strong{overflow-wrap:break-word}h1,h2,summary,.section-intro *{overflow-wrap:anywhere}.faq summary{font-size:22px;gap:12px}}
