@@ -18,9 +18,9 @@ const COMPARE_RE = /<!-- LEAGUE_COMPARE:([a-z0-9,-]+) -->/g;
 const DEADLINES_RE = /<!-- LEAGUE_DEADLINES:([a-z0-9,-]+) -->/g;
 const BYLINE_MARKER = "<!-- EHA_BYLINE -->";
 
-// Logical paths (EN and RU) of articles the agent has reviewed. Add a path only after
-// Viachaslau Marshchonak confirms he checked that text; until then the byline
-// says the article was prepared by EHA, without claiming an expert review.
+// Owner's decision, 20.11.2026: Viachaslau Marshchonak is the author of the EN/RU
+// articles, so the byline names him as author (matching author = Person in the
+// page JSON-LD). REVIEWED stays exported for older callers and is no longer used.
 const REVIEWED = new Set([]);
 
 const L = {
@@ -32,7 +32,8 @@ const L = {
     pay: { eha_estimate: "EHA estimate", third_party: "third-party range — an example, not an average", no_sample: "No reliable sample" },
     more: "League page",
     dlCaption: "Official dates by league, season 2026/27", thPeriod: "Period", thDates: "Dates", thBasis: "Basis",
-    by: "Prepared by the European Hockey Agency editorial team",
+    by: "By",
+    method: "How we check facts",
     reviewed: "Reviewed by an expert",
     agent: "Viachaslau Marshchonak",
     role: "hockey agent since 2016, founder of EHA; 100+ players placed",
@@ -46,7 +47,8 @@ const L = {
     pay: { eha_estimate: "оценка EHA", third_party: "сторонний диапазон — пример, не средняя", no_sample: "Надёжной выборки нет" },
     more: "Страница лиги",
     dlCaption: "Официальные даты по лигам, сезон 2026/27", thPeriod: "Период", thDates: "Даты", thBasis: "Основание",
-    by: "Подготовлено редакцией European Hockey Agency",
+    by: "Автор:",
+    method: "Как мы проверяем факты",
     reviewed: "Проверено экспертом",
     agent: "Вячеслав Морщенок",
     role: "хоккейный агент с 2016 года, основатель EHA; 100+ игроков размещено",
@@ -114,10 +116,8 @@ function deadlinesTable(ids, locale) {
 
 function byline(logicalPath, locale) {
   const s = L[locale];
-  const agentUrl = "/agent";
-  const lead = REVIEWED.has(logicalPath)
-    ? `<strong>${s.reviewed}:</strong> <a href="${agentUrl}">${s.agent}</a>, ${s.role}.`
-    : `<a href="${locale === "ru" ? "/metodologiya" : "/editorial-methodology"}">${s.by}</a>. ${s.agent}, ${s.role}. <a href="${agentUrl}">${s.about} →</a>`;
+  const method = locale === "ru" ? "/metodologiya" : "/editorial-methodology";
+  const lead = `<strong>${s.by} <a href="/agent">${s.agent}</a></strong>, ${s.role}. <a href="${method}">${s.method} →</a>`;
   return `<aside class="article-byline"><img src="/assets/viachaslau-marshchonak-640.webp" alt="" width="48" height="48" loading="lazy"><p>${lead}</p></aside>`;
 }
 
