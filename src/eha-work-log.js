@@ -910,7 +910,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-RECHECK-LASTMOD-20261120",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-20",
   "files": [
     "scripts/generate-lastmod.js",
@@ -925,6 +925,7 @@ module.exports = {
     "Из 61 EN/RU страницы, изменённой 20.11, дату меняют только 16 с содержательной правкой (H1 главной и услуг, кейсы, подпись к «100+», анкета, подписи цифр, раскрытие родства в гайде США)."
   ],
   "evidence": [
+    "Production 21.11 после деплоя f1a8b6b: /guides/hockey-in-germany lastmod 2026-11-18 (было 2026-11-20), /guides/hockey-player-salaries-in-europe 2026-11-19; дату 2026-11-20 сохраняют 8 EN URL с содержательной правкой.",
     "node --test test/lastmod.test.js — новый тест: CTA-блок и смена подписи не меняют отпечаток, изменение текста меняет.",
     "Сравнение отпечатков 9fbb318 → HEAD по всем изменённым файлам."
   ],
@@ -935,7 +936,7 @@ module.exports = {
 },
 {
   "id": "AUDIT-RECHECK-A11Y-320-20261120",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-20",
   "files": [
     "public/styles.css"
@@ -952,6 +953,7 @@ module.exports = {
     "На 320 px страницы прокручивались вбок (существовало до 20.11): колонки сеток по длине длинных слов, flex-summary FAQ. Мобильные сетки — minmax(0,1fr), длинные заголовки и вопросы FAQ переносятся."
   ],
   "evidence": [
+    "Production 21.11 после деплоя f1a8b6b, окно 320 px: /cases и /ru/agent — scrollWidth 320 = ширине окна; styles.css содержит новые правила.",
     "Playwright: 344 URL из sitemap EN/RU на 320 и 390 px — scrollWidth не больше ширины.",
     "Lighthouse (локально, mobile) a11y 100: /, /contact, /ru/contact, /agent, /guides/hockey-in-germany, /cases; фокус ссылок футера — outline 2px."
   ],
