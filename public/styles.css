@@ -230,6 +230,8 @@ main>section:not(.hero):not(.cta),.article-body{position:relative}
 
 footer{padding:64px 0 34px;display:grid;grid-template-columns:1.7fr 1fr 1fr;gap:40px;color:var(--muted)}
 footer .footer-brand p{font-size:13px;line-height:1.7;max-width:300px;margin:20px 0 0}
+footer .footer-address{font-style:normal;font-size:13px;line-height:1.7;margin:14px 0 0;display:flex;flex-direction:column;gap:4px}
+footer .footer-address a:hover{color:var(--text)}
 footer .footer-heading{color:var(--text);font:600 15px Oswald;text-transform:uppercase;letter-spacing:.06em;margin:0 0 18px}
 footer .footer-links{display:flex;flex-direction:column;gap:12px;font-size:13px}
 footer .footer-links a{transition:color .2s,transform .2s}
@@ -1165,3 +1167,11 @@ h2{font-size:clamp(34px,10vw,48px)}
 .cal-state-open{color:#2e7d4f}.cal-state-closed{color:var(--text-2)}.cal-state-ahead,.cal-state-opens{color:var(--text-2);font-weight:600}
 :root:not([data-theme="light"]) .cal-state-open{color:#6fd39b}
 @media(max-width:600px){.calendar-filters label{min-width:0;width:100%}.calendar-filters select{width:100%;min-height:44px}}
+
+.case-quote{margin:16px 0 0;padding:12px 0 0 14px;border-left:2px solid var(--accent);font-size:14px;line-height:1.6;color:var(--text-2)}
+.case-quote p{margin:0}
+.case-quote cite{display:block;margin-top:6px;font-size:12px;font-style:normal;color:var(--muted)}
+.agent-callout{margin:24px 0;padding:18px 20px;border:1px solid var(--line-strong);border-left:3px solid var(--accent);font-size:15px;line-height:1.65;color:var(--text-2)}
+.agent-callout p{margin:0}
+.agent-callout strong{color:var(--text)}
+.agent-callout a{color:var(--accent-text);text-decoration:underline;text-underline-offset:3px}

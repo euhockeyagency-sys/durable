@@ -47,7 +47,7 @@ function block(code, locale) {
   }
   if (cases.length) {
     html += `<section class="country-extra" id="country-cases"><h2>${t.cases}</h2><ul class="country-cases">` +
-      cases.map((c) => `<li><strong>${esc(c.player)}</strong> — ${esc(c.team)}${c.league ? ` (${esc(c.league)})` : ""}. ${t.season}: ${c.season ? esc(c.season) : t.seasonNA}. <a href="${esc(c.source)}" target="_blank" rel="noopener">${t.status[c.status]} ↗</a></li>`).join("") +
+      cases.map((c) => `<li><strong>${esc(c.player)}</strong> — ${esc(c.team)}${c.league ? ` (${esc(c.league)})` : ""}. ${t.season}: ${c.season ? esc(c.season) : t.seasonNA}. <a href="${esc(c.source)}" target="_blank" rel="noopener">${t.status[c.status]} ↗</a>${c.quote && c.quote[locale] ? `<blockquote class="case-quote"><p>${esc(c.quote[locale])}</p></blockquote>` : ""}</li>`).join("") +
       `</ul><p class="tool-note">${t.casesNote} <a href="/cases">${t.allCases} →</a></p></section>\n`;
   }
   return html;

@@ -130,7 +130,7 @@ test("Germany: DEL2 keeps its club table before the rules, guide shows both rule
   const guide = (await get("/guides/hockey-in-germany")).text;
   assert.ok(guide.includes('data-league-id="de-del2"') && guide.includes('data-league-id="de-oberliga"'));
   assert.ok(!guide.includes("there is no single verified import limit"));
-  assert.match(guide, /<title>How to Play Pro Hockey in Germany: DEL2, Oberliga, Import Rules &amp; Visas \| EHA<\/title>/);
+  assert.match(guide, /<title>How to Play Pro Hockey in Germany: DEL2, Oberliga, Imports<\/title>/);
 });
 
 test("free tools: Hockey CV and transfer-window checklist are copyable and downloadable without a form", async () => {
