@@ -15,15 +15,18 @@ const get = (app, url) => request(app).get(url).set("Host", "eha.test");
 const mainPart = (html) => { const f = html.slice(html.indexOf('<form id="profile-form"')); return f.slice(0, f.indexOf("<details")); };
 const body = { playerName: "Test Player", birthYear: "2001", citizenship: "Testonia", currentClub: "Club", position: "forward", phone: "+100", email: "a@b.test", dataConsent: "true" };
 
-test("form: height, weight and stick hand are required in the main part, whatever the database state", async () => {
+test("form: first step is the short list from 20.11; height, weight and stick hand stay required", async () => {
   for (const state of [true, false, null]) for (const url of ["/contact", "/ru/contact"]) {
     const html = (await get(appWith(state), url)).text;
     assert.ok(html.includes('data-measurements="required"') && !html.includes("MEASUREMENTS"), url);
     const main = mainPart(html);
     const required = [...main.matchAll(/<(?:input|select)\b[^>]*name="([A-Za-z]+)"[^>]*\srequired/g)].map((m) => m[1]);
-    for (const name of ["playerName", "birthYear", "citizenship", "currentClub", "position", "heightCm", "weightKg", "stickHand", "phone", "email"]) assert.ok(required.includes(name), `${url}: ${name} required`);
-    for (const name of ["statsSeason", "goals", "budget", "photo"]) assert.ok(!main.includes(`name="${name}"`), `${url}: ${name} is in the optional block`);
-    assert.ok(main.includes('name="eliteProspectsUrl"') && main.includes('name="videoUrls"'));
+    // Owner, 20.11.2026: first step = name, year of birth, position, height, weight,
+    // video, Elite Prospects, additional information, one contact and consent.
+    for (const name of ["playerName", "birthYear", "position", "heightCm", "weightKg", "stickHand"]) assert.ok(required.includes(name), `${url}: ${name} required`);
+    for (const name of ["citizenship", "currentClub", "phone", "email"]) assert.ok(!required.includes(name), `${url}: ${name} not required`);
+    for (const name of ["statsSeason", "goals", "budget", "photo", "citizenship", "currentClub"]) assert.ok(!main.includes(`name="${name}"`), `${url}: ${name} is in the optional block`);
+    for (const name of ["eliteProspectsUrl", "videoUrls", "message", "phone", "email"]) assert.ok(main.includes(`name="${name}"`), `${url}: ${name} in the first step`);
   }
 });
 
