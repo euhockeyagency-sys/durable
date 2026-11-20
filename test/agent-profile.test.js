@@ -68,16 +68,18 @@ test("author: Person only where the page shows the agent as author in a visible 
     const html = fs.readFileSync(f, "utf8");
     if (!/"author":\{"@type":"Person"/.test(html)) continue;
     persons += 1;
-    assert.match(html, /Автор:? <a href="\/agent">|>By <a href="[^"]*\/agent">/, `${path.relative(PUBLIC, f)} has author Person without a visible author byline`);
+    // <!-- EHA_BYLINE --> is rendered server-side as "By / Автор: <agent>" (src/article-blocks.js).
+    assert.match(html, /Автор(?: материала)?:? <a href="\/agent">|>By <a href="[^"]*\/agent">|<!-- EHA_BYLINE -->/, `${path.relative(PUBLIC, f)} has author Person without a visible author byline`);
   }
-  assert.ok(persons <= 16, `unexpected number of Person authors: ${persons}`);
+  // Owner's decision, 20.11.2026: the agent is the author of the EN/RU articles.
+  assert.ok(persons >= 300, `expected the articles to carry author Person, got ${persons}`);
 });
 
-test("reviewed pages show a visible reviewer line linking to the agent", () => {
-  for (const [rel, re] of [["en/guides/hockey-in-sweden.html", /Reviewed by <a href="\{\{EN\}\}\/agent">Viachaslau Marshchonak<\/a>/], ["ru/ligi/polsha-tauron-hokej-liga.html", /Проверено: <a href="\/agent">Вячеслав Морщенок<\/a>/]]) {
+test("articles show a visible author line linking to the agent and author Person in JSON-LD", () => {
+  for (const [rel, re] of [["en/guides/hockey-in-sweden.html", /By <a href="\{\{EN\}\}\/agent">Viachaslau Marshchonak<\/a>/], ["ru/ligi/polsha-tauron-hokej-liga.html", /Автор: <a href="\/agent">Вячеслав Морщенок<\/a>/]]) {
     const html = fs.readFileSync(path.join(PUBLIC, rel), "utf8");
     assert.match(html, re, rel);
     assert.equal((html.match(/reviewer-note/g) || []).length, 1, rel);
-    assert.match(html, /"author":\{"@type":"Organization"/, rel);
+    assert.match(html, /"author":\{"@type":"Person","@id":"\{\{BASE_URL_EN\}\}\/agent#person"/, rel);
   }
 });

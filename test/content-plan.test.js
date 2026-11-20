@@ -46,12 +46,13 @@ test("top-10 leagues table is built from league profiles, with press rules label
   assert.ok(html.includes("€35,000–150,000+") || html.includes("EUR 35,000–150,000+"));
 });
 
-test("comparison and byline blocks: no salary invented, no expert review claimed until confirmed", () => {
+test("comparison and byline blocks: no salary invented, byline names the agent as author", () => {
   const ru = compareTable(["fi-mestis", "uk-eihl"], "ru");
   assert.ok(ru.includes("Надёжной выборки нет"));
   assert.equal(REVIEWED.size, 0);
   const en = byline("/guides/paid-hockey-showcases-in-europe", "en");
-  assert.ok(en.includes("Prepared by the European Hockey Agency editorial team") && !en.includes("Reviewed by"));
+  assert.ok(en.includes('<strong>By <a href="/agent">Viachaslau Marshchonak</a></strong>') && !en.includes("Reviewed by"));
+  assert.ok(byline("/guides/platnye-prosmotry-i-shoukejsy-v-evrope", "ru").includes('<strong>Автор: <a href="/agent">Вячеслав Морщенок</a></strong>'));
 });
 
 test("transfer windows guide lists official 2026/27 league deadlines from the profiles", async () => {
