@@ -2,6 +2,8 @@
 // countryCode = ISO 3166-1 alpha-2 of the destination country; used to place a
 // case on that country's guide. status: elite_prospects_history | club_announcement
 // | pending (pending is never shown). season: null when no source states it.
+// quote (optional): { en, ru } short confirmed quote from the player or family,
+// published only with consent; shown on the country guide under the case.
 // publish: the case is already public on /cases. Edit here, then run
 // `node scripts/build-cases.js`.
 module.exports = [
