@@ -21,7 +21,8 @@ const ROOT = path.join(__dirname, "..");
 const PUBLIC = path.join(ROOT, "public");
 
 // Sitewide blocks inside <main> that are not the page's own content.
-const BOILERPLATE = ["reviewer-note", "breadcrumbs", "related", "cta", "eha-byline", "page-updated", "editorial-meta"];
+// agent-callout: CTA asides ("Hockey agent in X", level check) added 20.11.2026.
+const BOILERPLATE = ["reviewer-note", "breadcrumbs", "related", "cta", "agent-callout", "eha-byline", "page-updated", "editorial-meta"];
 
 // Removes every element whose class list contains one of `classes`, including
 // its nested children (same-name tags are counted to find the matching close).
@@ -43,7 +44,9 @@ function stripBlocks(html, classes = BOILERPLATE) {
 
 const MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December|январ[ьяе]|феврал[ьяе]|марта?|марте|апрел[ьяе]|ма[йяе]|июн[ьяе]|июл[ьяе]|августа?|августе|сентябр[ьяе]|октябр[ьяе]|ноябр[ьяе]|декабр[ьяе]";
 const DATES = new RegExp(`(?<!\\p{L})(?:в\\s+)?(?:\\d{1,2}\\s+(?:${MONTHS})(?!\\p{L})(?:\\s+20\\d\\d)?|(?:${MONTHS})(?!\\p{L})\\s+20\\d\\d)(?:\\s+года)?|\\b20\\d\\d-\\d\\d-\\d\\d\\b`, "giu");
-const EDITORIAL_WORDS = /(?<!\p{L})(?:last updated|updated|reviewed|editorial (?:update|review)|дата обновления|обновлено|редакционн(?:ое|ая) (?:обновление|проверка))(?!\p{L}):?/giu;
+// Byline wording ("Reviewed by" → "By", «Проверено/Проверил» → «Автор:», 20.11.2026)
+// is attribution, not content.
+const EDITORIAL_WORDS = /(?<!\p{L})(?:last updated|updated|reviewed by|reviewed|editorial (?:update|review)|by|дата обновления|обновлено|редакционн(?:ое|ая) (?:обновление|проверка)|материал проверил|автор материала|проверено|проверил|автор)(?!\p{L}):?/giu;
 
 function contentFingerprint(html) {
   const main = /<main\b[^>]*>([\s\S]*?)<\/main>/i.exec(html);

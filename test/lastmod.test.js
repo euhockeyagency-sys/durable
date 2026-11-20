@@ -34,3 +34,14 @@ test("adding or removing an editorial date stamp does not move lastmod", () => {
   // ordinary words that look like months are still content
   assert.notEqual(contentFingerprint(p("<p>Players may sign</p>")), contentFingerprint(p("<p>Players sign</p>")));
 });
+
+test("CTA callouts and author-byline wording (20.11.2026) do not move lastmod", () => {
+  const base = contentFingerprint(page('<h1>Germany</h1><p>Imports: four per game.</p><p class="legal-note"><strong>Reviewed by <a href="/agent">V. M.</a></strong>, agent.</p>'));
+  for (const variant of [
+    page('<h1>Germany</h1><aside class="agent-callout"><p><strong>Looking for a club in Germany?</strong> See <a href="/x">hockey agent</a>.</p></aside><p>Imports: four per game.</p><p class="legal-note"><strong>By <a href="/agent">V. M.</a></strong>, agent.</p>')
+  ]) assert.equal(contentFingerprint(variant), base);
+  const ru = (who) => contentFingerprint(page(`<h1>Германия</h1><p>Легионеры: четыре.</p><p class="legal-note"><strong>${who} <a href="/agent">В. М.</a></strong>, агент.</p>`));
+  assert.equal(ru("Проверено:"), ru("Автор:"));
+  assert.equal(ru("Проверил"), ru("Автор:"));
+  assert.notEqual(contentFingerprint(page("<h1>Germany</h1><p>Imports: five per game.</p>")), contentFingerprint(page("<h1>Germany</h1><p>Imports: four per game.</p>")));
+});
