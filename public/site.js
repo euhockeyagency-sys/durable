@@ -102,7 +102,8 @@ const wa=document.createElement('a');wa.className='whatsapp-float';wa.href='http
 let successRef='';if(q('[data-application-reference]')){try{const u=new URL(location.href);successRef=u.searchParams.get('ref')||'';if(successRef){u.searchParams.delete('ref');history.replaceState(history.state,'',u.pathname+u.search+u.hash);sessionStorage.setItem('eha-success-ref',successRef)}else successRef=sessionStorage.getItem('eha-success-ref')||''}catch(error){}}
 const CONSENT_KEY='eha-cookie-consent';
 const updateConsent=granted=>{if(typeof gtag==='function')gtag('consent','update',{analytics_storage:granted?'granted':'denied'})};
-const initYandex=()=>{if(typeof ym==='function')ym(110889446,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:'dataLayer',accurateTrackBounce:true,trackLinks:true})};
+// Metrika (tag.js) is fetched only here, after consent; nothing loads before it.
+const initYandex=()=>{if(typeof ym!=='function'){(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t);a=e.getElementsByTagName(t)[0];k.async=1;k.src=r;a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110889446','ym')}ym(110889446,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:'dataLayer',accurateTrackBounce:true,trackLinks:true})};
 const consent=localStorage.getItem(CONSENT_KEY);
 if(consent==='granted'){updateConsent(true);initYandex()}
 else if(!consent){

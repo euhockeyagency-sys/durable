@@ -1175,3 +1175,11 @@ h2{font-size:clamp(34px,10vw,48px)}
 .agent-callout p{margin:0}
 .agent-callout strong{color:var(--text)}
 .agent-callout a{color:var(--accent-text);text-decoration:underline;text-underline-offset:3px}
+/* No empty cells in card grids: the last card of an incomplete row takes the
+   remaining columns (desktop only; mobile grids are a single column). */
+@media(min-width:851px){
+.article-grid>a:last-child:nth-child(odd){grid-column:1/-1}
+.fact-grid>:last-child:nth-child(4n+1){grid-column:span 4}
+.fact-grid>:last-child:nth-child(4n+2){grid-column:span 3}
+.fact-grid>:last-child:nth-child(4n+3){grid-column:span 2}
+}

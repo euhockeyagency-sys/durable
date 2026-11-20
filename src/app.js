@@ -67,6 +67,7 @@ const CONTENT_TYPES = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
@@ -764,11 +765,11 @@ function securityHeaders(_req, res, next) {
 // Runs inline and first in <head> additions, ahead of the critical CSS.
 const THEME_BOOT = `<meta name="color-scheme" content="dark light"><script>(function(){var t;try{t=localStorage.getItem("eha-theme")}catch(e){}document.documentElement.setAttribute("data-theme",t==="light"?"light":"dark")})()</script>`;
 
-// Loader only — the ym(...,'init',...) call that actually starts tracking
-// lives in site.js, gated by the same cookie-consent choice GA4 uses below,
-// so both trackers are consent-gated the same way. No noscript pixel either,
-// for the same reason: it can't be gated without JS, and GA4 ships none.
-const YANDEX_METRIKA = `<!-- Yandex.Metrika counter --><script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110889446','ym');</script><!-- /Yandex.Metrika counter -->`;
+// Yandex Metrika is not loaded server-side: site.js injects tag.js and calls
+// ym(...,'init',...) only after the visitor accepts analytics cookies (the same
+// choice GA4 Consent Mode reads), so no request reaches mc.yandex.ru before
+// consent. No noscript pixel either: it cannot be consent-gated.
+const YANDEX_METRIKA = "";
 
 // Consent Mode v2: analytics_storage defaults to denied and is only granted
 // once the cookie banner in site.js reads an accepted choice from
@@ -853,7 +854,7 @@ function buildSocialTags(html, pageUrl, isArticle, imageUrl, locale) {
 
 // The only files served from the shared public/ root (everything else lives in a
 // language directory). Keep in sync with the actual contents of public/.
-const SHARED_ROOT_ALLOW = /^\/(?:assets\/|favicon\.svg$|robots\.txt$|llms\.txt$|site\.js$|styles\.css$|google[0-9a-f]+\.html$|yandex_[0-9a-f]+\.html$)/i;
+const SHARED_ROOT_ALLOW = /^\/(?:assets\/|favicon\.(?:svg|ico)$|robots\.txt$|llms\.txt$|site\.js$|styles\.css$|google[0-9a-f]+\.html$|yandex_[0-9a-f]+\.html$)/i;
 
 function servePublic(req, res, config, now, schemaState) {
   let pathname;
@@ -1061,7 +1062,7 @@ function readCriticalCss(config) {
 function prefixInternalLinks(html, prefix) {
   const seg = prefix.replace(/^\/+/, ""); // "/ru" -> "ru"
   return html.replace(/href="\/([^"]*)"/g, (match, target) => {
-    if (/^(?:assets\/|styles\.css(?:\?|$)|site\.js(?:\?|$)|favicon\.svg$)/.test(target)) return match;
+    if (/^(?:assets\/|styles\.css(?:\?|$)|site\.js(?:\?|$)|favicon\.(?:svg|ico)$)/.test(target)) return match;
     // Idempotent: a link already under the prefix must not be prefixed again,
     // or it becomes a duplicate /ru/ru/... URL.
     if (target === seg || target.startsWith(`${seg}/`)) return match;
