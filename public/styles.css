@@ -1183,3 +1183,4 @@ h2{font-size:clamp(34px,10vw,48px)}
 .fact-grid>:last-child:nth-child(4n+2){grid-column:span 3}
 .fact-grid>:last-child:nth-child(4n+3){grid-column:span 2}
 }
+.proof span a,.fact-grid strong a{color:var(--accent-text);text-decoration:underline;text-underline-offset:3px}
