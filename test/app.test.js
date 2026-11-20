@@ -725,13 +725,25 @@ test("records the applicant locale in the stored source", async () => {
   assert.equal(services.rows.applications[0].source.locale, "en");
 });
 
-test("rejects an application without an email to reply to", async () => {
+test("rejects an application with neither email nor phone", async () => {
   const services = serviceMock();
   const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
-  const response = await validRequest(request(app), { email: "" }).expect(400);
+  const response = await validRequest(request(app), { email: "", phone: "" }).expect(400);
   assert.equal(response.body.code, "validation_error");
-  assert.ok(response.body.errors.email);
+  assert.ok(response.body.errors.email && response.body.errors.phone);
   assert.equal(services.rows.applications.length, 0);
+});
+
+test("one contact is enough: email only or phone only is accepted, without citizenship and club", async () => {
+  for (const [contact, stored] of [[{ phone: "" }, { phone: "" }], [{ email: "" }, { email: null }]]) {
+    const services = serviceMock();
+    const app = createApp({ config: config(), services, now: () => new Date("2026-07-18T12:00:00Z") });
+    await validRequest(request(app), { ...contact, citizenship: "", currentClub: "" }).expect(201);
+    const row = services.rows.applications[0];
+    for (const [k, v] of Object.entries(stored)) assert.equal(row[k], v, k);
+    assert.equal(row.citizenship, "");
+    assert.equal(row.current_club, "");
+  }
 });
 
 test("rejects a malformed email", async () => {
@@ -843,8 +855,8 @@ test("application forms collect the fields required to assess age and eligibilit
   for (const locale of ["en", "ru"]) {
     const html = fs.readFileSync(path.join(__dirname, "..", "public", locale, "contact.html"), "utf8");
     assert.match(html, /name="birthYear" type="number"/);
-    assert.match(html, /name="citizenship"[^>]*required/);
-    assert.match(html, /name="currentClub"[^>]*required/);
+    assert.match(html, /name="citizenship"/);
+    assert.match(html, /name="currentClub"/);
     assert.doesNotMatch(html, /name="birthYear" value="2000"/);
     assert.doesNotMatch(html, /video\/(?:mp4|quicktime|webm)/);
   }

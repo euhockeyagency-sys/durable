@@ -95,8 +95,9 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   if (!playerName) errors.playerName = m.playerName;
   if (!Number.isInteger(birthYear) || birthYear < currentYear - 60 || birthYear > currentYear - 8) errors.birthYear = m.birthYear;
   if (!POSITION_VALUES.has(position)) errors.position = m.position;
-  if (!citizenship) errors.citizenship = m.citizenship;
-  if (!currentClub) errors.currentClub = m.currentClub;
+  // Citizenship and current club are optional since 20.11.2026 (owner: short
+  // first step). They are stored as "" because the applications table still
+  // declares them NOT NULL until migration 20261118120000 is applied.
   // Height, weight and stick hand are required from a player only while the
   // database still demands them (see src/intake/schema-state.js). A value that
   // is given is always range-checked.
@@ -104,10 +105,12 @@ function validateApplication(body, files, now = new Date(), requireTurnstile = t
   if ((needMeasurements || body.heightCm) && (!Number.isFinite(heightCm) || heightCm < 120 || heightCm > 230)) errors.heightCm = m.heightCm;
   if ((needMeasurements || body.weightKg) && (!Number.isFinite(weightKg) || weightKg < 35 || weightKg > 180)) errors.weightKg = m.weightKg;
   if ((needMeasurements || stickHand) && !STICK_VALUES.has(stickHand)) errors.stickHand = m.stickHand;
-  if (!phone) errors.phone = m.phone;
-  // Required since applications are answered by email: without an address there
-  // is no way to reply to the player.
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = m.email;
+  // One way to reply is enough (owner, 20.11.2026): email or WhatsApp/phone.
+  // phone is stored as "" when only an email is given (column is NOT NULL).
+  if (!email && !phone) {
+    errors.email = m.contact;
+    errors.phone = m.contact;
+  } else if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = m.emailInvalid;
   if (eliteProspectsInput && !eliteProspectsUrl) errors.eliteProspectsUrl = m.eliteProspectsUrl;
   if (videoInputs.length > 3) errors.videoUrls = m.videoUrlsMax;
   if (videoUrls.some((url) => !url)) errors.videoUrls = m.videoUrlsInvalid;

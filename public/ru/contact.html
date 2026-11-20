@@ -69,20 +69,13 @@
 <label><input type="radio" name="applicantType" value="parent_guardian"> Родитель / представитель</label>
 </div>
 <small>Для обращения родителя используется та же первичная оценка, но часть параметров игрока можно добавить позже.</small>
-</fieldset><div class="ep-block"><label>Ссылка на Elite Prospects — если есть<input class="ym-disable-keys" type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="https://www.eliteprospects.com/player/…" maxlength="300"> <span class="field-error" data-error-for="eliteProspectsUrl"></span></label><input type="hidden" name="epImport"><label class="consent" id="ep-confirm" hidden><input type="checkbox" name="dataConfirmed" value="true">Я проверил заполненные данные и исправил неточности.</label><span class="field-error" data-error-for="dataConfirmed"></span></div>
+</fieldset>
 <label>Имя и фамилия<input class="ym-disable-keys" name="playerName" autocomplete="name" maxlength="120" required>
 <span class="field-error" data-error-for="playerName"></span>
 </label>
 <div class="two">
 <label>Год рождения<input class="ym-disable-keys" name="birthYear" type="number" inputmode="numeric" min="1966" max="2018" required>
 <span class="field-error" data-error-for="birthYear"></span>
-</label>
-<label>Гражданство (несколько — через запятую)<input class="ym-disable-keys" name="citizenship" autocomplete="country-name" maxlength="100" required>
-<span class="field-error" data-error-for="citizenship"></span>
-</label>
-</div>
-<label>Текущий клуб или «без клуба»<input class="ym-disable-keys" name="currentClub" maxlength="160" required>
-<span class="field-error" data-error-for="currentClub"></span>
 </label>
 <label>Позиция<select class="ym-disable-keys" name="position" required>
 <option value="">Выберите</option>
@@ -92,13 +85,19 @@
 </select>
 <span class="field-error" data-error-for="position"></span>
 </label>
+</div>
 <!-- MEASUREMENTS_SLOT -->
 <label>Ссылка на видео — если есть<input class="ym-disable-keys" type="url" name="videoUrls" aria-label="Первая ссылка на видео" placeholder="YouTube, Vimeo или Google Drive"><small>YouTube, Vimeo или Google Drive. Видеофайлы форма не принимает.</small><span class="field-error" data-error-for="videoUrls"></span></label>
+<div class="ep-block"><label>Ссылка на Elite Prospects — если есть<input class="ym-disable-keys" type="url" id="eliteProspectsUrl" name="eliteProspectsUrl" placeholder="https://www.eliteprospects.com/player/…" maxlength="300"> <span class="field-error" data-error-for="eliteProspectsUrl"></span></label><input type="hidden" name="epImport"><label class="consent" id="ep-confirm" hidden><input type="checkbox" name="dataConfirmed" value="true">Я проверил заполненные данные и исправил неточности.</label><span class="field-error" data-error-for="dataConfirmed"></span></div>
+<label>Дополнительная информация<textarea class="ym-disable-keys" name="message" rows="5" maxlength="3000" placeholder="Карьерная цель, достижения и важные детали">
+</textarea>
+</label>
+<p class="form-note" id="contact-hint">Email или WhatsApp/телефон — достаточно одного.</p>
 <div class="two">
-<label>WhatsApp или телефон<input class="ym-disable-keys" type="tel" name="phone" autocomplete="tel" maxlength="60" required>
+<label>WhatsApp или телефон<input class="ym-disable-keys" type="tel" name="phone" autocomplete="tel" maxlength="60">
 <span class="field-error" data-error-for="phone"></span>
 </label>
-<label>Email<input class="ym-disable-keys" type="email" name="email" autocomplete="email" maxlength="160" required>
+<label>Email<input class="ym-disable-keys" type="email" name="email" autocomplete="email" maxlength="160">
 <span class="field-error" data-error-for="email"></span>
 </label>
 </div>
@@ -111,7 +110,15 @@
 <label class="consent"><input type="checkbox" name="parentConsent" value="true"><span id="parent-consent-copy">Я являюсь родителем или законным представителем и согласен на обработку данных игрока.</span></label>
 <span class="field-error" data-error-for="parentConsent"></span>
 </section>
-<details class="form-more" id="form-more"><summary>Добавить подробности — по желанию</summary><p class="form-note">Дата рождения, статистика, ещё видео, цели, фото и файлы. Можно пропустить: недостающее EHA запросит после рассмотрения заявки.</p>
+<details class="form-more" id="form-more"><summary>Добавить подробности — по желанию</summary><p class="form-note">Гражданство, текущий клуб, дата рождения, статистика, ещё видео, цели, фото и файлы. Можно пропустить: недостающее EHA запросит после рассмотрения заявки.</p>
+<div class="two">
+<label>Гражданство (несколько — через запятую)<input class="ym-disable-keys" name="citizenship" autocomplete="country-name" maxlength="100">
+<span class="field-error" data-error-for="citizenship"></span>
+</label>
+<label>Текущий клуб или «без клуба»<input class="ym-disable-keys" name="currentClub" maxlength="160">
+<span class="field-error" data-error-for="currentClub"></span>
+</label>
+</div>
 <!-- MEASUREMENTS:START --><div class="two">
 <label>Рост, см<input class="ym-disable-keys" name="heightCm" type="number" inputmode="decimal" min="120" max="230" step="0.1">
 <span class="field-error" data-error-for="heightCm"></span>
@@ -131,9 +138,6 @@
 <input class="ym-disable-keys" type="file" name="files" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple>
 <small>Можно добавить резюме и фотографии. До 3 файлов, каждый до 5 МБ, общий размер до 10 МБ. Все видео отправляйте ссылками YouTube, Vimeo или Google Drive в полях выше. Не отправляйте паспорт, медицинские или другие чувствительные документы.</small>
 <span class="field-error" data-error-for="files"></span>
-</label>
-<label>Дополнительная информация<textarea class="ym-disable-keys" name="message" rows="5" maxlength="3000" placeholder="Карьерная цель, достижения и важные детали">
-</textarea>
 </label>
 <label class="consent"><input type="checkbox" name="publicPhotoConsent" value="true">По желанию: EHA может публично использовать моё фото (например, на странице кейсов).</label><label class="consent"><input type="checkbox" name="publicCaseConsent" value="true">По желанию: EHA может опубликовать мой переход как кейс после подтверждения.</label>
 </details>
