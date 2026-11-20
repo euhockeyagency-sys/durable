@@ -3,7 +3,7 @@
 module.exports = {
   "title": "EHA — единый журнал работ сайта",
   "scope": "Только eurohockeyagency.com и его EN/RU страницы. Внутренняя документация, не публичная статья.",
-  "last_reviewed": "2026-11-19",
+  "last_reviewed": "2026-11-20",
   "how_to_use": [
     "Перед работой прочитать этот файл через EHA1990 read_project_file с path='src/eha-work-log.js'. Затем прочитать нужные страницы и проверить актуальное состояние.",
     "Перед повторным предложением задачи проверить записи completed, historical и open_issues. Повторять выполненную задачу только при новой ошибке, устаревании или новых данных.",
@@ -872,6 +872,134 @@ module.exports = {
     "Не опубликовано: изменения в Pull Request, публикация после Merge владельцем. «Открыто сейчас» на сервере считается по дате Europe/Zurich, в браузере — по дате посетителя."
   ],
   "next_step": "После Merge: проверить на production фильтры, пару AlpsHL/Oberliga и переключатели; через 4 недели — GSC по сравнениям."
+},
+{
+  "id": "AUDIT-RECHECK-PRODUCTION-20261120",
+  "status": "published_verified",
+  "date": "2026-11-20",
+  "files": [],
+  "urls": [
+    "/index.html",
+    "/ru/index.html",
+    "/ru",
+    "/404",
+    "/ru/404",
+    "/leagues",
+    "/ru/ligi",
+    "/api/applications/<ref>/pdf",
+    "/sitemap.xml",
+    "/styles.css",
+    "/contact",
+    "/ru/contact"
+  ],
+  "changes": [
+    "Повторная проверка пакета аудита 19.11 на production (браузер владельца, fetch с того же origin, синтетический номер заявки и синтетический токен)."
+  ],
+  "evidence": [
+    "Маршруты (п.13): /index.html → /, /ru/index.html и /ru → /ru/ (одна переадресация), /contact.html?a=1 → /contact?a=1; /404, /ru/404, неизвестный путь, /leagues, /ru/ligi — HTTP 404.",
+    "PDF (п.2): GET …/pdf?token=<синтетический> → 410, Cache-Control no-store; POST с неверным токеном → 404, private, no-store.",
+    "Шрифты (п.14): 6 @font-face в styles.css, по одному woff2 на семейство и набор.",
+    "Sitemap (п.10): 172 URL, у всех lastmod, есть xhtml:link. Выявлена регрессия: 30 URL получили 20.11 из-за CTA-блоков и смены подписи автора — исправлено в AUDIT-RECHECK-LASTMOD-20261120.",
+    "Вебвизор (п.3): форма заявки на production с классами ym-hide-content ym-disable-keys; tag.js Метрики грузится только после согласия (PR #18)."
+  ],
+  "limits": [
+    "Записи AUDIT-…-20261119 со статусом published_verified содержат в limits устаревшую фразу «Не опубликовано» — история не переписывается, актуальное состояние в этой записи.",
+    "Логи Caddy/journald и записи Вебвизора в интерфейсе Метрики не проверялись (нет доступа к серверу и счётчику)."
+  ],
+  "next_step": "Владелец: шаги docs/owner-token-runbook.md и docs/webvisor-check.md."
+},
+{
+  "id": "AUDIT-RECHECK-LASTMOD-20261120",
+  "status": "saved",
+  "date": "2026-11-20",
+  "files": [
+    "scripts/generate-lastmod.js",
+    "test/lastmod.test.js"
+  ],
+  "urls": [
+    "/sitemap.xml",
+    "/ru/sitemap.xml"
+  ],
+  "changes": [
+    "agent-callout (CTA «Hockey agent in X», «проверка уровня») добавлен в сквозные блоки; формулировки подписи автора (Reviewed by/By, Проверено/Проверил/Автор:) не считаются содержанием.",
+    "Из 61 EN/RU страницы, изменённой 20.11, дату меняют только 16 с содержательной правкой (H1 главной и услуг, кейсы, подпись к «100+», анкета, подписи цифр, раскрытие родства в гайде США)."
+  ],
+  "evidence": [
+    "node --test test/lastmod.test.js — новый тест: CTA-блок и смена подписи не меняют отпечаток, изменение текста меняет.",
+    "Сравнение отпечатков 9fbb318 → HEAD по всем изменённым файлам."
+  ],
+  "limits": [
+    "Не опубликовано: PR ждёт разрешения владельца на деплой. lastmod.json пересчитывается на сервере при деплое."
+  ],
+  "next_step": "После деплоя: /sitemap.xml — у CTA-страниц (например /guides/hockey-in-germany) дата не 2026-11-20."
+},
+{
+  "id": "AUDIT-RECHECK-A11Y-320-20261120",
+  "status": "saved",
+  "date": "2026-11-20",
+  "files": [
+    "public/styles.css"
+  ],
+  "urls": [
+    "/agent",
+    "/ru/agent",
+    "/cases",
+    "/ru/cases",
+    "/ru/guides/dokumenty-nesovershennoletnego-hokkeista-i-transfer-iihf",
+    "/ru/ligi/finlyandiya-yuniorskij-hokkej"
+  ],
+  "changes": [
+    "На 320 px страницы прокручивались вбок (существовало до 20.11): колонки сеток по длине длинных слов, flex-summary FAQ. Мобильные сетки — minmax(0,1fr), длинные заголовки и вопросы FAQ переносятся."
+  ],
+  "evidence": [
+    "Playwright: 344 URL из sitemap EN/RU на 320 и 390 px — scrollWidth не больше ширины.",
+    "Lighthouse (локально, mobile) a11y 100: /, /contact, /ru/contact, /agent, /guides/hockey-in-germany, /cases; фокус ссылок футера — outline 2px."
+  ],
+  "limits": [
+    "Не опубликовано. Lighthouse — локальный лабораторный замер без сторонних скриптов."
+  ],
+  "next_step": "После деплоя: открыть /ru/agent и /cases на телефоне 320–390 px."
+},
+{
+  "id": "AUDIT-RECHECK-LCP-20261120",
+  "status": "saved",
+  "date": "2026-11-20",
+  "files": [],
+  "urls": [
+    "/"
+  ],
+  "changes": [
+    "Сравнение главной до правок 20.11 (9fbb318) и после: Lighthouse mobile, 3 прогона на одной машине."
+  ],
+  "evidence": [
+    "До: LCP 2126/2111/2122 мс, элемент p.lead. После: 2117/2124/2257 мс, элемент — span H1. Ухудшения нет."
+  ],
+  "limits": [
+    "Лабораторный локальный замер без сетевых сторонних скриптов (заблокированы в контейнере); полевых данных CrUX нет; PageSpeed API production недоступен из контейнера."
+  ],
+  "next_step": "Владелец: PageSpeed Insights mobile 3 прогона на production EN/RU."
+},
+{
+  "id": "AUDIT-RECHECK-RETENTION-20261120",
+  "status": "blocked",
+  "date": "2026-11-20",
+  "files": [
+    "supabase/functions/cleanup-applications/cleanup.mjs",
+    "docs/retention-runbook.md"
+  ],
+  "urls": [
+    "/admin"
+  ],
+  "changes": [
+    "Повторно проверено: защита new в репозитории на месте (node --test test/cleanup-retention.test.js — 5/5: граница 12 месяцев, статусы, файлы, dry-run, повторный запуск, удаление после решения владельца)."
+  ],
+  "evidence": [
+    "Supabase-коннектор этой сессии видит только проект kkxugkmpugwwndxsevdy; рабочая база сайта по документации — lvcrutflxscynaewkcno. Состояние pg_cron, развёрнутой функции и очереди new на production не проверено."
+  ],
+  "limits": [
+    "Деплой Edge Function, резервная копия и dry-run — только с разрешения владельца и с доступом к проекту lvcrutflxscynaewkcno. Ближайшая дата риска при старой функции — прогон 24.07.2027 03:17 UTC."
+  ],
+  "next_step": "Владелец: подключить коннектор к проекту сайта или выполнить docs/retention-runbook.md (бэкап → проверка восстановления → deploy → dry-run)."
 }
   ],
   "historical": [
