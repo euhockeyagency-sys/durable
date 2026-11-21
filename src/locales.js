@@ -139,6 +139,7 @@ const PAGES = [
   { ru: "/guides/platnye-prosmotry-i-shoukejsy-v-evrope", en: "/guides/paid-hockey-showcases-in-europe" },
   { ru: "/guides/franciya-polsha-ili-alps-hockey-league-posle-yuniorov", en: "/guides/france-poland-or-alps-hockey-league-after-juniors" },
   { ru: "/guides/luchshie-ligi-evropy-dlya-legionerov", en: "/guides/best-european-hockey-leagues-for-imports" },
+  { ru: "/guides/limity-legionerov-v-ligah-evropy-2026-27", en: "/guides/european-hockey-import-rules-2026-27" },
   { ru: "/ligi/italiya-ihl-serie-a", en: "/leagues/italy-ihl-serie-a" },
   { ru: "/ligi/italiya-italian-hockey-league", en: "/leagues/italy-italian-hockey-league" },
   { ru: "/ligi/latviya-1-liga", en: "/leagues/latvia-1-liga" },

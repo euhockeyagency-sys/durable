@@ -68,6 +68,7 @@ const GUIDES = [
   { en: "paid-hockey-showcases-in-europe", ru: "platnye-prosmotry-i-shoukejsy-v-evrope", cat: "parents", title: { en: "Paid tryouts and showcases in Europe", ru: "Платные просмотры и шоукейсы в Европе" } },
   { en: "france-poland-or-alps-hockey-league-after-juniors", ru: "franciya-polsha-ili-alps-hockey-league-posle-yuniorov", cat: "process", title: { en: "France, Poland or AlpsHL after juniors", ru: "Франция, Польша или AlpsHL после юниоров" } },
   { en: "best-european-hockey-leagues-for-imports", ru: "luchshie-ligi-evropy-dlya-legionerov", cat: "process", title: { en: "Top 10 European leagues for imports 2026/27", ru: "Топ-10 лиг Европы для легионеров 2026/27" } },
+  { en: "european-hockey-import-rules-2026-27", ru: "limity-legionerov-v-ligah-evropy-2026-27", cat: "documents", title: { en: "Import limits in European leagues 2026/27", ru: "Лимиты легионеров в лигах Европы 2026/27" } },
   { en: "hockey-agent-in-germany", ru: "hokkejnyj-agent-v-germanii", cat: "process", title: { en: "Hockey agent in Germany", ru: "Хоккейный агент в Германии" } },
   { en: "hockey-agent-in-sweden", ru: "hokkejnyj-agent-v-shvecii", cat: "process", title: { en: "Hockey agent in Sweden", ru: "Хоккейный агент в Швеции" } },
   { en: "hockey-agent-in-finland", ru: "hokkejnyj-agent-v-finlyandii", cat: "process", title: { en: "Hockey agent in Finland", ru: "Хоккейный агент в Финляндии" } },

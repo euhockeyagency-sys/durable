@@ -273,6 +273,35 @@ function faqJsonLd(profile, locale) {
   return `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`;
 }
 
+
+// One cross-league table of match-roster (game-sheet) limits for foreign
+// players, built only from the verified rules in league-profiles.js, so the
+// hub page can never drift from the league pages it links to.
+const IMPORT_TABLE_MARKER = "<!-- IMPORT_RULES_TABLE -->";
+const IMPORT_L = {
+  en: { league: "League", country: "Country", limit: "Match-roster rule", source: "Source and check date", label: "Import rules by league, 2026/27" },
+  ru: { league: "Лига", country: "Страна", limit: "Правило заявки на матч", source: "Источник и дата проверки", label: "Лимиты легионеров по лигам, 2026/27" }
+};
+function renderImportRulesTable(locale) {
+  const s = L[locale];
+  const h = IMPORT_L[locale];
+  const rows = [...PROFILES]
+    .filter((p) => p.rules.some((r) => r.scope === "game_sheet"))
+    .sort((a, b) => t(a.country, locale).localeCompare(t(b.country, locale), locale) || a.id.localeCompare(b.id))
+    .map((p) => {
+      const rules = p.rules.filter((r) => r.scope === "game_sheet");
+      const limit = rules.map((r) => {
+        const status = r.status === "press" ? ` <span class="rule-status rule-press">${s.status.press}</span>` : "";
+        return `<p><strong>${esc(t(r.category, locale))}.</strong> ${esc(t(r.value, locale))}${status}</p>`;
+      }).join("");
+      const src = rules.map((r) => `${sourceLink(r.source, locale)} <small>${s.checked} ${formatDate(r.checkedAt, locale)}</small>`)
+        .filter((v, i, a) => a.indexOf(v) === i).join("<br>");
+      return `<tr data-profile-id="${esc(p.id)}"><td data-label="${h.league}"><a href="${esc(p.paths[locale])}"><strong>${esc(t(p.names.display, locale))}</strong></a><br><small>${esc(p.season)}</small></td>` +
+        `<td data-label="${h.country}">${esc(t(p.country, locale))}</td><td data-label="${h.limit}">${limit}</td><td data-label="${h.source}">${src}</td></tr>`;
+    }).join("");
+  return `<div class="league-wrap" role="region" aria-label="${h.label}" tabindex="0"><table class="league-table league-rules import-rules-table"><thead><tr><th>${h.league}</th><th>${h.country}</th><th>${h.limit}</th><th>${h.source}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
 // Applies every league-profile marker in a rendered page.
 function applyLeagueProfiles(html, logicalPath, locale) {
   const hit = profileForPath(logicalPath);
@@ -287,6 +316,7 @@ function applyLeagueProfiles(html, logicalPath, locale) {
     }
     if (html.includes(PROFILE_LD_MARKER)) html = html.replace(PROFILE_LD_MARKER, faqJsonLd(hit.profile, locale));
   }
+  if (html.includes(IMPORT_TABLE_MARKER)) html = html.replace(IMPORT_TABLE_MARKER, renderImportRulesTable(locale));
   if (html.includes("<!-- LEAGUE_RULES:")) {
     html = html.replace(RULES_MARKER_RE, (m, id) => {
       const p = profileById(id);
@@ -296,4 +326,4 @@ function applyLeagueProfiles(html, logicalPath, locale) {
   return html;
 }
 
-module.exports = { applyLeagueProfiles, renderLeagueProfile, renderLeagueRulesSummary, relatedLeagues, faqJsonLd, PROFILE_MARKER, PROFILE_LD_MARKER, PROFILES };
+module.exports = { applyLeagueProfiles, renderLeagueProfile, renderLeagueRulesSummary, relatedLeagues, faqJsonLd, renderImportRulesTable, IMPORT_TABLE_MARKER, PROFILE_MARKER, PROFILE_LD_MARKER, PROFILES };

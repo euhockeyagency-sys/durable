@@ -69,3 +69,13 @@ All **SEARCH** (chl.ca returned HTTP 403 to direct fetch; the facts below come f
 ## Pages built from this record
 
 `guides/junior-hockey-age-pathway-ncaa-chl` (RU `put-yunogo-hokkeista-po-vozrastam-ncaa-chl`), 15 October 2026. It uses sections 1 to 6 only, attributes every third-party and search-level point, leaves out registration fees, and lists section 7 as what EHA cannot confirm.
+
+## 8. USA Hockey junior age, USHL and NAHL (checked 21 November 2026)
+
+Supersedes the SEARCH line in section 6 for the facts below; used in the `#age-table` block of `guides/junior-hockey-age-pathway-ncaa-chl` (EN/RU).
+
+- **DIRECT**, USA Hockey "Junior Hockey" (usahockey.com/juniorhockey): the junior program is for players ages 16 to 20; the USHL is the only Tier I and the NAHL the only Tier II junior league in the US. The page says nothing about international or import players.
+- **DIRECT**, NAHL "Junior Hockey in the U.S." (nahl.com/the-nahl/junior-hockey-in-the-us/): eligibility is at least 16 and no older than 20 as of 31 December of the current season; a 15-year-old may play upon an approved petition under USA Hockey Rules & Regulations, Section XI, Subsection C. No rule on non-US players is stated.
+- **DIRECT**, USHL Draft FAQ (ushl.com/sports/2022/8/15/ushldraft.aspx): 2026 Phase I = 16-year-old category (born 2010); Phase II = 17- to 20-year-old categories (born 2006–2009); affiliate players must be in the 18-year-old category or younger (born 2008–2010). No statement on international players.
+- **DIRECT**, NAHL Draft FAQ (nahl.com/play-in-the-nahl/draft/): players born 2006–2010 are eligible via USA Hockey junior rules; amateur players must be under 21 on 31 December 2026. No statement on international players.
+- Still **not found**: any USHL/NAHL/NTDP rule on non-US players. The page says so and tells families to confirm with the team.
