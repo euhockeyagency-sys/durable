@@ -81,3 +81,43 @@ for (const [code, slug] of Object.entries(GUIDE_SLUG)) {
   }
 }
 console.log(`country guides updated: ${touched}`);
+
+// /cases cards: a compact "starting point → task → EHA's work → result" block,
+// injected into each card (matched by player name) between CASE_STORY markers.
+// Only confirmed fields are shown; "result" is derived from the public evidence
+// status unless the record has its own story.result.
+const STORY = {
+  en: { start: "Starting point", task: "Task", work: "EHA's work", result: "Result", missing: "Starting point, task and EHA's work are not published.",
+        ep: (c) => `${c.team} is listed in the player's Elite Prospects history${c.season ? ` for ${c.season}` : ""}. The source does not say whether this was a tryout, a contract or a registration.`,
+        club: (c) => `${c.team} announced the signing of the player.`,
+        pending: () => "Awaiting confirmation: no independent public source has been found yet." },
+  ru: { start: "Исходная точка", task: "Задача", work: "Работа EHA", result: "Итог", missing: "Исходная точка, задача и работа EHA не опубликованы.",
+        ep: (c) => `Команда ${c.team} указана в истории игрока на Elite Prospects${c.season ? ` (сезон ${c.season})` : ""}. Был ли это просмотр, контракт или регистрация, источник не уточняет.`,
+        club: (c) => `Клуб ${c.team} объявил о подписании игрока.`,
+        pending: () => "Ожидает подтверждения: независимый публичный источник пока не найден." },
+};
+function storyBlock(c, locale) {
+  const t = STORY[locale];
+  const st = c.story || {};
+  const pick = (k) => (st[k] && st[k][locale]) || null;
+  const result = pick("result") || (c.status === "pending" ? t.pending(c) : c.status === "club_announcement" ? t.club(c) : t.ep(c));
+  const rows = ["start", "task", "work"].map((k) => [k, pick(k)]).filter(([, v]) => v);
+  const dl = rows.map(([k, v]) => `<div><dt>${t[k]}</dt><dd>${esc(v)}</dd></div>`).join("") + `<div><dt>${t.result}</dt><dd>${esc(result)}</dd></div>`;
+  const note = !rows.length ? `<p class="case-story-note">${t.missing}</p>` : "";
+  return `<!-- CASE_STORY --><dl class="case-story">${dl}</dl>${note}<!-- /CASE_STORY -->`;
+}
+let storyCards = 0;
+for (const locale of ["en", "ru"]) {
+  const file = path.join(ROOT, "public", locale, "cases.html");
+  let html = fs.readFileSync(file, "utf8").replace(/<!-- CASE_STORY -->[\s\S]*?<!-- \/CASE_STORY -->/g, "");
+  for (const c of CASES) {
+    const h2 = `<h2>${esc(c.player)}</h2>`;
+    const i = html.indexOf(h2);
+    if (i < 0) { console.warn("case card not found:", locale, c.player); continue; }
+    const pEnd = html.indexOf("</p>", i) + 4;
+    html = html.slice(0, pEnd) + storyBlock(c, locale) + html.slice(pEnd);
+    storyCards++;
+  }
+  fs.writeFileSync(file, html);
+}
+console.log(`case stories: ${storyCards} cards`);

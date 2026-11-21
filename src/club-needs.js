@@ -3,7 +3,7 @@ const defaultNeeds = require("./club-needs-data");
 const PATHS = { en: "/club-needs", ru: "/zaprosy-klubov" };
 const MARKER = "<!-- CLUB_NEEDS -->";
 const WHATSAPP = "https://wa.me/375297957818";
-const PUBLIC_FIELDS = ["id", "status", "publish", "countryCode", "league", "season", "position", "age", "importStatus", "conditions"];
+const PUBLIC_FIELDS = ["id", "status", "publish", "countryCode", "league", "season", "position", "age", "birthYears", "importStatus", "conditions"];
 const INTERNAL_FIELDS = ["lastChecked", "validUntil", "source", "notes"];
 const POSITIONS = {
   G: { en: "Goaltender", ru: "Вратарь" },
@@ -60,6 +60,11 @@ function validateNeed(need) {
   for (const key of ["age", "importStatus", "conditions"]) {
     const v = need[key];
     if (v !== null && v !== undefined && !(v && typeof v === "object" && v.en && v.ru)) errors.push(`${key} must be null or { en, ru }`);
+  }
+  if (need.birthYears !== undefined && need.birthYears !== null) {
+    const b = need.birthYears;
+    const ok = b && typeof b === "object" && [b.from, b.to].every((v) => v === undefined || Number.isInteger(v)) && (b.from || b.to) && !(b.from && b.to && b.from > b.to);
+    if (!ok) errors.push("birthYears must be null or { from, to } birth years");
   }
   for (const key of ["lastChecked", "validUntil"]) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(need[key] || "")) errors.push(`${key} must be YYYY-MM-DD`);
@@ -119,4 +124,4 @@ function clubNeedsLocaleFor(logicalPath, locale) {
   return null;
 }
 
-module.exports = { PATHS, MARKER, INTERNAL_FIELDS, validateNeed, isCurrent, currentNeeds, renderClubNeeds, clubNeedsLocaleFor };
+module.exports = { PATHS, MARKER, POSITIONS, COUNTRIES, INTERNAL_FIELDS, validateNeed, isCurrent, currentNeeds, renderClubNeeds, clubNeedsLocaleFor };

@@ -4,6 +4,8 @@
 // | pending (pending is never shown). season: null when no source states it.
 // quote (optional): { en, ru } short confirmed quote from the player or family,
 // published only with consent; shown on the country guide under the case.
+// story (optional): { start, task, work, result }, each { en, ru }; only facts
+// confirmed by a public source or by EHA's own records. Rendered on /cases.
 // publish: the case is already public on /cases. Edit here, then run
 // `node scripts/build-cases.js`.
 module.exports = [
@@ -573,6 +575,12 @@ module.exports = [
     "source": "https://www.eliteprospects.com/player/619229/semyon-morshchyonok",
     "publish": true,
     "media": [],
+    "story": {
+      "start": {"en": "Austin Bruins (NAHL, 2025/26); before that Pueblo Bulls (NCDC, 2024/25), league top scorer with 75 points and Potomac Patriots (USPHL Premier, 2022–2024).", "ru": "Austin Bruins (NAHL, 2025/26); до этого Pueblo Bulls (NCDC, 2024/25), лучший бомбардир лиги — 75 очков и Potomac Patriots (USPHL Premier, 2022–2024)."},
+      "task": {"en": "A route from US junior hockey into NCAA college hockey.", "ru": "Путь из юниорских лиг США в студенческий хоккей NCAA."},
+      "work": {"en": "EHA managed every step of the route, according to the agency’s own records; the agent is the player’s brother.", "ru": "EHA вело каждый шаг маршрута — по данным агентства; агент — брат игрока."},
+      "result": {"en": "Augustana University (NCAA) from the 2026/27 season; the move is shown on Elite Prospects since 29 December 2025. The source does not name the type of agreement.", "ru": "Augustana University (NCAA) с сезона 2026/27; переход отражён на Elite Prospects с 29 декабря 2025. Тип соглашения источник не называет."}
+    },
     "note": {
       "en": "Belarusian forward. Route: Team Belarus U18 → Potomac Patriots (USPHL Premier, 2022–2024) → Pueblo Bulls (NCDC, 2024/25, league-leading 75 points) → Austin Bruins (NAHL, 2025/26) → Augustana University (NCAA, from 2026/27). Every step is in his Elite Prospects history; the NCAA move was confirmed there on 29 December 2025. Disclosure: Semyon and his twin Matvei are brothers of EHA agent Viachaslau Marshchonak; EHA handled each step of the route.",
       "ru": "Белорусский нападающий. Маршрут: сборная Беларуси U18 → Potomac Patriots (USPHL Premier, 2022–2024) → Pueblo Bulls (NCDC, 2024/25, лучший бомбардир лиги — 75 очков) → Austin Bruins (NAHL, 2025/26) → Augustana University (NCAA, с сезона 2026/27). Каждый шаг отражён в истории на Elite Prospects; переход в NCAA подтверждён там 29 декабря 2025. Раскрываем: Семён и его брат-близнец Матвей — братья агента EHA Вячеслава Морщенка; каждый шаг маршрута вёл EHA."
@@ -588,6 +596,12 @@ module.exports = [
     "source": "https://www.eliteprospects.com/player/619233/matvei-morshchyonok",
     "publish": true,
     "media": [],
+    "story": {
+      "start": {"en": "Austin Bruins (NAHL, 2025/26); before that Pueblo Bulls (NCDC, 2024/25) and Potomac Patriots (USPHL Premier, 2022–2024).", "ru": "Austin Bruins (NAHL, 2025/26); до этого Pueblo Bulls (NCDC, 2024/25) и Potomac Patriots (USPHL Premier, 2022–2024)."},
+      "task": {"en": "A route from US junior hockey into NCAA college hockey.", "ru": "Путь из юниорских лиг США в студенческий хоккей NCAA."},
+      "work": {"en": "EHA managed every step of the route, according to the agency’s own records; the agent is the player’s brother.", "ru": "EHA вело каждый шаг маршрута — по данным агентства; агент — брат игрока."},
+      "result": {"en": "Augustana University (NCAA) from the 2026/27 season; the move is shown on Elite Prospects since 29 December 2025. The source does not name the type of agreement.", "ru": "Augustana University (NCAA) с сезона 2026/27; переход отражён на Elite Prospects с 29 декабря 2025. Тип соглашения источник не называет."}
+    },
     "note": {
       "en": "Belarusian centre. Route: Team Belarus U18 → Potomac Patriots (USPHL Premier, 2022–2024, 93 points in 2023/24) → Pueblo Bulls (NCDC, 2024/25) → Austin Bruins (NAHL, 2025/26) → Augustana University (NCAA, from 2026/27). Every step is in his Elite Prospects history; the NCAA move was confirmed there on 29 December 2025. Disclosure: Matvei and his twin Semyon are brothers of EHA agent Viachaslau Marshchonak; EHA handled each step of the route.",
       "ru": "Белорусский центральный нападающий. Маршрут: сборная Беларуси U18 → Potomac Patriots (USPHL Premier, 2022–2024, 93 очка в 2023/24) → Pueblo Bulls (NCDC, 2024/25) → Austin Bruins (NAHL, 2025/26) → Augustana University (NCAA, с сезона 2026/27). Каждый шаг отражён в истории на Elite Prospects; переход в NCAA подтверждён там 29 декабря 2025. Раскрываем: Матвей и его брат-близнец Семён — братья агента EHA Вячеслава Морщенка; каждый шаг маршрута вёл EHA."

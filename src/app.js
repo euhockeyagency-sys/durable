@@ -20,6 +20,7 @@ const { guideIndex, relatedGuides } = require("./guide-index");
 const { leaguesItemList } = require("./league-list");
 const { createAdminAuth } = require("./admin-auth");
 const { MARKER: CLUB_NEEDS_MARKER, renderClubNeeds, clubNeedsLocaleFor } = require("./club-needs");
+const clubNeedsSubs = require("./club-needs-subscriptions");
 const { registerPublicIntakeRoutes, registerAdminIntakeRoutes } = require("./intake/routes");
 const { CATEGORY_LABELS, effectiveCategory } = require("./intake/assessment");
 const adminView = require("./admin-view");
@@ -196,6 +197,18 @@ function createApp({ config, services, now, randomUUID, schemaState } = {}) {
   app.all("/api/club-request", (_req, res) => {
     res.set("Allow", "POST").status(405).json({ ok: false, code: "method_not_allowed" });
   });
+
+  // Telegram subscription to new confirmed club requests. Off unless
+  // config.clubNeedsSubscriptionsEnabled; the store and sender are injectable
+  // so tests never touch Supabase or Telegram.
+  const subsNow = now || (() => new Date());
+  const svc = appServices || {};
+  const subsStore = svc.clubNeedsStore || (config.clubNeedsSubscriptionsEnabled && svc.supabase ? clubNeedsSubs.createSupabaseStore(svc.supabase) : null);
+  const subsSend = svc.sendSubscriberTelegram || (config.clubNeedsBotToken ? clubNeedsSubs.createTelegramSender(config.clubNeedsBotToken) : null);
+  const subsLimiter = createRateLimiter({ limit: 5, windowMs: 15 * 60 * 1000, now: () => subsNow().getTime() });
+  app.post("/api/club-needs/subscribe", subsLimiter, express.json({ limit: "4kb" }), clubNeedsSubs.createSubscribeHandler({ config, store: subsStore, now: subsNow }));
+  app.post("/api/club-needs/unsubscribe", subsLimiter, express.json({ limit: "2kb" }), clubNeedsSubs.createUnsubscribeHandler({ config, store: subsStore, now: subsNow }));
+  app.post("/api/telegram/club-needs-webhook", express.json({ limit: "64kb" }), clubNeedsSubs.createWebhookHandler({ config, store: subsStore, send: subsSend, now: subsNow }));
 
   // Password-protected admin view. Never linked from the public site and
   // excluded from search indexing; the route is absent unless ADMIN_PASSWORD is
@@ -999,7 +1012,10 @@ function renderBody(data, extension, config, context) {
   // Club requests are filtered per request (open, cleared for publication, not
   // past validUntil), so an expired request disappears without a redeploy.
   const clubNeedsLocale = extension === ".html" ? clubNeedsLocaleFor(logicalPath, locale) : null;
-  if (clubNeedsLocale) html = html.replace(CLUB_NEEDS_MARKER, renderClubNeeds(clubNeedsLocale, now ? now() : new Date()));
+  if (clubNeedsLocale) {
+    const subscribe = config.clubNeedsSubscriptionsEnabled ? clubNeedsSubs.renderSubscriptionBlock(clubNeedsLocale) : "";
+    html = html.replace(CLUB_NEEDS_MARKER, renderClubNeeds(clubNeedsLocale, now ? now() : new Date()) + subscribe);
+  }
   // Short application form: height, weight and stick hand live in the optional
   // details block; while the database still requires them they are moved back
   // into the main fields and marked required.

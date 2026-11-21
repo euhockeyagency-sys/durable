@@ -3,7 +3,7 @@
 module.exports = {
   "title": "EHA — единый журнал работ сайта",
   "scope": "Только eurohockeyagency.com и его EN/RU страницы. Внутренняя документация, не публичная статья.",
-  "last_reviewed": "2026-11-20",
+  "last_reviewed": "2026-11-21",
   "how_to_use": [
     "Перед работой прочитать этот файл через EHA1990 read_project_file с path='src/eha-work-log.js'. Затем прочитать нужные страницы и проверить актуальное состояние.",
     "Перед повторным предложением задачи проверить записи completed, historical и open_issues. Повторять выполненную задачу только при новой ошибке, устаревании или новых данных.",
@@ -1002,6 +1002,149 @@ module.exports = {
     "Деплой Edge Function, резервная копия и dry-run — только с разрешения владельца и с доступом к проекту lvcrutflxscynaewkcno. Ближайшая дата риска при старой функции — прогон 24.07.2027 03:17 UTC."
   ],
   "next_step": "Владелец: подключить коннектор к проекту сайта или выполнить docs/retention-runbook.md (бэкап → проверка восстановления → deploy → dry-run)."
+}
+,
+{
+  "id": "META-AUDIT-20261121",
+  "status": "saved",
+  "date": "2026-11-21",
+  "files": [
+    "public/ru/zaprosy-klubov.html",
+    "public/en/club-needs.html",
+    "public/en/open-hockey-leagues-for-imports.html",
+    "public/ru/otkrytye-ligi-dlya-legionerov.html",
+    "public/en/guides/hockey-in-{denmark,norway,slovakia,france,united-kingdom,usa}.html",
+    "public/ru/guides/hokkej-v-{norvegii,slovakii}.html",
+    "public/ru/guides/hokkej-vo-francii.html",
+    "src/guide-index.js",
+    "public/en/leagues/*.html (Hockey in the United Kingdom/States)"
+  ],
+  "urls": [
+    "/ru/zaprosy-klubov",
+    "/club-needs",
+    "/open-hockey-leagues-for-imports",
+    "/ru/otkrytye-ligi-dlya-legionerov",
+    "/guides/hockey-in-denmark",
+    "/guides/hockey-in-norway",
+    "/guides/hockey-in-slovakia",
+    "/guides/hockey-in-france",
+    "/guides/hockey-in-united-kingdom",
+    "/guides/hockey-in-usa",
+    "/ru/guides/hokkej-v-norvegii",
+    "/ru/guides/hokkej-v-slovakii",
+    "/ru/guides/hokkej-vo-francii"
+  ],
+  "changes": [
+    "Аудит 350 индексируемых URL из sitemap EN/RU/DE/CS/FI/SV (локальный рендер через Express): пустых title/description, дублей title, неверного регистра и устаревших сезонов в метаданных не найдено; H1 по одному на всех страницах.",
+    "/ru/zaprosy-klubov и /club-needs: убран повтор «Запросы клубов: … запросы»; description больше не утверждает, что позиции на текущий сезон есть (список пуст), а объясняет, что игрок увидит в открытом запросе и как отправить профиль. Title опубликован = исходнику; заголовок в выдаче Google проверить нельзя: у страницы 0 показов в GSC.",
+    "Открытые лиги EN/RU: убрано обещание «realistic vacancy / реальной вакансией» (страница не публикует вакансии).",
+    "Шаблонные почти-дубли description (Hockey in X: senior and junior leagues…) заменены на конкретные для DK, NO, SK, FR, UK EN и NO, SK, FR RU. «Hockey in United Kingdom/States» → «the United Kingdom/States»."
+  ],
+  "evidence": [
+    "GSC (EHA CONTROL, 21.10–18.11.2026, страницы): приоритет по показам; «бесплатно» и «48 часов» оставлены — подтверждены BRAND.md и FAQ /services.",
+    "test/meta-length.test.js, test/country-intents.test.js (title/description клубных запросов)."
+  ],
+  "limits": [
+    "Страница с наибольшими показами (/guides/hockey-player-salaries-in-europe, 8169 показов, CTR 0,9%) не имеет дефекта метаданных; её CTR — отдельная задача."
+  ],
+  "next_step": "Через 3–4 недели сравнить CTR изменённых URL в GSC."
+},
+{
+  "id": "COUNTRY-CATALOG-INTENTS-20261121",
+  "status": "saved",
+  "date": "2026-11-21",
+  "files": [
+    "public/ru/hokkejnye-strany.html",
+    "public/en/hockey-countries.html",
+    "public/ru/guides/hokkej-v-{polshe,chexii,slovakii,germanii,avstrii,finlyandii,shvecii}.html",
+    "public/en/guides/hockey-in-{poland,czechia,slovakia,germany,austria,finland,sweden}.html",
+    "public/styles.css",
+    "docs/country-pages-factcheck.md"
+  ],
+  "urls": [
+    "/ru/hokkejnye-strany",
+    "/hockey-countries",
+    "/ru/guides/hokkej-v-polshe",
+    "/guides/hockey-in-poland"
+  ],
+  "changes": [
+    "Карточки PL, CZ, SK, DE, AT, FI, SE: «Кому подходит» и четыре ссылки по намерениям — как уехать (гид страны), правила легионеров 2026/27 (#import-rules страницы лиги с профилем или раздела гида), зарплаты и условия, виза и право на работу. Якоря добавлены к существующим разделам гидов. CTA «Получить оценку» передаёт country и source_page.",
+    "Пилот Польша: в раздел «Трансфер, регистрация, виза и работа» EN/RU добавлен блок о праве на работу по государственным источникам (Dz.U. 2025 поз. 1620: исключение для спортсменов только 30 дней в году; oświadczenie для граждан Армении, Беларуси, Молдовы, Украины до 24 месяцев, Грузия исключена с 1.12.2025; Карта поляка; подача через praca.gov.pl). Проверено 21.11.2026."
+  ],
+  "evidence": [
+    "GSC 23.08–18.11.2026: по 7 странам спрос в основном «чемпионат X по хоккею» и названия лиг; запросов про визу, зарплату и переезд почти нет — четыре намерения помечены как редакционная гипотеза.",
+    "test/country-intents.test.js: 7×4 ссылки EN и RU, каждая страница 200 и каждый якорь существует."
+  ],
+  "limits": [
+    "Источники Польши прочитаны через индексированный текст официальных страниц (прямой запрос к migrant.poznan.uw.gov.pl не прошёл). Словакия: раздел о визе общий (портал ЕС), без страновых деталей. Швеция: отдельной страницы лиги с проверенным лимитом нет — ссылка на раздел гида о регистрации и home-grown."
+  ],
+  "next_step": "Дополнить визовый раздел Словакии по официальному порталу МВД Словакии; при спросе — профили лиг для Hockeyettan и Maxa liga."
+},
+{
+  "id": "CLUB-NEEDS-TELEGRAM-SUBSCRIPTION-20261121",
+  "status": "saved",
+  "date": "2026-11-21",
+  "files": [
+    "src/club-needs-subscriptions.js",
+    "src/club-needs.js",
+    "src/club-needs-data.js",
+    "src/app.js",
+    "src/config.js",
+    ".env.example",
+    "public/assets/club-needs-subscribe.js",
+    "public/styles.css",
+    "scripts/notify-club-needs.js",
+    "docs/club-needs-process.md",
+    "test/club-needs-subscriptions.test.js",
+    "supabase/migrations/20261121120000_club_need_subscriptions.sql (отдельная ветка db/club-need-subscriptions, не в main)"
+  ],
+  "urls": [
+    "/ru/zaprosy-klubov",
+    "/club-needs",
+    "/api/club-needs/subscribe",
+    "/api/club-needs/unsubscribe",
+    "/api/telegram/club-needs-webhook"
+  ],
+  "changes": [
+    "Существующий бот TELEGRAM_BOT_TOKEN шлёт уведомления только агенту, вебхука нет; подтверждённые запросы берутся из src/club-needs-data.js (сейчас пусто). Подписка сделана на отдельном боте: форма (позиция, год рождения, Elite Prospects, согласие) → одноразовая ссылка t.me/<bot>?start=<token> (30 мин, в базе только SHA-256) → вебхук с секретом активирует подписку; /stop и подписанная HMAC ссылка отписки прекращают доставку.",
+    "Рассылка scripts/notify-club-needs.js: только открытые опубликованные запросы, совпадение позиции (F = C/W/LW/RW) и года рождения при заданном birthYears; доставка сначала фиксируется (unique subscription+need), повторный запуск не дублирует.",
+    "Форма скрыта, API отвечает 503, пока не заданы CLUB_NEEDS_SUBSCRIPTIONS=on, TELEGRAM_SUBSCRIBER_BOT_TOKEN/USERNAME/WEBHOOK_SECRET и Supabase."
+  ],
+  "evidence": [
+    "test/club-needs-subscriptions.test.js (9/9, память + поддельный Telegram): выключенное состояние, русские ошибки валидации, подтверждение и одноразовость токена, просроченная ссылка, неверный секрет вебхука, одна активная подписка на чат и позицию, доставка только подходящим, без дублей при повторе, /stop и отписка по ссылке, подделка ссылки отклоняется."
+  ],
+  "limits": [
+    "Не запускалось с реальным ботом и базой. Миграция не применена: для production нужна явная команда владельца. Таблицу не чистит cleanup-applications (сроки заданы retention_until)."
+  ],
+  "next_step": "Владелец: создать бота игроков, применить миграцию из ветки db/club-need-subscriptions, задать переменные и setWebhook по docs/club-needs-process.md, проверить на своём аккаунте; затем CLUB_NEEDS_SUBSCRIPTIONS=on."
+},
+{
+  "id": "CASES-STRUCTURE-20261121",
+  "status": "saved",
+  "date": "2026-11-21",
+  "files": [
+    "src/cases-data.js",
+    "scripts/build-cases.js",
+    "public/ru/cases.html",
+    "public/en/cases.html",
+    "public/styles.css",
+    "test/case-stories.test.js"
+  ],
+  "urls": [
+    "/ru/cases",
+    "/cases"
+  ],
+  "changes": [
+    "В каждую из 39 карточек EN/RU добавлен блок из data (маркер CASE_STORY, генерирует scripts/build-cases.js). «Итог» — по статусу источника: история Elite Prospects (без утверждения просмотр/контракт/регистрация), объявление клуба о подписании, ожидает подтверждения.",
+    "Исходная точка, задача и работа EHA заполнены только для Семёна и Матвея Морщёнков (маршрут по EP, подтверждение агентства, раскрытие родства); для остальных — «не опубликованы»."
+  ],
+  "evidence": [
+    "test/case-stories.test.js: у каждого кейса есть итог, набор полей EN = RU, «Работа EHA» только при подтверждённых данных, ожидающие помечены."
+  ],
+  "limits": [
+    "Подтверждённых материалов агентства о работе по остальным 37 кейсам в репозитории нет; Elite Prospects не скрейпится."
+  ],
+  "next_step": "Владелец: по каждому кейсу дать исходную точку и конкретное действие EHA (письмо клубу, просмотр, переговоры, документы) — внести в story в src/cases-data.js."
 }
   ],
   "historical": [
