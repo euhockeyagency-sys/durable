@@ -22,6 +22,7 @@ const { createAdminAuth } = require("./admin-auth");
 const { MARKER: CLUB_NEEDS_MARKER, renderClubNeeds, clubNeedsLocaleFor } = require("./club-needs");
 const { registerPublicIntakeRoutes, registerAdminIntakeRoutes } = require("./intake/routes");
 const { CATEGORY_LABELS, effectiveCategory } = require("./intake/assessment");
+const adminView = require("./admin-view");
 
 const PRIORITY_LEAGUE_LINKS = [
   { en: "/leagues/czechia-maxa-liga", ru: "/ligi/chehiya-maxa-liga", title: { en: "Czechia Maxa liga", ru: "Чехия — Maxa liga" } },
@@ -242,12 +243,14 @@ function createApp({ config, services, now, randomUUID, schemaState } = {}) {
     });
     app.get(adminPath, requireAdmin, async (req, res) => {
       const filters = parseAdminFilters(req.query);
+      const { lang, set } = adminView.adminLangFrom(req);
+      if (set) res.append("Set-Cookie", adminView.adminLangCookie(lang, adminPath));
       try {
         const [allApplications, clubRequests] = await Promise.all([
           // Falls back to the legacy columns until the intake migration is applied.
-          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at, retention_until, assessment, assessment_override, review_requested_at")
-            .catch(() => fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, phone, email, source, internal_note, next_contact_at, created_at, retention_until")),
-          fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, created_at, retention_until")
+          fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, citizenship, phone, email, parent_name, parent_contact, elite_prospects_url, video_urls, source, internal_note, next_contact_at, created_at, retention_until, assessment, assessment_override, review_requested_at")
+            .catch(() => fetchAdminRows(appServices.supabase, "applications", "id, reference_code, status, player_name, birth_year, is_minor, position, current_club, citizenship, phone, email, parent_name, parent_contact, elite_prospects_url, video_urls, source, internal_note, next_contact_at, created_at, retention_until")),
+          fetchAdminRows(appServices.supabase, "club_requests", "id, reference_code, status, club_name, contact_name, phone, email, country, position_needed, level, message, locale, created_at, retention_until")
         ]);
         const today = adminToday(now);
         const applications = filterAdminApplications(allApplications, filters, today);
@@ -256,7 +259,9 @@ function createApp({ config, services, now, randomUUID, schemaState } = {}) {
           total: allApplications.length,
           allApplications,
           csrf: auth.csrfToken(req.adminSession),
-          today
+          today,
+          lang,
+          returnTo: adminView.safeReturn(String(req.originalUrl || "").replace(/^[^?]*/, ""))
         }));
       } catch (error) {
         console.error("Admin page query failed", error.message);
@@ -274,10 +279,11 @@ function createApp({ config, services, now, randomUUID, schemaState } = {}) {
         console.error("Admin follow-up update failed", error.message);
         return res.status(503).type("text").send("Could not save follow-up.");
       }
-      res.redirect(303, adminPath);
+      // Back to the same tab, filters and row, not the top of an unfiltered list.
+      res.redirect(303, adminPath + adminView.safeReturn(body.return) + adminView.safeAnchor(followup.id));
     });
     app.post(`${adminPath}/status`, requireAdmin, express.urlencoded({ extended: false, limit: "1kb" }), async (req, res) => {
-      const { table, id, status, csrf } = req.body || {};
+      const { table, id, status, csrf, return: back } = req.body || {};
       if (!auth.validCsrf(req.adminSession, csrf)) return res.status(403).type("text").send("Invalid request.");
       if (!ADMIN_TABLES.has(table) || !ADMIN_STATUSES.has(status) || !id) {
         return res.status(400).type("text").send("Invalid request.");
@@ -287,7 +293,7 @@ function createApp({ config, services, now, randomUUID, schemaState } = {}) {
         console.error("Admin status update failed", error.message);
         return res.status(503).type("text").send("Could not update status.");
       }
-      res.redirect(303, adminPath);
+      res.redirect(303, adminPath + adminView.safeReturn(back) + adminView.safeAnchor(id));
     });
   }
 
@@ -563,7 +569,11 @@ function parseAdminFilters(query = {}) {
   const age = one(query.age);
   const followup = one(query.followup);
   const applicant = one(query.applicant);
+  const view = one(query.view);
+  const period = one(query.period);
   return {
+    view: adminView.ADMIN_VIEWS.includes(view) ? view : "all",
+    period: adminView.ADMIN_PERIODS.includes(period) ? period : "30",
     q: one(query.q).slice(0, 80),
     status: ADMIN_STATUSES.has(status) ? status : "",
     position: ADMIN_POSITIONS.includes(position) ? position : "",
@@ -593,7 +603,14 @@ function parseAdminFollowup(body) {
 // at the current volume that is simpler than pushing filters into Supabase.
 function filterAdminApplications(applications, filters, today = adminToday()) {
   const needle = filters.q.toLowerCase();
+  const view = filters.view || "all";
   const filtered = applications.filter((a) => {
+    // Tabs: new = unprocessed queue; today = contact due today or overdue;
+    // active = contacted/qualified; closed = rejected/archived.
+    if (view === "new" && a.status !== "new") return false;
+    if (view === "today" && !(a.next_contact_at && a.next_contact_at <= today && !["rejected", "archived"].includes(a.status))) return false;
+    if (view === "active" && !["contacted", "qualified"].includes(a.status)) return false;
+    if (view === "closed" && !["rejected", "archived"].includes(a.status)) return false;
     if (filters.status && a.status !== filters.status) return false;
     if (filters.position && a.position !== filters.position) return false;
     if (filters.age && (filters.age === "minor") !== Boolean(a.is_minor)) return false;
@@ -606,11 +623,11 @@ function filterAdminApplications(applications, filters, today = adminToday()) {
       .some((field) => String(field || "").toLowerCase().includes(needle));
   });
   // The unprocessed queue is worked oldest first.
-  if (filters.status === "new" && !filters.followup) {
+  if ((filters.status === "new" || view === "new") && !filters.followup) {
     filtered.sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
   }
   // The most overdue contact first when working the follow-up queue.
-  if (filters.followup === "due" || filters.followup === "upcoming") {
+  if (filters.followup === "due" || filters.followup === "upcoming" || view === "today") {
     filtered.sort((a, b) => String(a.next_contact_at).localeCompare(String(b.next_contact_at)));
   }
   return filtered;
@@ -639,24 +656,28 @@ function adminQueueSummary(rows, today) {
   };
 }
 
-function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length, allApplications = applications, csrf = "", today = adminToday() } = {}) {
+function renderAdminPage(adminPath, applications, clubRequests, { filters = parseAdminFilters(), total = applications.length, allApplications = applications, csrf = "", today = adminToday(), lang = "en", returnTo = "" } = {}) {
+  const s = adminView.adminStrings(lang);
+  const ret = `<input type="hidden" name="return" value="${htmlEscape(returnTo)}">`;
   const statusOptions = [...ADMIN_STATUSES]
     .map((status) => `<option value="${status}">${status}</option>`).join("");
   const statusForm = (table, id, currentStatus) => `<form method="post" action="${adminPath}/status">` +
-    `<input type="hidden" name="table" value="${table}"><input type="hidden" name="id" value="${htmlEscape(id)}"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}">` +
-    `<select name="status">${statusOptions.replace(`value="${currentStatus}"`, `value="${currentStatus}" selected`)}</select>` +
-    `<button type="submit">Save</button></form>`;
-  const selectFilter = (name, label, options) => `<label>${label} <select name="${name}"><option value="">any</option>` +
+    `<input type="hidden" name="table" value="${table}"><input type="hidden" name="id" value="${htmlEscape(id)}"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}">${ret}` +
+    `<select name="status" aria-label="${s.cols.status}">${statusOptions.replace(`value="${currentStatus}"`, `value="${currentStatus}" selected`)}</select>` +
+    `<button type="submit">${s.save}</button></form>`;
+  const selectFilter = (name, label, options) => `<label>${label} <select name="${name}"><option value="">${s.any}</option>` +
     options.map((option) => `<option value="${option}"${filters[name] === option ? " selected" : ""}>${option}</option>`).join("") +
     `</select></label>`;
+  const view = filters.view || "all";
   const filterForm = `<form class="filters" method="get" action="${adminPath}">` +
-    `<label>Search <input name="q" value="${htmlEscape(filters.q)}" placeholder="name, club, ref, contact, note, source" maxlength="80"></label>` +
-    selectFilter("status", "Status", [...ADMIN_STATUSES]) +
-    selectFilter("position", "Position", ADMIN_POSITIONS) +
-    selectFilter("age", "Age", ADMIN_AGE_GROUPS) +
-    selectFilter("followup", "Follow-up", ADMIN_FOLLOWUPS) +
-    selectFilter("applicant", "Applicant", ADMIN_APPLICANTS) +
-    `<button type="submit">Filter</button> <a href="${adminPath}">Reset</a> <span>${applications.length} of ${total}</span></form>`;
+    (view !== "all" ? `<input type="hidden" name="view" value="${htmlEscape(view)}">` : "") +
+    `<label>${s.search} <input name="q" value="${htmlEscape(filters.q)}" placeholder="${s.searchPh}" maxlength="80"></label>` +
+    selectFilter("status", s.status, [...ADMIN_STATUSES]) +
+    selectFilter("position", s.position, ADMIN_POSITIONS) +
+    selectFilter("age", s.age, ADMIN_AGE_GROUPS) +
+    selectFilter("followup", s.followup, ADMIN_FOLLOWUPS) +
+    selectFilter("applicant", s.applicant, ADMIN_APPLICANTS) +
+    `<button type="submit">${s.filter}</button> <a href="${adminPath}${view !== "all" ? `?view=${view}` : ""}">${s.reset}</a> <span>${applications.length} ${s.of} ${total}</span></form>`;
   const parentLeads = allApplications.filter((a) => a.source?.applicant_type === "parent_guardian");
   const qualified = allApplications.filter((a) => a.status === "qualified");
   const parentQualified = parentLeads.filter((a) => a.status === "qualified");
@@ -664,20 +685,23 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
   const pct = (part, whole) => whole ? `${Math.round(part / whole * 100)}%` : "—";
   const queue = adminQueueSummary(allApplications, today);
   const clubQueue = adminQueueSummary(clubRequests, today);
-  const queueSummary = `<div class="summary queue"><div><b>${queue.count}</b><span><a href="${adminPath}?status=new">unprocessed (new)</a></span></div>` +
-    `<div><b>${queue.oldest === null ? "—" : `${queue.oldest} d`}</b><span>oldest unprocessed</span></div>` +
-    `<div${queue.stale ? ' class="due"' : ""}><b>${queue.stale}</b><span>new &gt; ${ADMIN_STALE_DAYS} days</span></div>` +
-    `<div${queue.held ? ' class="due"' : ""}><b>${queue.held}</b><span>past retention, held until processed</span></div>` +
-    `<div><b>${clubQueue.count}</b><span>club requests new</span></div>` +
-    `<div><b>${clubQueue.oldest === null ? "—" : `${clubQueue.oldest} d`}</b><span>oldest club request</span></div></div>` +
-    (queue.held || clubQueue.held ? `<p class="due"><strong>Retention:</strong> ${queue.held + clubQueue.held} unprocessed record(s) are past the 12-month retention date. They are not deleted automatically while "new": open each one, then set contacted/qualified to keep it, or rejected/archived to let the next cleanup delete it with its files.</p>` : "");
+  const dueToday = allApplications.filter((a) => a.next_contact_at && a.next_contact_at <= today && !["rejected", "archived"].includes(a.status)).length;
+  const tabCount = { new: queue.count, today: dueToday, active: allApplications.filter((a) => ["contacted", "qualified"].includes(a.status)).length, closed: allApplications.filter((a) => ["rejected", "archived"].includes(a.status)).length, clubs: clubRequests.length, all: allApplications.length };
+  const tabs = `<nav class="tabs">${adminView.ADMIN_VIEWS.map((v) => `<a href="${adminPath}${v === "all" ? "" : `?view=${v}`}"${v === view ? ' class="on" aria-current="page"' : ""}>${s.views[v]} (${tabCount[v]})</a>`).join("")}</nav>`;
+  const queueSummary = `<div class="summary queue"><div><b>${queue.count}</b><span><a href="${adminPath}?status=new">${s.unprocessed}</a></span></div>` +
+    `<div><b>${queue.oldest === null ? "—" : `${queue.oldest} d`}</b><span>${s.oldest}</span></div>` +
+    `<div${queue.stale ? ' class="due"' : ""}><b>${queue.stale}</b><span>${s.stale(ADMIN_STALE_DAYS)}</span></div>` +
+    `<div${queue.held ? ' class="due"' : ""}><b>${queue.held}</b><span>${s.held}</span></div>` +
+    `<div><b>${clubQueue.count}</b><span>${s.clubNew}</span></div>` +
+    `<div><b>${clubQueue.oldest === null ? "—" : `${clubQueue.oldest} d`}</b><span>${s.clubOldest}</span></div></div>` +
+    (queue.held || clubQueue.held ? `<p class="due">${s.retention(queue.held + clubQueue.held)}</p>` : "");
   const ageCell = (row) => {
     const age = adminAgeDays(row.created_at, today);
     if (age === null) return htmlEscape(row.created_at || "—");
     const stale = row.status === "new" && age > ADMIN_STALE_DAYS;
-    return `${htmlEscape(String(row.created_at).slice(0, 10))}<br><small${stale ? ' class="due"' : ""}>${age} d${stale ? " · waiting" : ""}</small>`;
+    return `${htmlEscape(String(row.created_at).slice(0, 10))}<br><small${stale ? ' class="due"' : ""}>${age} d${stale ? ` · ${s.waiting}` : ""}</small>`;
   };
-  const qualitySummary = `<div class="summary"><div><b>${allApplications.length}</b><span>loaded leads</span></div><div><b>${parentLeads.length}</b><span>parent leads</span></div><div><b>${qualified.length}</b><span>qualified</span></div><div><b>${pct(qualified.length, allApplications.length)}</b><span>qualified rate</span></div><div><b>${pct(parentQualified.length, parentLeads.length)}</b><span>parent qualified rate</span></div><div><b>${rejected.length}</b><span>rejected</span></div></div>`;
+  const qualitySummary = `<div class="summary quality"><div><b>${allApplications.length}</b><span>${s.loaded}</span></div><div><b>${parentLeads.length}</b><span>${s.parentLeads}</span></div><div><b>${qualified.length}</b><span>${s.qualified}</span></div><div><b>${pct(qualified.length, allApplications.length)}</b><span>${s.qualifiedRate}</span></div><div><b>${pct(parentQualified.length, parentLeads.length)}</b><span>${s.parentRate}</span></div><div><b>${rejected.length}</b><span>${s.rejected}</span></div></div>`;
   // Calculator data is what the player's browser sent, not something verified.
   const calculatorCell = (calculator) => calculator
     ? `${htmlEscape(ADMIN_BAND_LABELS[calculator.band] || calculator.band)} · ${htmlEscape(calculator.score)}` +
@@ -686,38 +710,45 @@ function renderAdminPage(adminPath, applications, clubRequests, { filters = pars
   const followupForm = (a) => {
     const overdue = a.next_contact_at && a.next_contact_at <= today && !["rejected", "archived"].includes(a.status);
     return `<form method="post" action="${adminPath}/followup" class="followup">` +
-      `<input type="hidden" name="id" value="${htmlEscape(a.id)}"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}">` +
+      `<input type="hidden" name="id" value="${htmlEscape(a.id)}"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}">${ret}` +
       `<textarea name="internal_note" rows="3" maxlength="4000" aria-label="Internal note for ${htmlEscape(a.player_name)}">${htmlEscape(a.internal_note || "")}</textarea>` +
-      `<label>Next contact <input type="date" name="next_contact_at" value="${htmlEscape(a.next_contact_at || "")}"></label>` +
-      (overdue ? ` <strong class="due">due</strong>` : "") +
-      `<button type="submit">Save</button></form>`;
+      `<label>${s.nextContact} <input type="date" name="next_contact_at" value="${htmlEscape(a.next_contact_at || "")}"></label>` +
+      (overdue ? ` <strong class="due">${s.due}</strong>` : "") +
+      `<button type="submit">${s.save}</button></form>`;
   };
-  const sourceCell = (source) => { const s = source || {}; const bits = []; if (s.applicant_type) bits.push(`<b>${htmlEscape(s.applicant_type)}</b>`); if (s.intent) bits.push(`intent: ${htmlEscape(s.intent)}`); if (s.country || s.league) bits.push(`target: ${[s.country, s.league ? leagueLabel(s.league) : null].filter(Boolean).map(htmlEscape).join(" · ")}`); if (s.source_page) bits.push(`page: ${htmlEscape(s.source_page)}`); if (s.landing_page && s.landing_page !== s.source_page) bits.push(`landing: ${htmlEscape(s.landing_page)}`); if (s.from_calculator) bits.push("from calculator"); if (s.utm_source) bits.push(`utm: ${htmlEscape(s.utm_source)}${s.utm_campaign ? ` / ${htmlEscape(s.utm_campaign)}` : ""}`); if (!s.source_page && s.referrer) bits.push(`ref: ${htmlEscape(s.referrer)}`); return bits.join("<br>"); };
+  const sourceCell = (source) => { const src = source || {}; const bits = []; if (src.applicant_type) bits.push(`<b>${htmlEscape(src.applicant_type)}</b>`); if (src.intent) bits.push(`intent: ${htmlEscape(src.intent)}`); if (src.country || src.league) bits.push(`target: ${[src.country, src.league ? leagueLabel(src.league) : null].filter(Boolean).map(htmlEscape).join(" · ")}`); if (src.source_page) bits.push(`page: ${htmlEscape(src.source_page)}`); if (src.landing_page && src.landing_page !== src.source_page) bits.push(`landing: ${htmlEscape(src.landing_page)}`); if (src.from_calculator) bits.push("from calculator"); if (src.utm_source) bits.push(`utm: ${htmlEscape(src.utm_source)}${src.utm_campaign ? ` / ${htmlEscape(src.utm_campaign)}` : ""}`); if (!src.source_page && src.referrer) bits.push(`ref: ${htmlEscape(src.referrer)}`); return bits.join("<br>"); };
   const categoryCell = (a) => {
     if (!a.assessment && !a.assessment_override) return "";
     const cat = effectiveCategory(a.assessment, a.assessment_override);
     return `${htmlEscape(CATEGORY_LABELS[cat] || cat)}${a.assessment_override ? " <small>(override)</small>" : ""}${a.review_requested_at ? "<br><small>review requested</small>" : ""}`;
   };
-  const applicationRows = applications.map((a) => `<tr><td><a href="${adminPath}/applications/${htmlEscape(a.id)}">${htmlEscape(a.reference_code)}</a><br><small>${categoryCell(a)}</small></td>` +
-    `<td>${htmlEscape(a.player_name)}<br><small>${htmlEscape(a.birth_year)}${a.is_minor ? " (minor)" : ""} · ${htmlEscape(a.position)}</small></td>` +
-    `<td>${htmlEscape(a.current_club)}</td>` +
-    `<td>${htmlEscape(a.phone)}${a.email ? `<br>${htmlEscape(a.email)}` : ""}</td>` +
-    `<td>${sourceCell(a.source)}</td>` +
-    `<td>${calculatorCell(a.source?.calculator)}</td>` +
-    `<td>${followupForm(a)}</td>` +
-    `<td>${ageCell(a)}</td><td>${statusForm("applications", a.id, a.status)}</td></tr>`).join("");
-  const clubRequestRows = clubRequests.map((c) => `<tr><td>${htmlEscape(c.reference_code)}</td>` +
-    `<td>${htmlEscape(c.club_name)}</td><td>${htmlEscape(c.contact_name)}</td>` +
-    `<td>${c.phone ? htmlEscape(c.phone) : ""}${c.email ? `<br>${htmlEscape(c.email)}` : ""}</td>` +
-    `<td>${ageCell(c)}</td><td>${statusForm("club_requests", c.id, c.status)}</td></tr>`).join("");
-  return `<!doctype html><html><head><meta charset="utf-8"><title>EHA admin</title>` +
-    `<style>body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#0b1520}table{border-collapse:collapse;width:100%;margin-bottom:40px}` +
-    `th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f2f4f6}` +
-    `select,button,input{font:inherit}.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}.summary{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:8px;margin:0 0 18px}.summary>div{border:1px solid #ccd3d9;padding:10px;background:#f8fafb}.summary b{display:block;font-size:22px}.summary span{color:#5a6673;font-size:12px}small{color:#5a6673}.logout{float:right}.followup{display:grid;gap:6px;min-width:220px}.followup textarea{width:100%;box-sizing:border-box}.due{color:#b00020}@media(max-width:900px){.summary{grid-template-columns:repeat(2,1fr)}}</style></head><body>` +
-    `<form method="post" action="${adminPath}/logout" class="logout"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}"><button type="submit">Log out</button></form>` +
-    `<h1>Applications</h1>${queueSummary}${qualitySummary}${filterForm}<table><tr><th>Ref</th><th>Player</th><th>Club</th><th>Contact</th><th>Source</th><th>Calculator (self-reported)</th><th>Follow-up</th><th>Created / age</th><th>Status</th></tr>${applicationRows}</table>` +
-    `<h1>Club requests</h1><table><tr><th>Ref</th><th>Club</th><th>Contact</th><th>Contact info</th><th>Created / age</th><th>Status</th></tr>${clubRequestRows}</table>` +
-    `</body></html>`;
+  const c = s.cols;
+  const applicationRows = applications.map((a) => `<tr id="a-${htmlEscape(a.id)}"><td data-label="${c.ref}"><a href="${adminPath}/applications/${htmlEscape(a.id)}">${htmlEscape(a.reference_code)}</a><br><small>${categoryCell(a)}</small></td>` +
+    `<td data-label="${c.player}">${htmlEscape(a.player_name)}<br><small>${htmlEscape(a.birth_year)}${a.is_minor ? ` (${s.minor})` : ""} · ${htmlEscape(a.position)}</small></td>` +
+    `<td data-label="${c.club}">${htmlEscape(a.current_club)}</td>` +
+    `<td data-label="${c.contact}">${adminView.contactCell(a, s)}</td>` +
+    `<td data-label="${c.missing}">${adminView.missingCell(a, s)}</td>` +
+    `<td data-label="${c.source}">${sourceCell(a.source)}</td>` +
+    `<td data-label="${c.calc}">${calculatorCell(a.source?.calculator)}</td>` +
+    `<td data-label="${c.followup}">${followupForm(a)}</td>` +
+    `<td data-label="${c.created}">${ageCell(a)}</td><td data-label="${c.status}">${statusForm("applications", a.id, a.status)}</td></tr>`).join("");
+  const cc = s.clubCols;
+  const clubRequestRows = clubRequests.map((r) => `<tr id="a-${htmlEscape(r.id)}"><td data-label="${cc.ref}">${htmlEscape(r.reference_code)}</td>` +
+    `<td data-label="${cc.club}">${htmlEscape(r.club_name)}${r.country ? `<br><small>${htmlEscape(r.country)}</small>` : ""}</td><td data-label="${cc.contactName}">${htmlEscape(r.contact_name)}</td>` +
+    `<td data-label="${cc.contact}">${adminView.contactCell({ phone: r.phone, email: r.email }, s)}</td>` +
+    `<td data-label="${cc.need}">${[r.position_needed, r.level].filter(Boolean).map(htmlEscape).join(" · ")}${r.message ? `<br><small>${htmlEscape(String(r.message).slice(0, 240))}</small>` : ""}</td>` +
+    `<td data-label="${cc.created}">${ageCell(r)}</td><td data-label="${cc.status}">${statusForm("club_requests", r.id, r.status)}</td></tr>`).join("");
+  const base = Object.fromEntries(Object.entries({ view: view === "all" ? "" : view, q: filters.q, status: filters.status, position: filters.position, age: filters.age, followup: filters.followup, applicant: filters.applicant }).filter(([, v]) => v));
+  const analytics = adminView.renderAnalytics(adminView.sourceAnalytics(allApplications, filters.period || "30", today, leagueLabel), s, filters.period || "30", adminPath, base);
+  const appTable = `<table class="list"><tr><th>${c.ref}</th><th>${c.player}</th><th>${c.club}</th><th>${c.contact}</th><th>${c.missing}</th><th>${c.source}</th><th>${c.calc}</th><th>${c.followup}</th><th>${c.created}</th><th>${c.status}</th></tr>${applicationRows || `<tr><td colspan="10">${s.empty}</td></tr>`}</table>`;
+  const clubTable = `<h1>${s.clubs}</h1><table class="list"><tr><th>${cc.ref}</th><th>${cc.club}</th><th>${cc.contactName}</th><th>${cc.contact}</th><th>${cc.need}</th><th>${cc.created}</th><th>${cc.status}</th></tr>${clubRequestRows || `<tr><td colspan="7">${s.empty}</td></tr>`}</table>`;
+  const otherLang = lang === "ru" ? "en" : "ru";
+  return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>EHA admin</title>` +
+    `<style>${adminView.ADMIN_CSS}</style></head><body>` +
+    `<div class="top"><a href="${adminPath}?${new URLSearchParams({ ...base, lang: otherLang }).toString()}">${s.lang}</a><form method="post" action="${adminPath}/logout" class="logout"><input type="hidden" name="csrf" value="${htmlEscape(csrf)}"><button type="submit">${s.logout}</button></form></div>` +
+    `<h1>${view === "clubs" ? s.clubs : s.title}</h1>${tabs}${queueSummary}` +
+    (view === "clubs" ? clubTable : `${qualitySummary}${filterForm}${appTable}${view === "all" ? clubTable : ""}${analytics}`) +
+    adminView.ADMIN_SCRIPT + `</body></html>`;
 }
 
 function renderAdminLoginPage(adminPath, error = "") {

@@ -1327,3 +1327,96 @@ test("sitemaps carry the same ru/en/x-default alternates as the page head", asyn
   assert.match(ru.text, /<loc>https:\/\/eha\.test\/ru\/players<\/loc><xhtml:link rel="alternate" hreflang="ru" href="https:\/\/eha\.test\/ru\/players"\/>/);
   assert.equal((en.text.match(/<url>/g) || []).length, (en.text.match(/hreflang="x-default"/g) || []).length, "every EN page has a pair");
 });
+
+test("admin pack 1: phone layout, contact buttons, missing details with a ready message", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-11-21T12:00:00Z") });
+  // Short first step: no citizenship, club, video or Elite Prospects; RU applicant.
+  await validRequest(request(app), { playerName: "Пётр Короткий", citizenship: "", currentClub: "", eliteProspectsUrl: "", locale: "ru", phone: "+48 600 111 222" }).expect(201);
+  await validRequest(request(app), { playerName: "Full Profile", videoUrls: "https://youtu.be/x" }).expect(201);
+  const short = services.rows.applications[0];
+  const { cookie } = await adminLogin(app);
+  const html = (await request(app).get("/admin").set("Cookie", cookie).expect(200)).text;
+  assert.match(html, /<meta name="viewport" content="width=device-width, initial-scale=1">/);
+  assert.match(html, /href="https:\/\/wa\.me\/48600111222"/);
+  assert.match(html, /href="mailto:ivan@example\.com"/);
+  assert.match(html, /data-copy="\+48 600 111 222"/);
+  assert.match(html, /citizenship, club, video, Elite Prospects/);
+  const ask = html.match(/https:\/\/wa\.me\/48600111222\?text=([^"]+)"/);
+  assert.ok(ask, "ready WhatsApp message");
+  const text = decodeURIComponent(ask[1]);
+  assert.match(text, /Здравствуйте, Пётр!/);
+  assert.ok(text.includes(short.reference_code));
+  assert.match(text, /гражданство/);
+  assert.match(html, /data-label="Missing"/);
+  assert.match(html, /complete/); // the full profile has nothing missing
+});
+
+test("admin pack 1: a minor is contacted through the parent", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-11-21T12:00:00Z") });
+  await validRequest(request(app), { playerName: "Junior Kid", birthYear: "2012", parentName: "Mama Kid", parentContact: "+371 2000 0000", parentConsent: "true", currentClub: "" }).expect(201);
+  const { cookie } = await adminLogin(app);
+  const html = (await request(app).get("/admin").set("Cookie", cookie).expect(200)).text;
+  assert.match(html, /Parent contact: Mama Kid/);
+  assert.match(html, /href="https:\/\/wa\.me\/37120000000\?text=/);
+  assert.doesNotMatch(html, /href="https:\/\/wa\.me\/375291234567\?text=/);
+});
+
+test("admin pack 1: tabs, return to the same view and row after saving, RU interface", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-11-21T12:00:00Z") });
+  for (const [name, status, next] of [["Player New", "new", null], ["Player Due", "contacted", "2026-11-20"], ["Player Active", "qualified", null], ["Player Closed", "rejected", null]]) {
+    await validRequest(request(app), { playerName: name }).expect(201);
+    Object.assign(services.rows.applications.at(-1), { status, next_contact_at: next });
+  }
+  await validClubRequest(request(app)).expect(201);
+  const { cookie } = await adminLogin(app);
+  const names = async (q) => [...(await request(app).get(`/admin${q}`).set("Cookie", cookie).expect(200)).text.matchAll(/Player (New|Due|Active|Closed)/g)].map((m) => m[1]).filter((n, i, a) => a.indexOf(n) === i);
+  assert.deepEqual(await names("?view=new"), ["New"]);
+  assert.deepEqual(await names("?view=today"), ["Due"]);
+  assert.deepEqual((await names("?view=active")).sort(), ["Active", "Due"]);
+  assert.deepEqual(await names("?view=closed"), ["Closed"]);
+  const clubs = (await request(app).get("/admin?view=clubs").set("Cookie", cookie).expect(200)).text;
+  assert.match(clubs, /HC Test/);
+  assert.doesNotMatch(clubs, /Player New/);
+
+  const page = (await request(app).get("/admin?view=new").set("Cookie", cookie)).text;
+  const csrf = csrfFrom(page);
+  assert.match(page, /name="return" value="\?view=new"/);
+  const id = services.rows.applications[0].id;
+  const saved = await request(app).post("/admin/status").set("Cookie", cookie).type("form").send({ table: "applications", id, status: "contacted", csrf, return: "?view=new" }).expect(303);
+  assert.equal(saved.headers.location, `/admin?view=new#a-${id}`);
+  const note = await request(app).post("/admin/followup").set("Cookie", cookie).type("form").send({ id, internal_note: "x", next_contact_at: "", csrf, return: "?view=today&q=x" }).expect(303);
+  assert.equal(note.headers.location, `/admin?view=today&q=x#a-${id}`);
+  // Anything that is not a plain query of known keys is dropped: no open redirect.
+  for (const bad of ["//evil.example", "https://evil.example", "?next=//evil.example", "/admin/../x"]) {
+    const r = await request(app).post("/admin/status").set("Cookie", cookie).type("form").send({ table: "applications", id, status: "contacted", csrf, return: bad }).expect(303);
+    assert.equal(r.headers.location, `/admin#a-${id}`, bad);
+  }
+
+  const ru = await request(app).get("/admin?lang=ru").set("Cookie", cookie).expect(200);
+  assert.match(ru.text, /<h1>Заявки игроков<\/h1>/);
+  const langCookie = (ru.headers["set-cookie"] || []).find((c) => c.startsWith("eha_admin_lang=ru"));
+  assert.ok(langCookie && /HttpOnly/.test(langCookie) && /Path=\/admin/.test(langCookie));
+  const again = await request(app).get("/admin").set("Cookie", `${cookie}; eha_admin_lang=ru`).expect(200);
+  assert.match(again.text, /Новые \(старые первыми\)/);
+  assert.match((await request(app).get("/admin").set("Cookie", cookie)).text, /<h1>Applications<\/h1>/);
+});
+
+test("admin pack 1: source analytics by period", async () => {
+  const services = serviceMock();
+  const app = createApp({ config: adminConfig(), services, now: () => new Date("2026-11-21T12:00:00Z") });
+  for (const [page, created, status] of [["/guides/hockey-in-germany", "2026-11-20T10:00:00Z", "qualified"], ["/guides/hockey-in-germany", "2026-11-18T10:00:00Z", "new"], ["/services", "2026-09-01T10:00:00Z", "new"]]) {
+    await validRequest(request(app), { sourcePage: page, locale: "en" }).expect(201);
+    Object.assign(services.rows.applications.at(-1), { created_at: created, status });
+  }
+  const { cookie } = await adminLogin(app);
+  const week = (await request(app).get("/admin?period=7").set("Cookie", cookie).expect(200)).text;
+  const section = week.slice(week.indexOf('id="analytics"'));
+  assert.match(section, /Where applications come from <small>\(2\)<\/small>/);
+  assert.match(section, /<td>\/guides\/hockey-in-germany<\/td><td>2<\/td><td>1<\/td><td>50%<\/td>/);
+  assert.doesNotMatch(section, /<td>\/services<\/td>/);
+  const all = (await request(app).get("/admin?period=all").set("Cookie", cookie).expect(200)).text;
+  assert.match(all.slice(all.indexOf('id="analytics"')), /<td>\/services<\/td><td>1<\/td>/);
+});
