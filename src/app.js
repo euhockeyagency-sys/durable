@@ -1009,7 +1009,7 @@ function renderBody(data, extension, config, context) {
   if (extension === ".html" && html.includes("{{MEASUREMENTS}}")) html = applyMeasurements(html, true); // owner decision 18.11.2026: height, weight and stick hand stay required in the main form
   // League profiles (src/league-profiles.js): league page body, FAQ JSON-LD and
   // rule summaries on country guides, all from one record per league.
-  if (extension === ".html" && html.includes("<!-- LEAGUE_")) html = applyLeagueProfiles(html, logicalPath, locale);
+  if (extension === ".html" && (html.includes("<!-- LEAGUE_") || html.includes("<!-- IMPORT_RULES_TABLE -->"))) html = applyLeagueProfiles(html, logicalPath, locale);
   if (extension === ".html" && (html.includes("<!-- LEAGUE_COMPARE:") || html.includes("<!-- LEAGUE_DEADLINES:") || html.includes("<!-- TRANSFER_CALENDAR -->") || html.includes("<!-- EHA_BYLINE -->"))) html = applyArticleBlocks(html, logicalPath, locale);
   if (extension === ".html" && urlPrefix) {
     html = prefixInternalLinks(html, urlPrefix);
