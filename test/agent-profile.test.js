@@ -13,6 +13,7 @@ const app = createApp({
 });
 const get = (url) => request(app).get(url).set("Host", "eha.test");
 const jsonLd = (html) => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
+const LI_AGENT = "https://www.linkedin.com/in/viachaslau-marshchonak-42360663/";
 const IG_AGENT = "https://www.instagram.com/marshchonak_hockeyagent/";
 const IG_EHA = "https://www.instagram.com/ehahockeyagency/";
 const TT_EHA = "https://www.tiktok.com/@euhockeyagency";
@@ -37,8 +38,8 @@ for (const [url, name, alt] of [["/agent", "Viachaslau Marshchonak", "https://eh
     assert.match(person.image, /viachaslau-marshchonak-fixed\.webp$/);
     assert.ok(person.jobTitle);
     assert.equal(person.worksFor["@id"], "https://eha.test/#organization");
-    assert.deepEqual(person.sameAs, [IG_AGENT], "only the personal profile belongs to the Person");
-    for (const link of [IG_AGENT, IG_EHA, TT_EHA]) assert.ok(html.includes(`href="${link}"`), link);
+    assert.deepEqual(person.sameAs, [IG_AGENT, LI_AGENT], "only the agent's personal profiles belong to the Person");
+    for (const link of [IG_AGENT, LI_AGENT, IG_EHA, TT_EHA]) assert.ok(html.includes(`href="${link}"`), link);
     assert.match(html, /href="https:\/\/wa\.me\/375297957818"/);
     assert.match(html, /intent=free_assessment&amp;source_page=\/(ru\/)?agent/);
     assert.doesNotMatch(html, /verified (account|profile)|верифицированн/i);
