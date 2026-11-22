@@ -1,6 +1,6 @@
 # Technical SEO audit, long-tail map and link plan — 23 November 2026
 
-Data sources: local Express render of every sitemap URL (EN, RU, DE, CS, FI, SV); EHA CONTROL (Google Search Console API, web search, 23.08–20.11.2026, page and query dimensions). The GSC **Pages (index coverage) report and URL Inspection are not available** through EHA CONTROL, and the built-in browser was not reachable in this session, so the statuses "Discovered – currently not indexed" / "Crawled – currently not indexed" and the Google-selected canonical could not be read. Proxy used: sitemap URLs with no impressions at all in 90 days.
+Data sources: local Express render of every sitemap URL (EN, RU, DE, CS, FI, SV); EHA CONTROL (Google Search Console API, web search, 23.08–20.11.2026, page and query dimensions). The GSC Pages report and URL Inspection are not available through EHA CONTROL; they were read later the same day in the owner's GSC account in Chrome (section 2a). Before that, the proxy was sitemap URLs with no impressions at all in 90 days.
 
 ## 1. hreflang and EN/RU routing
 
