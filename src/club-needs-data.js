@@ -14,6 +14,8 @@
 //   season        "2026/27"
 //   position      "G" | "D" | "F" | "C" | "W" | "LW" | "RW"
 //   age           { en, ru } or null, e.g. born 2003–2006
+//   birthYears    { from, to } or omitted: machine-readable age filter for the
+//                 Telegram subscription (only when the club gave birth years)
 //   importStatus  { en, ru } or null; only what the club confirmed in writing
 //   conditions    { en, ru } or null; known conditions only, no guesses
 //

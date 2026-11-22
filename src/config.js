@@ -69,6 +69,17 @@ function loadConfig(env = process.env) {
     turnstileConfigured: Boolean(env.TURNSTILE_SITE_KEY && turnstileSecret),
     telegramConfigured,
     emailConfigured,
+    // Player subscription to new club requests (src/club-needs-subscriptions.js).
+    // Uses a SEPARATE bot from the agent notifications above. The public form
+    // stays hidden until every piece is set AND CLUB_NEEDS_SUBSCRIPTIONS=on.
+    clubNeedsBotToken: env.TELEGRAM_SUBSCRIBER_BOT_TOKEN || "",
+    clubNeedsBotUsername: (env.TELEGRAM_SUBSCRIBER_BOT_USERNAME || "").replace(/^@/, ""),
+    clubNeedsWebhookSecret: env.TELEGRAM_SUBSCRIBER_WEBHOOK_SECRET || "",
+    clubNeedsSubscriptionsEnabled: env.CLUB_NEEDS_SUBSCRIPTIONS === "on"
+      && Boolean(env.TELEGRAM_SUBSCRIBER_BOT_TOKEN)
+      && /^[A-Za-z0-9_]{5,32}$/.test((env.TELEGRAM_SUBSCRIBER_BOT_USERNAME || "").replace(/^@/, ""))
+      && /^[A-Za-z0-9_-]{32,256}$/.test(env.TELEGRAM_SUBSCRIBER_WEBHOOK_SECRET || "")
+      && missingApplicationKeys.length === 0,
     // Club requests are persisted to Supabase before notifying, exactly like
     // applications, so both notification channels AND storage must be ready
     // before the public form is enabled.
