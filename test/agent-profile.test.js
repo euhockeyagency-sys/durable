@@ -13,6 +13,7 @@ const app = createApp({
 });
 const get = (url) => request(app).get(url).set("Host", "eha.test");
 const jsonLd = (html) => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
+const LI_AGENT = "https://www.linkedin.com/in/viachaslau-marshchonak-42360663/";
 const IG_AGENT = "https://www.instagram.com/marshchonak_hockeyagent/";
 const IG_EHA = "https://www.instagram.com/ehahockeyagency/";
 const TT_EHA = "https://www.tiktok.com/@euhockeyagency";
@@ -37,8 +38,8 @@ for (const [url, name, alt] of [["/agent", "Viachaslau Marshchonak", "https://eh
     assert.match(person.image, /viachaslau-marshchonak-fixed\.webp$/);
     assert.ok(person.jobTitle);
     assert.equal(person.worksFor["@id"], "https://eha.test/#organization");
-    assert.deepEqual(person.sameAs, [IG_AGENT], "only the personal profile belongs to the Person");
-    for (const link of [IG_AGENT, IG_EHA, TT_EHA]) assert.ok(html.includes(`href="${link}"`), link);
+    assert.deepEqual(person.sameAs, [IG_AGENT, LI_AGENT], "only the agent's personal profiles belong to the Person");
+    for (const link of [IG_AGENT, LI_AGENT, IG_EHA, TT_EHA]) assert.ok(html.includes(`href="${link}"`), link);
     assert.match(html, /href="https:\/\/wa\.me\/375297957818"/);
     assert.match(html, /intent=free_assessment&amp;source_page=\/(ru\/)?agent/);
     assert.doesNotMatch(html, /verified (account|profile)|верифицированн/i);
@@ -76,9 +77,15 @@ test("author: Person only where the page shows the agent as author in a visible 
 });
 
 test("articles show a visible author line linking to the agent and author Person in JSON-LD", () => {
-  for (const [rel, re] of [["en/guides/hockey-in-sweden.html", /By <a href="\{\{EN\}\}\/agent">Viachaslau Marshchonak<\/a>/], ["ru/ligi/polsha-tauron-hokej-liga.html", /Автор: <a href="\/agent">Вячеслав Морщенок<\/a>/]]) {
+  // The byline is one shared component (src/article-blocks.js byline()) placed
+  // through the EHA_BYLINE marker: name, role, photo, links to /agent and to
+  // the editorial methodology.
+  const { byline } = require("../src/article-blocks");
+  assert.match(byline("/guides/x", "en"), /<img src="\/assets\/viachaslau-marshchonak-640\.webp"[^>]*>.*By <a href="\/agent">Viachaslau Marshchonak<\/a>/);
+  assert.match(byline("/guides/x", "ru"), /Автор: <a href="\/agent">Вячеслав Морщенок<\/a>/);
+  for (const [rel] of [["en/guides/hockey-in-sweden.html"], ["ru/ligi/polsha-tauron-hokej-liga.html"]]) {
     const html = fs.readFileSync(path.join(PUBLIC, rel), "utf8");
-    assert.match(html, re, rel);
+    assert.match(html, /<div class="wrap reviewer-note"><!-- EHA_BYLINE --><\/div>/, rel);
     assert.equal((html.match(/reviewer-note/g) || []).length, 1, rel);
     assert.match(html, /"author":\{"@type":"Person","@id":"\{\{BASE_URL_EN\}\}\/agent#person"/, rel);
   }

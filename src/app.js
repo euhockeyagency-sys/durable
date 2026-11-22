@@ -10,7 +10,7 @@ const { validateClubRequest } = require("./validation");
 const { leagueLabel, labelsFor } = require("./attribution");
 const { deadline } = require("./deadlines");
 const { messages, normalizeLocale } = require("./messages");
-const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor } = require("./locales");
+const { resolveLocale, baseUrlFor, altUrlFor, hreflangFor, extraAlternatesFor, EXTRA_LOCALE_COUNTERPART } = require("./locales");
 const { leagueEditorial } = require("./league-editorial");
 const { leagueFacts } = require("./league-facts");
 const { applyLeagueProfiles } = require("./league-profile");
@@ -981,6 +981,23 @@ function applyMeasurements(html, required) {
   return html.replace(MEASUREMENTS_BLOCK, "").replace("<!-- MEASUREMENTS_SLOT -->", block);
 }
 
+// Article / BlogPosting / NewsArticle JSON-LD without "image" gets the page's
+// own og:image (the social preview the page already declares), so the
+// structured data and the visible share image never disagree. Pages whose
+// Article already names an image are left untouched.
+const ARTICLE_TYPES = new Set(["Article", "NewsArticle", "BlogPosting"]);
+function addArticleImage(html) {
+  const og = (html.match(/<meta property="og:image" content="([^"]+)"/) || [])[1];
+  if (!og || !/^https?:\/\//.test(og)) return html;
+  return html.replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g, (whole, open, body, close) => {
+    let data;
+    try { data = JSON.parse(body); } catch { return whole; }
+    if (!data || !ARTICLE_TYPES.has(data["@type"]) || data.image) return whole;
+    data.image = [og];
+    return open + JSON.stringify(data).replace(/</g, "\\u003c") + close;
+  });
+}
+
 function renderBody(data, extension, config, context) {
   if (![".html", ".txt", ".xml"].includes(extension)) return data;
   const { locale, logicalPath, urlPrefix = "", now, schemaState } = context;
@@ -1009,6 +1026,7 @@ function renderBody(data, extension, config, context) {
     .replaceAll("{{TURNSTILE_SITE_KEY}}", config.turnstileSiteKey)
     .replaceAll("{{CONTACT_EMAIL}}", config.contactEmail)
     .replaceAll("{{PRIVACY_POLICY_VERSION}}", config.privacyPolicyVersion);
+  if (extension === ".html") html = addArticleImage(html);
   // Club requests are filtered per request (open, cleared for publication, not
   // past validUntil), so an expired request disappears without a redeploy.
   const clubNeedsLocale = extension === ".html" ? clubNeedsLocaleFor(logicalPath, locale) : null;
@@ -1234,11 +1252,15 @@ function buildSitemap(config, locale = "ru") {
     .map(({ slug, mtime }) => {
       // The same EN/RU pairs as the <link rel="alternate"> tags in the page head
       // (hreflangFor reads the PAGES table), so the two signals never disagree.
-      const alts = locale === "en" || locale === "ru" ? hreflangFor(slug, locale, config) : null;
+      // Bonus-locale pages (de/cs/fi/sv) join the cluster of their EN/RU
+      // country guide, exactly as the alternates in the page heads do.
+      const counterpart = EXTRA_LOCALE_COUNTERPART[locale];
+      const alts = locale === "en" || locale === "ru" ? hreflangFor(slug, locale, config)
+        : counterpart ? hreflangFor(counterpart, "en", config) : null;
+      const extra = extraAlternatesFor(slug, locale, config);
+      const link = (lang, href) => `<xhtml:link rel="alternate" hreflang="${lang}" href="${xmlEscape(href)}"/>`;
       const links = alts
-        ? `<xhtml:link rel="alternate" hreflang="ru" href="${xmlEscape(alts.ru)}"/>` +
-          `<xhtml:link rel="alternate" hreflang="en" href="${xmlEscape(alts.en)}"/>` +
-          `<xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(alts.en)}"/>`
+        ? extra.map(([l, u]) => link(l, u)).join("") + link("ru", alts.ru) + link("en", alts.en) + link("x-default", alts.en)
         : "";
       return `  <url><loc>${xmlEscape(joinUrl(base, slug))}</loc>${mtime ? `<lastmod>${mtime.toISOString().slice(0, 10)}</lastmod>` : ""}${links}</url>`;
     });

@@ -211,6 +211,20 @@ function hostname(host) {
 const EXTRA_LOCALE_PREFIXES = { sv: "/sv", fi: "/fi", cs: "/cs", de: "/de" };
 // Each bonus locale has one page; its bare prefix and /guides lead there.
 const EXTRA_LOCALE_PAGES = { sv: "/ishockey-i-sverige", fi: "/jaakiekko-suomessa", cs: "/hokej-v-cesku", de: "/eishockey-in-deutschland" };
+// The EN country guide each bonus page translates. The page heads (EN, RU and
+// the bonus page) already carry these alternates; the sitemap reads the same
+// map so the two signals agree.
+const EXTRA_LOCALE_COUNTERPART = { sv: "/guides/hockey-in-sweden", fi: "/guides/hockey-in-finland", cs: "/guides/hockey-in-czechia", de: "/guides/hockey-in-germany" };
+
+// Extra hreflang alternates (bonus locales) for a page, as [[hreflang, url]].
+// Given an EN/RU logical path, or a bonus locale and its page path.
+function extraAlternatesFor(logicalPath, locale, config) {
+  const enPath = EXTRA_LOCALE_PAGES[locale] === logicalPath ? EXTRA_LOCALE_COUNTERPART[locale]
+    : locale === "ru" ? RU_TO_EN.get(logicalPath) : logicalPath;
+  return Object.entries(EXTRA_LOCALE_COUNTERPART)
+    .filter(([, en]) => en === enPath)
+    .map(([loc]) => [loc, config.enUrl + EXTRA_LOCALE_PREFIXES[loc] + EXTRA_LOCALE_PAGES[loc]]);
+}
 
 // Absolute base URL for a language. Always taken from configuration, never from
 // the request Host header, so an untrusted host can never be reflected back into
@@ -320,5 +334,7 @@ module.exports = {
   baseUrlFor,
   altUrlFor,
   hreflangFor,
+  extraAlternatesFor,
+  EXTRA_LOCALE_COUNTERPART,
   classifyPath
 };
