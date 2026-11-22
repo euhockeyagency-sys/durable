@@ -939,7 +939,7 @@ test("legacy public URLs redirect permanently to the current structure", async (
     ["/about-me", "/agent"],
     ["/clients", "/cases"],
     ["/contact-us", "/contact"],
-    ["/hockey-agent-europe", "/"]
+    ["/hockey-agent-europe", "/services"]
   ]) {
     const response = await request(app)
       .get(`${legacy}?source=search`)
@@ -967,8 +967,15 @@ test("old blog posts redirect to the guide that replaced them", async () => {
     // Reported by Search Console as soft 404s / robots-blocked.
     ["/blog/hockey-cv-template-european-clubs", "/guides/hockey-resume-for-european-clubs"],
     ["/blog/how-to-get-hockey-tryout-in-europe", "/guides/travelling-for-a-hockey-tryout"],
-    ["/blog/north-american-vs-european-hockey-key-differences", "/guides/hockey-in-usa"],
-    ["/hockey-agent-in-europe", "/"],
+    ["/blog/north-american-vs-european-hockey-key-differences", "/guides/junior-hockey-europe-vs-north-america"],
+    ["/hockey-agent-in-europe", "/services"],
+    ["/hockey-agent-europe", "/services"],
+    // Fell back to the hub; GSC 16.11.2026 listed them as not indexed.
+    ["/blog/how-to-play-hockey-in-europe", "/guides/find-a-hockey-club-in-europe"],
+    ["/blog/how-to-get-hockey-contract-europe", "/guides/find-a-hockey-club-in-europe"],
+    ["/blog/hockey-visa-guide-for-north-american-players-going-to-europe", "/guides/work-visa-for-hockey-player"],
+    ["/blog/new-what-european-hockey-clubs-look-for-in-import-players", "/guides/why-good-hockey-stats-do-not-bring-club-offers"],
+    ["/blog/success-stories--players-who-transformed-their-careers-with-european-hockey-agencies", "/cases"],
     // The one Russian post on the old blog goes to the Russian guide.
     ["/blog/nuzhen-li-hokkey-agent-v-evrope", "/ru/guides/kak-rabotaet-hokkejnyj-agent"]
   ]) {
