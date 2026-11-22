@@ -97,15 +97,15 @@ const LEGACY_PATHS = new Map([
   ["/parents", "/junior-hockey-for-parents"],
   ["/for-parents", "/junior-hockey-for-parents"],
   ["/ru/for-parents", "/ru/yuniorskij-hokkej-roditelyam"],
-  ["/hockey-agent-europe", "/"],
-  ["/hockey-agent-in-europe", "/"],
+  ["/hockey-agent-europe", "/services"],
+  ["/hockey-agent-in-europe", "/services"],
   ["/blog", "/guides"],
   // Posts Search Console reports as soft 404s or robots-blocked: the /blog/*
   // fallback below already keeps them out of a 404, but pointing each at the
   // guide on the same subject preserves the topical signal the post earned.
   ["/blog/hockey-cv-template-european-clubs", "/guides/hockey-resume-for-european-clubs"],
   ["/blog/hockey-cv-for-europe--what-every-player-must-include", "/guides/hockey-resume-for-european-clubs"],
-  ["/blog/north-american-vs-european-hockey-key-differences", "/guides/hockey-in-usa"],
+  ["/blog/north-american-vs-european-hockey-key-differences", "/guides/junior-hockey-europe-vs-north-america"],
   ["/blog/success-stories-how-players-achieve-their-dreams-in-europe", "/cases"],
   ["/blog/do-i-need-hockey-agent-europe", "/guides/how-a-hockey-agent-works"],
   ["/blog/how-to-get-hockey-tryout-in-europe", "/guides/travelling-for-a-hockey-tryout"],
@@ -125,7 +125,17 @@ const LEGACY_PATHS = new Map([
   ["/blog/comprehensive-guide-to-hockey-career-development-in-europe", "/for-players"],
   ["/blog/european-hockey-agency--your-guide-to-the-world-of-hockey", "/guides"],
   ["/blog/myths-about-off-season-training-for-hockey-players--what-you-really-need-to-know", "/guides"],
-  ["/blog/new-post", "/guides"]
+  ["/blog/new-post", "/guides"],
+  // Search Console (data 16.11.2026): "discovered/crawled – not indexed" while
+  // they fell back to the /guides hub. A redirect to an unrelated hub reads as
+  // a soft 404, so each goes to the guide on the same subject.
+  ["/blog/how-to-play-hockey-in-europe", "/guides/find-a-hockey-club-in-europe"],
+  ["/blog/how-to-get-a-hockey-contract-in-europe--complete-player-guide", "/guides/find-a-hockey-club-in-europe"],
+  ["/blog/how-to-get-hockey-contract-europe", "/guides/find-a-hockey-club-in-europe"],
+  ["/blog/hockey-visa-guide-for-north-american-players-going-to-europe", "/guides/work-visa-for-hockey-player"],
+  ["/blog/how-to-build-a-successful-hockey-career--tips-and-strategies-for-players", "/for-players"],
+  ["/blog/new-what-european-hockey-clubs-look-for-in-import-players", "/guides/why-good-hockey-stats-do-not-bring-club-offers"],
+  ["/blog/success-stories--players-who-transformed-their-careers-with-european-hockey-agencies", "/cases"]
 ]);
 
 function createApp({ config, services, now, randomUUID, schemaState } = {}) {
