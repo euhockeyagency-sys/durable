@@ -36,7 +36,7 @@ const L = {
     method: "How we check facts",
     reviewed: "Reviewed by an expert",
     agent: "Viachaslau Marshchonak",
-    role: "hockey agent since 2016, founder of EHA; 100+ players placed",
+    role: "hockey agent and scout since 2016, founder of EHA",
     about: "About the agent"
   },
   ru: {
@@ -51,7 +51,7 @@ const L = {
     method: "Как мы проверяем факты",
     reviewed: "Проверено экспертом",
     agent: "Вячеслав Морщенок",
-    role: "хоккейный агент с 2016 года, основатель EHA; 100+ игроков размещено",
+    role: "хоккейный агент и скаут с 2016 года, основатель EHA",
     about: "Об агенте"
   }
 };
@@ -118,7 +118,7 @@ function byline(logicalPath, locale) {
   const s = L[locale];
   const method = locale === "ru" ? "/metodologiya" : "/editorial-methodology";
   const lead = `<strong>${s.by} <a href="/agent">${s.agent}</a></strong>, ${s.role}. <a href="${method}">${s.method} →</a>`;
-  return `<aside class="article-byline"><img src="/assets/viachaslau-marshchonak-640.webp" alt="" width="48" height="48" loading="lazy"><p>${lead}</p></aside>`;
+  return `<aside class="article-byline"><a href="/agent" tabindex="-1" aria-hidden="true"><img src="/assets/viachaslau-marshchonak-640.webp" alt="" width="48" height="48" loading="lazy"></a><p>${lead}</p></aside>`;
 }
 
 function applyArticleBlocks(html, logicalPath, locale) {

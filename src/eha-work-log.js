@@ -3,7 +3,7 @@
 module.exports = {
   "title": "EHA — единый журнал работ сайта",
   "scope": "Только eurohockeyagency.com и его EN/RU страницы. Внутренняя документация, не публичная статья.",
-  "last_reviewed": "2026-11-22",
+  "last_reviewed": "2026-11-23",
   "how_to_use": [
     "Перед работой прочитать этот файл через EHA1990 read_project_file с path='src/eha-work-log.js'. Затем прочитать нужные страницы и проверить актуальное состояние.",
     "Перед повторным предложением задачи проверить записи completed, historical и open_issues. Повторять выполненную задачу только при новой ошибке, устаревании или новых данных.",
@@ -1145,6 +1145,59 @@ module.exports = {
     "Подтверждённых материалов агентства о работе по остальным 37 кейсам в репозитории нет; Elite Prospects не скрейпится."
   ],
   "next_step": "Владелец: по каждому кейсу дать исходную точку и конкретное действие EHA (письмо клубу, просмотр, переговоры, документы) — внести в story в src/cases-data.js."
+},
+{
+  "id": "TECH-SEO-AUDIT-20261123",
+  "status": "saved",
+  "date": "2026-11-23",
+  "files": [
+    "src/locales.js",
+    "src/app.js",
+    "src/article-blocks.js",
+    "public/**/*.html (breadcrumb nav aria-label, EHA_BYLINE in 227 articles)",
+    "public/en/junior-hockey-leagues.html",
+    "public/ru/yuniorskie-ligi-evropy.html",
+    "public/en|ru services, for-players/players, hockey-in-usa/hokkej-v-ssha, hockey-in-belarus/hokkej-v-belarusi, after-u20 guides, age-pathway guides",
+    "public/en|ru salaries hub and ICEHL/AlpsHL salaries guide",
+    "public/en|ru season cost calculator",
+    "country guide titles (EN 6, RU 5)",
+    "public/styles.css",
+    "test/hreflang-consistency.test.js",
+    "test/agent-profile.test.js",
+    "docs/seo-tech-audit-2026-11-23.md"
+  ],
+  "urls": [
+    "/for-players",
+    "/ru/players",
+    "/sitemap.xml",
+    "/ru/sitemap.xml",
+    "/de/sitemap.xml",
+    "/cs/sitemap.xml",
+    "/fi/sitemap.xml",
+    "/sv/sitemap.xml",
+    "/services",
+    "/ru/services",
+    "/junior-hockey-leagues",
+    "/ru/yuniorskie-ligi-evropy",
+    "/junior-season-cost-calculator",
+    "/ru/kalkulyator-stoimosti-sezona",
+    "/guides/icehl-and-alps-hockey-league-salaries",
+    "/ru/guides/zarplaty-icehl-i-alps-hockey-league"
+  ],
+  "changes": [
+    "hreflang: 173 пары EN/RU без ошибок (200, self-canonical, взаимность, x-default=EN, переключатель, sitemap). Исправлено расхождение: de/cs/fi/sv-альтернативы были в HTML, но не в sitemap — генератор читает одну карту EXTRA_LOCALE_COUNTERPART.",
+    "Глубокие страницы: глубина ≤3, сирот нет, барьеров robots/noindex нет. Добавлены тематические ссылки на USHL/NAHL, юниорские Австрии и Словакии, гид «После МХЛ и НМХЛ», 11+11 страниц «агент по стране» (блок на /services), целевой гид зарплат AlpsHL.",
+    "Schema: Article получил image из og:image (306 страниц); хлебные крошки — nav с aria-label; подпись автора — общий компонент с фото на 227 страницах; убрано неподтверждённое «100+ игроков» из подписи.",
+    "Пилот long-tail: «alpshl salary» (258 показов, 4 конкурирующих URL) — Title целевого гида с «AlpsHL», ссылка из хаба зарплат. Конкретные Title 11 гидов стран. «Следующий шаг» в калькуляторе бюджета EN/RU."
+  ],
+  "evidence": [
+    "node /tmp audit scripts по локальному рендеру всех URL из sitemap; test/hreflang-consistency.test.js; npm test 343/343; GSC (EHA CONTROL) 23.08–20.11.2026: 57 URL без показов."
+  ],
+  "limits": [
+    "Отчёт GSC «Страницы» и URL Inspection недоступны через EHA CONTROL, браузер сессии не подключён — статусы «Обнаружена/Просканирована — не проиндексирована» и выбранный Google canonical не прочитаны.",
+    "FAQPage валиден, но расширенный результат FAQ Google показывает только гос- и медсайтам; HowTo отключён Google."
+  ],
+  "next_step": "После деплоя: проверить production; через 2–3 недели — показы 57 URL и запросов alpshl salary в GSC; владелец — проверка URL в GSC для 10 приоритетных страниц."
 }
   ],
   "historical": [

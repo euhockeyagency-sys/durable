@@ -77,9 +77,15 @@ test("author: Person only where the page shows the agent as author in a visible 
 });
 
 test("articles show a visible author line linking to the agent and author Person in JSON-LD", () => {
-  for (const [rel, re] of [["en/guides/hockey-in-sweden.html", /By <a href="\{\{EN\}\}\/agent">Viachaslau Marshchonak<\/a>/], ["ru/ligi/polsha-tauron-hokej-liga.html", /Автор: <a href="\/agent">Вячеслав Морщенок<\/a>/]]) {
+  // The byline is one shared component (src/article-blocks.js byline()) placed
+  // through the EHA_BYLINE marker: name, role, photo, links to /agent and to
+  // the editorial methodology.
+  const { byline } = require("../src/article-blocks");
+  assert.match(byline("/guides/x", "en"), /<img src="\/assets\/viachaslau-marshchonak-640\.webp"[^>]*>.*By <a href="\/agent">Viachaslau Marshchonak<\/a>/);
+  assert.match(byline("/guides/x", "ru"), /Автор: <a href="\/agent">Вячеслав Морщенок<\/a>/);
+  for (const [rel] of [["en/guides/hockey-in-sweden.html"], ["ru/ligi/polsha-tauron-hokej-liga.html"]]) {
     const html = fs.readFileSync(path.join(PUBLIC, rel), "utf8");
-    assert.match(html, re, rel);
+    assert.match(html, /<div class="wrap reviewer-note"><!-- EHA_BYLINE --><\/div>/, rel);
     assert.equal((html.match(/reviewer-note/g) || []).length, 1, rel);
     assert.match(html, /"author":\{"@type":"Person","@id":"\{\{BASE_URL_EN\}\}\/agent#person"/, rel);
   }
