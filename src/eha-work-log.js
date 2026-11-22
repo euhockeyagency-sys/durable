@@ -1148,7 +1148,7 @@ module.exports = {
 },
 {
   "id": "TECH-SEO-AUDIT-20261123",
-  "status": "saved",
+  "status": "published_verified",
   "date": "2026-11-23",
   "files": [
     "src/locales.js",
@@ -1191,13 +1191,15 @@ module.exports = {
     "Пилот long-tail: «alpshl salary» (258 показов, 4 конкурирующих URL) — Title целевого гида с «AlpsHL», ссылка из хаба зарплат. Конкретные Title 11 гидов стран. «Следующий шаг» в калькуляторе бюджета EN/RU."
   ],
   "evidence": [
-    "node /tmp audit scripts по локальному рендеру всех URL из sitemap; test/hreflang-consistency.test.js; npm test 343/343; GSC (EHA CONTROL) 23.08–20.11.2026: 57 URL без показов."
+    "node /tmp audit scripts по локальному рендеру всех URL из sitemap; test/hreflang-consistency.test.js; npm test 343/343; GSC (EHA CONTROL) 23.08–20.11.2026: 57 URL без показов.",
+    "Production 23.11.2026 (main 3b080dc, Deploy success): 200, self-canonical, один H1, валидный JSON-LD, hreflang de в кластере Германии и в sitemap, блок agent-by-country, подпись без «100+», nav-крошки, #next-step; lastmod не сдвинут.",
+    "GSC «Страницы» (прочитано 23.11, данные 16.11): 284 в индексе, 210 нет; «Обнаружена, не проиндексирована» 30 — 22 гида «агент в стране», USHL и юниорские Австрии/Словакии EN/RU, гид после U20, 5 старых /blog. URL Inspection: «ссылающаяся страница не найдена». Запрошено индексирование 11 URL (список в docs/seo-tech-audit-2026-11-23.md, раздел 2a)."
   ],
   "limits": [
-    "Отчёт GSC «Страницы» и URL Inspection недоступны через EHA CONTROL, браузер сессии не подключён — статусы «Обнаружена/Просканирована — не проиндексирована» и выбранный Google canonical не прочитаны.",
+    "Данные GSC «Страницы» от 16.11.2026 — до деплоя PR #30; эффект ссылок проверять после пересканирования. Дневная квота запросов индексирования — около 10 URL.",
     "FAQPage валиден, но расширенный результат FAQ Google показывает только гос- и медсайтам; HowTo отключён Google."
   ],
-  "next_step": "После деплоя: проверить production; через 2–3 недели — показы 57 URL и запросов alpshl salary в GSC; владелец — проверка URL в GSC для 10 приоритетных страниц."
+  "next_step": "С 24.11 — вторая партия запросов индексирования (раздел 2a отчёта); после пересканирования проверить, что soft 404 ушли (PR #33: редиректы на страницы по теме); через 2–3 недели — показы 57 URL и запросов alpshl salary в GSC."
 }
   ],
   "historical": [

@@ -1,6 +1,6 @@
 # Technical SEO audit, long-tail map and link plan — 23 November 2026
 
-Data sources: local Express render of every sitemap URL (EN, RU, DE, CS, FI, SV); EHA CONTROL (Google Search Console API, web search, 23.08–20.11.2026, page and query dimensions). The GSC **Pages (index coverage) report and URL Inspection are not available** through EHA CONTROL, and the built-in browser was not reachable in this session, so the statuses "Discovered – currently not indexed" / "Crawled – currently not indexed" and the Google-selected canonical could not be read. Proxy used: sitemap URLs with no impressions at all in 90 days.
+Data sources: local Express render of every sitemap URL (EN, RU, DE, CS, FI, SV); EHA CONTROL (Google Search Console API, web search, 23.08–20.11.2026, page and query dimensions). The GSC Pages report and URL Inspection are not available through EHA CONTROL; they were read later the same day in the owner's GSC account in Chrome (section 2a). Before that, the proxy was sitemap URLs with no impressions at all in 90 days.
 
 ## 1. hreflang and EN/RU routing
 
@@ -24,6 +24,33 @@ Data sources: local Express render of every sitemap URL (EN, RU, DE, CS, FI, SV)
 | /guides/icehl-and-alps-hockey-league-salaries (+RU) | "alpshl salary" impressions split across 4 URLs | AlpsHL row of the salaries hub links to it; title now uses "AlpsHL" |
 
 Indexing must be confirmed in GSC after the next crawl (impressions in EHA CONTROL, or URL Inspection by the owner).
+
+### 2a. GSC Pages report (read 23.11.2026; Google's data as of 16.11.2026, i.e. before the 23.11 deploy)
+
+Indexed 284, not indexed 210.
+
+| Reason | Count | What it is | Action |
+| --- | --- | --- | --- |
+| Alternate page with proper canonical | 110 | duplicates pointing to the canonical (query/legacy variants) | none — expected |
+| Page with redirect | 40 | legacy slugs with 301 | none — expected |
+| Discovered – currently not indexed | 30 | listed below | links added in PR #30; indexing requested for the priority ones |
+| Crawled – currently not indexed | 16 | old `/blog/*` slugs, `feed.xml` (EN/RU/fi/sv), `/contact-us`, `/contact?league=…` | none for feeds/forms; all old blog slugs 301 — those that fell back to the `/guides` hub now point to the guide on the same subject (PR #33; the seasonal-preparation post has no match and stays on the hub) |
+| Not found (404) | 8 | validation already started | wait for validation |
+| Soft 404 | 3 | `/blog/hockey-cv-template-european-clubs`, `/blog/north-american-vs-european-hockey-key-differences`, `/hockey-agent-in-europe` | all already 301; the last two pointed to the home page / a loosely related guide → now `/services` and `/guides/junior-hockey-europe-vs-north-america` (PR #33) |
+| Blocked by robots.txt | 3 | `/cdn-cgi/l/email-protection`, an old `/blog/…` slug, one query URL | none — expected |
+
+"Discovered – not indexed" (30), grouped:
+- 22 hockey-agent-in-country guides (11 EN + 11 RU) — the main group; until PR #30 each had one internal link.
+- USHL, Slovakia junior, Austria junior league pages (EN + RU = 6).
+- `/guides/after-u20-senior-hockey-in-europe`.
+- 5 legacy `/blog/*` slugs — all 301; those that fell back to the `/guides` hub now go to the matching guide or `/cases` (PR #33).
+
+URL Inspection showed for these pages "Referring page: not found", and for several RU pages "URL unknown to Google, no referring sitemap" — Google had not yet seen any internal link to them. That matches the PR #30 fix (links from /services, the junior hub and country guides).
+
+Indexing requested 23.11.2026 (11 URLs, then the daily quota was reached):
+/leagues/usa-ushl, /ru/ligi/ssha-ushl, /leagues/slovakia-junior-hockey, /leagues/austria-junior-hockey, /guides/after-mhl-and-nmhl-to-europe-options-for-russian-and-belarusian-players, /services (recrawl), /ru/services (recrawl), /guides/icehl-and-alps-hockey-league-salaries (recrawl; already indexed), /guides/hockey-agent-in-finland, /guides/hockey-agent-in-czechia, /ru/guides/hokkejnyj-agent-v-finlyandii.
+
+Next batch (after 24.11): /ru/ligi/slovakiya-yuniorskij-hokkej, /ru/ligi/avstriya-yuniorskij-hokkej, /ru/guides/hokkejnyj-agent-v-chexii, /guides/hockey-agent-in-austria, /guides/hockey-agent-in-switzerland, /guides/after-u20-senior-hockey-in-europe. The RU after-MHL guide is already indexed.
 
 ## 3. Schema.org and authors
 
