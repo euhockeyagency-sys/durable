@@ -33,8 +33,8 @@
 - TikTok агентства: **@euhockeyagency** → https://www.tiktok.com/@euhockeyagency
 - Telegram-канал агентства: **t.me/eu_hockeyagency** → https://t.me/eu_hockeyagency (в Schema: `sameAs` у Organization; в футере сайта)
 - Личный профессиональный Instagram агента: **@marshchonak_hockeyagent** → https://www.instagram.com/marshchonak_hockeyagent/ (в Schema: `sameAs` у Person, не у Organization)
+- LinkedIn агента: https://www.linkedin.com/in/viachaslau-marshchonak-42360663/ (в Schema: `sameAs` у Person на `/agent` и `/ru/agent`; карточка в блоке «Официальные профили»; в футер не выводится — футер для каналов агентства)
 - Профили агента, которые ещё не подключены (добавить в `sameAs` у Person на `/agent` и `/ru/agent`, как только появится ссылка):
-  - LinkedIn: _ссылка не указана_
   - Elite Prospects (профиль агента/агентства): _ссылка не указана_
   - GRAET: _ссылка не указана_
 - Юридические реквизиты (название юрлица, рег. номер): _не указаны_ — в футере для них оставлена метка `LEGAL_DETAILS` (scripts/normalize-chrome.js)
