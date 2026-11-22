@@ -34,16 +34,16 @@ Indexed 284, not indexed 210.
 | Alternate page with proper canonical | 110 | duplicates pointing to the canonical (query/legacy variants) | none — expected |
 | Page with redirect | 40 | legacy slugs with 301 | none — expected |
 | Discovered – currently not indexed | 30 | listed below | links added in PR #30; indexing requested for the priority ones |
-| Crawled – currently not indexed | 16 | old `/blog/*` slugs, `feed.xml` (EN/RU/fi/sv), `/contact-us`, `/contact?league=…` | none for feeds/forms; old blog slugs — check they 301 to the current article |
+| Crawled – currently not indexed | 16 | old `/blog/*` slugs, `feed.xml` (EN/RU/fi/sv), `/contact-us`, `/contact?league=…` | none for feeds/forms; all old blog slugs 301 — those that fell back to the `/guides` hub now point to the guide on the same subject (PR #33; the seasonal-preparation post has no match and stays on the hub) |
 | Not found (404) | 8 | validation already started | wait for validation |
-| Soft 404 | 3 | `/blog/hockey-cv-template-european-clubs`, `/blog/north-american-vs-european-hockey-key-differences`, `/hockey-agent-in-europe` | check: should 301 to the current page or return a real 404 |
+| Soft 404 | 3 | `/blog/hockey-cv-template-european-clubs`, `/blog/north-american-vs-european-hockey-key-differences`, `/hockey-agent-in-europe` | all already 301; the last two pointed to the home page / a loosely related guide → now `/services` and `/guides/junior-hockey-europe-vs-north-america` (PR #33) |
 | Blocked by robots.txt | 3 | `/cdn-cgi/l/email-protection`, an old `/blog/…` slug, one query URL | none — expected |
 
 "Discovered – not indexed" (30), grouped:
 - 22 hockey-agent-in-country guides (11 EN + 11 RU) — the main group; until PR #30 each had one internal link.
 - USHL, Slovakia junior, Austria junior league pages (EN + RU = 6).
 - `/guides/after-u20-senior-hockey-in-europe`.
-- 5 legacy `/blog/*` slugs (old URLs; should redirect).
+- 5 legacy `/blog/*` slugs — all 301; those that fell back to the `/guides` hub now go to the matching guide or `/cases` (PR #33).
 
 URL Inspection showed for these pages "Referring page: not found", and for several RU pages "URL unknown to Google, no referring sitemap" — Google had not yet seen any internal link to them. That matches the PR #30 fix (links from /services, the junior hub and country guides).
 
