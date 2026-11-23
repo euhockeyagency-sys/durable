@@ -81,7 +81,7 @@ GSC 90 days (gsc_rows; anonymised queries excluded).
 
 Guide title audit: country-guide titles that named no league were made specific (EN: Norway, Denmark, Slovakia, France, Switzerland, UK; RU: Norway, Denmark, Slovakia, France, Switzerland). Seasons were added only where the page holds verified season data; URLs unchanged.
 
-Priority list for the remaining topics: (1) USHL vs NAHL block; (2) per-country right-to-work table on the work-visa guide; (3) "How to play hockey in Austria/Czechia" title test; (4) AlpsHL import profile once a primary source is found; (5) DEL2 vs HockeyAllsvenskan only with demand.
+Priority list for the remaining topics: (1) USHL vs NAHL block — **done 23.11** (`#vs` on /guides/junior-hockey-usa EN/RU, also answers "ehl vs ncdc" 19 impr. pos. 7 and "is ncdc better than nahl"); (2) per-country right-to-work table on the work-visa guide; (3) title test — **done for Austria EN 23.11**; Czechia kept: its impressions come from salary queries ("czech hockey league salaries" 26, "czech extraliga salary" 13) that the current title already matches; (4) AlpsHL import profile once a primary source is found; (5) DEL2 vs HockeyAllsvenskan only with demand.
 
 ## 5. External links — plan and drafts (owner sends; nothing was sent)
 
