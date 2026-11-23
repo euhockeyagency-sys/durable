@@ -23,6 +23,7 @@ const INTENTS = {
   junior_route: "Junior route (U18/U20, school, housing)",
   route_discussion: "Parent: discuss the player's options",
   europe_route: "Route into European hockey",
+  terms_question: "Question about EHA fees and terms (ask the agent)",
   offer_review: "Check a club offer or contract terms",
   offer_comparison: "Compare two offers",
   salary_context: "Salary and offer conditions",
