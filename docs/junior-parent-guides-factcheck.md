@@ -54,3 +54,11 @@ Deliberately excluded: Avon Old Farms (conflicting figures), the NTDP (cost unco
 ## Topics from the original request not covered yet
 
 School and diploma recognition, per-country minor visas with dated IIHF steps, the U16-to-pro ladder with NCAA and CHL rules, and the monthly calendar. They need primary-source fact-checks with dates first. Existing coverage: `junior-pathway-compare` (school column, under-18 transfer rules by country, CHL/NCDC), `news/ncaa-allows-chl-players-to-keep-division-i-eligibility`, and the per-country junior fact-checks.
+
+## Нужен ли агент юниору (`/guides/does-a-junior-hockey-player-need-an-agent`, `/ru/guides/nuzhen-li-agent-yunioru-hokkeistu`), проверено 24.11.2026
+
+| Утверждение | Источник | Статус |
+| --- | --- | --- |
+| Family advisor может быть полезен, но не обязателен, если игрока не прогнозируют на драфт НХЛ | College Hockey Inc. FAQ, https://collegehockeyinc.com/faq | official (CHI), 24.11.2026 |
+| Как правило, игроку нельзя заключать с агентом соглашение (письменное, устное или о будущем представительстве) и получать от него выгоды | College Hockey Inc. FAQ, https://collegehockeyinc.com/faq | official (CHI), 24.11.2026 |
+| Возрастные рамки (14–16 / 16–19) и ситуации, когда помощь окупается | Практический взгляд EHA, помечен на странице как не правило | оценка EHA |

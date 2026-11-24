@@ -75,6 +75,7 @@ const PAGES = [
   { ru: "/guides/rabochaya-viza-dlya-hokkeista", en: "/guides/work-visa-for-hockey-player" },
   { ru: "/guides/hokkejnoe-rezyume", en: "/guides/hockey-resume-for-european-clubs" },
   { ru: "/guides/kak-rabotaet-hokkejnyj-agent", en: "/guides/how-a-hockey-agent-works" },
+  { ru: "/guides/nuzhen-li-agent-yunioru-hokkeistu", en: "/guides/does-a-junior-hockey-player-need-an-agent" },
   { ru: "/guides/kak-vybrat-ligu", en: "/guides/how-to-choose-a-hockey-league" },
   { ru: "/guides/video-dlya-kluba", en: "/guides/hockey-video-for-clubs" },
   { ru: "/guides/chto-sprosit-u-hokkejnogo-agenta-pered-prosmotrom", en: "/guides/what-to-ask-a-hockey-agent-before-a-trial" },
