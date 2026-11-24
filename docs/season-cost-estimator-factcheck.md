@@ -39,3 +39,7 @@ shown as missing, never as zero.
 - NAHL “no hockey tuition”: nahl.com recruiting FAQ (already cited on `leagues/usa-nahl`).
 - No success percentages for routes were published: no comparable data found.
 - The word “free” is not used for the consultation on the new blocks: current consultation terms are not recorded in `BRAND.md`.
+
+## Parents hub: "What one season can cost" table (24 Nov 2026)
+
+`/junior-hockey-for-parents` and `/ru/yuniorskij-hokkej-roditelyam`, section `#budget-examples`. Reuses only the entries above (Tyresö Hanviken junior, Shattuck-St. Mary's, CATS Academy Boston, CIHA, USHL Tier I model) plus the NAHL "no hockey tuition" line from the NAHL recruiting FAQ. Each row links its source; the section says the figures are single published examples, not averages and not EHA prices.

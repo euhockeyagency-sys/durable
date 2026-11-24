@@ -48,6 +48,7 @@ const GUIDES = [
   { en: "after-u20-senior-hockey-in-europe", ru: "posle-u20-vzroslyj-hokkej-v-evrope", cat: "process", title: { en: "After U20: moving into senior hockey", ru: "После U20: переход во взрослый хоккей" } },
   { en: "hockey-video-for-clubs", ru: "video-dlya-kluba", cat: "process", title: { en: "Highlights or a full game?", ru: "Хайлайты или полная игра?" } },
   { en: "how-a-hockey-agent-works", ru: "kak-rabotaet-hokkejnyj-agent", cat: "process", title: { en: "How a hockey agent works", ru: "Как работает хоккейный агент" } },
+  { en: "does-a-junior-hockey-player-need-an-agent", ru: "nuzhen-li-agent-yunioru-hokkeistu", cat: "parents", title: { en: "Does a junior player need an agent?", ru: "Нужен ли агент юниору?" } },
   { en: "hockey-player-salaries-in-europe", ru: "zarplaty-hokkeistov-v-evrope", cat: "process", title: { en: "Hockey player salaries in Europe", ru: "Зарплаты хоккеистов в Европе" } },
   { en: "icehl-and-alps-hockey-league-salaries", ru: "zarplaty-icehl-i-alps-hockey-league", cat: "process", title: { en: "ICEHL and Alps Hockey League salaries", ru: "Зарплаты в ICEHL и Alps Hockey League" } },
   { en: "how-to-choose-a-hockey-academy", ru: "kak-vybrat-hokkejnuyu-akademiyu", cat: "parents", title: { en: "How to choose a hockey academy", ru: "Как выбрать хоккейную академию" } },
