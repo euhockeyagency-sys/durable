@@ -7,6 +7,7 @@
 // NOTIFY_MODE=sandbox records what would be sent (status "sandboxed") without
 // contacting any messenger: used before real delivery is switched on.
 const { agentCard } = require("./agent-card");
+const { telegramButtons, contactLines } = require("./telegram-buttons");
 
 const BACKOFF_MIN = [1, 5, 30, 120];
 const MAX_ATTEMPTS = BACKOFF_MIN.length + 1;
@@ -22,11 +23,15 @@ function channelsFor(config) {
 function cardFor(application, config) {
   const base = String(config.primaryUrl || "").replace(/\/$/, "");
   const pdfStatus = application.pdf_generated_at ? `готов (${application.pdf_generated_at.slice(0, 16).replace("T", " ")})` : "не создан";
-  return agentCard(application, { adminUrl: base ? `${base}/admin/applications/${application.id}` : null, pdfStatus });
+  const card = agentCard(application, { adminUrl: base ? `${base}/admin/applications/${application.id}` : null, pdfStatus });
+  // Contact lines go right after the player line so the agent sees who to call.
+  const lines = card.split("\n");
+  lines.splice(2, 0, ...contactLines(application));
+  return lines.join("\n");
 }
 
-async function sendOne(services, channel, application, text) {
-  if (channel === "telegram") return services.sendTelegram(application, text);
+async function sendOne(services, channel, application, text, config = {}) {
+  if (channel === "telegram") return services.sendTelegram(application, text, telegramButtons(application, config));
   if (channel === "email") return services.sendEmail(application, text);
   if (channel === "whatsapp") return services.sendWhatsApp(application, text);
   throw new Error(`unknown channel ${channel}`);
@@ -66,7 +71,7 @@ async function attempt(services, application, channel, text, config, now, existi
     status = "sandboxed"; providerId = "sandbox";
   } else {
     try {
-      providerId = await sendOne(services, channel, application, text);
+      providerId = await sendOne(services, channel, application, text, config);
     } catch (error) {
       errorMessage = String(error.message || error).slice(0, 1000);
       next = nextAttempt(now(), attempts);

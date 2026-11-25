@@ -45,20 +45,29 @@ function createServices(config) {
       if (result.error) throw new Error(result.error.message || "Resend delivery failed");
       return result.data?.id || null;
     },
-    async sendTelegram(application, text) {
-      const response = await fetch(`https://api.telegram.org/bot${config.telegramBotToken}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: config.telegramChatId,
-          text: text || notificationText(application),
-          disable_web_page_preview: true
-        }),
-        signal: AbortSignal.timeout(10_000)
-      });
-      const result = await response.json();
-      if (!response.ok || !result.ok) throw new Error(result.description || `Telegram returned ${response.status}`);
-      return String(result.result?.message_id || "") || null;
+    // replyMarkup: optional inline buttons (WhatsApp, admin). If Telegram
+    // rejects the buttons, the card is sent once more without them, so a bad
+    // link never costs the notification itself.
+    async sendTelegram(application, text, replyMarkup = null) {
+      const send = async (markup) => {
+        const response = await fetch(`https://api.telegram.org/bot${config.telegramBotToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: config.telegramChatId,
+            text: text || notificationText(application),
+            disable_web_page_preview: true,
+            ...(markup ? { reply_markup: markup } : {})
+          }),
+          signal: AbortSignal.timeout(10_000)
+        });
+        const result = await response.json();
+        return { ok: response.ok && result.ok, result, status: response.status };
+      };
+      let sent = await send(replyMarkup);
+      if (!sent.ok && replyMarkup && sent.status === 400) sent = await send(null);
+      if (!sent.ok) throw new Error(sent.result.description || `Telegram returned ${sent.status}`);
+      return String(sent.result.result?.message_id || "") || null;
     },
     // WhatsApp Business Cloud API (official). Business-initiated messages need
     // an approved template; the card is shortened to template parameters and
